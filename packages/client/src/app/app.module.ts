@@ -10,17 +10,19 @@ import {
   heroPlayCircle,
   heroStopCircle,
 } from '@ng-icons/heroicons/outline';
+import { StoreModule } from '@ngrx/store';
 import { SharedUiModule } from 'shared-ui';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
+import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import {
   heroMicrophoneSlash,
   zipCaptionsLogo,
 } from './vectors/vectors';
-import { MediaModule } from 'media';
+import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,6 @@ import { MediaModule } from 'media';
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    MediaModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
@@ -49,6 +50,11 @@ import { MediaModule } from 'media';
       zipCaptionsLogo
     }),
     SharedUiModule,
+    StoreModule.forRoot({}),
+    StoreModule.forFeature('audioStream', audioStreamReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 10
+    })
   ],
   providers: [
   ],

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subject, takeUntil, filter } from 'rxjs';
+import { Subject, takeUntil, filter, Observable } from 'rxjs';
 import { MenuItem } from './header.model';
-
+import { Store } from '@ngrx/store';
+import { AudioStreamState, AudioStreamStatus, AudioStreamActions } from '../../models/audio-stream.model';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -11,8 +12,13 @@ import { MenuItem } from './header.model';
 export class HeaderComponent implements OnInit, OnDestroy {
   public menuItems: MenuItem[];
   public activeRoute: WritableSignal<string>;
+  public inputState$!: Observable<AudioStreamStatus>;
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private router: Router) {
+  constructor(private router: Router,
+              private store: Store<AudioStreamState>) {
+
+    this.inputState$ = this.store.select('status')
+    
     this.activeRoute = signal(this.router.url);
     this.menuItems = [
       {
@@ -27,6 +33,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.store.dispatch(AudioStreamActions.connectStream())
+    
     this.router.events.pipe(
       takeUntil(this.onDestroy$),
       filter((ev: any) => ev instanceof NavigationEnd)
@@ -37,5 +46,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+  }
+
+  spanishMessage(): void {
+    this.store.dispatch({type: 'SPANISH'})
   }
 }
