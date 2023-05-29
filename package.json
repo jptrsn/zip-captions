@@ -1,0 +1,14 @@
+{
+  "name": "zip-captions",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "nx": "16.2.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
