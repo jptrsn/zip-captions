@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { Subject, takeUntil, filter, Observable } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subject, filter, takeUntil } from 'rxjs';
+import { AppState } from '../../models/app.model';
+import { AudioStreamActions, AudioStreamStatus } from '../../models/audio-stream.model';
+import { statusSelector } from '../../selectors/audio-stream.selector';
 import { MenuItem } from './header.model';
-import { Store } from '@ngrx/store';
-import { AudioStreamState, AudioStreamStatus, AudioStreamActions } from '../../models/audio-stream.model';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -15,9 +17,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public inputState$!: Observable<AudioStreamStatus>;
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private router: Router,
-              private store: Store<AudioStreamState>) {
+              private store: Store<AppState>) {
 
-    this.inputState$ = this.store.select('status')
+    this.inputState$ = this.store.pipe(select(statusSelector));
     
     this.activeRoute = signal(this.router.url);
     this.menuItems = [
@@ -34,8 +36,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.store.dispatch(AudioStreamActions.connectStream())
-    
     this.router.events.pipe(
       takeUntil(this.onDestroy$),
       filter((ev: any) => ev instanceof NavigationEnd)
@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
-  spanishMessage(): void {
-    this.store.dispatch({type: 'SPANISH'})
+  connectMicrophone(): void {
+    this.store.dispatch(AudioStreamActions.connectStream());
   }
 }
