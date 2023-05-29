@@ -1,0 +1,15 @@
+<div class="flex flex-row space-x-4 shadow-lg px-8 py-4 items-center">
+  <ng-icon name="zipCaptionsLogo" size="48"></ng-icon>
+  <span class="flex-auto text-lg sha font-extrabold">Zip Captions</span>
+  <lib-audio-input-select></lib-audio-input-select>
+  <div class="dropdown dropdown-end dropdown-hover">
+    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+      <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
+        <a [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet">{{item.label | proper}}</a>
+      </li>
+    </ul>
+    <label tabindex="0" class="m-1 btn rounded-full">
+      <ng-icon name="heroBars3" size="18" strokeWidth="2.5"></ng-icon>
+    </label>
+  </div>
+</div>
