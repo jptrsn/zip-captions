@@ -8,3 +8,8 @@ export const statusSelector = createSelector(
   selectAudioStream,
   (state) => state.status
 )
+
+export const volumeSelector = createSelector(
+  selectAudioStream,
+  (state) => state.micLevel
+)

@@ -18,18 +18,18 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
-import {
-  heroMicrophoneSlash,
-  zipCaptionsLogo,
-} from './vectors/vectors';
+import { heroMicrophoneSlash, zipCaptionsLogo } from './vectors/vectors';
 import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AboutComponent } from './components/about/about.component';
+import { appStateReducers } from './reducers/app.reducer';
 
 @NgModule({
   declarations: [
-    AppComponent, 
-    HeaderComponent, 
-    FooterComponent, 
+    AppComponent,
+    HeaderComponent,
+    FooterComponent,
     HomeComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -47,17 +47,16 @@ import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
       heroPlayCircle,
       heroStopCircle,
       heroMicrophoneSlash,
-      zipCaptionsLogo
+      zipCaptionsLogo,
     }),
     SharedUiModule,
-    StoreModule.forRoot({}),
+    StoreModule.forRoot((appStateReducers)),
     StoreModule.forFeature('audioStream', audioStreamReducers),
     StoreDevtoolsModule.instrument({
-      maxAge: 10
-    })
+      maxAge: 10,
+    }),
   ],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

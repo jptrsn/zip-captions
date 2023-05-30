@@ -1,1 +1,43 @@
-<p>home works!</p>
+<div class="flex flex-col justify-start basis-full">
+  <ng-container *ngIf="(loading$ | async); else loadedView">
+    <div class="flex flex-col basis-full items-center justify-center gap-6">
+      <div class="text-lg">Enable your microphone</div>
+      <button class="btn" aria-lable="Enable microphone use">
+        <ng-icon name="heroMicrophone"></ng-icon>
+      </button>
+      <!-- <div class="flex-auto text-base font-extrabold text-error" *ngIf="errorMessage() as err">{{err}}</div> -->
+    </div>
+  </ng-container>
+  <ng-template #loadedView>
+    <div class="flex flex-col items-stretch basis-full">
+
+      <div class="flex flex-row self-stretch items-center justify-center px-6 py-2 gap-6">
+        <div class="btn-group-horizontal flex-initial">
+          <button class="btn" aria-label="Start recognition">
+            <ng-icon name="heroPlayCircle"></ng-icon>
+          </button>
+          <button class="btn" aria-label="Stop recognition">
+            <ng-icon name="heroStopCircle"></ng-icon>
+          </button>
+          <button class="btn" aria-label="Stop microphone">
+            <ng-icon name="heroStopCircle"></ng-icon>
+          </button>
+        </div>
+        <span class="flex flex-grow flex-auto flex-row items-center justify-center text-sm">
+          <!-- <span *ngIf="isListening()">Listening...</span>
+          <span *ngIf="!isListening()">Idle...</span> -->
+        </span>
+        <progress class="progress-primary w-56" *ngIf="(vol$ | async) as level" [value]="level" max="1"></progress>
+      </div>
+
+      <!-- <div class="flex flex-col basis-full flex-grow-0 flex-shrink gap-6 px-6 py-6 bg-black justify-end overflow-y-hidden">
+        <div *ngFor="let text of renderedText()">
+          {{text | proper}}
+        </div>
+
+        <div>{{partialText()}}</div>
+        
+      </div> -->
+    </div>
+  </ng-template>
+</div>
