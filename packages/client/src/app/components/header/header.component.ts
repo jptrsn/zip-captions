@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 import { AppState } from '../../models/app.model';
@@ -22,6 +22,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.inputState$ = this.store.pipe(select(statusSelector));
     
     this.activeRoute = signal(this.router.url);
+    this.router.events.pipe(
+      filter((ev) => ev instanceof NavigationStart),
+      takeUntil(this.onDestroy$)
+    ).subscribe((ev) => {
+      // TODO: Close nav menu
+    })
     this.menuItems = [
       {
         label: 'home',

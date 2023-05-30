@@ -18,7 +18,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
-import { heroMicrophoneSlash, zipCaptionsLogo } from './vectors/vectors';
+import { githubLogo, heroMicrophoneSlash, zipCaptionsLogo } from './vectors/vectors';
 import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AboutComponent } from './components/about/about.component';
 import { appAppearanceReducers } from './reducers/app.reducer';
@@ -48,6 +48,7 @@ import { appAppearanceReducers } from './reducers/app.reducer';
       heroStopCircle,
       heroMicrophoneSlash,
       zipCaptionsLogo,
+      githubLogo,
     }),
     SharedUiModule,
     StoreModule.forRoot({

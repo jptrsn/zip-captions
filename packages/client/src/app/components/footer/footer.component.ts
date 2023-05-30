@@ -15,6 +15,7 @@ import { footerVisibleSelector } from '../../selectors/app.selector';
 })
 export class FooterComponent {
   public hidden$: Observable<boolean>;
+  public repoUrl = 'https://github.com/jptrsn/zip-captions';
   constructor(private store: Store<AppState>) {
     this.hidden$ = this.store.pipe(select(footerVisibleSelector)).pipe(
       map((visible) => !visible)
