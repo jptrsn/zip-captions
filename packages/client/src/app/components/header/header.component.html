@@ -1,0 +1,19 @@
+<div class="navbar bg-base-300 shadow-lg gap-3">
+  <div class="flex-none">
+    <ng-icon name="zipCaptionsLogo" size="48"></ng-icon>
+  </div>
+  <div class="flex-1">
+    <div class="normal-case text-xl">ZipCaptions</div>
+  </div>
+  <app-audio-input-enable></app-audio-input-enable>
+  <div class="flex-none dropdown dropdown-end">
+    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+      <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
+        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet">{{item.label | proper}}</button>
+      </li>
+    </ul>
+    <label tabindex="0" class="m-1 btn btn-ghost rounded-full">
+      <ng-icon name="heroBars3" size="18" strokeWidth="2.5"></ng-icon>
+    </label>
+  </div>
+</div>
