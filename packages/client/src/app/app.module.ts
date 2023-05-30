@@ -21,7 +21,7 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { heroMicrophoneSlash, zipCaptionsLogo } from './vectors/vectors';
 import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AboutComponent } from './components/about/about.component';
-import { appStateReducers } from './reducers/app.reducer';
+import { appAppearanceReducers } from './reducers/app.reducer';
 
 @NgModule({
   declarations: [
@@ -50,8 +50,10 @@ import { appStateReducers } from './reducers/app.reducer';
       zipCaptionsLogo,
     }),
     SharedUiModule,
-    StoreModule.forRoot((appStateReducers)),
-    StoreModule.forFeature('audioStream', audioStreamReducers),
+    StoreModule.forRoot({
+      appearance: appAppearanceReducers,
+      audioStream: audioStreamReducers
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

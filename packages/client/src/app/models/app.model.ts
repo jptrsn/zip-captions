@@ -4,9 +4,14 @@ export enum AppTheme {
   dark = 'dark',
   acid = 'acid'
 }
-export interface AppState {
+
+export interface AppAppearanceState {
   loading: boolean;
   theme: AppTheme;
+  footerVisible: boolean;
+}
+export interface AppState {
+  appearance: AppAppearanceState;
   audioStream: AudioStreamState;
 }
 
