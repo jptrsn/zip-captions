@@ -9,7 +9,12 @@ export const statusSelector = createSelector(
   (state) => state.status
 )
 
-export const volumeSelector = createSelector(
+export const isListeningSelector = createSelector(
   selectAudioStream,
-  (state) => state.micLevel
+  (state) => state.isListening
+)
+
+export const streamErrorSelector = createSelector(
+  selectAudioStream,
+  (state) => state.error
 )

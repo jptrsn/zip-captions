@@ -4,24 +4,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgIconsModule } from '@ng-icons/core';
-import {
-  heroBars3,
-  heroMicrophone,
-  heroPlayCircle,
-  heroStopCircle,
-} from '@ng-icons/heroicons/outline';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SharedUiModule } from 'shared-ui';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { Icons, SharedUiModule } from 'shared-ui';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
+import { AboutComponent } from './components/about/about.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
-import { audioStreamReducers } from './reducers/audio-stream.reducer';
-import { githubLogo, heroMicrophoneSlash, zipCaptionsLogo } from './vectors/vectors';
-import { StoreDevtools, StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { AboutComponent } from './components/about/about.component';
+import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
+import { audioStreamReducers } from './reducers/audio-stream.reducer';
+import { BackgroundMagnitudeDirective } from './directives/background-magnitude.directive';
 
 @NgModule({
   declarations: [
@@ -42,19 +38,15 @@ import { appAppearanceReducers } from './reducers/app.reducer';
       registrationStrategy: 'registerWhenStable:30000',
     }),
     NgIconsModule.withIcons({
-      heroBars3,
-      heroMicrophone,
-      heroPlayCircle,
-      heroStopCircle,
-      heroMicrophoneSlash,
-      zipCaptionsLogo,
-      githubLogo,
+      ...Icons,
     }),
     SharedUiModule,
+    MediaModule,
     StoreModule.forRoot({
       appearance: appAppearanceReducers,
-      audioStream: audioStreamReducers
+      audioStream: audioStreamReducers,
     }),
+    EffectsModule.forRoot(),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

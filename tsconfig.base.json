@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "media": ["packages/media/src/index.ts"],
       "shared-ui": ["packages/shared-ui/src/index.ts"]
     }
   },
