@@ -15,14 +15,19 @@ export class AudioInputEnableComponent {
   public streamState: Signal<AudioStreamState>;
   public vol: Signal<number | undefined>;
   public connected: Signal<boolean | undefined>;
+  public error: Signal<string | undefined>;
   constructor(private store: Store<AppState>,
               private mediaService: MediaService) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState()?.status === AudioStreamStatus.connected);
+    this.error = computed(() => this.streamState()?.error);
     this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0)
   }
 
   toggleState(): void {
+    if (this.error()) {
+      return;
+    }
     if (this.connected()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {

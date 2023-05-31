@@ -12,14 +12,6 @@ export class MediaService {
 
   public getMediaStream(deviceId: string): Observable<string> {
     console.log('get media stream', deviceId);
-    navigator.mediaDevices.getUserMedia({video: false, audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-      channelCount: 1,
-      sampleRate: 1600,
-      deviceId
-    } }).then((result) => console.log('getusermedia result', result))
     return from(navigator.mediaDevices.getUserMedia({video: false, audio: {
       echoCancellation: true,
       noiseSuppression: true,
@@ -29,23 +21,25 @@ export class MediaService {
       deviceId
     } })).pipe(
       map((stream: MediaStream) => {
+        console.log('got media stream', stream);
         this.streamsMap.set(stream.id, stream);
         this._watchStreamVolume(stream);
         return stream.id;
-      })
+      }),
+      
     )
   }
 
   public disconnectStream(streamId: string): string {
     const stream: MediaStream | undefined = this.streamsMap.get(streamId);
     if (stream) {
-      stream.getAudioTracks().forEach((track) => {
-        track.stop();
-        stream.removeTrack(track);
-      });
       stream.dispatchEvent(new Event('stop_observation'));
+      stream.getAudioTracks().forEach((track) => {
+        console.log('streamtrack', track);
+        track.stop();
+      });
+      this.streamsMap.delete(streamId);
     }
-    this.streamsMap.delete(streamId);
     return streamId;
   }
 
@@ -68,6 +62,7 @@ export class MediaService {
     const sourceNode: MediaStreamAudioSourceNode = this.context.createMediaStreamSource(stream);
     const analyserNode:  AnalyserNode = this.context.createAnalyser();
     stream.addEventListener('stop_observation', () => {
+      console.log('stopping observation of stream')
       sourceNode.disconnect();
       analyserNode.disconnect();
     })
@@ -82,6 +77,7 @@ export class MediaService {
         if (stream.active) {
           window.requestAnimationFrame(onFrame);
         } else {
+          console.log('stream is inactive, setting volume to zero')
           level!.set(0)
         }
     };

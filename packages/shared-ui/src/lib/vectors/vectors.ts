@@ -4,6 +4,7 @@ export {
   heroMicrophone,
   heroPlayCircle,
   heroStopCircle,
+  heroExclamationTriangle,
 } from '@ng-icons/heroicons/outline';
 
 // Custom vectors to add
