@@ -11,6 +11,15 @@ export class MediaService {
   private context?: AudioContext;
 
   public getMediaStream(deviceId: string): Observable<string> {
+    console.log('get media stream', deviceId);
+    navigator.mediaDevices.getUserMedia({video: false, audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+      channelCount: 1,
+      sampleRate: 1600,
+      deviceId
+    } }).then((result) => console.log('getusermedia result', result))
     return from(navigator.mediaDevices.getUserMedia({video: false, audio: {
       echoCancellation: true,
       noiseSuppression: true,
@@ -35,7 +44,6 @@ export class MediaService {
         stream.removeTrack(track);
       });
       stream.dispatchEvent(new Event('stop_observation'));
-      console.log('disconnected', stream);
     }
     this.streamsMap.delete(streamId);
     return streamId;

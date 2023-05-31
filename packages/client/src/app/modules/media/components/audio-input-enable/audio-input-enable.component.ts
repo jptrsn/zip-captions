@@ -26,6 +26,7 @@ export class AudioInputEnableComponent {
     if (this.connected()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
+      console.log("connecting...")
       this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
     }
   }
