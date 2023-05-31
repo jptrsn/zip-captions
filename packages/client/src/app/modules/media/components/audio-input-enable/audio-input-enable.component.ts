@@ -1,7 +1,7 @@
-import { Component, Signal } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
@@ -13,32 +13,27 @@ import { MediaService } from '../../services/media.service';
   styleUrls: ['./audio-input-enable.component.scss'],
 })
 export class AudioInputEnableComponent {
-  public streamState$: Observable<AudioStreamState | undefined>;
-  public vol$: Observable<number>;
+  public streamState: Signal<AudioStreamState>;
+  public vol: Signal<number | undefined>;
   public connected: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
               private mediaService: MediaService) {
-    this.streamState$ = this.store.pipe(select(selectAudioStream), shareReplay(1));
+    this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     
-    this.vol$ = this.store.pipe(
+    this.vol = toSignal(this.store.pipe(
       select(selectAudioStream),
       filter((state: AudioStreamState) => state.status === AudioStreamStatus.connected),
       switchMap((state: AudioStreamState) => this.mediaService.getVolumeForStream(state.id))
-    );
+    ));
 
-    this.connected = toSignal(this.streamState$.pipe(map((state) => state?.status === AudioStreamStatus.connected)))
+    this.connected = computed(() => this.streamState()?.status === AudioStreamStatus.connected)
   }
 
   toggleState(): void {
-    this.streamState$.pipe(
-      filter((state) => !!state),
-      take(1)
-    ).subscribe((state: AudioStreamState | undefined) => {
-      if (state!.status === AudioStreamStatus.connected) {
-        this.store.dispatch(AudioStreamActions.disconnectStream({id: state!.id}))
-      } else {
-        this.store.dispatch(AudioStreamActions.connectStream({id: state!.id}))
-      }
-    })
+    if (this.connected()) {
+      this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
+    } else {
+      this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
+    }
   }
 }

@@ -2,7 +2,7 @@
   class="btn rounded-full"
   [ngClass]="{'btn-primary': (connected())}" 
   (click)="toggleState()"
-  appBackgroundMagnitude [magnitude]="(vol$ | async)"
+  appBackgroundMagnitude [magnitude]="vol()"
   >
   <ng-container *ngIf="connected(); else inactive">
     <ng-icon name="heroMicrophone"></ng-icon>
