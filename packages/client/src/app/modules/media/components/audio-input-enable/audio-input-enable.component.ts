@@ -1,7 +1,6 @@
 import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { filter, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
@@ -19,14 +18,8 @@ export class AudioInputEnableComponent {
   constructor(private store: Store<AppState>,
               private mediaService: MediaService) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
-    
-    this.vol = toSignal(this.store.pipe(
-      select(selectAudioStream),
-      filter((state: AudioStreamState) => state.status === AudioStreamStatus.connected),
-      switchMap((state: AudioStreamState) => this.mediaService.getVolumeForStream(state.id))
-    ));
-
-    this.connected = computed(() => this.streamState()?.status === AudioStreamStatus.connected)
+    this.connected = computed(() => this.streamState()?.status === AudioStreamStatus.connected);
+    this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0)
   }
 
   toggleState(): void {

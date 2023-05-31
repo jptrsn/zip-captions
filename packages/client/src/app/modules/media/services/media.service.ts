@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from, map, tap } from 'rxjs';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Observable, from, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, from, map, tap } from 'rxjs';
 export class MediaService {
 
   private streamsMap: Map<string, MediaStream> = new Map();
-  private volumeAnalyserMap: Map<string, BehaviorSubject<number>> = new Map();
+  private volumeAnalyserMap: Map<string, WritableSignal<number>> = new Map();
   private context?: AudioContext;
 
   public getMediaStream(deviceId: string): Observable<string> {
@@ -41,21 +41,21 @@ export class MediaService {
     return streamId;
   }
 
-  public getVolumeForStream(streamId: string): Observable<number> {
+  public getVolumeForStream(streamId: string): Signal<number> {
     if (!this.volumeAnalyserMap.has(streamId)) {
       throw new Error(`Stream id ${streamId} does not appear to have a volume analyzer`);
     }
-    return this.volumeAnalyserMap.get(streamId)!.asObservable();
+    return this.volumeAnalyserMap.get(streamId) as Signal<number>;
   }
 
   private _watchStreamVolume(stream: MediaStream): void {
     if (!this.context) {
       this.context = new AudioContext();
     }
-    let level$ = this.volumeAnalyserMap.get(stream.id);
-    if (!level$) {
-      level$ = new BehaviorSubject<number>(0)
-      this.volumeAnalyserMap.set(stream.id, level$);
+    let level = this.volumeAnalyserMap.get(stream.id);
+    if (!level) {
+      level = signal(0)
+      this.volumeAnalyserMap.set(stream.id, level);
     }
     const sourceNode: MediaStreamAudioSourceNode = this.context.createMediaStreamSource(stream);
     const analyserNode:  AnalyserNode = this.context.createAnalyser();
@@ -70,11 +70,11 @@ export class MediaService {
         let sumSquares = 0.0;
         for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
         const volLevel: number = Math.round(Math.sqrt(sumSquares / pcmData.length) * 100);
-        level$!.next(volLevel);
+        level!.set(volLevel);
         if (stream.active) {
           window.requestAnimationFrame(onFrame);
         } else {
-          level$!.next(0)
+          level!.set(0)
         }
     };
     window.requestAnimationFrame(onFrame);
