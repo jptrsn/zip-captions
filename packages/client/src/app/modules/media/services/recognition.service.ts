@@ -23,6 +23,7 @@ export class RecognitionService {
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
+    console.log('recognition built', recog.lang)
     recog.start();
   }
 
