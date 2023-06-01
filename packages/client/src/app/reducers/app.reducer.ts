@@ -1,7 +1,8 @@
-import { Action, createReducer, on } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
+import * as AppActions from '../actions/app.actions';
 import { AppAppearanceState, AppState, AppTheme } from '../models/app.model';
 import { defaultAudioStreamState } from './audio-stream.reducer';
-import * as AppActions from '../actions/app.actions';
+import { defaultRecognitionState } from './recognition.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
@@ -12,6 +13,7 @@ export const defaultAppAppearance: AppAppearanceState = {
 export const defaultAppState: AppState = {
   appearance: defaultAppAppearance,
   audioStream: defaultAudioStreamState,
+  recognition: defaultRecognitionState,
 }
 
 export const appAppearanceReducers = createReducer(
