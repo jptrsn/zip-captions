@@ -8,6 +8,7 @@ import { NgIconsModule } from '@ng-icons/core';
 import { BackgroundMagnitudeDirective } from '../../directives/background-magnitude.directive';
 import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
 import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
+import { RecognitionEffects } from '../../effects/recognition.effects';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { RecognizedLiveTextComponent } from './components/recognized-live-text/r
   imports: [
     CommonModule,
     SharedUiModule,
-    EffectsModule.forFeature([AudioStreamEffects]),
+    EffectsModule.forFeature([AudioStreamEffects, RecognitionEffects]),
     NgIconsModule,
     BackgroundMagnitudeDirective,
   ],

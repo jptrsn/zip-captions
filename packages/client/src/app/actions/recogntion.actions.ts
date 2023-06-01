@@ -1,6 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 
-export const connectRecogntion = createAction('[Recognition] Connect', props<{id: string}>());
+export const connectRecognition = createAction('[Recognition] Connect', props<{id: string}>());
 export const disconnectRecognition = createAction('[Recognition] Disconnect', props<{id: string}>());
 export const recognitionError = createAction('[Recognition] Error', props<{error: string}>());
 

@@ -17,7 +17,7 @@ import { HomeComponent } from './components/home/home.component';
 import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
-import { BackgroundMagnitudeDirective } from './directives/background-magnitude.directive';
+import { recognitionReducers } from './reducers/recognition.reducer';
 
 @NgModule({
   declarations: [
@@ -45,6 +45,7 @@ import { BackgroundMagnitudeDirective } from './directives/background-magnitude.
     StoreModule.forRoot({
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,
+      recognition: recognitionReducers,
     }),
     EffectsModule.forRoot(),
     StoreDevtoolsModule.instrument({

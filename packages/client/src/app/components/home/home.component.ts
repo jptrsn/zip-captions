@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { AppState } from '../../models/app.model';
+import { Component, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { AppState } from '../../models/app.model';
 import { loadingSelector } from '../../selectors/app.selector';
 
 @Component({
@@ -10,8 +10,8 @@ import { loadingSelector } from '../../selectors/app.selector';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  public loading$: Observable<boolean>;
+  public loading: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>) { 
-    this.loading$ = this.store.pipe(select(loadingSelector));
+    this.loading = toSignal(this.store.pipe(select(loadingSelector)))
   }
 }

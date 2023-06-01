@@ -11,7 +11,7 @@ export class RecognitionEffects {
 
   connectRecognition$ = createEffect(() => 
     this.actions$.pipe(
-      ofType(RecognitionActions.connectRecogntion),
+      ofType(RecognitionActions.connectRecognition),
       tap((props) => console.log('connect recogntion', props.id)),
       map((props) => this.recognitionService.connectToStream(props.id)),
       map(() => RecognitionActions.connectRecognitionSuccess()),

@@ -19,6 +19,6 @@ export class RecognizedTextComponent {
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition)) as Signal<RecognitionState>;
     this.connected = computed(() => this.state().status === RecognitionStatus.connected);
-    this.text = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state().id as string)() : '')
+    this.text = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state().id as string)() : '')
   }
 }

@@ -22,8 +22,8 @@
     "@ngrx/router-store": "~16.0.0",
     "@ngrx/store": "~16.0.0",
     "@nx/angular": "^16.2.2",
+    "@types/dom-speech-recognition": "^0.0.1",
     "angular-animations": "^0.11.0",
-    "daisyui": "^2.52.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
@@ -54,6 +54,7 @@
     "@typescript-eslint/parser": "^5.58.0",
     "autoprefixer": "^10.4.0",
     "cypress": "^12.11.0",
+    "daisyui": "^3.0.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

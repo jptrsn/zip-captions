@@ -1,23 +1,29 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { SpeechRecognition } from '../../../models/recognition.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-declare const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+declare const webkitSpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 @Injectable({
   providedIn: 'root'
 })
 export class RecognitionService {
-  private recognitionMap: Map<string, typeof SpeechRecognition> = new Map();
+  private recognitionMap: Map<string, SpeechRecognition> = new Map();
   private activeRecognitionStreams: Set<string> = new Set();
   private recognizedTextMap: Map<string, WritableSignal<string>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
   public connectToStream(streamId: string): void {
-    const recog: typeof SpeechRecognition = new SpeechRecognition();
+    console.log('recognize stream', streamId);
+    const recog: SpeechRecognition = new webkitSpeechRecognition();
+    recog.interimResults = true;
+    recog.continuous = true;
+    recog.lang = navigator.language;
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
+    recog.start();
   }
 
   public disconnectFromStream(streamId: string): void {
@@ -46,7 +52,7 @@ export class RecognitionService {
     }
   }
 
-  private _addEventListeners(streamId: string, recognition: typeof SpeechRecognition): void {
+  private _addEventListeners(streamId: string, recognition: SpeechRecognition): void {
     const recognizedText = signal('');
     this.recognizedTextMap.set(streamId, recognizedText);
     
@@ -62,15 +68,19 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     debounce$.pipe(
       takeUntil(disconnect$),
-      debounceTime(750),
-    ).subscribe(() => recognition.stop())
+      debounceTime(1750),
+    ).subscribe(() => {
+      if (liveOutput() !== '') {
+        liveOutput.set('')
+      }
+      recognition.stop();
+    })
 
     recognition.addEventListener('result', (e: any) => {
-      console.log('result', e)
+      console.log('result')
       if (e.results.length === 1 && e.results[0].isFinal) {
-        console.log('final transcript', e.results[0][0].transcript)
         recognizedText.set(e.results[0][0].transcript);
-        liveOutput.set('');
+        debounce$.next();
       } else {
         transcript = Array.from(e.results)
         .map((result: any) => result[0])
@@ -93,6 +103,10 @@ export class RecognitionService {
 
     recognition.addEventListener('error', (err: any) => {
       console.log('recognition error', err);
+      if (err.error === 'no-speech') {
+        liveOutput.set('');
+        return;
+      }
       this.activeRecognitionStreams.delete(streamId);
       recognition.stop();
     });

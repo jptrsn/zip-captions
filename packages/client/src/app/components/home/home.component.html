@@ -1,17 +1,12 @@
-<div class="flex flex-col justify-start basis-full">
-  <ng-container *ngIf="(loading$ | async); else loadedView">
-    <div class="flex flex-col basis-full items-center justify-center gap-6">
-      <div class="text-lg">Enable your microphone</div>
-      <button class="btn" aria-lable="Enable microphone use">
-        <ng-icon name="heroMicrophone"></ng-icon>
-      </button>
-      <!-- <div class="flex-auto text-base font-extrabold text-error" *ngIf="errorMessage() as err">{{err}}</div> -->
-    </div>
+<div class="flex flex-col justify-center basis-full">
+  <ng-container *ngIf="loading(); else loadedView">
+    <div class="flex flex-col self-center items-center justify-center px-6 py-12 rounded outline-1 bg-base-300">
+      <div class="text-lg">Hang on while the app loads...</div>
+    </div>  
   </ng-container>
   <ng-template #loadedView>
-    <div class="flex flex-col items-stretch basis-full">
-      
-      
+    <div class="flex flex-col items-stretch justify-center basis-full">
+      <app-recognized-live-text class="justify-self-end"></app-recognized-live-text>
     </div>
   </ng-template>
 </div>
