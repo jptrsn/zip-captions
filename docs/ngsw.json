@@ -1,7 +1,7 @@
 {
   "configVersion": 1,
-  "timestamp": 1685549518946,
-  "index": "/index.html",
+  "timestamp": 1685587310323,
+  "index": "https://jptrsn.github.io/zip-captions/index.html",
   "assetGroups": [
     {
       "name": "app",
@@ -11,13 +11,13 @@
         "ignoreVary": true
       },
       "urls": [
-        "/favicon.ico",
-        "/index.html",
-        "/main.8303487797812f14.js",
-        "/manifest.webmanifest",
-        "/polyfills.04161806afbbd56a.js",
-        "/runtime.6a84378ee9791542.js",
-        "/styles.13521dd3bf06bd77.css"
+        "https://jptrsn.github.io/zip-captions/favicon.ico",
+        "https://jptrsn.github.io/zip-captions/index.html",
+        "https://jptrsn.github.io/zip-captions/main.d0070606cf39a55f.js",
+        "https://jptrsn.github.io/zip-captions/manifest.webmanifest",
+        "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js",
+        "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js",
+        "https://jptrsn.github.io/zip-captions/styles.1035894304a91d34.css"
       ],
       "patterns": []
     },
@@ -29,41 +29,41 @@
         "ignoreVary": true
       },
       "urls": [
-        "/assets/icons/basic_icon_white.svg",
-        "/assets/icons/github-mark-white.svg",
-        "/assets/icons/github-mark.svg",
-        "/assets/icons/icon-128x128.png",
-        "/assets/icons/icon-144x144.png",
-        "/assets/icons/icon-152x152.png",
-        "/assets/icons/icon-192x192.png",
-        "/assets/icons/icon-384x384.png",
-        "/assets/icons/icon-512x512.png",
-        "/assets/icons/icon-72x72.png",
-        "/assets/icons/icon-96x96.png"
+        "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg",
+        "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg",
+        "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-128x128.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-144x144.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-152x152.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-192x192.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-384x384.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-512x512.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
-    "/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
-    "/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
-    "/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
-    "/assets/icons/icon-144x144.png": "96a0d629765c1bc85d9263c6bc83094ca776d267",
-    "/assets/icons/icon-152x152.png": "b1fbbee3902eb96a7658e3bb006f31f78ca5a44c",
-    "/assets/icons/icon-192x192.png": "e4211163bf0911688fbfb80278d8ff4d2f77691d",
-    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
-    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
-    "/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
-    "/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
-    "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "2b8ea52b444c320c81b2c6976b22217c01779f98",
-    "/main.8303487797812f14.js": "c60e46511bf8fc67c8d0ff5fbdc5356f4637853f",
-    "/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
-    "/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
-    "/runtime.6a84378ee9791542.js": "a08e77a5a22ab0bd909dc9e44f75d29af32f7823",
-    "/styles.13521dd3bf06bd77.css": "89f97417b3bfb8b764f0a2b3a2e199776df06f82"
+    "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
+    "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
+    "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-144x144.png": "96a0d629765c1bc85d9263c6bc83094ca776d267",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-152x152.png": "b1fbbee3902eb96a7658e3bb006f31f78ca5a44c",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-192x192.png": "e4211163bf0911688fbfb80278d8ff4d2f77691d",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
+    "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
+    "https://jptrsn.github.io/zip-captions/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
+    "https://jptrsn.github.io/zip-captions/index.html": "5831b8269f0f684c61bf6682bdb4033bce22de56",
+    "https://jptrsn.github.io/zip-captions/main.d0070606cf39a55f.js": "d75d6f7bfb16fd5f9c591d97f44f3498b5cb1ba2",
+    "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
+    "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
+    "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js": "a08e77a5a22ab0bd909dc9e44f75d29af32f7823",
+    "https://jptrsn.github.io/zip-captions/styles.1035894304a91d34.css": "14c8e1aca5a409033509ba1417659f4ff47a1b0b"
   },
   "navigationUrls": [
     {
