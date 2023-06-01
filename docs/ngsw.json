@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1685587821203,
+  "timestamp": 1685630692829,
   "index": "https://jptrsn.github.io/zip-captions/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "https://jptrsn.github.io/zip-captions/favicon.ico",
         "https://jptrsn.github.io/zip-captions/index.html",
-        "https://jptrsn.github.io/zip-captions/main.d4c9d62707c5b59c.js",
+        "https://jptrsn.github.io/zip-captions/main.d96e0468b84553ed.js",
         "https://jptrsn.github.io/zip-captions/manifest.webmanifest",
         "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js",
         "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js",
@@ -58,8 +58,8 @@
     "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
     "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
     "https://jptrsn.github.io/zip-captions/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "https://jptrsn.github.io/zip-captions/index.html": "a32ef5ade95ab92a83babe5edacfbd5826b78a73",
-    "https://jptrsn.github.io/zip-captions/main.d4c9d62707c5b59c.js": "68ff4cd90eabbeb51fcc349ef0bf8e167f1146c8",
+    "https://jptrsn.github.io/zip-captions/index.html": "e2303a5e87f88e593e8004944ce5117e7cf1373a",
+    "https://jptrsn.github.io/zip-captions/main.d96e0468b84553ed.js": "60bad51b302809df7c8f0cae13aa8ed4dbed4283",
     "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
     "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
     "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js": "a08e77a5a22ab0bd909dc9e44f75d29af32f7823",

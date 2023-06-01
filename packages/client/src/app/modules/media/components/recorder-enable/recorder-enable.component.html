@@ -1,0 +1,11 @@
+<button 
+  class="btn rounded-full"
+  (click)="toggleState()"
+  >
+  <ng-container *ngIf="connected(); else inactive">
+    <ng-icon name="heroStopCircle"></ng-icon>
+  </ng-container>
+  <ng-template #inactive>
+    <ng-icon name="heroPlayCircle"></ng-icon>
+  </ng-template>
+</button>

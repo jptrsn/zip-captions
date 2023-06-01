@@ -9,12 +9,14 @@ import { BackgroundMagnitudeDirective } from '../../directives/background-magnit
 import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
 import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
 import { RecognitionEffects } from '../../effects/recognition.effects';
+import { RecorderEnableComponent } from './components/recorder-enable/recorder-enable.component';
 
 @NgModule({
   declarations: [
     AudioInputEnableComponent,
     RecognizedTextComponent,
     RecognizedLiveTextComponent,
+    RecorderEnableComponent,
   ],
   imports: [
     CommonModule,
@@ -27,6 +29,7 @@ import { RecognitionEffects } from '../../effects/recognition.effects';
     AudioInputEnableComponent,
     RecognizedTextComponent,
     RecognizedLiveTextComponent,
+    RecorderEnableComponent,
   ],
 })
 export class MediaModule {}
