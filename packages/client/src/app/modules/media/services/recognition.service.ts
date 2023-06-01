@@ -1,20 +1,20 @@
-import { Injectable, WritableSignal, signal } from '@angular/core';
-import { SpeechRecognition, SpeechRecognitionErrorEvent, SpeechRecognitionEvent } from 'dom-speech-recognition';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+// TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// declare const webkitSpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+declare const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 @Injectable({
   providedIn: 'root'
 })
 export class RecognitionService {
-  private recognitionMap: Map<string, SpeechRecognition> = new Map();
+  private recognitionMap: Map<string, typeof SpeechRecognition> = new Map();
   private activeRecognitionStreams: Set<string> = new Set();
   private recognizedTextMap: Map<string, WritableSignal<string>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
   public connectToStream(streamId: string): void {
-    const recog: SpeechRecognition = new SpeechRecognition();
+    const recog: typeof SpeechRecognition = new SpeechRecognition();
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
@@ -28,7 +28,25 @@ export class RecognitionService {
     }
   }
 
-  private _addEventListeners(streamId: string, recognition: SpeechRecognition): void {
+  public getLiveOutput(streamId: string): Signal<string> {
+    const liveOutput = this.liveOutputMap.get(streamId);
+    if (!liveOutput) {
+      throw new Error(`No live output signal for recognition stream id ${streamId}`);
+    } else {
+      return liveOutput;
+    }
+  }
+
+  getRecognizedText(streamId: string): Signal<string> {
+    const recognizedTextOutput = this.recognizedTextMap.get(streamId);
+    if (!recognizedTextOutput) {
+      throw new Error(`Recognized text output signal not found for stream id ${streamId}`);
+    } else {
+      return recognizedTextOutput;
+    }
+  }
+
+  private _addEventListeners(streamId: string, recognition: typeof SpeechRecognition): void {
     const recognizedText = signal('');
     this.recognizedTextMap.set(streamId, recognizedText);
     
@@ -47,7 +65,7 @@ export class RecognitionService {
       debounceTime(750),
     ).subscribe(() => recognition.stop())
 
-    recognition.addEventListener('result', (e: SpeechRecognitionEvent) => {
+    recognition.addEventListener('result', (e: any) => {
       console.log('result', e)
       if (e.results.length === 1 && e.results[0].isFinal) {
         console.log('final transcript', e.results[0][0].transcript)
@@ -73,7 +91,7 @@ export class RecognitionService {
       }
     });
 
-    recognition.addEventListener('error', (err: SpeechRecognitionErrorEvent) => {
+    recognition.addEventListener('error', (err: any) => {
       console.log('recognition error', err);
       this.activeRecognitionStreams.delete(streamId);
       recognition.stop();

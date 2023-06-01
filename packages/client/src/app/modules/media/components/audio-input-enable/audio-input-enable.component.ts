@@ -19,19 +19,19 @@ export class AudioInputEnableComponent {
   constructor(private store: Store<AppState>,
               private mediaService: MediaService) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
-    this.connected = computed(() => this.streamState()?.status === AudioStreamStatus.connected);
-    this.error = computed(() => this.streamState()?.error);
-    this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0)
+    this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
+    this.error = computed(() => this.streamState().error);
+    this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0);
   }
 
   toggleState(): void {
     if (this.error()) {
+      console.error(this.error());
       return;
     }
     if (this.connected()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
-      console.log("connecting...")
       this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
     }
   }
