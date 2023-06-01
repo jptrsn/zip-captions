@@ -13,3 +13,8 @@ export const recognitionErrorSelector = createSelector(
   selectRecognition,
   (state) => state.error
 )
+
+export const recognitionStatusSelector = createSelector(
+  selectRecognition,
+  (state) => state.status
+)

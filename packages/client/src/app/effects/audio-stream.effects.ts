@@ -1,16 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, of, switchMap, tap } from "rxjs";
 import { AudioStreamActions } from '../models/audio-stream.model';
-import { MediaService } from "../modules/media/services/media.service";
-import { RecognitionService } from "../modules/media/services/recognition.service";
 import { RecognitionActions } from "../models/recognition.model";
+import { MediaService } from "../modules/media/services/media.service";
 
 @Injectable()
 export class AudioStreamEffects {
   constructor(private actions$: Actions,
-              private mediaService: MediaService,
-              private recognitionService: RecognitionService) {}
+              private mediaService: MediaService) {}
 
   connectStream$ = createEffect(() => 
     this.actions$.pipe(
@@ -26,10 +24,9 @@ export class AudioStreamEffects {
   this.actions$.pipe(
     ofType(AudioStreamActions.disconnectStream), 
     tap((props) => console.log('disconnect stream', props)),
-    tap((props) => this.recognitionService.disconnectFromStream(props.id)),
-    map((props) => {
+    switchMap((props) => {
       const disconnectedId = this.mediaService.disconnectStream(props.id);
-      return AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})
+      return [RecognitionActions.disconnectRecognition(props), AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})]
     })
   ))
 
