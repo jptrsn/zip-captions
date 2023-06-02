@@ -69,30 +69,18 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     debounce$.pipe(
       takeUntil(disconnect$),
-      debounceTime(1750),
+      debounceTime(750),
     ).subscribe(() => {
-      console.log('debounce');
-      if (liveOutput() !== '') {
-        liveOutput.set('')
-      }
       recognition.stop();
     })
 
-    recognition.addEventListener('result', (e: any) => {
-      console.log('result')
-      if (e.results.length === 1 && e.results[0].isFinal) {
-        recognizedText.mutate((arr: string[]): string[] => {
-          arr.push(e.results[0][0].transcript);
-          return arr;
-        })
-        debounce$.next();
-      } else {
-        transcript = Array.from(e.results)
-        .map((result: any) => result[0])
-        .map((result) => result.transcript)
-        .join('');
-        liveOutput.set(transcript);
-      }
+    recognition.addEventListener('result', (e: any) => {  
+      transcript = Array.from(e.results)
+      .map((result: any) => result[0])
+      .map((result) => result.transcript)
+      .join('');
+      liveOutput.set(transcript);
+      debounce$.next();
     });
 
     recognition.addEventListener('end', () => {
@@ -103,6 +91,14 @@ export class RecognitionService {
       } else {
         console.log('recognition inactive, disconnecting')
         disconnect$.next();
+      }
+      
+      if (liveOutput() !== '') {
+        recognizedText.mutate((current: string[]) => {
+          current.push(liveOutput());
+          return current;
+        });
+        liveOutput.set('')
       }
     });
 

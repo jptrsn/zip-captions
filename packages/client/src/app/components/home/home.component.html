@@ -6,15 +6,8 @@
   </ng-container>
   <ng-template #loadedView>
     <div class="flex flex-col items-stretch justify-center basis-full">
-      <ng-container *ngIf="isRecognizing()">
-        
-
-          <app-recognized-text class="flex-1 flex"></app-recognized-text>
-        
-        
-          <app-recognized-live-text></app-recognized-live-text>
-        
-      </ng-container>
+      <app-recognition-render class="flex basis-full" *ngIf="isRecognizing(); else appContent"></app-recognition-render>
+      <ng-template #appContent></ng-template>
     </div>
   </ng-template>
 </div>

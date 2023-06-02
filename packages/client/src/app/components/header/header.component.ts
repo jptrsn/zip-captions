@@ -1,14 +1,9 @@
-import { Component, OnDestroy, OnInit, WritableSignal, computed, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
 
-import { Observable, Subject, filter, takeUntil } from 'rxjs';
-import { AppState } from '../../models/app.model';
-import { AudioStreamState } from '../../models/audio-stream.model';
-import { selectAudioStream } from '../../selectors/audio-stream.selector';
-import { MenuItem } from './header.model';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Platform } from '@angular/cdk/platform';
+import { Subject, filter, takeUntil } from 'rxjs';
+import { MenuItem } from './header.model';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

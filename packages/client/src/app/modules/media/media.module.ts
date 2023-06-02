@@ -10,6 +10,7 @@ import { RecognizedTextComponent } from './components/recognized-text/recognized
 import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
 import { RecognitionEffects } from '../../effects/recognition.effects';
 import { RecognitionEnableComponent } from './components/recognition-enable/recognition-enable.component';
+import { RecognitionRenderComponent } from './components/recognition-render/recognition-render.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { RecognitionEnableComponent } from './components/recognition-enable/reco
     RecognizedTextComponent,
     RecognizedLiveTextComponent,
     RecognitionEnableComponent,
+    RecognitionRenderComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,7 @@ import { RecognitionEnableComponent } from './components/recognition-enable/reco
     RecognizedTextComponent,
     RecognizedLiveTextComponent,
     RecognitionEnableComponent,
+    RecognitionRenderComponent,
   ],
 })
 export class MediaModule {}
