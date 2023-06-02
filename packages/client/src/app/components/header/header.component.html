@@ -5,8 +5,10 @@
   <div class="flex-1">
     <div class="normal-case text-xl">ZipCaptions</div>
   </div>
-  <app-audio-input-enable></app-audio-input-enable>
-  <app-recorder-enable></app-recorder-enable>
+  <ng-container [ngSwitch]="showRecordButton()">
+    <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
+    <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
+  </ng-container>
   <div class="flex-none dropdown dropdown-end">
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
       <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">

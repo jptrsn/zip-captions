@@ -1,3 +1,5 @@
-<div>{{state() | json}}</div>
-<div>{{connected()}}</div>
-<div>{{text()}}</div>
+<div class="flex flex-col justify-end basis-full bg-black text-white gap-3 p-3">
+  <ng-container *ngFor="let text of textOutput()">
+    <div class=" rounded-sm p-3">{{text | proper}}</div>
+  </ng-container>
+</div>

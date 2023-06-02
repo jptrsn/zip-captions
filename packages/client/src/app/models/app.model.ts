@@ -10,6 +10,7 @@ export interface AppAppearanceState {
   loading: boolean;
   theme: AppTheme;
   footerVisible: boolean;
+  error?: string;
 }
 export interface AppState {
   appearance: AppAppearanceState;

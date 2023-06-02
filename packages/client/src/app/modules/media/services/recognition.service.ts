@@ -11,7 +11,7 @@ declare const webkitSpeechRecognition = SpeechRecognition || webkitSpeechRecogni
 export class RecognitionService {
   private recognitionMap: Map<string, SpeechRecognition> = new Map();
   private activeRecognitionStreams: Set<string> = new Set();
-  private recognizedTextMap: Map<string, WritableSignal<string>> = new Map();
+  private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
   public connectToStream(streamId: string): void {
@@ -44,7 +44,7 @@ export class RecognitionService {
     }
   }
 
-  getRecognizedText(streamId: string): Signal<string> {
+  getRecognizedText(streamId: string): Signal<string[]> {
     const recognizedTextOutput = this.recognizedTextMap.get(streamId);
     if (!recognizedTextOutput) {
       throw new Error(`Recognized text output signal not found for stream id ${streamId}`);
@@ -54,7 +54,7 @@ export class RecognitionService {
   }
 
   private _addEventListeners(streamId: string, recognition: SpeechRecognition): void {
-    const recognizedText = signal('');
+    const recognizedText = signal([]);
     this.recognizedTextMap.set(streamId, recognizedText);
     
     const liveOutput = signal('');
@@ -71,6 +71,7 @@ export class RecognitionService {
       takeUntil(disconnect$),
       debounceTime(1750),
     ).subscribe(() => {
+      console.log('debounce');
       if (liveOutput() !== '') {
         liveOutput.set('')
       }
@@ -80,7 +81,10 @@ export class RecognitionService {
     recognition.addEventListener('result', (e: any) => {
       console.log('result')
       if (e.results.length === 1 && e.results[0].isFinal) {
-        recognizedText.set(e.results[0][0].transcript);
+        recognizedText.mutate((arr: string[]): string[] => {
+          arr.push(e.results[0][0].transcript);
+          return arr;
+        })
         debounce$.next();
       } else {
         transcript = Array.from(e.results)

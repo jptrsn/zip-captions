@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RecorderEnableComponent } from './recorder-enable.component';
+import { RecognitionEnableComponent } from './recognition-enable.component';
 
 describe('RecorderEnableComponent', () => {
-  let component: RecorderEnableComponent;
-  let fixture: ComponentFixture<RecorderEnableComponent>;
+  let component: RecognitionEnableComponent;
+  let fixture: ComponentFixture<RecognitionEnableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RecorderEnableComponent],
+      declarations: [RecognitionEnableComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RecorderEnableComponent);
+    fixture = TestBed.createComponent(RecognitionEnableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -7,11 +7,11 @@ import { RecognitionActions, RecognitionStatus } from '../../../../models/recogn
 import { map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-recorder-enable',
-  templateUrl: './recorder-enable.component.html',
-  styleUrls: ['./recorder-enable.component.scss'],
+  selector: 'app-recognition-enable',
+  templateUrl: './recognition-enable.component.html',
+  styleUrls: ['./recognition-enable.component.scss'],
 })
-export class RecorderEnableComponent {
+export class RecognitionEnableComponent {
   public connected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
   constructor(private store: Store<AppState>) {

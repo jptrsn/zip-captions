@@ -18,6 +18,7 @@ import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
+import { AppEffects } from './effects/app.effects';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { recognitionReducers } from './reducers/recognition.reducer';
       audioStream: audioStreamReducers,
       recognition: recognitionReducers,
     }),
-    EffectsModule.forRoot(),
+    EffectsModule.forRoot([AppEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

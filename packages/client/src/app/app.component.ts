@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { AppState, AppTheme } from './models/app.model';
-import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState, AppTheme } from './models/app.model';
 import { themeSelector } from './selectors/app.selector';
 
 @Component({
@@ -15,4 +15,6 @@ export class AppComponent {
   constructor(private store: Store<AppState>) {
     this.theme$ = this.store.pipe(select(themeSelector));
   }
+
+  
 }

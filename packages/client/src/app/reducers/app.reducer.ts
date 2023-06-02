@@ -20,5 +20,7 @@ export const appAppearanceReducers = createReducer(
   defaultAppAppearance,
   on(AppActions.setTheme, (state: AppAppearanceState) => ({...state })),
   on(AppActions.hideFooter, (state: AppAppearanceState) => ({...state, footerVisible: false})),
-  on(AppActions.showFooter, (state: AppAppearanceState) => ({...state, footerVisible: true}))
+  on(AppActions.showFooter, (state: AppAppearanceState) => ({...state, footerVisible: true})),
+  on(AppActions.checkUserAgent, (state: AppAppearanceState) => ({...state, loading: true})),
+  on(AppActions.checkUserAgentComplete, (state: AppAppearanceState) => ({...state, loading: false})),
 )
