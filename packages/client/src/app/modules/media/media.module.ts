@@ -11,6 +11,7 @@ import { RecognizedLiveTextComponent } from './components/recognized-live-text/r
 import { RecognitionEffects } from '../../effects/recognition.effects';
 import { RecognitionEnableComponent } from './components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from './components/recognition-render/recognition-render.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { RecognitionRenderComponent } from './components/recognition-render/reco
   ],
   imports: [
     CommonModule,
+    BrowserAnimationsModule,
     SharedUiModule,
     EffectsModule.forFeature([AudioStreamEffects, RecognitionEffects]),
     NgIconsModule,

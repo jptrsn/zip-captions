@@ -75,6 +75,7 @@ export class RecognitionService {
     })
 
     recognition.addEventListener('result', (e: any) => {  
+      console.log(e.results)
       transcript = Array.from(e.results)
       .map((result: any) => result[0])
       .map((result) => result.transcript)
@@ -92,7 +93,6 @@ export class RecognitionService {
         console.log('recognition inactive, disconnecting')
         disconnect$.next();
       }
-      
       if (liveOutput() !== '') {
         recognizedText.mutate((current: string[]) => {
           current.push(liveOutput());

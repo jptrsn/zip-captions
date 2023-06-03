@@ -1,13 +1,11 @@
-<div class="flex flex-col justify-center basis-full">
+<div class="flex flex-col w-full flex-grow-0">
   <ng-container *ngIf="loading(); else loadedView">
     <div class="flex flex-col self-center items-center justify-center px-6 py-12 rounded outline-1 bg-base-300">
       <div class="text-lg">Hang on while the app loads...</div>
     </div>  
   </ng-container>
   <ng-template #loadedView>
-    <div class="flex flex-col items-stretch justify-center basis-full">
-      <app-recognition-render class="flex basis-full" *ngIf="isRecognizing(); else appContent"></app-recognition-render>
-      <ng-template #appContent></ng-template>
-    </div>
+    <app-recognition-render class="flex basis-full overflow-y-hidden" *ngIf="isRecognizing(); else appContent"></app-recognition-render>
+    <ng-template #appContent></ng-template>
   </ng-template>
 </div>
