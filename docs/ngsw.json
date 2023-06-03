@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1685751735612,
+  "timestamp": 1685752623186,
   "index": "https://jptrsn.github.io/zip-captions/index.html",
   "assetGroups": [
     {
@@ -13,11 +13,11 @@
       "urls": [
         "https://jptrsn.github.io/zip-captions/favicon.ico",
         "https://jptrsn.github.io/zip-captions/index.html",
-        "https://jptrsn.github.io/zip-captions/main.ff2935e6a42f827e.js",
+        "https://jptrsn.github.io/zip-captions/main.82939d99992e109c.js",
         "https://jptrsn.github.io/zip-captions/manifest.webmanifest",
         "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js",
         "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js",
-        "https://jptrsn.github.io/zip-captions/styles.7df95666d82ed400.css"
+        "https://jptrsn.github.io/zip-captions/styles.dc8121691d14d4b9.css"
       ],
       "patterns": []
     },
@@ -58,12 +58,12 @@
     "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
     "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
     "https://jptrsn.github.io/zip-captions/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "https://jptrsn.github.io/zip-captions/index.html": "dfadb995784547f66fe44aa444679aa0d906b8ce",
-    "https://jptrsn.github.io/zip-captions/main.ff2935e6a42f827e.js": "303c60df5b80177ce18e573c7ee6e4b97c85de45",
+    "https://jptrsn.github.io/zip-captions/index.html": "c273f1ddfa692f93b4805b6306c97f7f9f9e5140",
+    "https://jptrsn.github.io/zip-captions/main.82939d99992e109c.js": "da7a5cb19912e89229479baf949b7105ae000563",
     "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
     "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
     "https://jptrsn.github.io/zip-captions/runtime.6a84378ee9791542.js": "a08e77a5a22ab0bd909dc9e44f75d29af32f7823",
-    "https://jptrsn.github.io/zip-captions/styles.7df95666d82ed400.css": "41e994e93e23c56a2c23b34fe3005376771308b4"
+    "https://jptrsn.github.io/zip-captions/styles.dc8121691d14d4b9.css": "edeaa68889092c166e28040bdfa8b9cd49c74a73"
   },
   "navigationUrls": [
     {

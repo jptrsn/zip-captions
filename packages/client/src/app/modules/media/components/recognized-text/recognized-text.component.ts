@@ -1,18 +1,17 @@
 import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectRecognition } from '../../../../selectors/recognition.selector';
 import { Store } from '@ngrx/store';
+import { slideInUpOnEnterAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
+import { selectRecognition } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../services/recognition.service';
-import { slideInUpAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-recognized-text',
   templateUrl: './recognized-text.component.html',
   styleUrls: ['./recognized-text.component.scss'],
   animations: [
-    slideInUpAnimation({animateChildren: 'after'}),
     slideInUpOnEnterAnimation()
   ]
 })
