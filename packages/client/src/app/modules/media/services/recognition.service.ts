@@ -64,7 +64,7 @@ export class RecognitionService {
 
     // Debounce is to provide a timeout after the last-recognized full text, 
     // in order to better handle chunking in related tasks for the media stream
-    // 
+    // TODO: Allow adjustment of debounce
     const debounce$: Subject<void> = new Subject<void>()
     const disconnect$: Subject<void> = new Subject<void>();
     debounce$.pipe(
@@ -78,6 +78,8 @@ export class RecognitionService {
       console.log(e.results)
       transcript = Array.from(e.results)
       .map((result: any) => result[0])
+      // TODO: Allow adjustment of confidence threshold
+      .filter((result: any) => result.confidence > 0.5)
       .map((result) => result.transcript)
       .join('');
       liveOutput.set(transcript);
