@@ -55,7 +55,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private _checkPlatform(): void {
-    if (this.platform.ANDROID) {
+    console.log(this.platform)
+    if (this.platform.ANDROID || this.platform.IOS) {
       this.showRecordButton.set(false);
     }
   }

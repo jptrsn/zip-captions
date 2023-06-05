@@ -1,6 +1,6 @@
 <button 
-  class="btn rounded-full"
-  [ngClass]="{'btn-primary': connected(), 'btn-error': error()}" 
+  class="btn btn-circle btn-md text-2xl"
+  [ngClass]="{'btn-primary': connected(), 'btn-error': error(), 'btn-accent': !connected()}" 
   (click)="toggleState()"
   appBackgroundMagnitude [magnitude]="vol()"
   >
