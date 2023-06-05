@@ -6,6 +6,8 @@
   </ng-container>
   <ng-template #loadedView>
     <app-recognition-render class="flex basis-full overflow-y-hidden" *ngIf="isRecognizing(); else appContent"></app-recognition-render>
-    <ng-template #appContent></ng-template>
+    <ng-template #appContent>
+      <app-welcome-splash class="flex basis-full"></app-welcome-splash>
+    </ng-template>
   </ng-template>
 </div>

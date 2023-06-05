@@ -3,7 +3,7 @@
     <ng-icon name="zipCaptionsLogo" size="48"></ng-icon>
   </div>
   <div class="flex-1">
-    <div class="normal-case text-xl">ZipCaptions</div>
+    <div #title class="normal-case text-xl">ZipCaptions</div>
   </div>
   <ng-container [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>

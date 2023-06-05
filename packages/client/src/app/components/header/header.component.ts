@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, WritableSignal, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { Platform } from '@angular/cdk/platform';
@@ -10,6 +10,7 @@ import { MenuItem } from './header.model';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  @ViewChild('title', {read: ElementRef}) titleElement!: ElementRef;
   public menuItems: MenuItem[];
   public activeRoute: WritableSignal<string>;
   public showRecordButton: WritableSignal<boolean> = signal(true);
@@ -23,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       filter((ev) => ev instanceof NavigationStart),
       takeUntil(this.onDestroy$)
     ).subscribe((ev) => {
+      this.titleElement.nativeElement.focus()
       // TODO: Close nav menu
     })
     this.menuItems = [
