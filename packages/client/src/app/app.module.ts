@@ -21,6 +21,7 @@ import { recognitionReducers } from './reducers/recognition.reducer';
 import { AppEffects } from './effects/app.effects';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ThemeSelectorComponent } from './components/theme-selector/theme-select
     }),
     SharedUiModule,
     MediaModule,
+    ReactiveFormsModule,
     StoreModule.forRoot({
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,

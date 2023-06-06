@@ -18,8 +18,8 @@ export class AppComponent {
     this.theme$ = toSignal(this.store.pipe(select(themeSelector))) as Signal<AppTheme>;
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
 
+    console.log(this.theme$())
+
     this.store.dispatch(AppActions.initAppearance());
   }
-
-  
 }

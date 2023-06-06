@@ -24,5 +24,5 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.checkUserAgent, (state: AppAppearanceState) => ({...state, loading: true})),
   on(AppActions.checkUserAgentComplete, (state: AppAppearanceState) => ({...state, loading: false})),
   on(AppActions.initAppearance, (state: AppAppearanceState) => ({...state, loading: true})),
-  on(AppActions.initAppearanceComplete, (state: AppAppearanceState, action: { appearance: AppAppearanceState }) => ({...state, appearance: action.appearance, loading: false})),
+  on(AppActions.initAppearanceComplete, (state: AppAppearanceState, action: { appearance: AppAppearanceState }) => ({...state, ...action.appearance, loading: false})),
 )

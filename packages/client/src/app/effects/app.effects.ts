@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { map } from "rxjs";
-import { AppActions } from "../models/app.model";
+import { map, tap } from "rxjs";
+import { AppActions, AppAppearanceState } from "../models/app.model";
 import { BrowserCompatibilityService } from "../services/browser-compatibility.service";
 import { StorageService } from "../services/storage.service";
 
@@ -31,7 +31,8 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(AppActions.initAppearance),
       map(() => this.storage.get('appearance')),
-      map((settings: any) => AppActions.initAppearanceComplete(settings))
+      tap((appearance: any) => console.log('appearance', appearance)),
+      map((appearance: AppAppearanceState) => AppActions.initAppearanceComplete({appearance}))
     )
   )
 }
