@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild, WritableSignal, signal } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Route, Router } from '@angular/router';
 
 import { Platform } from '@angular/cdk/platform';
 import { Subject, filter, takeUntil } from 'rxjs';
@@ -30,16 +30,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
       // TODO: Close nav menu
     })
-    this.menuItems = [
-      {
-        label: 'home',
-        routerOutlet: '/'
-      },
-      {
-        label: 'about',
-        routerOutlet: '/about'
+    this.menuItems = this.router.config.map((route: Route) => {
+      return {
+        label: route.data?.['name'] || route.path,
+        routerOutlet: `/${route.path}`
       }
-    ];
+    })
+    console.log(this.router.config)
   }
 
   ngOnInit(): void {

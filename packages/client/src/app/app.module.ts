@@ -20,6 +20,7 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { AppEffects } from './effects/app.effects';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
+import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { WelcomeSplashComponent } from './components/welcome-splash/welcome-spla
     HomeComponent,
     AboutComponent,
     WelcomeSplashComponent,
+    ThemeSelectorComponent,
   ],
   imports: [
     BrowserAnimationsModule,

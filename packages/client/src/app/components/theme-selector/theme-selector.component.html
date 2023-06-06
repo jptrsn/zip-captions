@@ -1,0 +1,6 @@
+<details class="dropdown mb-32">
+  <summary class="m-1 btn">open or close</summary>
+  <ul class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+    <li *ngFor="let theme of themes | keyvalue"><a>{{theme.key}}</a></li>
+  </ul>
+</details>

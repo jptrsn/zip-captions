@@ -18,9 +18,11 @@ export const defaultAppState: AppState = {
 
 export const appAppearanceReducers = createReducer(
   defaultAppAppearance,
-  on(AppActions.setTheme, (state: AppAppearanceState) => ({...state })),
+  on(AppActions.setTheme, (state: AppAppearanceState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
   on(AppActions.hideFooter, (state: AppAppearanceState) => ({...state, footerVisible: false})),
   on(AppActions.showFooter, (state: AppAppearanceState) => ({...state, footerVisible: true})),
   on(AppActions.checkUserAgent, (state: AppAppearanceState) => ({...state, loading: true})),
   on(AppActions.checkUserAgentComplete, (state: AppAppearanceState) => ({...state, loading: false})),
+  on(AppActions.initAppearance, (state: AppAppearanceState) => ({...state, loading: true})),
+  on(AppActions.initAppearanceComplete, (state: AppAppearanceState, action: { appearance: AppAppearanceState }) => ({...state, appearance: action.appearance, loading: false})),
 )
