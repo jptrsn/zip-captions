@@ -1,6 +1,9 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { SpeechRecognition } from '../../../models/recognition.model';
+import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../models/app.model';
+import { AudioStreamActions } from '../../../models/audio-stream.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -14,6 +17,8 @@ export class RecognitionService {
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
+  constructor(private store: Store<AppState>) {}
+
   public connectToStream(streamId: string): void {
     console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
@@ -23,7 +28,6 @@ export class RecognitionService {
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
-    console.log('recognition built', recog.lang)
     recog.start();
   }
 
@@ -69,17 +73,22 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     debounce$.pipe(
       takeUntil(disconnect$),
-      debounceTime(750),
+      debounceTime(1750),
     ).subscribe(() => {
+      console.log('debounce!', transcript);
       recognition.stop();
-    })
+    });
 
-    recognition.addEventListener('result', (e: any) => {  
-      console.log(e.results)
+    recognition.addEventListener('speechend', () => recognition.stop())
+
+    recognition.addEventListener('result', (e: any) => {
       transcript = Array.from(e.results)
       .map((result: any) => result[0])
       // TODO: Allow adjustment of confidence threshold
-      .filter((result: any) => result.confidence > 0.5)
+      .filter((result: any) => {
+        console.log(result.confidence);
+        return result.confidence > 0;
+      })
       .map((result) => result.transcript)
       .join('');
       liveOutput.set(transcript);
@@ -112,6 +121,8 @@ export class RecognitionService {
       }
       this.activeRecognitionStreams.delete(streamId);
       recognition.stop();
+      this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
+      this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
     });
   }
 }

@@ -18,5 +18,6 @@ export const audioStreamReducers = createReducer(defaultAudioStreamState,
   on(AudioStreamActions.connectStreamSuccess, (state: AudioStreamState, action: { id: string }) => ({...state, id: action.id, status: AudioStreamStatus.connected})),
   on(AudioStreamActions.connectStreamFailure, (state: AudioStreamState, action: { error: string}) => ({...state, error: action.error, status: AudioStreamStatus.error})),
 
-  on(AudioStreamActions.disconnectStreamSuccess, (state: AudioStreamState, action: { id: string}) => ({...state, id: action.id, state: AudioStreamStatus.disconnected}))
+  on(AudioStreamActions.disconnectStreamSuccess, (state: AudioStreamState, action: { id: string}) => ({...state, id: action.id, state: AudioStreamStatus.disconnected})),
+  on(AudioStreamActions.audioStreamError, (state: AudioStreamState, action: { error: string}) => ({...state, error: action.error, status: AudioStreamStatus.error})),
 )

@@ -5,7 +5,7 @@
   <div class="flex-1">
     <div #title class="normal-case text-xl">ZipCaptions</div>
   </div>
-  <ng-container [ngSwitch]="showRecordButton()">
+  <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
   </ng-container>

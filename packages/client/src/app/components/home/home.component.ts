@@ -15,11 +15,17 @@ import { map } from 'rxjs';
 export class HomeComponent {
   public loading: Signal<boolean | undefined>;
   public isRecognizing: Signal<boolean | undefined>;
+  public hasResults: Signal<boolean>;
   constructor(private store: Store<AppState>) { 
     this.loading = toSignal(this.store.pipe(select(loadingSelector)))
     this.isRecognizing = toSignal(this.store.pipe(
       select(recognitionStatusSelector),
       map((status: RecognitionStatus) => status === RecognitionStatus.connected)
       ))
+
+    this.hasResults = toSignal(this.store.pipe(
+      select(recognitionStatusSelector),
+      map((status: RecognitionStatus) => status !== RecognitionStatus.uninitialized)
+    )) as Signal<boolean>
   }
 }
