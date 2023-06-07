@@ -2,7 +2,13 @@
   "name": "zip-captions",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "ng": "nx",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
+    "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
+    "build": "nx build",
+    "build:client": "nx build --project=client"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~16.0.0",
