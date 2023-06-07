@@ -36,7 +36,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         routerOutlet: `/${route.path}`
       }
     })
-    console.log(this.router.config)
   }
 
   ngOnInit(): void {

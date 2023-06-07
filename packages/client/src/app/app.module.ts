@@ -22,6 +22,8 @@ import { AppEffects } from './effects/app.effects';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SettingsComponent } from './components/settings/settings.component';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AboutComponent,
     WelcomeSplashComponent,
     ThemeSelectorComponent,
+    SettingsComponent,
+    LanguageSelectorComponent,
   ],
   imports: [
     BrowserAnimationsModule,

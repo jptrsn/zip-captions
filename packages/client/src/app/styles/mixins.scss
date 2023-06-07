@@ -1,5 +1,6 @@
 @mixin fill-main {
   display: flex;
+  flex-direction: column;
   flex: 0 1 100%;
   align-self: stretch;
   overflow-y: auto;

@@ -1,5 +1,5 @@
 <button 
-  class="btn btn-circle btn-md text-2xl"
+  class="btn btn-circle btn-md"
   [ngClass]="{'btn-primary': connected(), 'btn-error': error(), 'btn-accent': !connected()}" 
   (click)="toggleState()"
   appBackgroundMagnitude [magnitude]="vol()"

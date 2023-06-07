@@ -1,12 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AppActions from '../actions/app.actions';
-import { AppAppearanceState, AppState, AppTheme } from '../models/app.model';
+import { AppAppearanceState, AppState, AppTheme, Language } from '../models/app.model';
 import { defaultAudioStreamState } from './audio-stream.reducer';
 import { defaultRecognitionState } from './recognition.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
   theme: AppTheme.dark,
+  lang: Language.English,
   footerVisible: true,
 }
 
