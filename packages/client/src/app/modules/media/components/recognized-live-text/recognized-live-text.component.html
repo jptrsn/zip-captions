@@ -1,4 +1,4 @@
 <div class="live-text-render basis-full bg-base-100 text-base-content px-6 py-2 text-5xl leading-relaxed">
-  {{text() | proper}}
+  <span *ngIf="text() as txt" @fadeOutOnLeave>{{txt | proper}}</span>
 </div>
 
