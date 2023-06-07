@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1686168921131,
+  "timestamp": 1686170444696,
   "index": "https://jptrsn.github.io/zip-captions/index.html",
   "assetGroups": [
     {
@@ -33,14 +33,14 @@
         "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg",
         "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg",
         "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-128x128.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-144x144.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-152x152.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-192x192.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-384x384.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-512x512.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png"
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_128.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_144.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_152.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_192.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_384.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_512.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_72.png",
+        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_96.png"
       ],
       "patterns": []
     }
@@ -51,18 +51,18 @@
     "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
     "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
     "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-144x144.png": "96a0d629765c1bc85d9263c6bc83094ca776d267",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-152x152.png": "b1fbbee3902eb96a7658e3bb006f31f78ca5a44c",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-192x192.png": "e4211163bf0911688fbfb80278d8ff4d2f77691d",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
-    "https://jptrsn.github.io/zip-captions/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_128.png": "50e1135daf80cc629d00227cc75b7870c15dd015",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_144.png": "98614c154feee86f6b8a5655e5b077fbbf70b7ef",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_152.png": "f25e42d8f1bc93f28853bbc2dcb2673d0ca75339",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_192.png": "e039df39c57932f0e0559f168f8b91c0da1accbf",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_384.png": "402fcd61a127516c575fa9579fc1ef38e91d0519",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_512.png": "5f89a1a6726fa827eba3feabb8ee7b66e5845607",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_72.png": "cb191a9aaf3bee2a7f5da5d6c1ceb4f55cb92408",
+    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_96.png": "b49768ee2e013e1652f36eab43b45b1997bc00d0",
     "https://jptrsn.github.io/zip-captions/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
     "https://jptrsn.github.io/zip-captions/index.html": "d629ffe058712fbc7fabe6a1ce208be9d1f741b9",
     "https://jptrsn.github.io/zip-captions/main.a325cf7a07d9277e.js": "91916e87d01615b209f370ffd1036d73a31a8ad0",
-    "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
+    "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "39840081263477fbcd56d37692671a546cda706f",
     "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
     "https://jptrsn.github.io/zip-captions/runtime.75360cdfcb5a2485.js": "63a983fd2ff8373d8002c0918a31accd7597b3d1",
     "https://jptrsn.github.io/zip-captions/styles.e8d0247f3de457d4.css": "8870632ba7e4375d85f357e1260ed093912b1525"
