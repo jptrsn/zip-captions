@@ -1,0 +1,9 @@
+<form class="basis-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-6 pt-6 gap-6" [formGroup]="formGroup" (submit)="saveSettings()">
+  <app-theme-selector [group]="formGroup" controlName="theme"></app-theme-selector>
+  <!-- <app-language-selector [group]="formGroup" controlName="lang"></app-language-selector> -->
+</form>
+<footer class="flex w-full p-6 justify-end">
+  <button class="btn btn-primary btn-circle" [disabled]="formGroup.pristine">
+    <ng-icon name="heroCheckCircle"></ng-icon>
+  </button>
+</footer>

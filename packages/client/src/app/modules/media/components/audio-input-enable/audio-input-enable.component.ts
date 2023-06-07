@@ -1,4 +1,4 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, ElementRef, Signal, ViewChild, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
@@ -12,10 +12,12 @@ import { MediaService } from '../../services/media.service';
   styleUrls: ['./audio-input-enable.component.scss'],
 })
 export class AudioInputEnableComponent {
+  @ViewChild('errorIcon', {read: ElementRef}) errorIcon!: ElementRef;
   public streamState: Signal<AudioStreamState>;
   public vol: Signal<number | undefined>;
   public connected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
+
   constructor(private store: Store<AppState>,
               private mediaService: MediaService) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;

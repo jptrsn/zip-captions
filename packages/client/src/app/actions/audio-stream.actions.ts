@@ -9,3 +9,4 @@ export const connectStreamSuccess = createAction('[AudioStream] Connect success'
 export const connectStreamFailure = createAction('[AudioStream] Connect failed', props<{error: string}>())
 
 export const disconnectStreamSuccess = createAction('[AudioStream] Disconnect success', props<{id: string}>())
+export const audioStreamError = createAction('[AudioStream] Error', props<{error: string}>())

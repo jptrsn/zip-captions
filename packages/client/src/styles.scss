@@ -17,3 +17,9 @@ body {
     justify-content: stretch;
   }
 }
+
+button.btn.btn-circle {
+  ng-icon {
+    @apply text-2xl;
+  }
+}

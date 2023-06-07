@@ -5,18 +5,18 @@
   <div class="flex-1">
     <div #title class="normal-case text-xl">ZipCaptions</div>
   </div>
-  <ng-container [ngSwitch]="showRecordButton()">
+  <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
   </ng-container>
-  <div class="flex-none dropdown dropdown-end">
+  <details #menu class="flex-none dropdown dropdown-end z-10">
+    <summary  class="m-1 btn btn-circle text-2xl">
+      <ng-icon name="heroBars3"></ng-icon>
+    </summary>
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
       <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
-        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet">{{item.label | proper}}</button>
+        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">{{item.label | proper}}</button>
       </li>
     </ul>
-    <label tabindex="0" class="m-1 btn btn-ghost rounded-full">
-      <ng-icon name="heroBars3" size="18" strokeWidth="2.5"></ng-icon>
-    </label>
-  </div>
+  </details>
 </div>

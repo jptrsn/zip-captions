@@ -20,6 +20,10 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { AppEffects } from './effects/app.effects';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
+import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SettingsComponent } from './components/settings/settings.component';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +33,9 @@ import { WelcomeSplashComponent } from './components/welcome-splash/welcome-spla
     HomeComponent,
     AboutComponent,
     WelcomeSplashComponent,
+    ThemeSelectorComponent,
+    SettingsComponent,
+    LanguageSelectorComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -45,6 +52,7 @@ import { WelcomeSplashComponent } from './components/welcome-splash/welcome-spla
     }),
     SharedUiModule,
     MediaModule,
+    ReactiveFormsModule,
     StoreModule.forRoot({
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,

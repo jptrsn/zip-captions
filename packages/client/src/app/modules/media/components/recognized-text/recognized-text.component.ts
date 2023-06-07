@@ -22,7 +22,7 @@ export class RecognizedTextComponent {
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition)) as Signal<RecognitionState>;
-    this.connected = computed(() => this.state().status === RecognitionStatus.connected);
+    this.connected = computed(() => this.state().status !== RecognitionStatus.uninitialized);
     this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state().id as string)() : [])
   }
 }
