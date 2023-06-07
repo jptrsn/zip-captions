@@ -13,12 +13,17 @@ import { map, tap } from 'rxjs';
 })
 export class RecognitionEnableComponent {
   public connected: Signal<boolean | undefined>;
+  public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
   constructor(private store: Store<AppState>) {
     this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
-    tap((status) => console.log(status)),
     map((status: RecognitionStatus) => (status === RecognitionStatus.connected)),
-    tap((value) => console.log(value))));
+    ));
+
+    this.disconnected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
+    map((status: RecognitionStatus) => (status === RecognitionStatus.disconnected)),
+    ));
+
     this.error = toSignal(this.store.pipe(select(recognitionErrorSelector)))
   }
 

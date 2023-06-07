@@ -7,7 +7,7 @@
   <ng-template #loadedView>
     <app-recognition-render class="flex basis-full overflow-y-hidden" *ngIf="hasResults(); else appContent"></app-recognition-render>
     <ng-template #appContent>
-      <app-welcome-splash class="flex basis-full"></app-welcome-splash>
+      <app-welcome-splash class="flex basis-full" @slideOutUpOnLeave></app-welcome-splash>
     </ng-template>
   </ng-template>
 </div>
