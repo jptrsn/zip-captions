@@ -49,6 +49,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   saveSettings(): void {
+    // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
     this.store.dispatch(AppActions.setTheme({theme}))
   }
