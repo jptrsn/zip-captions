@@ -17,14 +17,24 @@ export class RecognitionService {
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
-  constructor(private store: Store<AppState>) {}
+  private readonly MAX_RECOGNITION_LENGTH = 5;
+  private historyWorker: Worker;
+
+  constructor(private store: Store<AppState>) {
+    this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
+    this.historyWorker.addEventListener('message', ({data}) => {
+      // console.log(data);
+    })
+  }
 
   public connectToStream(streamId: string): void {
     console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
-    recog.lang = navigator.language;
+
+    // TODO: Replace language from settings
+    recog.lang = 'en';
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
@@ -58,7 +68,7 @@ export class RecognitionService {
   }
 
   private _addEventListeners(streamId: string, recognition: SpeechRecognition): void {
-    const recognizedText = signal([]);
+    const recognizedText = signal<string[]>([]);
     this.recognizedTextMap.set(streamId, recognizedText);
     
     const liveOutput = signal('');
@@ -86,7 +96,9 @@ export class RecognitionService {
       .map((result: any) => result[0])
       // TODO: Allow adjustment of confidence threshold
       .filter((result: any) => {
-        console.log(result.confidence);
+        if (result.confidence === 0) {
+          console.log('no confidence result');
+        }
         return result.confidence > 0;
       })
       .map((result) => result.transcript)
@@ -104,10 +116,12 @@ export class RecognitionService {
         console.log('recognition inactive, disconnecting')
         disconnect$.next();
       }
-      if (liveOutput() !== '') {
-        recognizedText.mutate((current: string[]) => {
-          current.push(liveOutput());
-          return current;
+      const mostRecentOutput = liveOutput();
+      if (mostRecentOutput !== '') {
+        recognizedText.update((current: string[]) => {
+          current.push(mostRecentOutput);
+          this.historyWorker.postMessage({id: streamId, type: 'put', message: mostRecentOutput})
+          return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
         });
         liveOutput.set('')
       }
