@@ -1,6 +1,6 @@
 <button 
-  class="btn btn-circle btn-md text-2xl"
-  [ngClass]="{'btn-accent': !connected(), 'btn-primary': connected()}"
+  class="btn btn-circle text-2xl"
+  [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
   (click)="toggleState()"
   >
   <ng-container *ngIf="connected(); else inactive">

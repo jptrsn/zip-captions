@@ -1,8 +1,9 @@
 <button 
   class="btn btn-circle btn-md"
-  [ngClass]="{'btn-primary': connected(), 'btn-error': error(), 'btn-accent': !connected()}" 
+  [ngClass]="{'btn-primary': connected(), 'btn-error': error(), 'btn-accent': disconnected()}" 
   (click)="toggleState()"
-  appBackgroundMagnitude [magnitude]="vol()"
+  appBackgroundMagnitude 
+  [magnitude]="vol()"
   >
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" data-tip="Could not access the microphone." name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>

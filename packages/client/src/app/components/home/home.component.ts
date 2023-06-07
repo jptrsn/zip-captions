@@ -6,11 +6,15 @@ import { loadingSelector } from '../../selectors/app.selector';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { RecognitionStatus } from '../../models/recognition.model';
 import { map } from 'rxjs';
+import { slideOutUpOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  animations: [
+    slideOutUpOnLeaveAnimation()
+  ]
 })
 export class HomeComponent {
   public loading: Signal<boolean | undefined>;
