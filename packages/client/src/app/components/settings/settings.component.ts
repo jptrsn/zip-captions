@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { languageSelector, themeSelector } from '../../selectors/app.selector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -24,7 +25,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
               private renderer: Renderer2,
-              private el: ElementRef) {
+              private el: ElementRef,
+              private router: Router) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     
@@ -51,6 +53,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   saveSettings(): void {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
-    this.store.dispatch(AppActions.setTheme({theme}))
+    this.store.dispatch(AppActions.setTheme({theme}));
+    this.router.navigate([''])
   }
 }
