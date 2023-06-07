@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  client:
+    container_name: client
+    hostname: zip_captions
+    image: zip_captions_client
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - .:/usr/src/app:delegated
+      - /usr/src/app/node_modules
+    command: [sh, -c, 'npm run start:client']
+    ports:
+      - 4200:4200
+    networks:
+      - priv
+
+networks:
+  priv:
+    driver: bridge
