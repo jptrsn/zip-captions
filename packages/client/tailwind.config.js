@@ -48,7 +48,32 @@ module.exports = {
       'lemonade',
       'night',
       'coffee',
-      'winter'
+      'winter',
+      {
+        'Zip-Dark': {
+          "primary": "#4178bf",
+          "secondary": "#66b1f2",
+          "accent": "#bf877a",
+          "neutral": "#19202E",
+          "base-100": "#0d0d0d",
+          "info": "#e0e7ff",
+          "success": "#6ee7b7",
+          "warning": "#FCDE45",
+          "error": "#E33D2B",
+        },
+        'Zip-Light': {
+          "primary": "#4178bf",
+          "secondary": "#66b1f2",
+          "accent": "#bf877a",
+          "neutral": "#19202E",
+          "base-100": "#F0F1F2",
+          "info": "#e0e7ff",
+          "success": "#6ee7b7",
+          "warning": "#FCDE45",
+          "error": "#E33D2B",
+        },
+
+      },
     ]
   }
 };
