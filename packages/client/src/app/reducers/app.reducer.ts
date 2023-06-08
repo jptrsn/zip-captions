@@ -6,7 +6,7 @@ import { defaultRecognitionState } from './recognition.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
-  theme: AppTheme.dark,
+  theme: AppTheme.ZipDark,
   lang: Language.English,
   footerVisible: true,
 }

@@ -30,7 +30,9 @@ export enum AppTheme {
   lemonade = 'lemonade',
   night = 'night',
   coffee = 'coffee',
-  winter = 'winter'
+  winter = 'winter',
+  ZipDark = 'Zip-Dark',
+  ZipLight = 'Zip-Light',
 }
 
 export enum Language {
