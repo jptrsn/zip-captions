@@ -17,6 +17,8 @@ export class RecognitionService {
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
 
+  private readonly DEBOUNCE_TIME_MS = 150;
+  private readonly SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 5;
   private historyWorker: Worker;
 
@@ -75,6 +77,8 @@ export class RecognitionService {
     this.liveOutputMap.set(streamId, liveOutput);
 
     let transcript: string;
+    let mostRecentResults: SpeechRecognitionResultList | undefined;
+    const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
     // Debounce is to provide a timeout after the last-recognized full text, 
     // in order to better handle chunking in related tasks for the media stream
@@ -83,32 +87,73 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     debounce$.pipe(
       takeUntil(disconnect$),
-      debounceTime(1750),
+      debounceTime(this.DEBOUNCE_TIME_MS),
     ).subscribe(() => {
-      console.log('debounce!', transcript);
-      recognition.stop();
+      if (mostRecentResults) {
+        const partialTranscript: string = Array.from(mostRecentResults)
+        .filter((result) => {
+          if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
+            transcriptSegments.add(result);
+            return true;
+          }
+          return false;
+        })
+        .map((result: SpeechRecognitionResult) => result[0])
+        .filter((alternative: SpeechRecognitionAlternative) => (alternative.confidence > 0))
+        .map((alternative) => alternative.transcript)
+        .join('')
+        .trim();
+        if (partialTranscript !== '') {
+          console.log('debounce!', partialTranscript);
+          recognizedText.update((current: string[]) => {
+            current.push(partialTranscript);
+            this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
+            return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
+          });
+          console.log('clearing live output')
+          liveOutput.set('');
+          debounce$.next();
+        }
+      }
     });
 
-    recognition.addEventListener('speechend', () => recognition.stop())
+    debounce$.pipe(
+      takeUntil(disconnect$),
+      debounceTime(this.SEGMENTATION_DEBOUNCE_MS)
+    ).subscribe(() =>{ 
+      if (liveOutput() !== '') {
+        recognition.stop();
+      } else {
+        console.log('not ending - liveoutput blank')
+      }
+    })
+
+    // recognition.addEventListener('speechend', () => recognition.stop())
 
     recognition.addEventListener('result', (e: any) => {
-      transcript = Array.from(e.results)
-      .map((result: any) => result[0])
+      console.log('result')
+      debounce$.next();
+      mostRecentResults = e.results;
+      transcript = Array.from(e.results as SpeechRecognitionResultList)
+      .filter((result: SpeechRecognitionResult) => !transcriptSegments.has(result))
+      .map((result: SpeechRecognitionResult) => {
+        return result[0];
+      })
       // TODO: Allow adjustment of confidence threshold
-      .filter((result: any) => {
+      .filter((result: SpeechRecognitionAlternative) => {
         if (result.confidence === 0) {
           console.log('no confidence result');
         }
-        return result.confidence > 0;
+        return result.transcript.length && result.confidence > 0;
       })
       .map((result) => result.transcript)
-      .join('');
+      .join('')
       liveOutput.set(transcript);
-      debounce$.next();
     });
 
     recognition.addEventListener('end', () => {
-      console.log('end')
+      console.log('end', Date.now())
+      mostRecentResults = undefined;
       if (this.activeRecognitionStreams.has(streamId)) {
         console.log('recognition still active, restarting')
         recognition.start();
@@ -117,6 +162,7 @@ export class RecognitionService {
         disconnect$.next();
       }
       const mostRecentOutput = liveOutput();
+      transcriptSegments.clear();
       if (mostRecentOutput !== '') {
         recognizedText.update((current: string[]) => {
           current.push(mostRecentOutput);
@@ -130,7 +176,11 @@ export class RecognitionService {
     recognition.addEventListener('error', (err: any) => {
       console.log('recognition error', err);
       if (err.error === 'no-speech') {
-        liveOutput.set('');
+        if (liveOutput() !== '') {
+          liveOutput.set('');
+        } else if (recognizedText().length) {
+          recognizedText.update((previous) => previous.slice(0, previous.length - 1))
+        }
         return;
       }
       this.activeRecognitionStreams.delete(streamId);
