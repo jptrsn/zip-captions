@@ -1,4 +1,4 @@
-import { Component, ElementRef, Signal, ViewChild, computed } from '@angular/core';
+import { Component, ElementRef, Input, Signal, ViewChild, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';

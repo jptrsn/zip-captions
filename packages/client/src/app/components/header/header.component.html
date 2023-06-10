@@ -1,16 +1,19 @@
-<div class="navbar bg-base-300 shadow-lg gap-3">
+<div class="bg-base-300 gap-3 flex flex-row flex-shrink" [ngClass]="{'navbar': !isActive(), 'px-3 pt-2': isActive()}">
   <div class="flex-none">
-    <ng-icon name="zipCaptionsLogo" size="48"></ng-icon>
+    <ng-icon name="zipCaptionsLogo" [size]="isActive() ? '24' : '48'"></ng-icon>
   </div>
   <div class="flex-1">
-    <div #title class="normal-case text-xl">ZipCaptions</div>
+    <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
+    <ng-template #smallTitle>
+      <div class="normal-case text-sm">Free captions provided by https://captions.zip</div>
+    </ng-template>
   </div>
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
   </ng-container>
-  <details #menu class="flex-none dropdown dropdown-end z-10">
-    <summary  class="m-1 btn btn-circle btn-ghost text-2xl">
+  <details #menu class="flex-none dropdown dropdown-end z-10" *ngIf="!isActive()">
+    <summary class="m-1 btn btn-circle btn-ghost text-2xl">
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">

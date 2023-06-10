@@ -1,6 +1,6 @@
 <button 
-  class="btn btn-circle btn-md"
-  [ngClass]="{'btn-primary': connected(), 'btn-error': error(), 'btn-accent': disconnected()}" 
+  class="btn btn-circle"
+  [ngClass]="{'btn-primary btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected()}" 
   (click)="toggleState()"
   appBackgroundMagnitude 
   [magnitude]="vol()"
