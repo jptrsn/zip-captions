@@ -1,7 +1,7 @@
 {
   "configVersion": 1,
-  "timestamp": 1686412175577,
-  "index": "https://jptrsn.github.io/zip-captions/index.html",
+  "timestamp": 1686413541854,
+  "index": "https://captions.zip/index.html",
   "assetGroups": [
     {
       "name": "app",
@@ -11,14 +11,14 @@
         "ignoreVary": true
       },
       "urls": [
-        "https://jptrsn.github.io/zip-captions/57.13299231aa8e1cc9.js",
-        "https://jptrsn.github.io/zip-captions/favicon.ico",
-        "https://jptrsn.github.io/zip-captions/index.html",
-        "https://jptrsn.github.io/zip-captions/main.24a7d4148ded110f.js",
-        "https://jptrsn.github.io/zip-captions/manifest.webmanifest",
-        "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js",
-        "https://jptrsn.github.io/zip-captions/runtime.75360cdfcb5a2485.js",
-        "https://jptrsn.github.io/zip-captions/styles.94d3428d587476cd.css"
+        "https://captions.zip/57.13299231aa8e1cc9.js",
+        "https://captions.zip/favicon.ico",
+        "https://captions.zip/index.html",
+        "https://captions.zip/main.24a7d4148ded110f.js",
+        "https://captions.zip/manifest.webmanifest",
+        "https://captions.zip/polyfills.04161806afbbd56a.js",
+        "https://captions.zip/runtime.75360cdfcb5a2485.js",
+        "https://captions.zip/styles.94d3428d587476cd.css"
       ],
       "patterns": []
     },
@@ -30,42 +30,42 @@
         "ignoreVary": true
       },
       "urls": [
-        "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg",
-        "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg",
-        "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_128.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_144.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_152.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_192.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_384.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_512.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_72.png",
-        "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_96.png"
+        "https://captions.zip/assets/icons/basic_icon_white.svg",
+        "https://captions.zip/assets/icons/github-mark-white.svg",
+        "https://captions.zip/assets/icons/github-mark.svg",
+        "https://captions.zip/assets/icons/logo_white_128.png",
+        "https://captions.zip/assets/icons/logo_white_144.png",
+        "https://captions.zip/assets/icons/logo_white_152.png",
+        "https://captions.zip/assets/icons/logo_white_192.png",
+        "https://captions.zip/assets/icons/logo_white_384.png",
+        "https://captions.zip/assets/icons/logo_white_512.png",
+        "https://captions.zip/assets/icons/logo_white_72.png",
+        "https://captions.zip/assets/icons/logo_white_96.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "https://jptrsn.github.io/zip-captions/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
-    "https://jptrsn.github.io/zip-captions/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
-    "https://jptrsn.github.io/zip-captions/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
-    "https://jptrsn.github.io/zip-captions/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_128.png": "50e1135daf80cc629d00227cc75b7870c15dd015",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_144.png": "98614c154feee86f6b8a5655e5b077fbbf70b7ef",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_152.png": "f25e42d8f1bc93f28853bbc2dcb2673d0ca75339",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_192.png": "e039df39c57932f0e0559f168f8b91c0da1accbf",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_384.png": "402fcd61a127516c575fa9579fc1ef38e91d0519",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_512.png": "5f89a1a6726fa827eba3feabb8ee7b66e5845607",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_72.png": "cb191a9aaf3bee2a7f5da5d6c1ceb4f55cb92408",
-    "https://jptrsn.github.io/zip-captions/assets/icons/logo_white_96.png": "b49768ee2e013e1652f36eab43b45b1997bc00d0",
-    "https://jptrsn.github.io/zip-captions/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "https://jptrsn.github.io/zip-captions/index.html": "6b2c5a1629dde91a412723a4950704261872156e",
-    "https://jptrsn.github.io/zip-captions/main.24a7d4148ded110f.js": "bc9e4dc87375179d4b34321a2dfedc238dc2c29e",
-    "https://jptrsn.github.io/zip-captions/manifest.webmanifest": "39840081263477fbcd56d37692671a546cda706f",
-    "https://jptrsn.github.io/zip-captions/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
-    "https://jptrsn.github.io/zip-captions/runtime.75360cdfcb5a2485.js": "63a983fd2ff8373d8002c0918a31accd7597b3d1",
-    "https://jptrsn.github.io/zip-captions/styles.94d3428d587476cd.css": "d14135e7ca757b7c0031e99126ed07284d2e998c"
+    "https://captions.zip/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
+    "https://captions.zip/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
+    "https://captions.zip/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
+    "https://captions.zip/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
+    "https://captions.zip/assets/icons/logo_white_128.png": "50e1135daf80cc629d00227cc75b7870c15dd015",
+    "https://captions.zip/assets/icons/logo_white_144.png": "98614c154feee86f6b8a5655e5b077fbbf70b7ef",
+    "https://captions.zip/assets/icons/logo_white_152.png": "f25e42d8f1bc93f28853bbc2dcb2673d0ca75339",
+    "https://captions.zip/assets/icons/logo_white_192.png": "e039df39c57932f0e0559f168f8b91c0da1accbf",
+    "https://captions.zip/assets/icons/logo_white_384.png": "402fcd61a127516c575fa9579fc1ef38e91d0519",
+    "https://captions.zip/assets/icons/logo_white_512.png": "5f89a1a6726fa827eba3feabb8ee7b66e5845607",
+    "https://captions.zip/assets/icons/logo_white_72.png": "cb191a9aaf3bee2a7f5da5d6c1ceb4f55cb92408",
+    "https://captions.zip/assets/icons/logo_white_96.png": "b49768ee2e013e1652f36eab43b45b1997bc00d0",
+    "https://captions.zip/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
+    "https://captions.zip/index.html": "500a9458ccff87e6d9a25dc154dcbf20757c9b5d",
+    "https://captions.zip/main.24a7d4148ded110f.js": "bc9e4dc87375179d4b34321a2dfedc238dc2c29e",
+    "https://captions.zip/manifest.webmanifest": "39840081263477fbcd56d37692671a546cda706f",
+    "https://captions.zip/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
+    "https://captions.zip/runtime.75360cdfcb5a2485.js": "63a983fd2ff8373d8002c0918a31accd7597b3d1",
+    "https://captions.zip/styles.94d3428d587476cd.css": "d14135e7ca757b7c0031e99126ed07284d2e998c"
   },
   "navigationUrls": [
     {
