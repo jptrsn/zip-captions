@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { AppActions, AppState, AppTheme, Language } from '../../models/app.model';
+import { AppActions, AppState, AppTheme, Language } from '../../../../models/app.model';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { languageSelector, themeSelector } from '../../selectors/app.selector';
+import { languageSelector, themeSelector } from '../../../../selectors/app.selector';
 import { Router } from '@angular/router';
 
 @Component({

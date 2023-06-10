@@ -1,17 +1,16 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AudioInputEnableComponent } from './components/audio-input-enable/audio-input-enable.component';
-import { SharedUiModule } from 'shared-ui';
-import { EffectsModule } from '@ngrx/effects';
-import { AudioStreamEffects } from '../../effects/audio-stream.effects';
+import { NgModule } from '@angular/core';
 import { NgIconsModule } from '@ng-icons/core';
+import { EffectsModule } from '@ngrx/effects';
+import { SharedUiModule } from 'shared-ui';
 import { BackgroundMagnitudeDirective } from '../../directives/background-magnitude.directive';
-import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
-import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
+import { AudioStreamEffects } from '../../effects/audio-stream.effects';
 import { RecognitionEffects } from '../../effects/recognition.effects';
+import { AudioInputEnableComponent } from './components/audio-input-enable/audio-input-enable.component';
 import { RecognitionEnableComponent } from './components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from './components/recognition-render/recognition-render.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
+import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +22,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     SharedUiModule,
     EffectsModule.forFeature([AudioStreamEffects, RecognitionEffects]),
     NgIconsModule,
