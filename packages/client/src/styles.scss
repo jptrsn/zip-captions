@@ -22,4 +22,9 @@ button.btn.btn-circle {
   ng-icon {
     @apply text-2xl;
   }
+  &.btn-xs {
+    ng-icon {
+      @apply text-sm;
+    }
+  }
 }
