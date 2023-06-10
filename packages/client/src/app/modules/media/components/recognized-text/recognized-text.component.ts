@@ -1,7 +1,7 @@
 import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutUpOnLeaveAnimation } from 'angular-animations';
+import { fadeInUpOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
 import { selectRecognition } from '../../../../selectors/recognition.selector';
@@ -12,10 +12,8 @@ import { RecognitionService } from '../../services/recognition.service';
   templateUrl: './recognized-text.component.html',
   styleUrls: ['./recognized-text.component.scss'],
   animations: [
-    slideInUpOnEnterAnimation(),
-    slideOutUpOnLeaveAnimation(),
-    fadeOutOnLeaveAnimation(),
-    fadeInOnEnterAnimation(),
+    fadeInUpOnEnterAnimation(),
+    fadeOutUpOnLeaveAnimation(),
   ]
 })
 export class RecognizedTextComponent {
