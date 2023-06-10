@@ -18,10 +18,11 @@ import { HomeComponent } from './components/home/home.component';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
 import { AppEffects } from './effects/app.effects';
 import { MediaModule } from './modules/media/media.module';
-import { SettingsModule } from './modules/settings/settings.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
+import { settingsReducers } from './reducers/settings.reducer';
+import { SettingsEffects } from './effects/settings.effects';
 
 @NgModule({
   declarations: [
@@ -52,8 +53,10 @@ import { recognitionReducers } from './reducers/recognition.reducer';
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,
       recognition: recognitionReducers,
+      settings: settingsReducers,
     }),
     EffectsModule.forRoot([AppEffects]),
+    EffectsModule.forFeature([SettingsEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

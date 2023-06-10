@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Language } from '../../../../models/app.model';
+import { Language } from '../../models/settings.model';
+
 
 @Component({
   selector: 'app-language-selector',

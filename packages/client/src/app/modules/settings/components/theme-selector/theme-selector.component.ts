@@ -1,10 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, Signal, effect } from '@angular/core';
-import { AppActions, AppState, AppTheme } from '../../../../models/app.model';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { themeSelector } from '../../../../selectors/app.selector';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { AppTheme } from '../../models/settings.model';
 
 @Component({
   selector: 'app-theme-selector',

@@ -1,11 +1,12 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { AppActions, AppState, AppTheme, Language } from '../../../../models/app.model';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { languageSelector, themeSelector } from '../../../../selectors/app.selector';
-import { Router } from '@angular/router';
+import { AppState } from '../../../../models/app.model';
+import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
+import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
 
 @Component({
   selector: 'app-settings',
@@ -53,7 +54,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   saveSettings(): void {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
-    this.store.dispatch(AppActions.setTheme({theme}));
+    this.store.dispatch(SettingsActions.setTheme({theme}));
     this.router.navigate([''])
   }
 }

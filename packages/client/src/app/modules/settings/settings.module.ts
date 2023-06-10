@@ -7,6 +7,8 @@ import { LanguageSelectorComponent } from './components/language-selector/langua
 import { SettingsComponent } from './components/settings/settings.component';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
 import { routes } from './settings.routes';
+import { EffectsModule } from '@ngrx/effects';
+import { SettingsEffects } from '../../effects/settings.effects';
 
 
 
@@ -20,7 +22,8 @@ import { routes } from './settings.routes';
     CommonModule,
     SharedUiModule,
     ReactiveFormsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    EffectsModule.forFeature([SettingsEffects]),
   ],
   exports: [
     SettingsComponent,

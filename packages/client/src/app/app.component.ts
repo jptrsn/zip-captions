@@ -1,8 +1,9 @@
-import { Component, ElementRef, Renderer2, Signal, ViewContainerRef, ViewEncapsulation, effect } from '@angular/core';
+import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { AppActions, AppState, AppTheme } from './models/app.model';
-import { themeSelector } from './selectors/app.selector';
+import { AppActions, AppState } from './models/app.model';
+import { AppTheme } from './modules/settings/models/settings.model';
+import { themeSelector } from './selectors/settings.selector';
 
 @Component({
   selector: 'app-root',
