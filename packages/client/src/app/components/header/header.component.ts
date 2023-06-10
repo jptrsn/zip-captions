@@ -9,10 +9,21 @@ import { AppState } from '../../models/app.model';
 import { RecognitionStatus } from '../../models/recognition.model';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { MenuItem } from './header.model';
+import { animate, style, transition, trigger } from '@angular/animations';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  animations: [
+    trigger('growshrink', [
+      transition('true => false', [style({ height: '{{startHeight}}px', opacity: 0 }), animate('.5s ease')], {
+        params: { startHeight: 24 }
+      }),
+      transition('false => true', [style({ height: '{{startHeight}}px', opacity: 0 }), animate('.5s ease')], {
+        params: { startHeight: 72 }
+      })
+    ])
+  ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {read: ElementRef}) menuElement!: ElementRef;

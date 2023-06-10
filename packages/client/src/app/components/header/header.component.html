@@ -1,5 +1,5 @@
-<div class="bg-base-300 gap-3 flex flex-row flex-shrink" [ngClass]="{'navbar': !isActive(), 'px-3 pt-2': isActive()}">
-  <div class="flex-none">
+<div class="bg-base-300 gap-3 flex flex-row items-center p-2" [@growshrink]="isActive()">
+  <div class="flex">
     <ng-icon name="zipCaptionsLogo" [size]="isActive() ? '24' : '48'"></ng-icon>
   </div>
   <div class="flex-1">
