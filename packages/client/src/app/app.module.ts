@@ -45,7 +45,6 @@ import { recognitionReducers } from './reducers/recognition.reducer';
     NgIconsModule.withIcons({
       ...Icons,
     }),
-    SettingsModule,
     SharedUiModule,
     MediaModule,
     ReactiveFormsModule,
