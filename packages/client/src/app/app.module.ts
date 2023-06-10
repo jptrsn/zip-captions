@@ -17,7 +17,13 @@ import { HomeComponent } from './components/home/home.component';
 import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
-import { BackgroundMagnitudeDirective } from './directives/background-magnitude.directive';
+import { recognitionReducers } from './reducers/recognition.reducer';
+import { AppEffects } from './effects/app.effects';
+import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
+import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SettingsComponent } from './components/settings/settings.component';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +32,10 @@ import { BackgroundMagnitudeDirective } from './directives/background-magnitude.
     FooterComponent,
     HomeComponent,
     AboutComponent,
+    WelcomeSplashComponent,
+    ThemeSelectorComponent,
+    SettingsComponent,
+    LanguageSelectorComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -42,11 +52,13 @@ import { BackgroundMagnitudeDirective } from './directives/background-magnitude.
     }),
     SharedUiModule,
     MediaModule,
+    ReactiveFormsModule,
     StoreModule.forRoot({
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,
+      recognition: recognitionReducers,
     }),
-    EffectsModule.forRoot(),
+    EffectsModule.forRoot([AppEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, map, of, switchMap } from "rxjs";
+import { catchError, of, switchMap, tap } from "rxjs";
 import { AudioStreamActions } from '../models/audio-stream.model';
+import { RecognitionActions } from "../models/recognition.model";
 import { MediaService } from "../modules/media/services/media.service";
 
 @Injectable()
@@ -12,8 +13,9 @@ export class AudioStreamEffects {
   connectStream$ = createEffect(() => 
     this.actions$.pipe(
       ofType(AudioStreamActions.connectStream), 
+      tap((props) => console.log('connect stream', props)),
       switchMap((props) => this.mediaService.getMediaStream(props.id)),
-      map((streamId: string) => AudioStreamActions.connectStreamSuccess({ id: streamId })),
+      switchMap((streamId: string) => [AudioStreamActions.connectStreamSuccess({ id: streamId }), RecognitionActions.connectRecognition({id: streamId})]),
       catchError((error: {message: string}) => of(AudioStreamActions.connectStreamFailure({error: error.message}))),
     )
   )
@@ -21,9 +23,10 @@ export class AudioStreamEffects {
   disconnectStream$ = createEffect(() => 
   this.actions$.pipe(
     ofType(AudioStreamActions.disconnectStream), 
-    map((props) => {
+    tap((props) => console.log('disconnect stream', props)),
+    switchMap((props) => {
       const disconnectedId = this.mediaService.disconnectStream(props.id);
-      return AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})
+      return [RecognitionActions.disconnectRecognition(props), AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})]
     })
   ))
 

@@ -1,0 +1,32 @@
+<form class="flex flex-col basis-full p-6 gap-12 bg-base-300" [formGroup]="formGroup" (submit)="saveSettings()">
+  <div class="basis-full grid sm:grid-cols-1 md:grid-cols-2 gap-12">
+    <div>
+      <app-theme-selector [group]="formGroup" controlName="theme"></app-theme-selector>
+      <!-- <app-language-selector [group]="formGroup" controlName="lang"></app-language-selector> -->
+    </div>
+    <div class="form-control overflow-y-auto">
+      <div class="label">
+        <label class="text-accent">Preview</label>
+      </div>
+      <div class="bg-base-100 text-base-content p-3 gap-3 rounded-sm">
+        <div class="text-xl p-3">
+          Each segment of previously-recognized text will appear like this.
+        </div>
+        <div class="text-xl p-3 hidden sm:flex sm:visible">
+          Scrolling up from the bottom.
+        </div>
+        <div class="text-xl p-3">
+          With each new result appearing underneath the previous.
+        </div>
+      </div>
+      <div class="bg-base-100 text-base-content px-6 py-2 text-5xl leading-relaxed">
+        Live text shows like this
+      </div>
+    </div>
+  </div>
+  <footer class="flex w-full justify-end">
+    <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit">
+      Save and Close
+    </button>
+  </footer>
+</form>

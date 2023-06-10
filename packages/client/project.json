@@ -8,28 +8,23 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "docs",
         "index": "packages/client/src/index.html",
         "main": "packages/client/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "packages/client/tsconfig.app.json",
         "assets": [
           "packages/client/src/favicon.ico",
           "packages/client/src/assets",
           "packages/client/src/manifest.webmanifest"
         ],
-        "styles": [
-          "packages/client/src/styles.scss"
-        ],
+        "styles": ["packages/client/src/styles.scss"],
         "scripts": [],
         "serviceWorker": true,
-        "ngswConfigPath": "packages/client/ngsw-config.json"
+        "ngswConfigPath": "packages/client/ngsw-config.json",
+        "webWorkerTsConfig": "packages/client/tsconfig.worker.json"
       },
       "configurations": {
         "production": {
@@ -78,9 +73,7 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
           "packages/client/**/*.ts",
@@ -90,12 +83,11 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/client/jest.config.ts",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "webWorkerTsConfig": "packages/client/tsconfig.worker.json"
       },
       "configurations": {
         "ci": {

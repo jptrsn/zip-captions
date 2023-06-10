@@ -1,1 +1,10 @@
-<p>about works!</p>
+<div class="flex flex-col justify-start basis-full">
+  <div *ngFor="let entry of contents" class="flex-auto hero">
+    <div class="hero-content text-center bg-base-200 rounded-xl py-6 mt-12">
+      <div class="max-w-md">
+        <h1 class="text-5xl font-bold">{{entry.heading}}</h1>
+        <p class="py-6">{{entry.body}}</p>
+      </div>
+    </div>
+  </div>
+</div>

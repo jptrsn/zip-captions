@@ -1,19 +1,25 @@
-<div class="navbar bg-base-300 shadow-lg gap-3">
-  <div class="flex-none">
-    <ng-icon name="zipCaptionsLogo" size="48"></ng-icon>
+<div class="bg-base-300 gap-3 flex flex-row items-center p-2" [@growshrink]="isActive()">
+  <div class="flex">
+    <ng-icon name="zipCaptionsLogo" [size]="isActive() ? '24' : '48'"></ng-icon>
   </div>
   <div class="flex-1">
-    <div class="normal-case text-xl">ZipCaptions</div>
+    <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
+    <ng-template #smallTitle>
+      <div class="normal-case text-sm">Free captions provided by https://captions.zip</div>
+    </ng-template>
   </div>
-  <app-audio-input-enable></app-audio-input-enable>
-  <div class="flex-none dropdown dropdown-end">
+  <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
+    <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
+    <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
+  </ng-container>
+  <details #menu class="flex-none dropdown dropdown-end z-10" *ngIf="!isActive()">
+    <summary class="m-1 btn btn-circle btn-ghost text-2xl">
+      <ng-icon name="heroBars3"></ng-icon>
+    </summary>
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
       <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
-        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet">{{item.label | proper}}</button>
+        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">{{item.label | proper}}</button>
       </li>
     </ul>
-    <label tabindex="0" class="m-1 btn btn-ghost rounded-full">
-      <ng-icon name="heroBars3" size="18" strokeWidth="2.5"></ng-icon>
-    </label>
-  </div>
+  </details>
 </div>

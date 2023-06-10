@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from, map, tap } from 'rxjs';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Observable, from, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +7,11 @@ import { BehaviorSubject, Observable, from, map, tap } from 'rxjs';
 export class MediaService {
 
   private streamsMap: Map<string, MediaStream> = new Map();
-  private volumeAnalyserMap: Map<string, BehaviorSubject<number>> = new Map();
+  private volumeAnalyserMap: Map<string, WritableSignal<number>> = new Map();
   private context?: AudioContext;
 
   public getMediaStream(deviceId: string): Observable<string> {
+    // console.log('get media stream', deviceId);
     return from(navigator.mediaDevices.getUserMedia({video: false, audio: {
       echoCancellation: true,
       noiseSuppression: true,
@@ -20,46 +21,48 @@ export class MediaService {
       deviceId
     } })).pipe(
       map((stream: MediaStream) => {
+        // console.log('got media stream', stream);
         this.streamsMap.set(stream.id, stream);
         this._watchStreamVolume(stream);
         return stream.id;
-      })
+      }),
+      
     )
   }
 
   public disconnectStream(streamId: string): string {
     const stream: MediaStream | undefined = this.streamsMap.get(streamId);
     if (stream) {
-      stream.getAudioTracks().forEach((track) => {
-        track.stop();
-        stream.removeTrack(track);
-      });
       stream.dispatchEvent(new Event('stop_observation'));
-      console.log('disconnected', stream);
+      stream.getAudioTracks().forEach((track) => {
+        // console.log('streamtrack', track);
+        track.stop();
+      });
+      this.streamsMap.delete(streamId);
     }
-    this.streamsMap.delete(streamId);
     return streamId;
   }
 
-  public getVolumeForStream(streamId: string): Observable<number> {
+  public getVolumeForStream(streamId: string): Signal<number> {
     if (!this.volumeAnalyserMap.has(streamId)) {
       throw new Error(`Stream id ${streamId} does not appear to have a volume analyzer`);
     }
-    return this.volumeAnalyserMap.get(streamId)!.asObservable();
+    return this.volumeAnalyserMap.get(streamId) as Signal<number>;
   }
 
   private _watchStreamVolume(stream: MediaStream): void {
     if (!this.context) {
       this.context = new AudioContext();
     }
-    let level$ = this.volumeAnalyserMap.get(stream.id);
-    if (!level$) {
-      level$ = new BehaviorSubject<number>(0)
-      this.volumeAnalyserMap.set(stream.id, level$);
+    let level = this.volumeAnalyserMap.get(stream.id);
+    if (!level) {
+      level = signal(0)
+      this.volumeAnalyserMap.set(stream.id, level);
     }
     const sourceNode: MediaStreamAudioSourceNode = this.context.createMediaStreamSource(stream);
     const analyserNode:  AnalyserNode = this.context.createAnalyser();
     stream.addEventListener('stop_observation', () => {
+      // console.log('stopping observation of stream')
       sourceNode.disconnect();
       analyserNode.disconnect();
     })
@@ -70,11 +73,12 @@ export class MediaService {
         let sumSquares = 0.0;
         for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
         const volLevel: number = Math.round(Math.sqrt(sumSquares / pcmData.length) * 100);
-        level$!.next(volLevel);
+        level!.set(volLevel);
         if (stream.active) {
           window.requestAnimationFrame(onFrame);
         } else {
-          level$!.next(0)
+          // console.log('stream is inactive, setting volume to zero')
+          level!.set(0)
         }
     };
     window.requestAnimationFrame(onFrame);

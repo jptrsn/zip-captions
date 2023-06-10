@@ -1,17 +1,35 @@
-import { Component } from '@angular/core';
-import { AppState } from '../../models/app.model';
+import { Component, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { AppState } from '../../models/app.model';
 import { loadingSelector } from '../../selectors/app.selector';
+import { recognitionStatusSelector } from '../../selectors/recognition.selector';
+import { RecognitionStatus } from '../../models/recognition.model';
+import { map } from 'rxjs';
+import { slideOutUpOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  animations: [
+    slideOutUpOnLeaveAnimation()
+  ]
 })
 export class HomeComponent {
-  public loading$: Observable<boolean>;
+  public loading: Signal<boolean | undefined>;
+  public isRecognizing: Signal<boolean | undefined>;
+  public hasResults: Signal<boolean>;
   constructor(private store: Store<AppState>) { 
-    this.loading$ = this.store.pipe(select(loadingSelector));
+    this.loading = toSignal(this.store.pipe(select(loadingSelector)))
+    this.isRecognizing = toSignal(this.store.pipe(
+      select(recognitionStatusSelector),
+      map((status: RecognitionStatus) => status === RecognitionStatus.connected)
+      ))
+
+    this.hasResults = toSignal(this.store.pipe(
+      select(recognitionStatusSelector),
+      map((status: RecognitionStatus) => status !== RecognitionStatus.uninitialized)
+    )) as Signal<boolean>
   }
 }

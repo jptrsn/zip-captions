@@ -1,0 +1,6 @@
+<label class="form-control" [formGroup]="group">
+  <span class="text-accent label">Theme</span>
+  <select class="select select-lg mt-1 w-full" [formControlName]="controlName">
+    <option *ngFor="let theme of themes | keyvalue" [value]="theme.value">{{theme.key | proper}}</option>
+  </select>
+</label>

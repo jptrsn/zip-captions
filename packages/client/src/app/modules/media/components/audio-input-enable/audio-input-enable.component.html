@@ -1,13 +1,17 @@
 <button 
-  class="btn rounded-full"
-  [ngClass]="{'btn-primary': (connected())}" 
+  class="btn btn-circle"
+  [ngClass]="{'btn-primary btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected()}" 
   (click)="toggleState()"
-  appBackgroundMagnitude [magnitude]="(vol$ | async)"
+  appBackgroundMagnitude 
+  [magnitude]="vol()"
   >
-  <ng-container *ngIf="connected(); else inactive">
-    <ng-icon name="heroMicrophone"></ng-icon>
-  </ng-container>
-  <ng-template #inactive>
-    <ng-icon name="heroMicrophoneSlash"></ng-icon>
+  <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" data-tip="Could not access the microphone." name="heroExclamationTriangle"></ng-icon>
+  <ng-template #micEnabled>
+    <ng-container *ngIf="connected(); else inactive">
+      <ng-icon name="heroMicrophone"></ng-icon>
+    </ng-container>
+    <ng-template #inactive>
+      <ng-icon name="heroMicrophoneSlash"></ng-icon>
+    </ng-template>
   </ng-template>
 </button>
