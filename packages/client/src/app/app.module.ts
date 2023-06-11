@@ -24,6 +24,7 @@ import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,9 @@ import { settingsReducers } from './reducers/settings.reducer';
       maxAge: 10,
     }),
   ],
-  providers: [],
+  providers: [
+    { provide: APP_BASE_HREF, useValue: window.location.pathname }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
