@@ -27,4 +27,26 @@ export class AppEffects {
       switchMap((appearance: AppAppearanceState) => [SettingsActions.initSettings(), AppActions.initAppearanceComplete({appearance})])
     )
   )
+
+  acceptCookies$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.acceptCookies),
+      map(() => {
+        this.storage.update('appearance', 'cookiesAccepted', true);
+        this.storage.update('appearance', 'cookiesDeclinedTimestamp', undefined);
+      }),
+      map(() => AppActions.setCookiePolicyComplete())
+    )
+  )
+
+  declineCookies$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.declineCookies),
+      map(() => {
+        this.storage.update('appearance', 'cookiesAccepted', false);
+        this.storage.update('appearance', 'cookiesDeclinedTimestamp', Date.now())
+      }),
+      map(() => AppActions.setCookiePolicyComplete())
+    )
+  )
 }

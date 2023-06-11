@@ -1,6 +1,8 @@
-<button class="btn btn-info btn-sm" (click)="modal.showModal()">Cookie Policy</button>
+<button (click)="modal.showModal()" class="tooltip tooltip-right" data-tip="Cookies">
+  <ng-icon name="cookie" size="24"></ng-icon>
+</button>
 <dialog #modal class="modal modal-bottom">
-  <form method="dialog" class="modal-box">
+  <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
     <h3 class="font-bold text-lg">This website uses cookies</h3>
     <p class="text-base mt-1">
       We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).
@@ -9,14 +11,19 @@
       We do not track or store any non-functional cookies on your device.
     </p>
     <p class="text-base mt-1">
-      View our <a>cookie policy</a> for more details
+      View our cookie policy for more details
     </p>
     <div class="modal-action">
-      <button class="btn">Decline</button>
-      <button class="btn btn-primary">Accept</button>
+      <button class="btn" routerLink="settings/cookies">View Policy</button>
+      <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()">
+        {{ !!declinedDate() ? "Rejected" : "Reject"}}
+      </button>
+      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()">
+        {{ accepted() ? "Accepted" : "Accept All" }} 
+      </button>
     </div>
   </form>
   <form method="dialog" class="modal-backdrop">
-    <button></button>
+    <button #close></button>
   </form>
 </dialog>
