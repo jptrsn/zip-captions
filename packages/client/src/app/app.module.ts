@@ -23,6 +23,7 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
 import { SettingsEffects } from './effects/settings.effects';
+import { CookieModalComponent } from './components/cookie-modal/cookie-modal.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { SettingsEffects } from './effects/settings.effects';
     HomeComponent,
     AboutComponent,
     WelcomeSplashComponent,
+    CookieModalComponent,
   ],
   imports: [
     BrowserAnimationsModule,

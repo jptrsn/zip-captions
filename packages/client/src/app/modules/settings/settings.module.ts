@@ -9,14 +9,14 @@ import { ThemeSelectorComponent } from './components/theme-selector/theme-select
 import { routes } from './settings.routes';
 import { EffectsModule } from '@ngrx/effects';
 import { SettingsEffects } from '../../effects/settings.effects';
-
-
+import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     ThemeSelectorComponent,
     LanguageSelectorComponent,
+    CookiePolicyComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +28,7 @@ import { SettingsEffects } from '../../effects/settings.effects';
   exports: [
     SettingsComponent,
     ThemeSelectorComponent,
-    LanguageSelectorComponent
-  ]
+    LanguageSelectorComponent,
+  ],
 })
-export class SettingsModule { }
+export class SettingsModule {}

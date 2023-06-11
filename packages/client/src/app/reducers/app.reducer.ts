@@ -7,6 +7,7 @@ import { defaultSettingsState } from './settings.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
+  cookiesAccepted: false,
   footerVisible: true,
 }
 
@@ -25,4 +26,6 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.checkUserAgentComplete, (state: AppAppearanceState) => ({...state, loading: false})),
   on(AppActions.initAppearance, (state: AppAppearanceState) => ({...state, loading: true})),
   on(AppActions.initAppearanceComplete, (state: AppAppearanceState, action: { appearance: AppAppearanceState }) => ({...state, ...action.appearance, loading: false})),
+  on(AppActions.acceptCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: true})),
+  on(AppActions.declineCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: false, cookiesDeclinedTimestamp: Date.now()})),
 )
