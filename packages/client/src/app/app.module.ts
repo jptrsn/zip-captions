@@ -2,7 +2,7 @@ import { NgModule, isDevMode } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, RouterPreloader } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgIconsModule } from '@ng-icons/core';
 import { EffectsModule } from '@ngrx/effects';
@@ -12,18 +12,18 @@ import { Icons, SharedUiModule } from 'shared-ui';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { AboutComponent } from './components/about/about.component';
+import { CookieModalComponent } from './components/cookie-modal/cookie-modal.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
 import { AppEffects } from './effects/app.effects';
+import { SettingsEffects } from './effects/settings.effects';
 import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
-import { SettingsEffects } from './effects/settings.effects';
-import { CookieModalComponent } from './components/cookie-modal/cookie-modal.component';
 
 @NgModule({
   declarations: [
