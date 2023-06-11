@@ -23,7 +23,17 @@ export class AppEffects {
   init$ = createEffect(() => 
     this.actions$.pipe(
       ofType(AppActions.initAppearance),
-      map(() => this.storage.get('appearance')),
+      map(() => {
+        const state: AppAppearanceState | undefined = this.storage.get('appearance');
+        if (state?.cookiesDeclinedTimestamp) {
+          const DECLINE_DEBOUNCE_IN_MS = (1000 * 60 * 60 * 24 * 180); // 180 days
+          if (Date.now() - state.cookiesDeclinedTimestamp > DECLINE_DEBOUNCE_IN_MS) {
+            delete state.cookiesDeclinedTimestamp;
+            this.storage.update('appearance', 'cookiesDeclinedTimestamp', undefined);
+          }
+        }
+        return state as AppAppearanceState;
+      }),
       switchMap((appearance: AppAppearanceState) => [SettingsActions.initSettings(), AppActions.initAppearanceComplete({appearance})])
     )
   )

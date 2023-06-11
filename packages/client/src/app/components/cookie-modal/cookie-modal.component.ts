@@ -30,22 +30,26 @@ export class CookieModalComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.accepted() === false && this.declinedDate() === undefined) {
-      // this.renderer.addClass(this.modal.nativeElement, 'modal-open')
-      this.renderer.setAttribute(this.modal.nativeElement, 'open', '')
+      this._openModal();
     }
   }
 
   accept(): void {
     this.store.dispatch(AppActions.acceptCookies());
-    this.closeModal();
+    this._closeModal();
   }
 
   decline(): void {
     this.store.dispatch(AppActions.declineCookies());
-    this.closeModal();
+    this._closeModal();
   }
 
-  closeModal(): void {
+  private _openModal(): void {
+    // this.renderer.addClass(this.modal.nativeElement, 'modal-open')
+    this.renderer.setAttribute(this.modal.nativeElement, 'open', '')
+  }
+
+  private _closeModal(): void {
     this.closeButton.nativeElement.click();
   }
 }
