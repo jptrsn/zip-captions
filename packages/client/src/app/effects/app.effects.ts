@@ -23,8 +23,40 @@ export class AppEffects {
   init$ = createEffect(() => 
     this.actions$.pipe(
       ofType(AppActions.initAppearance),
-      map(() => this.storage.get('appearance')),
+      map(() => {
+        const state: AppAppearanceState | undefined = this.storage.get('appearance');
+        if (state?.cookiesDeclinedTimestamp) {
+          const DECLINE_DEBOUNCE_IN_MS = (1000 * 60 * 60 * 24 * 180); // 180 days
+          if (Date.now() - state.cookiesDeclinedTimestamp > DECLINE_DEBOUNCE_IN_MS) {
+            delete state.cookiesDeclinedTimestamp;
+            this.storage.update('appearance', 'cookiesDeclinedTimestamp', undefined);
+          }
+        }
+        return state as AppAppearanceState;
+      }),
       switchMap((appearance: AppAppearanceState) => [SettingsActions.initSettings(), AppActions.initAppearanceComplete({appearance})])
+    )
+  )
+
+  acceptCookies$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.acceptCookies),
+      map(() => {
+        this.storage.update('appearance', 'cookiesAccepted', true);
+        this.storage.update('appearance', 'cookiesDeclinedTimestamp', undefined);
+      }),
+      map(() => AppActions.setCookiePolicyComplete())
+    )
+  )
+
+  declineCookies$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.declineCookies),
+      map(() => {
+        this.storage.update('appearance', 'cookiesAccepted', false);
+        this.storage.update('appearance', 'cookiesDeclinedTimestamp', Date.now())
+      }),
+      map(() => AppActions.setCookiePolicyComplete())
     )
   )
 }

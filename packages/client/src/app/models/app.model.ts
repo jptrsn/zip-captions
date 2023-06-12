@@ -4,6 +4,8 @@ import { RecognitionState } from "./recognition.model";
 
 export interface AppAppearanceState {
   loading: boolean;
+  cookiesAccepted: boolean;
+  cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   error?: string;
 }
