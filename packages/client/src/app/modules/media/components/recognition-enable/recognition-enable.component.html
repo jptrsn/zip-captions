@@ -2,6 +2,7 @@
   class="btn btn-circle text-2xl"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
   (click)="toggleState()"
+  [attr.aria-label]="connected() ? 'Stop' : 'Listen'"
   >
   <ng-container *ngIf="connected(); else inactive">
     <ng-icon name="heroStopCircle"></ng-icon>
