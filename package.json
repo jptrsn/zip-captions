@@ -7,7 +7,7 @@
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
     "build": "nx build",
-    "build:client": "nx build --project=client --base-href=https://captions.zip/"
+    "build:client": "nx build --project=client"
   },
   "private": true,
   "dependencies": {
