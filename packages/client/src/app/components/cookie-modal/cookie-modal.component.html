@@ -1,4 +1,4 @@
-<button (click)="modal.showModal()" class="tooltip tooltip-right" data-tip="Cookies">
+<button (click)="modal.showModal()" class="tooltip tooltip-right" data-tip="Cookies" aria-label="Cookie Policy">
   <ng-icon name="cookie" size="24"></ng-icon>
 </button>
 <dialog #modal class="modal modal-bottom">
@@ -14,16 +14,16 @@
       View our cookie policy for more details
     </p>
     <div class="modal-action">
-      <button class="btn" routerLink="settings/cookies">View Policy</button>
-      <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()">
+      <button class="btn" routerLink="settings/cookies" aria-label="View the cookie policy">View Policy</button>
+      <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()" aria-label="Reject cookies">
         {{ !!declinedDate() ? "Rejected" : "Reject"}}
       </button>
-      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()">
+      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies">
         {{ accepted() ? "Accepted" : "Accept All" }} 
       </button>
     </div>
   </form>
   <form method="dialog" class="modal-backdrop">
-    <button #close></button>
+    <button #close aria-label="Close cookie pop-up"></button>
   </form>
 </dialog>

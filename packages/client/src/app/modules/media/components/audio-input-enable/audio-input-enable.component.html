@@ -4,6 +4,7 @@
   (click)="toggleState()"
   appBackgroundMagnitude 
   [magnitude]="vol()"
+  [attr.aria-label]="connected() ? 'Stop' : 'Listen'"
   >
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" data-tip="Could not access the microphone." name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>
