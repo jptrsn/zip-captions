@@ -4,10 +4,10 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
     "build": "nx build",
-    "build:client": "nx build --project=client"
+    "build:client": "nx build --project=client",
+    "i18n:extract": "nx xi18n --project=client"
   },
   "private": true,
   "dependencies": {
@@ -17,6 +17,7 @@
     "@angular/compiler": "~16.0.0",
     "@angular/core": "~16.0.0",
     "@angular/forms": "~16.0.0",
+    "@angular/localize": "16.0",
     "@angular/platform-browser": "~16.0.0",
     "@angular/platform-browser-dynamic": "~16.0.0",
     "@angular/router": "~16.0.0",

@@ -4,6 +4,7 @@ import { RecognitionActions, SpeechRecognition } from '../../../models/recogniti
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
+import { $localize } from '@angular/localize/init';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -54,7 +55,7 @@ export class RecognitionService {
   public getLiveOutput(streamId: string): Signal<string> {
     const liveOutput = this.liveOutputMap.get(streamId);
     if (!liveOutput) {
-      throw new Error(`No live output signal for recognition stream id ${streamId}`);
+      throw new Error($localize`No live output signal for recognition stream id ${streamId}`);
     } else {
       return liveOutput;
     }
@@ -63,7 +64,7 @@ export class RecognitionService {
   getRecognizedText(streamId: string): Signal<string[]> {
     const recognizedTextOutput = this.recognizedTextMap.get(streamId);
     if (!recognizedTextOutput) {
-      throw new Error(`Recognized text output signal not found for stream id ${streamId}`);
+      throw new Error($localize`Recognized text output signal not found for stream id ${streamId}`);
     } else {
       return recognizedTextOutput;
     }

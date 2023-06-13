@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     })
     this.menuItems = this.router.config.map((route: Route) => {
       return {
-        label: route.data?.['name'] || route.path,
+        label: $localize`${route.data?.['name'] || route.path}`,
         routerOutlet: `/${route.path}`
       }
     })

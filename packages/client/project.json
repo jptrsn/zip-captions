@@ -4,6 +4,13 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "packages/client/src",
+  "i18n": {
+    "sourceLocale": "en",
+    "locales": {
+      "fr": "packages/client/src/locales/messages.fr.json",
+      "sp": "packages/client/src/locales/messages.sp.json"
+    }
+  },
   "tags": [],
   "targets": {
     "build": {
@@ -11,6 +18,8 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "docs",
+        "i18nMissingTranslation": "warning",
+        "localize": ["fr", "sp"],
         "index": "packages/client/src/index.html",
         "main": "packages/client/src/main.ts",
         "polyfills": ["zone.js"],
@@ -27,6 +36,12 @@
         "webWorkerTsConfig": "packages/client/tsconfig.worker.json"
       },
       "configurations": {
+        "fr": {
+          "localize": ["fr"]
+        },
+        "sp": {
+          "localize": ["sp"]
+        },
         "production": {
           "budgets": [
             {
@@ -61,6 +76,9 @@
         },
         "development": {
           "browserTarget": "client:build:development"
+        },
+        "en": {
+          "browserTarget": "client:build:development,en"
         }
       },
       "defaultConfiguration": "development"
