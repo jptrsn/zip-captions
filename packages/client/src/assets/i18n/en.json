@@ -1,0 +1,38 @@
+{
+  "ABOUT": {
+    "h1": "What is Zip Captions?",
+    "b1": "Zip Captions is a tool that will generate speech-to-text results for a given input device such as your machine's microphone.",
+
+    "h2": "Why?",
+    "b2": "Converting audio to text in real-time can make life more accessible. We aim to do this for everyone for free, as simply as possible.",
+
+    "h3": "Who are you?",
+    "b3": "We are a pair of educators and coders who believe that technology should be accessible, and that accessibility does not exist behind a paywall.",
+
+    "h4": "How much?",
+    "b4": "The core functionality will always be free. We aim to make as much of the tool as free as possible. However, in some cases, we may ask for money to help offset project costs.",
+
+    "h5": "How?",
+    "b5": "The core functionality will always be free. We aim to make as much of the tool as free as possible. However, in some cases, we may ask for money to help offset project costs."
+  },
+  "COOKIES": {
+    "MODAL": {
+      "title": "This website uses cookies",
+      "p1": "We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).",
+      "p2": "We do not track or store any non-functional cookies on your device.",
+      "p3": "View our cookie policy for more detail"
+    }
+  },
+  "BUTTONS": {
+    "accept": "Accept",
+    "acceptAll": "Accept All",
+    "accepted": "Accepted",
+    "reject": "Reject",
+    "rejected": "Rejected",
+    "viewPolicy": "View Policy"
+  },
+  "LABELS": {
+    "viewPolicy": "View the cookie policy",
+    "closeCookieModal": "Close cookie pop-up"
+  }
+}

@@ -12,7 +12,6 @@ import { MediaService } from '../../services/media.service';
   styleUrls: ['./audio-input-enable.component.scss'],
 })
 export class AudioInputEnableComponent {
-  @ViewChild('errorIcon', {read: ElementRef}) errorIcon!: ElementRef;
   public streamState: Signal<AudioStreamState>;
   public vol: Signal<number | undefined>;
   public connected: Signal<boolean | undefined>;

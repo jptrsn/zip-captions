@@ -6,26 +6,26 @@
     </div>
     <div class="form-control overflow-y-auto">
       <div class="label">
-        <label class="text-accent">Preview</label>
+        <label class="text-accent" i18n>Preview</label>
       </div>
       <div class="bg-base-100 text-base-content p-3 gap-3 rounded-sm">
-        <div class="text-xl p-3">
+        <div class="text-xl p-3" i18n>
           Each segment of previously-recognized text will appear like this.
         </div>
-        <div class="text-xl p-3 hidden sm:flex sm:visible">
+        <div class="text-xl p-3 hidden sm:flex sm:visible" i18n>
           Scrolling up from the bottom.
         </div>
-        <div class="text-xl p-3">
+        <div class="text-xl p-3" i18n>
           With each new result appearing underneath the previous.
         </div>
       </div>
-      <div class="bg-base-100 text-base-content px-6 py-2 text-5xl leading-relaxed">
+      <div class="bg-base-100 text-base-content px-6 py-2 text-5xl leading-relaxed" i18n>
         Live text shows like this
       </div>
     </div>
   </div>
   <footer class="flex w-full justify-end">
-    <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit">
+    <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit" i18n>
       Save and Close
     </button>
   </footer>

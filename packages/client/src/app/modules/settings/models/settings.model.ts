@@ -1,3 +1,4 @@
+import { $localize } from "@angular/localize/init"
 export enum AppTheme {
   dark = 'dark',
   light = 'light',

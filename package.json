@@ -7,7 +7,7 @@
     "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
     "build": "nx build",
     "build:client": "nx build --project=client",
-    "i18n:extract": "nx xi18n --project=client"
+    "i18n:extract": "nx extract-i18n --project=client --output-path=./packages/client/src/locales --format=json"
   },
   "private": true,
   "dependencies": {
@@ -29,6 +29,8 @@
     "@ngrx/entity": "~16.0.0",
     "@ngrx/router-store": "~16.0.0",
     "@ngrx/store": "~16.0.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "^16.2.2",
     "@types/dom-speech-recognition": "^0.0.1",
     "angular-animations": "^0.11.0",

@@ -24,7 +24,19 @@ import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { APP_BASE_HREF } from '@angular/common';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export function BaseHrefFactory() {
+  console.log('base href factory', window.location.pathname)
+  return '/';
+}
 
 @NgModule({
   declarations: [
@@ -63,9 +75,18 @@ import { APP_BASE_HREF } from '@angular/common';
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
-    { provide: APP_BASE_HREF, useValue: window.location.pathname }
+    { provide: APP_BASE_HREF, useFactory: BaseHrefFactory }
   ],
   bootstrap: [AppComponent],
 })
