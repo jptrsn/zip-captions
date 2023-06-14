@@ -4,7 +4,41 @@
     "fr": "French",
     "sp": "Spanish",
     "de": "German",
-    "it": "Italian"
+    "it": "Italian",
+    "pt": "Portuguese"
+  },
+  "THEMES": {
+    "dark": "dark",
+    "light": "light",
+    "cupcake": "cupcake",
+    "bumblebee": "bumblebee",
+    "emerald": "emerald",
+    "corporate": "corporate",
+    "synthwave": "synthwave",
+    "retro": "retro",
+    "cyberpunk": "cyberpunk",
+    "valentine": "valentine",
+    "halloween": "halloween",
+    "garden": "garden",
+    "forest": "forest",
+    "aqua": "aqua",
+    "lofi": "lofi",
+    "pastel": "pastel",
+    "fantasy": "fantasy",
+    "wireframe": "wireframe",
+    "black": "black",
+    "luxury": "luxury",
+    "dracula": "dracula",
+    "cmyk": "cmyk",
+    "autumn": "autumn",
+    "business": "business",
+    "acid": "acid",
+    "lemonade": "lemonade",
+    "night": "night",
+    "coffee": "coffee",
+    "winter": "winter",
+    "ZipDark": "Zip Dark",
+    "ZipLight": "Zip Light"
   },
   "HOME": {
     "loading": "Hang on while the app loads..."
@@ -88,6 +122,5 @@
     "listen": "Listen",
     "lang": "Language",
     "theme": "Theme"
-  }
-  
+  } 
 }
