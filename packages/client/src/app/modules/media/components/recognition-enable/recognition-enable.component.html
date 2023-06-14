@@ -2,8 +2,7 @@
   class="btn btn-circle text-2xl"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
   (click)="toggleState()"
-  [attr.aria-label]="connected() ? 'Stop' : 'Listen'"
-  i18n-aria-label
+  [attr.aria-label]="connected() ? 'LABELS.stop' : 'LABELS.listen' | translate"
   >
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>

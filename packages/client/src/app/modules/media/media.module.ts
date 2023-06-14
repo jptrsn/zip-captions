@@ -11,6 +11,7 @@ import { RecognitionEnableComponent } from './components/recognition-enable/reco
 import { RecognitionRenderComponent } from './components/recognition-render/recognition-render.component';
 import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
 import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { RecognizedTextComponent } from './components/recognized-text/recognized
     EffectsModule.forFeature([AudioStreamEffects, RecognitionEffects]),
     NgIconsModule,
     BackgroundMagnitudeDirective,
+    TranslateModule.forChild({extend: true})
   ],
   exports: [
     AudioInputEnableComponent,

@@ -4,7 +4,7 @@
   (click)="toggleState()"
   appBackgroundMagnitude 
   [magnitude]="vol()"
-  [attr.aria-label]="connected() ? 'Stop' : 'Listen'"
+  [attr.aria-label]="connected() ? 'LABELS.stop' : 'LABELS.listen' | translate"
   i18n-aria-label
   >
   <ng-icon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>

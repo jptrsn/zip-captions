@@ -4,7 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 
 
 export const appRoutes: Route[] = [
-  { path: '', component: HomeComponent, data: { name: $localize`Home` } },
-  { path: 'about', component: AboutComponent, data: { name: $localize`About`}},
-  { path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule), data: { name: $localize`Settings`} }
+  { path: '', component: HomeComponent, data: { name: `home` } },
+  { path: 'about', component: AboutComponent, data: { name: `about`}},
+  { path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule), data: { name: `settings`} }
 ];

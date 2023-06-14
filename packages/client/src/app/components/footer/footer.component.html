@@ -1,14 +1,14 @@
-<div [@collapse]="(hidden$ | async)">
+<div [@collapse]="hidden()">
   <footer class="footer bg-base-300 flex flex-auto items-center flex-row overflow-hidden px-6 py-2" >
-    <a [href]="repoUrl" target="_blank" aria-label="View the GitHub repository" class="tooltip tooltip-right" data-tip="View the GitHub repository" i18n-aria-label>
+    <a [href]="repoUrl" target="_blank" [attr.aria-label]="'LABELS.viewGithub' | translate" class="tooltip tooltip-right" [attr.data-tip]="'LABELS.viewGithub' | translate">
       <ng-icon name="githubLogo" size="24"></ng-icon>
     </a>
-    <a [href]="discordUrl" target="_blank" aria-label="Join the Discord" class="tooltip tooltip-right" data-tip="Join the Discord" i18n-aria-label>
+    <a [href]="discordUrl" target="_blank" [attr.aria-label]="'LABELS.joinDiscord' | translate" class="tooltip tooltip-right" [attr.data-tip]="'LABELS.joinDiscord' | translate">
       <ng-icon name="discordLogo" size="24"></ng-icon>
     </a>
     <app-cookie-modal></app-cookie-modal>
     <div class="flex-1 flex-row justify-end">
-      <span class="text-sm mx-4 my-2 text-base-content"><span i18n>Copyright 2023</span> - Zip Captions</span>
+      <span class="text-sm mx-4 my-2 text-base-content"><span i18n>{{ 'FOOTER.copyright' | translate}} 2023</span> - Zip Captions</span>
     </div>
   </footer>
 </div>

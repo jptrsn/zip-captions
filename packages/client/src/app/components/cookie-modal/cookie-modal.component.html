@@ -19,7 +19,7 @@
         {{ !!declinedDate() ? "BUTTONS.rejected" : "BUTTONS.reject" | translate }}
       </button>
       <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies" i18n-aria-label i18n>
-        {{ accepted() ? "BUTTONS.accepted" : "BUTTONS.acceptAll" | translate }} 
+        {{ (accepted() ? "BUTTONS.accepted" : "BUTTONS.acceptAll") | translate }} 
       </button>
     </div>
   </form>
