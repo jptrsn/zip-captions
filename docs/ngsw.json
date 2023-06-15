@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1686583605832,
+  "timestamp": 1686863108316,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,14 +11,15 @@
         "ignoreVary": true
       },
       "urls": [
+        "/553.c0590935041503f4.js",
         "/57.13299231aa8e1cc9.js",
         "/favicon.ico",
         "/index.html",
-        "/main.24a7d4148ded110f.js",
+        "/main.79c1b189e8fb0717.js",
         "/manifest.webmanifest",
-        "/polyfills.04161806afbbd56a.js",
-        "/runtime.75360cdfcb5a2485.js",
-        "/styles.94d3428d587476cd.css"
+        "/polyfills.5dd5880891494581.js",
+        "/runtime.aba35d43e7dad82c.js",
+        "/styles.9e7769e6774a3f86.css"
       ],
       "patterns": []
     },
@@ -30,7 +31,13 @@
         "ignoreVary": true
       },
       "urls": [
+        "/assets/i18n/de.json",
+        "/assets/i18n/en.json",
+        "/assets/i18n/fr.json",
+        "/assets/i18n/it.json",
+        "/assets/i18n/sp.json",
         "/assets/icons/basic_icon_white.svg",
+        "/assets/icons/discord-mark-white.svg",
         "/assets/icons/github-mark-white.svg",
         "/assets/icons/github-mark.svg",
         "/assets/icons/logo_white_128.png",
@@ -47,8 +54,15 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "/553.c0590935041503f4.js": "6454c64c2c00e6e724f18100fc99650d1b88defd",
     "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
+    "/assets/i18n/de.json": "98a8976bf67db4d07b9a047b1a8e8263dba6badc",
+    "/assets/i18n/en.json": "fabe66a88c579333cc8639684eabec618533d7ac",
+    "/assets/i18n/fr.json": "e3322c0756f443e6cbdead978afe0043efecb08c",
+    "/assets/i18n/it.json": "22d36e539929bedb5b4550cd1be60f880ef50e25",
+    "/assets/i18n/sp.json": "bb092879599e8b5a457f3c3609778678672418b4",
     "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
+    "/assets/icons/discord-mark-white.svg": "6068e50249899fe9d308132e89c1a0114b992ecb",
     "/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
     "/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
     "/assets/icons/logo_white_128.png": "50e1135daf80cc629d00227cc75b7870c15dd015",
@@ -60,12 +74,12 @@
     "/assets/icons/logo_white_72.png": "cb191a9aaf3bee2a7f5da5d6c1ceb4f55cb92408",
     "/assets/icons/logo_white_96.png": "b49768ee2e013e1652f36eab43b45b1997bc00d0",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "9dc08a2879d4dddb9b06c82dbfb07640221ea9ba",
-    "/main.24a7d4148ded110f.js": "bc9e4dc87375179d4b34321a2dfedc238dc2c29e",
-    "/manifest.webmanifest": "39840081263477fbcd56d37692671a546cda706f",
-    "/polyfills.04161806afbbd56a.js": "8e880dd38e803d8bbd39c2aacd13b16e84f020fe",
-    "/runtime.75360cdfcb5a2485.js": "63a983fd2ff8373d8002c0918a31accd7597b3d1",
-    "/styles.94d3428d587476cd.css": "d14135e7ca757b7c0031e99126ed07284d2e998c"
+    "/index.html": "bad5e14f2399c92b53bb0b4ad0100842f4506857",
+    "/main.79c1b189e8fb0717.js": "302072a06ff46a44c8b0125562794639e0247db7",
+    "/manifest.webmanifest": "36eb0f161b2d4766ad1450a5f04c4979384567bb",
+    "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
+    "/runtime.aba35d43e7dad82c.js": "a2f179e1bd46a85eae4d8cf553e776fb8b17d870",
+    "/styles.9e7769e6774a3f86.css": "99db516d4a5c8785d6c38ec75d60253ebeb286ad"
   },
   "navigationUrls": [
     {
