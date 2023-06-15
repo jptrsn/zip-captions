@@ -1,3 +1,4 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule, isDevMode } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -8,6 +9,8 @@ import { NgIconsModule } from '@ng-icons/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Icons, SharedUiModule } from 'shared-ui';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
@@ -24,21 +27,9 @@ import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { APP_BASE_HREF } from '@angular/common';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
-
-export function BaseHrefFactory() {
-  console.log('baseHref factory', window.location);
-  if (window.location.origin.match('github.io')) {
-    return '/zip-captions/';
-  }
-  return `/`;
 }
 
 @NgModule({
@@ -87,9 +78,6 @@ export function BaseHrefFactory() {
         deps: [HttpClient]
       }
     })
-  ],
-  providers: [
-    { provide: APP_BASE_HREF, useFactory: BaseHrefFactory }
   ],
   bootstrap: [AppComponent],
 })
