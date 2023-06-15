@@ -7,6 +7,7 @@ export interface AppAppearanceState {
   cookiesAccepted: boolean;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
+  browserIncompatible?: boolean;
   error?: string;
 }
 export interface AppState {
