@@ -59,7 +59,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.translate.use(this.language());
+    if (this.formGroup.dirty) {
+      this.translate.use(this.language());
+    }
     this.onDestroy$.next();
   }
 
