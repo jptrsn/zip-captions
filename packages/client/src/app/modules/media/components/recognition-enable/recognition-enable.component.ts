@@ -2,7 +2,7 @@ import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { errorSelector } from '../../../../selectors/app.selector';
-import { map, of, switchMap, tap } from 'rxjs';
+import { filter, map, of, switchMap, tap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
 import { recognitionErrorSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
@@ -30,6 +30,7 @@ export class RecognitionEnableComponent {
     const recogError = toSignal(this.store.select(recognitionErrorSelector))
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
+      filter((err) => err !== 'liveTextMissing'),
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => recogError() || appError())

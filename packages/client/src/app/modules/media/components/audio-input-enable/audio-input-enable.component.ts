@@ -2,7 +2,7 @@ import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { of, switchMap, tap } from 'rxjs';
+import { filter, of, switchMap, tap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { errorSelector } from '../../../../selectors/app.selector';
@@ -30,6 +30,7 @@ export class AudioInputEnableComponent {
     
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
+      filter((err) => err !== 'liveTextMissing'),
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => this.streamState().error || appError());

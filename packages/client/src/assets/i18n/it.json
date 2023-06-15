@@ -123,5 +123,10 @@
     "listen": "Ascolta",
     "lang": "Language",
     "theme": "Tema"
-  } 
+  },
+  "ERRORS": {
+    "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
+    "serviceUnavailable": "Sembra che il servizio non sia ancora disponibile su questa piattaforma. Consigliamo Chrome o Safari",
+    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma."
+  }
 }
