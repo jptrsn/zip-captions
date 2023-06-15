@@ -1,8 +1,12 @@
-import { Component, ElementRef, Renderer2, Signal, ViewContainerRef, ViewEncapsulation, effect } from '@angular/core';
+import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { AppActions, AppState, AppTheme } from './models/app.model';
-import { themeSelector } from './selectors/app.selector';
+import { AppActions, AppState } from './models/app.model';
+import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
+import { themeSelector } from './selectors/settings.selector';
+import { TranslateService } from '@ngx-translate/core'
+import { languageSelector } from './selectors/settings.selector';
+import { errorSelector } from './selectors/app.selector';
 
 @Component({
   selector: 'app-root',
@@ -14,9 +18,18 @@ export class AppComponent {
   public theme$: Signal<AppTheme>;
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
-              private el: ElementRef) {
-    this.theme$ = toSignal(this.store.pipe(select(themeSelector))) as Signal<AppTheme>;
+              private el: ElementRef,
+              translate: TranslateService) {
+
+    AvailableLanguages.forEach((lang) => translate.reloadLang(lang))
+    translate.setDefaultLang('en');
+
+    this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
+    const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<Language>;
+    effect(() => translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
     this.store.dispatch(AppActions.initAppearance());
+    this.store.dispatch(AppActions.checkUserAgent());
+
   }
 }

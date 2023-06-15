@@ -1,4 +1,5 @@
 import { NgModule, isDevMode } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -11,19 +12,30 @@ import { Icons, SharedUiModule } from 'shared-ui';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { AboutComponent } from './components/about/about.component';
+import { CookieModalComponent } from './components/cookie-modal/cookie-modal.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
+import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
+import { AppEffects } from './effects/app.effects';
+import { SettingsEffects } from './effects/settings.effects';
 import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
-import { AppEffects } from './effects/app.effects';
-import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
-import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { SettingsComponent } from './components/settings/settings.component';
-import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
+import { settingsReducers } from './reducers/settings.reducer';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { APP_BASE_HREF } from '@angular/common';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export function BaseHrefFactory() {
+  return `${window.location.origin}/`;
+}
 
 @NgModule({
   declarations: [
@@ -33,9 +45,7 @@ import { LanguageSelectorComponent } from './components/language-selector/langua
     HomeComponent,
     AboutComponent,
     WelcomeSplashComponent,
-    ThemeSelectorComponent,
-    SettingsComponent,
-    LanguageSelectorComponent,
+    CookieModalComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -57,13 +67,26 @@ import { LanguageSelectorComponent } from './components/language-selector/langua
       appearance: appAppearanceReducers,
       audioStream: audioStreamReducers,
       recognition: recognitionReducers,
+      settings: settingsReducers,
     }),
     EffectsModule.forRoot([AppEffects]),
+    EffectsModule.forFeature([SettingsEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
-  providers: [],
+  providers: [
+    { provide: APP_BASE_HREF, useFactory: BaseHrefFactory }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

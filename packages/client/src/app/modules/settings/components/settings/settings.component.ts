@@ -1,11 +1,13 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { AppActions, AppState, AppTheme, Language } from '../../models/app.model';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { languageSelector, themeSelector } from '../../selectors/app.selector';
-import { Router } from '@angular/router';
+import { AppState } from '../../../../models/app.model';
+import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
+import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-settings',
@@ -26,7 +28,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
               private store: Store<AppState>,
               private renderer: Renderer2,
               private el: ElementRef,
-              private router: Router) {
+              private router: Router,
+              private translate: TranslateService) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     
@@ -43,17 +46,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
       if (theme) {
         this.renderer.setAttribute(this.el.nativeElement, 'data-theme', theme);
       }
+    });
+    this.formGroup.get('lang')?.valueChanges.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((lang: Language | null) => {
+      if (lang) {
+        this.translate.use(lang).subscribe(() => {
+          console.log('used lang', lang)
+        })
+      }
     })
   }
 
   ngOnDestroy(): void {
+    if (this.formGroup.dirty) {
+      this.translate.use(this.language());
+    }
     this.onDestroy$.next();
   }
 
   saveSettings(): void {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
-    this.store.dispatch(AppActions.setTheme({theme}));
+    this.store.dispatch(SettingsActions.setTheme({theme}));
+    const language: Language = this.formGroup.get('lang')!.value as Language;
+    this.store.dispatch(SettingsActions.setLanguage({language}))
     this.router.navigate([''])
   }
 }

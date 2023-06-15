@@ -1,8 +1,11 @@
-import { Component, ElementRef, Input, Signal, ViewChild, computed } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
+import { filter, of, switchMap, tap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
+import { errorSelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
 
@@ -12,7 +15,6 @@ import { MediaService } from '../../services/media.service';
   styleUrls: ['./audio-input-enable.component.scss'],
 })
 export class AudioInputEnableComponent {
-  @ViewChild('errorIcon', {read: ElementRef}) errorIcon!: ElementRef;
   public streamState: Signal<AudioStreamState>;
   public vol: Signal<number | undefined>;
   public connected: Signal<boolean | undefined>;
@@ -20,11 +22,18 @@ export class AudioInputEnableComponent {
   public error: Signal<string | undefined>;
 
   constructor(private store: Store<AppState>,
-              private mediaService: MediaService) {
+              private mediaService: MediaService,
+              private translate: TranslateService) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
     this.disconnected = computed(() => this.streamState().status === AudioStreamStatus.disconnected);
-    this.error = computed(() => this.streamState().error);
+    
+    const appError = toSignal(this.store.pipe(
+      select(errorSelector),
+      filter((err) => err !== 'liveTextMissing'),
+      switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
+    ));
+    this.error = computed(() => this.streamState().error || appError());
     this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0);
   }
 

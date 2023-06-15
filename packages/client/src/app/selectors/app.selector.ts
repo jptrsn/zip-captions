@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store";
-import { AppAppearanceState, AppState, AppTheme, Language } from "../models/app.model";
+import { AppAppearanceState, AppState } from "../models/app.model";
 
 export const selectAppAppearance = (state: AppState): AppAppearanceState => state.appearance;
 
@@ -13,12 +13,7 @@ export const footerVisibleSelector = createSelector(
   (state) => state.footerVisible
 )
 
-export const themeSelector = createSelector(
+export const errorSelector = createSelector(
   selectAppAppearance,
-  (state) => state.theme as AppTheme
-)
-
-export const languageSelector = createSelector(
-  selectAppAppearance,
-  (state) => state.lang as Language
+  (state) => state.error
 )

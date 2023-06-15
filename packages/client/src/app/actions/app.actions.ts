@@ -1,13 +1,16 @@
 import { createAction, props } from "@ngrx/store";
-import { AppAppearanceState, AppTheme } from "../models/app.model";
+import { AppAppearanceState } from "../models/app.model";
 
-export const setTheme = createAction('[App] Set Theme', props<{theme: AppTheme}>());
+
 export const showFooter = createAction('[App] Show Footer');
 export const hideFooter = createAction('[App] Hide Footer');
 export const checkUserAgent = createAction('[App] Check UserAgent');
-export const initAppearance = createAction('[App] Init Settings');
+export const initAppearance = createAction('[App] Init Appearance');
 
+export const acceptCookies = createAction('[App] Accept Cookies');
+export const declineCookies = createAction('[App] Decline Cookies');
+export const setCookiePolicyComplete = createAction('[App] Set Cookie Policy Complete')
 
-export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete');
-export const setThemeComplete = createAction('[App] Set Theme Complete');
-export const initAppearanceComplete = createAction('[App] Init Settings Complete', props<{appearance: AppAppearanceState}>());
+export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{error?: string}>());
+
+export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());

@@ -1,0 +1,132 @@
+{
+  "LANGUAGES": {
+    "en": "Inglese (English)",
+    "fr": "Francese (Français)",
+    "sp": "Spagnolo (Espagnol)",
+    "de": "Tedesco (Deutsch)",
+    "it": "Italiano",
+    "pt": "Portoghese (Português)"
+  },
+  "THEMES": {
+    "dark": "buio",
+    "light": "leggero",
+    "cupcake": "cupcake",
+    "bumblebee": "calabrone",
+    "emerald": "smeraldo",
+    "corporate": "aziendale",
+    "synthwave": "synthwave",
+    "retro": "retrò",
+    "cyberpunk": "cyberpunk",
+    "valentine": "valentino",
+    "halloween": "halloween",
+    "garden": "giardino",
+    "forest": "foresta",
+    "aqua": "acqua",
+    "lofi": "lofi",
+    "pastel": "pastello",
+    "fantasy": "fantasia",
+    "wireframe": "wireframe",
+    "black": "nero",
+    "luxury": "lusso",
+    "dracula": "dracula",
+    "cmyk": "cmyk",
+    "autumn": "autunno",
+    "business": "commerciale",
+    "acid": "acido",
+    "lemonade": "limonata",
+    "night": "notte",
+    "coffee": "caffè",
+    "winter": "inverno",
+    "ZipDark": "Zip Buio",
+    "ZipLight": "Zip Leggero"
+  },
+  "HOME": {
+    "loading": "Rimani in attesa mentre l'app si carica..."
+  },
+  "ABOUT": {
+    "h1": "Cos'è Zip Captions?",
+    "b1": "Zip Captions è uno strumento che genera risultati speech-to-text per un dato dispositivo di input come il microfono della vostra macchina",
+
+    "h2": "Perché?",
+    "b2": "La conversione dell'audio in testo in tempo reale può rendere la vita più accessibile. Ci proponiamo di farlo per tutti, gratuitamente e nel modo più semplice possibile.",
+
+    "h3": "Chi siete?",
+    "b3": "Siamo una coppia di educatori e coder che credono che la tecnologia debba essere accessibile e che l'accessibilità non esista dietro un paywall",
+
+    "h4": "Quanto?",
+    "b4": "Le funzionalità di base saranno sempre gratuite. Il nostro obiettivo è quello di rendere il più possibile gratuito lo strumento. Tuttavia, in alcuni casi, potremmo chiedere denaro per contribuire a compensare i costi del progetto.",
+
+    "h5": "Come?",
+    "b5": "La funzionalità di base sarà sempre gratuita. Il nostro obiettivo è quello di rendere il più possibile gratuito lo strumento. Tuttavia, in alcuni casi, potremmo chiedere denaro per contribuire a compensare i costi del progetto."
+  },
+  "COOKIES": {
+    "MODAL": {
+      "title": "Questo sito web utilizza i cookie",
+      "p1": "Utilizziamo i cookie per fornire le funzionalità del sito web. Memorizziamo solo i cookie strettamente necessari, richiesti per consentire la funzionalità di queste applicazioni (ad esempio, impostazioni personalizzate, ecc.)",
+      "p2": "Non tracciamo né memorizziamo alcun cookie non funzionale sul vostro dispositivo",
+      "p3": "Visualizza la nostra politica sui cookie per maggiori dettagli"
+    },
+    "POLICY": {
+      "title": "Cookie Policy",
+      "p1": "Si prega di leggere attentamente la presente informativa sui cookie (\"cookie policy\", \"policy\") prima di utilizzare questo sito web (\"website\", \"service\") gestito da ZipCaptions (\"us\", \"we\", \"our\").",
+      "h2": "Cosa sono i cookie?",
+      "p2": "I cookie sono semplici file di testo che vengono memorizzati sul vostro computer o dispositivo mobile dal server di un sito web. Ogni cookie è unico per il vostro browser web. Contiene alcune informazioni anonime come un identificatore unico, il nome del dominio del sito web e alcune cifre e numeri.",
+      "h3": "Quali tipi di cookie utilizziamo?",
+      "t3": "Cookie necessari",
+      "p3": "I cookie necessari ci permettono di offrirvi la migliore esperienza possibile quando accedete e navigate nel nostro sito web e utilizzate le sue funzionalità. Ad esempio, questi cookie ci permettono di riconoscere che avete creato un account e che avete effettuato l'accesso a tale account.",
+      "t4": "Cookie di funzionalità",
+      "p4": "I cookie di funzionalità ci permettono di far funzionare il sito in base alle scelte fatte dall'utente. Ad esempio, ricorderemo come avete personalizzato il sito durante le visite future.",
+      "t5": "Cookie analitici",
+      "p5": "Questi cookie consentono a noi e ai servizi di terze parti di raccogliere dati aggregati a fini statistici su come i nostri visitatori utilizzano il sito web. Questi cookie non contengono informazioni personali come nomi e indirizzi e-mail e sono utilizzati per aiutarci a migliorare la vostra esperienza d'uso del sito web.Questi cookie consentono a noi e ai servizi di terze parti di raccogliere dati aggregati a fini statistici su come i nostri visitatori utilizzano il sito web. Questi cookie non contengono informazioni personali come nomi e indirizzi e-mail e sono utilizzati per aiutarci a migliorare la vostra esperienza d'uso del sito web.",
+      "h6": "Come cancellare i cookie?",
+      "p6_1": "Se si desidera limitare o bloccare i cookie impostati dal nostro sito web, è possibile farlo attraverso le impostazioni del browser. In alternativa, è possibile visitare",
+      "p6_2": ", che contiene informazioni complete su come effettuare questa operazione su un'ampia varietà di browser e dispositivi. Troverete informazioni generali sui cookie e dettagli su come eliminare i cookie dal vostro dispositivo."
+    }
+  },
+"WELCOME": {
+    "p1": "L'accessibilità dovrebbe essere gratuita",
+    "p2": "Zip Captions fornisce un'esperienza di didascalie dal vivo facile da usare che vive direttamente nel vostro browser. Non catturiamo, memorizziamo o condividiamo nessuno dei vostri dati, non ci sono costi nascosti né accordi da firmare",
+    "p3": "Clicca sul pulsante in alto per iniziare."
+  },
+ "SETTINGS": {
+    "t1": "Anteprima",
+    "p1": "Ogni segmento di testo riconosciuto in precedenza apparirà così",
+    "p2": "Scorrendo dal basso verso l'alto",
+    "p3": "Con ogni nuovo risultato che appare sotto il precedente",
+    "p4": "Il testo in tempo reale viene visualizzato in questo modo"
+  },
+ "ROUTES": {
+    "home": "Home",
+    "about": "About",
+    "settings": "Impostazioni"
+  },
+  "FOOTER": {
+    "copyright": "Copyright"
+  },
+  "BUTTONS": {
+    "accept": "Accept",
+    "acceptAll": "Accept All",
+    "accepted": "Accepted",
+    "reject": "Reject",
+    "rejected": "Rifiutato",
+    "viewPolicy": "View Policy",
+    "saveAndClose": "Salva e chiudi",
+    "cancel": "Annulla"
+  },
+  "LABELS": {
+    "menu": "Menu",
+    "viewPolicy": "Visualizza la politica dei cookie",
+    "closeCookieModal": "Chiudi il pop-up dei cookie",
+    "viewGithub": "Visualizza il repository github",
+    "joinDiscord": "Unisciti a Discord",
+    "stop": "Stop",
+    "listen": "Ascolta",
+    "lang": "Language",
+    "theme": "Tema"
+  },
+  "ERRORS": {
+    "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
+    "serviceUnavailable": "Sembra che il servizio non sia ancora disponibile su questa piattaforma. Consigliamo Chrome o Safari",
+    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma."
+  }
+}

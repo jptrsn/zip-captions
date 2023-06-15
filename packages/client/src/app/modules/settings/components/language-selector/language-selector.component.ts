@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Language } from '../../models/app.model';
+import { AvailableLanguages } from '../../models/settings.model';
+
 
 @Component({
   selector: 'app-language-selector',
@@ -10,5 +11,5 @@ import { Language } from '../../models/app.model';
 export class LanguageSelectorComponent {
   @Input() group!: FormGroup
   @Input() controlName!: string;
-  public languages = Language;
+  public languages = AvailableLanguages;
 }

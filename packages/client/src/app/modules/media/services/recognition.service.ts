@@ -4,6 +4,10 @@ import { RecognitionActions, SpeechRecognition } from '../../../models/recogniti
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
+import { $localize } from '@angular/localize/init';
+import { Language } from '../../settings/models/settings.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { languageSelector } from '../../../selectors/settings.selector';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -21,12 +25,14 @@ export class RecognitionService {
   private readonly SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 5;
   private historyWorker: Worker;
+  private language: Signal<Language>;
 
   constructor(private store: Store<AppState>) {
     this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
     this.historyWorker.addEventListener('message', ({data}) => {
       // console.log(data);
     })
+    this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
   }
 
   public connectToStream(streamId: string): void {
@@ -35,8 +41,7 @@ export class RecognitionService {
     recog.interimResults = true;
     recog.continuous = true;
 
-    // TODO: Replace language from settings
-    recog.lang = 'en';
+    recog.lang = this.language();
     this.recognitionMap.set(streamId, recog);
     this.activeRecognitionStreams.add(streamId);
     this._addEventListeners(streamId, recog);
@@ -54,7 +59,7 @@ export class RecognitionService {
   public getLiveOutput(streamId: string): Signal<string> {
     const liveOutput = this.liveOutputMap.get(streamId);
     if (!liveOutput) {
-      throw new Error(`No live output signal for recognition stream id ${streamId}`);
+      throw new Error($localize`No live output signal for recognition stream id ${streamId}`);
     } else {
       return liveOutput;
     }
@@ -63,7 +68,7 @@ export class RecognitionService {
   getRecognizedText(streamId: string): Signal<string[]> {
     const recognizedTextOutput = this.recognizedTextMap.get(streamId);
     if (!recognizedTextOutput) {
-      throw new Error(`Recognized text output signal not found for stream id ${streamId}`);
+      throw new Error($localize`Recognized text output signal not found for stream id ${streamId}`);
     } else {
       return recognizedTextOutput;
     }

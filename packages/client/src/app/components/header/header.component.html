@@ -5,7 +5,7 @@
   <div class="flex-1">
     <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
-      <div class="normal-case text-sm">Free captions provided by https://captions.zip</div>
+      <div class="normal-case text-sm">ZipCaptions.app</div>
     </ng-template>
   </div>
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
@@ -13,12 +13,14 @@
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
   </ng-container>
   <details #menu class="flex-none dropdown dropdown-end z-10" *ngIf="!isActive()">
-    <summary class="m-1 btn btn-circle btn-ghost text-2xl">
+    <summary class="m-1 btn btn-circle btn-ghost text-2xl" role="button" [attr.aria-label]="'LABELS.menu' | translate">
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
       <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
-        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">{{item.label | proper}}</button>
+        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">
+          {{item.label | translate | proper}}
+        </button>
       </li>
     </ul>
   </details>

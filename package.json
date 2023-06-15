@@ -1,13 +1,13 @@
 {
   "name": "zip-captions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
     "build": "nx build",
-    "build:client": "nx build --project=client"
+    "build:client": "nx build --project=client",
+    "i18n:extract": "nx extract-i18n --project=client --output-path=./packages/client/src/locales --format=json"
   },
   "private": true,
   "dependencies": {
@@ -17,6 +17,7 @@
     "@angular/compiler": "~16.0.0",
     "@angular/core": "~16.0.0",
     "@angular/forms": "~16.0.0",
+    "@angular/localize": "16.0",
     "@angular/platform-browser": "~16.0.0",
     "@angular/platform-browser-dynamic": "~16.0.0",
     "@angular/router": "~16.0.0",
@@ -28,6 +29,8 @@
     "@ngrx/entity": "~16.0.0",
     "@ngrx/router-store": "~16.0.0",
     "@ngrx/store": "~16.0.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "^16.2.2",
     "@types/dom-speech-recognition": "^0.0.1",
     "angular-animations": "^0.11.0",
