@@ -6,6 +6,7 @@ import { AppTheme, AvailableLanguages, Language } from './modules/settings/model
 import { themeSelector } from './selectors/settings.selector';
 import { TranslateService } from '@ngx-translate/core'
 import { languageSelector } from './selectors/settings.selector';
+import { errorSelector } from './selectors/app.selector';
 
 @Component({
   selector: 'app-root',
@@ -20,15 +21,15 @@ export class AppComponent {
               private el: ElementRef,
               translate: TranslateService) {
 
-    
     AvailableLanguages.forEach((lang) => translate.reloadLang(lang))
     translate.setDefaultLang('en');
 
+    this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<Language>;
-    this.theme$ = toSignal(this.store.pipe(select(themeSelector))) as Signal<AppTheme>;
     effect(() => translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
+
   }
 }

@@ -1,10 +1,12 @@
-import { Component, Signal } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { AppState } from '../../../../models/app.model';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { recognitionErrorSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
+import { Store, select } from '@ngrx/store';
+import { errorSelector } from '../../../../selectors/app.selector';
+import { map, of, switchMap, tap } from 'rxjs';
+import { AppState } from '../../../../models/app.model';
 import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
-import { map, tap } from 'rxjs';
+import { recognitionErrorSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-recognition-enable',
@@ -15,7 +17,8 @@ export class RecognitionEnableComponent {
   public connected: Signal<boolean | undefined>;
   public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,
+              private translate: TranslateService) {
     this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
     map((status: RecognitionStatus) => (status === RecognitionStatus.connected)),
     ));
@@ -24,7 +27,12 @@ export class RecognitionEnableComponent {
     map((status: RecognitionStatus) => (status === RecognitionStatus.disconnected)),
     ));
 
-    this.error = toSignal(this.store.pipe(select(recognitionErrorSelector)))
+    const recogError = toSignal(this.store.select(recognitionErrorSelector))
+    const appError = toSignal(this.store.pipe(
+      select(errorSelector),
+      switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
+    ));
+    this.error = computed(() => recogError() || appError())
   }
 
   toggleState(): void {

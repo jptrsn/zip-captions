@@ -13,3 +13,7 @@ export const footerVisibleSelector = createSelector(
   (state) => state.footerVisible
 )
 
+export const errorSelector = createSelector(
+  selectAppAppearance,
+  (state) => state.error
+)
