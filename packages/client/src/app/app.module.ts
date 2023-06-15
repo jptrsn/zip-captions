@@ -34,8 +34,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export function BaseHrefFactory() {
-  console.log('base href factory', window.location.pathname)
-  return '/';
+  return `${window.location.origin}/`;
 }
 
 @NgModule({

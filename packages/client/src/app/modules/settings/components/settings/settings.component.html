@@ -24,7 +24,11 @@
       </div>
     </div>
   </div>
-  <footer class="flex w-full justify-end">
+  <footer class="flex w-full justify-end gap-3">
+    <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
+      BUTTONS.cancel
+    </button>
+
     <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit" translate>
       BUTTONS.saveAndClose
     </button>

@@ -49,9 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       filter((ev) => ev instanceof NavigationStart),
       takeUntil(this.onDestroy$)
     ).subscribe((ev) => {
-      console.log('close nav menu', this.menuElement)
       this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
-      // TODO: Close nav menu
     })
     this.menuItems = this.router.config.map((route: Route) => {
       return {

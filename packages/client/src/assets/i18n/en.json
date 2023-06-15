@@ -1,11 +1,11 @@
 {
   "LANGUAGES": {
     "en": "English",
-    "fr": "French",
-    "sp": "Spanish",
-    "de": "German",
-    "it": "Italian",
-    "pt": "Portuguese"
+    "fr": "French (Français)",
+    "sp": "Spanish (Espagnol)",
+    "de": "German (Deutsch)",
+    "it": "Italian (Italiano)",
+    "pt": "Portuguese (Português)"
   },
   "THEMES": {
     "dark": "dark",
@@ -86,7 +86,7 @@
   "WELCOME": {
     "p1": "Accessibility should be free.",
     "p2": "Zip Captions provides an easy to use live captions experience which lives right inside your browser. We don't capture, store, or share any of your data, and there are no hidden fees, and no agreements to sign.",
-    "p3": "Click the button at the top to get started"
+    "p3": "Click the button at the top to get started."
   },
   "SETTINGS": {
     "t1": "Preview",
@@ -110,7 +110,8 @@
     "reject": "Reject",
     "rejected": "Rejected",
     "viewPolicy": "View Policy",
-    "saveAndClose": "Save and Close"
+    "saveAndClose": "Save and Close",
+    "cancel": "Cancel"
   },
   "LABELS": {
     "menu": "Menu",

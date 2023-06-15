@@ -15,7 +15,6 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.initSettings),
       map(() => this.storage.get('settings')),
-      tap((settings: SettingsState) => console.log('settings', settings)),
       map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
     )
   )
@@ -31,7 +30,6 @@ export class SettingsEffects {
   applyLanguage$ = createEffect(() => 
     this.actions$.pipe(
       ofType(SettingsActions.setLanguage),
-      tap(({language}) => console.log('setlanguage', language)),
       tap(({language}) => this.storage.update('settings', 'lang',  language)),
       switchMap(({language}) => this.translate.use(language)),
       map(() => SettingsActions.setLanguageComplete())

@@ -1,10 +1,11 @@
 {
   "LANGUAGES": {
-    "en": "Anglais",
+    "en": "Anglais (English)",
     "fr": "Français",
     "sp": "Espangol",
-    "de": "Allemand",
-    "it": "Italien"
+    "de": "Allemand (Deutsch)",
+    "it": "Italien (Italiano)",
+    "pt": "Portugais (Português)"
   },
   "THEMES": {
     "dark": "sombre",
@@ -85,7 +86,7 @@
   "WELCOME": {
     "p1" : "L'accessibilité devrait être gratuite",
     "p2" : "Zip Captions fournit une expérience de sous-titrage en direct facile à utiliser, qui vit directement dans votre navigateur. Nous ne capturons, ne stockons, ni ne partageons aucune de vos données, et il n'y a pas de frais cachés, ni d'accord à signer",
-    "p3" : "Cliquez sur le bouton en haut pour commencer"
+    "p3" : "Cliquez sur le bouton en haut pour commencer."
   },
   "SETTINGS": {
     "t1" : "Aperçu",
@@ -108,7 +109,9 @@
     "accepted" : "Accepté",
     "reject" : "Rejeter",
     "rejeté" : "Rejected",
-    "viewPolicy" : "Voir détails"
+    "viewPolicy" : "Voir détails",
+    "saveAndClose": "Sauver et Fermer",
+    "cancel": "Annuler"
   },
   "LABELS" : {
     "menu" : "Menu",
