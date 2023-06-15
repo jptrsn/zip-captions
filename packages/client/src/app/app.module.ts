@@ -34,7 +34,11 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export function BaseHrefFactory() {
-  return `${window.location.origin}/`;
+  console.log('baseHref factory', window.location);
+  if (window.location.origin.match('github.io')) {
+    return '/zip-captions/';
+  }
+  return `/`;
 }
 
 @NgModule({
