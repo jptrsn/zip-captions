@@ -2,12 +2,15 @@
   class="btn btn-circle text-2xl"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
   (click)="toggleState()"
-  [attr.aria-label]="connected() ? 'Stop' : 'Listen'"
+  [attr.aria-label]="connected() ? 'LABELS.stop' : 'LABELS.listen' | translate"
   >
-  <ng-container *ngIf="connected(); else inactive">
-    <ng-icon name="heroStopCircle"></ng-icon>
-  </ng-container>
-  <ng-template #inactive>
-    <ng-icon name="heroPlayCircle"></ng-icon>
+  <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
+  <ng-template #micEnabled>
+    <ng-container *ngIf="connected(); else inactive">
+      <ng-icon name="heroStopCircle"></ng-icon>
+    </ng-container>
+    <ng-template #inactive>
+      <ng-icon name="heroPlayCircle"></ng-icon>
+    </ng-template>
   </ng-template>
 </button>

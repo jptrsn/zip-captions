@@ -3,11 +3,12 @@ import { AppTheme, Language, SettingsActions, SettingsState } from "../modules/s
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
-  lang: Language.English,
+  lang: 'en',
 }
 
 export const settingsReducers = createReducer(
   defaultSettingsState,
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
+  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: Language}) => ({...state, lang: action.language})),
   on(SettingsActions.initSettingsComplete, (state: SettingsState, action: { settings: SettingsState}) => ({...state, ...action.settings })),
 )

@@ -23,10 +23,8 @@ export class StorageService {
   }
 
   update(key: string, property: string, value: any): void {
-    console.log('update setings')
     const fromStorage: any = this.get(key) || {};
     fromStorage[property] = value;
-    console.log('saving', key, fromStorage);
     this.set(key, fromStorage);
   }
 }

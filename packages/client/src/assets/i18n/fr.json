@@ -1,0 +1,128 @@
+{
+  "LANGUAGES": {
+    "en": "Anglais (English)",
+    "fr": "Français",
+    "sp": "Espangol",
+    "de": "Allemand (Deutsch)",
+    "it": "Italien (Italiano)",
+    "pt": "Portugais (Português)"
+  },
+  "THEMES": {
+    "dark": "sombre",
+    "light": "lumière",
+    "cupcake": "petit gâteau",
+    "bumblebee": "bourdon",
+    "emerald": "émeraude",
+    "corporate": "corporatif",
+    "synthwave": "synthwave",
+    "retro": "rétro",
+    "cyberpunk": "cyberpunk",
+    "valentine": "valentin",
+    "halloween": "halloween",
+    "garden": "jardin",
+    "forest": "forêt",
+    "aqua": "aqua",
+    "lofi": "lofi",
+    "pastel": "pastel",
+    "fantasy": "fantaisie",
+    "wireframe": "filaire",
+    "black": "noir",
+    "luxury": "luxe",
+    "dracula": "dracula",
+    "cmyk": "CMJN",
+    "autumn": "automne",
+    "business": "entreprise",
+    "acid": "acide",
+    "lemonade": "limonade",
+    "night": "nuit",
+    "coffee": "café",
+    "winter": "hiver",
+    "ZipDark": "Zip Sobmre",
+    "ZipLight": "Zip Lumière"
+  },
+  "HOME": {
+    "loading": "Attendez que l'application se charge..."
+  },
+  "ABOUT": {
+    "h1" : "Qu'est-ce que Zip Captions ?",
+    "b1" : "Zip Captions est un outil qui génère des résultats de synthèse vocale pour un périphérique d'entrée donné, tel que le microphone de votre machine",
+
+    "h2" : "Pourquoi ?",
+    "b2" : "La conversion de l'audio en texte en temps réel peut rendre la vie plus accessible. Notre objectif est de le faire pour tout le monde, gratuitement et aussi simplement que possible.",
+
+    "h3" : "Qui êtes-vous ?",
+    "b3" : "Nous sommes une paire d'éducateurs et de codeurs qui croient que la technologie devrait être accessible, et que l'accessibilité n'existe pas derrière un paywall.",
+
+    "h4" : "Combien ?",
+    "b4" : "Les fonctionnalités de base seront toujours gratuites. Nous nous efforçons de rendre la plus grande partie de l'outil aussi gratuite que possible. Cependant, dans certains cas, nous pouvons demander de l'argent pour aider à compenser les coûts du projet",
+
+    "h5" : "Comment ?",
+    "b5" : "Les fonctionnalités de base seront toujours gratuites. Nous nous efforçons de rendre l'outil aussi gratuit que possible. Cependant, dans certains cas, nous pouvons demander de l'argent pour aider à compenser les coûts du projet."
+  },
+  "COOKIES": {
+    "MODAL" : {
+      "title" : "Ce site web utilise des cookies",
+      "p1" : "Nous utilisons des cookies pour assurer la fonctionnalité du site web. Nous ne stockons que les cookies strictement nécessaires, requis pour permettre la fonctionnalité de ces applications (par exemple, les paramètres personnalisés, etc.)",
+      "p2" : "Nous ne suivons ni ne stockons aucun cookie non fonctionnel sur votre appareil",
+      "p3" : "Consultez notre politique en matière de cookies pour plus de détails"
+    },
+    "POLICY": {
+      "title" : "Politique en matière de cookies",
+      "p1" : "Veuillez lire attentivement cette politique en matière de cookies avant d'utiliser ce site web exploité par ZipCaptions",
+      "h2" : "Que sont les cookies ?",
+      "p2" : "Les cookies sont de simples fichiers texte qui sont stockés sur votre ordinateur ou votre appareil mobile par le serveur d'un site web. Chaque cookie est propre à votre navigateur web. Il contient des informations anonymes telles qu'un identifiant unique, le nom de domaine du site web et quelques chiffres.",
+      "h3" : "Quels types de cookies utilisons-nous ?",
+      "t3" : "Cookies nécessaires",
+      "p3" : "Les cookies nécessaires nous permettent de vous offrir la meilleure expérience possible lorsque vous accédez à notre site web, que vous y naviguez et que vous utilisez ses fonctionnalités. Par exemple, ces cookies nous permettent de reconnaître que vous avez créé un compte et que vous vous êtes connecté à ce compte",
+      "t4" : "Functionality Cookies",
+      "p4" : "Les cookies de fonctionnalité nous permettent d'exploiter le site conformément aux choix que vous faites. Par exemple, nous nous souviendrons de la manière dont vous avez personnalisé le site lors de vos prochaines visites",
+      "t5" : "Cookies analytiques",
+      "p5" : "Ces cookies nous permettent, ainsi qu'à des services tiers, de collecter des données agrégées à des fins statistiques sur la manière dont nos visiteurs utilisent le site web. Ces cookies ne contiennent pas d'informations personnelles telles que des noms et des adresses électroniques et sont utilisés pour nous aider à améliorer votre expérience en tant qu'utilisateur du site web.Ces cookies nous permettent, ainsi qu'à des services tiers, de collecter des données agrégées à des fins statistiques sur la manière dont nos visiteurs utilisent le site web. Ces cookies ne contiennent pas d'informations personnelles telles que des noms et des adresses électroniques et sont utilisés pour nous aider à améliorer votre expérience en tant qu'utilisateur du site web.",
+      "h6" : "Comment supprimer les cookies ?",
+      "p6_1" : "Si vous souhaitez restreindre ou bloquer les cookies installés par notre site web, vous pouvez le faire via les paramètres de votre navigateur. Vous pouvez également visiter",
+      "p6_2" : ", qui contient des informations complètes sur la manière de procéder pour une grande variété de navigateurs et d'appareils. Vous y trouverez des informations générales sur les cookies et des détails sur la manière de supprimer les cookies de votre appareil."
+    }
+  },
+  "WELCOME": {
+    "p1" : "L'accessibilité devrait être gratuite",
+    "p2" : "Zip Captions fournit une expérience de sous-titrage en direct facile à utiliser, qui vit directement dans votre navigateur. Nous ne capturons, ne stockons, ni ne partageons aucune de vos données, et il n'y a pas de frais cachés, ni d'accord à signer",
+    "p3" : "Cliquez sur le bouton en haut pour commencer."
+  },
+  "SETTINGS": {
+    "t1" : "Aperçu",
+    "p1" : "Chaque segment de texte déjà reconnu apparaîtra comme ceci",
+    "p2" : "Défilement vers le haut à partir du bas",
+    "p3" : "Chaque nouveau résultat apparaissant sous le précédent.",
+    "p4" : "Des émissions de texte en direct comme celle-ci"
+  },
+  "ROUTES" : {
+    "home" : "Principal",
+    "about" : "À propos",
+    "settings" : "Paramètres"
+  },
+  "FOOTER" : {
+    "copyright" : "Copyright"
+  },
+  "BUTTONS" : {
+    "accept" : "Accept",
+    "acceptAll" : "Accepter tout",
+    "accepted" : "Accepté",
+    "reject" : "Rejeter",
+    "rejeté" : "Rejected",
+    "viewPolicy" : "Voir détails",
+    "saveAndClose": "Sauver et Fermer",
+    "cancel": "Annuler"
+  },
+  "LABELS" : {
+    "menu" : "Menu",
+    "viewPolicy" : "Afficher la politique en matière de cookies",
+    "closeCookieModal" : "Fermer la fenêtre pop-up des cookies",
+    "viewGithub" : "Voir le dépôt github",
+    "joinDiscord" : "Rejoindre le Discord",
+    "stop" : "Stop",
+    "listen" : "Listen",
+    "lang" : "Langue",
+    "theme" : "Thème"
+  }
+  
+}

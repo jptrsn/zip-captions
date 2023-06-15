@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, map, tap } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { collapseAnimation } from 'angular-animations';
 import { footerVisibleSelector } from '../../selectors/app.selector';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-footer',
@@ -14,12 +15,12 @@ import { footerVisibleSelector } from '../../selectors/app.selector';
   ]
 })
 export class FooterComponent {
-  public hidden$: Observable<boolean>;
+  public hidden: Signal<boolean | undefined>;
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
   public discordUrl = 'https://discord.gg/Swe2JeHnPc';
   constructor(private store: Store<AppState>) {
-    this.hidden$ = this.store.pipe(select(footerVisibleSelector)).pipe(
+    this.hidden = toSignal(this.store.pipe(select(footerVisibleSelector)).pipe(
       map((visible) => !visible)
-    )
+    ))
   }
 }

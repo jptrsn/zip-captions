@@ -1,29 +1,29 @@
-<button (click)="modal.showModal()" class="tooltip tooltip-right" data-tip="Cookies" aria-label="Cookie Policy">
+<button (click)="modal.showModal()" class="tooltip tooltip-right" [attr.data-tip]="buttonTooltip" aria-label="Cookie Policy" i18n-aria-label>
   <ng-icon name="cookie" size="24"></ng-icon>
 </button>
 <dialog #modal class="modal modal-bottom">
   <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
-    <h3 class="font-bold text-lg">This website uses cookies</h3>
+    <h3 class="font-bold text-lg">{{'COOKIES.MODAL.title' | translate}}</h3>
     <p class="text-base mt-1">
-      We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).
+      {{'COOKIES.MODAL.p1' | translate}}
     </p>
     <p class="text-base mt-1">
-      We do not track or store any non-functional cookies on your device.
+      {{'COOKIES.MODAL.p2' | translate}}
     </p>
-    <p class="text-base mt-1">
-      View our cookie policy for more details
+    <p class="text-base mt-1" i18n>
+      {{'COOKIES.MODAL.p3' | translate}}
     </p>
     <div class="modal-action">
-      <button class="btn" routerLink="settings/cookies" aria-label="View the cookie policy">View Policy</button>
-      <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()" aria-label="Reject cookies">
-        {{ !!declinedDate() ? "Rejected" : "Reject"}}
+      <button class="btn" routerLink="settings/cookies" [attr.aria-label]="'LABELS.viewPolicy' | translate">{{'BUTTONS.viewPolicy' | translate}}</button>
+      <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()">
+        {{ !!declinedDate() ? "BUTTONS.rejected" : "BUTTONS.reject" | translate }}
       </button>
-      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies">
-        {{ accepted() ? "Accepted" : "Accept All" }} 
+      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies" i18n-aria-label i18n>
+        {{ (accepted() ? "BUTTONS.accepted" : "BUTTONS.acceptAll") | translate }} 
       </button>
     </div>
   </form>
   <form method="dialog" class="modal-backdrop">
-    <button #close aria-label="Close cookie pop-up"></button>
+    <button #close [attr.aria-label]="'closeCookieModal' | translate"></button>
   </form>
 </dialog>

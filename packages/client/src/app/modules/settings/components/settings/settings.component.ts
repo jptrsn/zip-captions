@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-settings',
@@ -27,7 +28,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
               private store: Store<AppState>,
               private renderer: Renderer2,
               private el: ElementRef,
-              private router: Router) {
+              private router: Router,
+              private translate: TranslateService) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     
@@ -44,10 +46,22 @@ export class SettingsComponent implements OnInit, OnDestroy {
       if (theme) {
         this.renderer.setAttribute(this.el.nativeElement, 'data-theme', theme);
       }
+    });
+    this.formGroup.get('lang')?.valueChanges.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((lang: Language | null) => {
+      if (lang) {
+        this.translate.use(lang).subscribe(() => {
+          console.log('used lang', lang)
+        })
+      }
     })
   }
 
   ngOnDestroy(): void {
+    if (this.formGroup.dirty) {
+      this.translate.use(this.language());
+    }
     this.onDestroy$.next();
   }
 
@@ -55,6 +69,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
     this.store.dispatch(SettingsActions.setTheme({theme}));
+    const language: Language = this.formGroup.get('lang')!.value as Language;
+    this.store.dispatch(SettingsActions.setLanguage({language}))
     this.router.navigate([''])
   }
 }

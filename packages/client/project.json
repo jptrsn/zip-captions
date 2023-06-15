@@ -61,6 +61,9 @@
         },
         "development": {
           "browserTarget": "client:build:development"
+        },
+        "en": {
+          "browserTarget": "client:build:development,en"
         }
       },
       "defaultConfiguration": "development"

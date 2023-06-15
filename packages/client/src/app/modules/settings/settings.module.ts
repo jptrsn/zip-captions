@@ -10,6 +10,7 @@ import { routes } from './settings.routes';
 import { EffectsModule } from '@ngrx/effects';
 import { SettingsEffects } from '../../effects/settings.effects';
 import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     EffectsModule.forFeature([SettingsEffects]),
+    TranslateModule.forChild({extend: true})
   ],
   exports: [
     SettingsComponent,
