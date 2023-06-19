@@ -18,7 +18,8 @@
         "assets": [
           "packages/client/src/favicon.ico",
           "packages/client/src/assets",
-          "packages/client/src/manifest.webmanifest"
+          "packages/client/src/manifest.webmanifest",
+          "packages/client/src/CNAME"
         ],
         "styles": ["packages/client/src/styles.scss"],
         "scripts": [],
