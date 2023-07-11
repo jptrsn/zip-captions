@@ -1,14 +1,5 @@
 import { Component } from '@angular/core';
-
-interface SubSection {
-  text: string,
-  list?: string[]
-}
-
-export interface PolicySection {
-  title: string;
-  sections: SubSection[];
-}
+import { PolicySection } from '../../models/app.model';
 
 @Component({
   selector: 'app-privacy',

@@ -28,6 +28,7 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
 import { PrivacyComponent } from './components/privacy/privacy.component';
+import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -43,6 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WelcomeSplashComponent,
     CookieModalComponent,
     PrivacyComponent,
+    TermsAndConditionsComponent,
   ],
   imports: [
     BrowserAnimationsModule,
