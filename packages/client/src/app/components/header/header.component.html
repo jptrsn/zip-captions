@@ -1,7 +1,7 @@
 <div class="bg-base-300 gap-3 flex flex-row items-center p-2" [@growshrink]="isActive()">
-  <div class="flex">
+  <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
     <ng-icon name="zipCaptionsLogo" [size]="isActive() ? '24' : '48'"></ng-icon>
-  </div>
+  </button>
   <div class="flex-1">
     <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
