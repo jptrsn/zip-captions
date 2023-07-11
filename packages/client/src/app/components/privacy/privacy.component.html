@@ -1,0 +1,19 @@
+<div class="flex flex-col w-full h-full p-3 items-center">
+  <div class="flex flex-col w-full max-w-lg justify-items-stretch gap-3">
+
+    <div class="text-2xl font-bold" translate>PRIVACY.title</div>
+    
+    <div tabindex="0" class="collapse collapse-plus bg-accent" *ngFor="let entry of contents">
+      <div class="collapse-title text-xl font-medium">{{entry.title | translate}}</div>
+      <div class="collapse-content">
+        <ng-container *ngFor="let paragraph of entry.sections">
+          <p class="text-sm mb-3">{{paragraph.text | translate}}</p>
+          <ul *ngIf="paragraph.list" class="text-xs">
+            <li *ngFor="let item of paragraph.list" class="mb-1">{{item | translate}}</li>
+          </ul>
+        </ng-container>
+        
+      </div>
+    </div>
+  </div>
+</div>
