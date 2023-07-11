@@ -19,7 +19,7 @@
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
       <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
         <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">
-          {{item.label | translate | proper}}
+          {{'ROUTES.' + item.label | translate | proper}}
         </button>
       </li>
     </ul>
