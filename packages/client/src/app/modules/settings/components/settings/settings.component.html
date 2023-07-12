@@ -1,5 +1,5 @@
-<form class="flex flex-col basis-full p-6 gap-12 bg-base-300" [formGroup]="formGroup" (submit)="saveSettings()">
-  <div class="basis-full grid sm:grid-cols-1 md:grid-cols-2 gap-12">
+<form class="flex flex-col basis-full p-3 sm:p-6 gap-3 sm:gap-12 bg-base-300" [formGroup]="formGroup" (submit)="saveSettings()">
+  <div class="basis-full grid sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-12">
     <div>
       <app-theme-selector [group]="formGroup" controlName="theme"></app-theme-selector>
       <app-language-selector [group]="formGroup" controlName="lang"></app-language-selector>
@@ -8,23 +8,23 @@
       <div class="label">
         <label class="text-accent" translate>SETTINGS.t1</label>
       </div>
-      <div class="bg-base-100 text-base-content p-3 gap-3 rounded-sm">
-        <div class="text-xl p-3" translate>
+      <div class="bg-base-100 text-base-content p-3 gap-1 sm:gap-3 rounded-sm">
+        <div class="text-sm md:text-xl p-3" translate>
           SETTINGS.p1
         </div>
-        <div class="text-xl p-3 hidden sm:flex sm:visible" translate>
+        <div class="text-sm md:text-xl p-3 hidden sm:flex sm:visible" translate>
           SETTINGS.p2
         </div>
-        <div class="text-xl p-3" translate>
+        <div class="text-sm md:text-xl p-3" translate>
           SETTINGS.p3
         </div>
       </div>
-      <div class="bg-base-100 text-base-content px-6 py-2 text-5xl leading-relaxed" translate>
+      <div class="bg-base-100 text-base-content px-6 py-2 text-xl sm:text-2xl md:text-5xl leading-relaxed" translate>
         SETTINGS.p4
       </div>
     </div>
   </div>
-  <footer class="flex w-full justify-end gap-3">
+  <footer class="flex w-full justify-end gap-1 sm:gap-3">
     <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
       BUTTONS.cancel
     </button>

@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { AppState } from '../../../../models/app.model';
+import { AppActions, AppState } from '../../../../models/app.model';
 import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
 import { TranslateService } from '@ngx-translate/core'
@@ -40,6 +40,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(AppActions.hideFooter())
     this.formGroup.get('theme')?.valueChanges.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((theme) => {
@@ -62,6 +63,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.formGroup.dirty) {
       this.translate.use(this.language());
     }
+    this.store.dispatch(AppActions.showFooter())
     this.onDestroy$.next();
   }
 
