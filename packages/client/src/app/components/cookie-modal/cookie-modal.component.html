@@ -14,7 +14,7 @@
       {{'COOKIES.MODAL.p3' | translate}}
     </p>
     <div class="modal-action">
-      <button class="btn" routerLink="settings/cookies" [attr.aria-label]="'LABELS.viewPolicy' | translate">{{'BUTTONS.viewPolicy' | translate}}</button>
+      <button class="btn" routerLink="cookies" [attr.aria-label]="'LABELS.viewPolicy' | translate">{{'BUTTONS.viewPolicy' | translate}}</button>
       <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()">
         {{ !!declinedDate() ? "BUTTONS.rejected" : "BUTTONS.reject" | translate }}
       </button>

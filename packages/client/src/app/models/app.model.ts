@@ -17,4 +17,14 @@ export interface AppState {
   recognition: RecognitionState;
 }
 
+interface SubSection {
+  text: string,
+  list?: string[]
+}
+
+export interface PolicySection {
+  title: string;
+  sections: SubSection[];
+}
+
 export * as AppActions from '../actions/app.actions';

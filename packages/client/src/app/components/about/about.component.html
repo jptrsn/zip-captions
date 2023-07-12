@@ -1,6 +1,6 @@
-<div class="flex flex-col justify-start basis-full">
+<div class="flex flex-col justify-start basis-full overflow-y-auto py-6 gap-6">
   <div *ngFor="let entry of contents; index as i" class="flex-auto hero">
-    <div class="hero-content text-center bg-base-200 rounded-xl py-6 mt-12">
+    <div class="hero-content text-center bg-base-200 rounded-xl">
       <div class="max-w-md">
         <h1 class="text-5xl font-bold">{{entry.heading | translate}}</h1>
         <p class="py-6">{{entry.body | translate}}</p>
