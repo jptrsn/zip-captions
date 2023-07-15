@@ -11,6 +11,6 @@ export const acceptCookies = createAction('[App] Accept Cookies');
 export const declineCookies = createAction('[App] Decline Cookies');
 export const setCookiePolicyComplete = createAction('[App] Set Cookie Policy Complete')
 
-export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{error?: string}>());
+export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{error?: string, warning?: string}>());
 
 export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());

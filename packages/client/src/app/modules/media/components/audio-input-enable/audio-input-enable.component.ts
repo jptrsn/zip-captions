@@ -30,7 +30,7 @@ export class AudioInputEnableComponent {
     
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
-      filter((err) => err !== 'liveTextMissing'),
+      filter((err) => err !== 'ERRORS.liveTextMissing'),
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => this.streamState().error || appError());

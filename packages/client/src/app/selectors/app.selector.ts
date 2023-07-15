@@ -17,3 +17,8 @@ export const errorSelector = createSelector(
   selectAppAppearance,
   (state) => state.error
 )
+
+export const warningSelecctor = createSelector(
+  selectAppAppearance,
+  (state) => state.warning
+)

@@ -14,22 +14,23 @@ export class BrowserCompatibilityService {
 
   constructor(private platform: Platform) { }
 
-  public checkCompatibility(): string | undefined {
+  public checkCompatibility(): {warning?: string, error?: string} {
+    const rtn: {error?: string, warning?: string} = {};
     console.log('platform', this.platform);
     if (this.platform.FIREFOX || this.platform.EDGE) {
-      return 'ERRORS.missingApi';
-    }
-    
-    try {
-      new webkitSpeechRecognition();
-    } catch(e) {
-      console.error(e);
-      return 'ERRORS.serviceUnavailable';
+      rtn.error = 'ERRORS.missingApi';
+    } else {
+      try {
+        new webkitSpeechRecognition();
+      } catch(e) {
+        console.error(e);
+        rtn.error = 'ERRORS.serviceUnavailable';
+      }
     }
 
-    if (this.platform.ANDROID || this.platform.IOS) {
-      return 'ERRORS.liveTextMissing';
+    if (true || this.platform.ANDROID || this.platform.IOS) {
+      rtn.warning = 'ERRORS.liveTextMissing';
     }
-    return undefined;
+    return rtn;
   }
 }
