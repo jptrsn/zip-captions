@@ -2,7 +2,7 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../models/app.model';
+import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { $localize } from '@angular/localize/init';
 import { Language } from '../../settings/models/settings.model';
@@ -21,7 +21,7 @@ export class RecognitionService {
   private activeRecognitionStreams: Set<string> = new Set();
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
-  private platform: Signal<string | undefined>;
+  private platform: Signal<AppPlatform | undefined>;
   private readonly DEBOUNCE_TIME_MS = 150;
   private readonly SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 5;
@@ -38,7 +38,7 @@ export class RecognitionService {
   }
 
   public connectToStream(streamId: string): void {
-    console.log('recognize stream', streamId, this.platform());
+    console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
@@ -77,6 +77,7 @@ export class RecognitionService {
   }
 
   private _addEventListeners(streamId: string, recognition: SpeechRecognition): void {
+    const platform: AppPlatform | undefined = this.platform();
     const recognizedText = signal<string[]>([]);
     this.recognizedTextMap.set(streamId, recognizedText);
     
@@ -106,7 +107,19 @@ export class RecognitionService {
           return false;
         })
         .map((result: SpeechRecognitionResult) => result[0])
-        // .filter((alternative: SpeechRecognitionAlternative) => (alternative.confidence > 0))
+        .reduce((acc, alternative: SpeechRecognitionAlternative, idx) => {
+          if (platform === AppPlatform.mobile) {
+            console.log('mobile platform!', alternative, idx)
+            if (idx === 0 || acc[idx - 1] !== alternative) {
+              acc.push(alternative);
+            } else {
+              console.log('deduped', alternative);
+            }
+          } else if (alternative.confidence > 0) {
+            acc.push(alternative)
+          }
+          return acc;
+        }, [] as SpeechRecognitionAlternative[])
         .map((alternative) => alternative.transcript)
         .join('')
         .trim();
