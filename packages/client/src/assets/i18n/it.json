@@ -292,6 +292,16 @@
   "ERRORS": {
     "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
     "serviceUnavailable": "Sembra che il servizio non sia ancora disponibile su questa piattaforma. Consigliamo Chrome o Safari",
-    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma."
+    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma.",
+    "RECOGNITION": {
+      "no-speech": "Errore di riconoscimento vocale: Non è stato rilevato alcun parlato",
+      "aborted": "Errore di riconoscimento vocale: L'input vocale è stato interrotto in qualche modo",
+      "audio-capture": "Errore di riconoscimento vocale: Errore di acquisizione audio",
+      "network": "Errore di riconoscimento vocale: Comunicazione di rete necessaria per completare il riconoscimento fallita",
+      "not-allowed": "Errore di riconoscimento vocale: L'agente utente non ha consentito l'immissione di dati vocali per motivi di sicurezza, privacy o preferenze dell'utente",
+      "service-not-allowed": "Errore di riconoscimento vocale: L'agente utente ha rifiutato il servizio di riconoscimento vocale richiesto, perché l'agente utente non lo supporta o per motivi di sicurezza, privacy o preferenze dell'utente",
+      "bad-grammar": "Errore di riconoscimento vocale: Si è verificato un errore nella grammatica del riconoscimento vocale o nei tag semantici, oppure il formato della grammatica o del tag semantico scelto non è supportato.",
+      "language-not-supported": "Errore nel riconoscimento vocale: L'interprete non supporta la lingua specificata nel valore dell'attributo lang dell'oggetto SpeechRecognition"
+    }
   }
 }

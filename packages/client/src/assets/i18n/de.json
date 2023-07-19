@@ -292,6 +292,16 @@
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
     "serviceUnavailable": "Es sieht so aus, als ob der Dienst auf dieser Plattform noch nicht verfügbar ist. Wir empfehlen Chrome oder Safari",
-    "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden"
+    "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden",
+    "RECOGNITION": {
+      "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
+      "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",
+      "audio-capture": "Spracherkennungsfehler: Audio-Erfassung fehlgeschlagen.",
+      "network": "Fehler bei der Spracherkennung: Die für den Abschluss der Erkennung erforderliche Netzwerkkommunikation ist fehlgeschlagen.",
+      "not-allowed": "Fehler bei der Spracherkennung: Der Benutzeragent hat die Spracheingabe aus Gründen der Sicherheit, des Datenschutzes oder der Benutzerpräferenz nicht zugelassen.",
+      "service-not-allowed": "Fehler bei der Spracherkennung: Der Benutzeragent hat den angeforderten Spracherkennungsdienst nicht zugelassen, entweder weil der Benutzeragent ihn nicht unterstützt oder aus Gründen der Sicherheit, des Datenschutzes oder der Benutzerpräferenz.",
+      "bad-grammar": "Fehler bei der Spracherkennung: Es gab einen Fehler in der Spracherkennungsgrammatik oder den semantischen Tags, oder das gewählte Grammatikformat oder semantische Tag-Format wurde nicht unterstützt.",
+      "language-not-supported": "Spracherkennungsfehler: Der User Agent unterstützt die im Wert des Attributs lang des SpeechRecognition-Objekts angegebene Sprache nicht."
+    }
   }
 }
