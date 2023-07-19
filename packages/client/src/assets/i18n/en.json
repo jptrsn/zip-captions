@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL": {
+      "name": "Cookies",
       "title": "This website uses cookies",
       "p1": "We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).",
       "p2": "We do not track or store any non-functional cookies on your device.",

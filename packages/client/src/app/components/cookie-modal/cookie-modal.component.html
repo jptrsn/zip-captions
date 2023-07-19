@@ -1,4 +1,4 @@
-<button (click)="modal.showModal()" class="tooltip tooltip-right" [attr.data-tip]="buttonTooltip" aria-label="Cookie Policy" i18n-aria-label>
+<button (click)="modal.showModal()" class="tooltip tooltip-right" [attr.data-tip]="'COOKIES.MODAL.name' | translate" aria-label="Cookie Policy">
   <ng-icon name="cookie" size="24"></ng-icon>
 </button>
 <dialog #modal class="modal modal-bottom">
@@ -10,7 +10,7 @@
     <p class="text-base mt-1">
       {{'COOKIES.MODAL.p2' | translate}}
     </p>
-    <p class="text-base mt-1" i18n>
+    <p class="text-base mt-1">
       {{'COOKIES.MODAL.p3' | translate}}
     </p>
     <div class="modal-action">
@@ -18,7 +18,7 @@
       <button class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()">
         {{ !!declinedDate() ? "BUTTONS.rejected" : "BUTTONS.reject" | translate }}
       </button>
-      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies" i18n-aria-label i18n>
+      <button class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies">
         {{ (accepted() ? "BUTTONS.accepted" : "BUTTONS.acceptAll") | translate }} 
       </button>
     </div>

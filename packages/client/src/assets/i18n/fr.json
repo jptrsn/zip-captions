@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL" : {
+      "name": "Cookies",
       "title" : "Ce site web utilise des cookies",
       "p1" : "Nous utilisons des cookies pour assurer la fonctionnalité du site web. Nous ne stockons que les cookies strictement nécessaires, requis pour permettre la fonctionnalité de ces applications (par exemple, les paramètres personnalisés, etc.)",
       "p2" : "Nous ne suivons ni ne stockons aucun cookie non fonctionnel sur votre appareil",
