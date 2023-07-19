@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { fadeInUpOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
-import { selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionErrorSelector, selectRecognition } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -20,10 +20,12 @@ export class RecognizedTextComponent {
   public state: Signal<RecognitionState>;
   public connected: Signal<boolean | undefined>;
   public textOutput: Signal<string[]>;
+  public error: Signal<string | undefined>;
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition)) as Signal<RecognitionState>;
     this.connected = computed(() => this.state().status !== RecognitionStatus.uninitialized);
     this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state().id as string)() : [])
+    this.error = toSignal(this.store.select(recognitionErrorSelector));
   }
 }
