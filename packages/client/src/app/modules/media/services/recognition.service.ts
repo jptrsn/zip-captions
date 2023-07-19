@@ -8,6 +8,7 @@ import { $localize } from '@angular/localize/init';
 import { Language } from '../../settings/models/settings.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { languageSelector } from '../../../selectors/settings.selector';
+import { platformSelector } from '../../../selectors/app.selector';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -20,7 +21,7 @@ export class RecognitionService {
   private activeRecognitionStreams: Set<string> = new Set();
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
-
+  private platform: Signal<string | undefined>;
   private readonly DEBOUNCE_TIME_MS = 150;
   private readonly SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 5;
@@ -33,10 +34,11 @@ export class RecognitionService {
       // console.log(data);
     })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
+    this.platform = toSignal(this.store.select(platformSelector));
   }
 
   public connectToStream(streamId: string): void {
-    console.log('recognize stream', streamId);
+    console.log('recognize stream', streamId, this.platform());
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
@@ -104,7 +106,7 @@ export class RecognitionService {
           return false;
         })
         .map((result: SpeechRecognitionResult) => result[0])
-        .filter((alternative: SpeechRecognitionAlternative) => (alternative.confidence > 0))
+        // .filter((alternative: SpeechRecognitionAlternative) => (alternative.confidence > 0))
         .map((alternative) => alternative.transcript)
         .join('')
         .trim();

@@ -2,6 +2,7 @@ import {
   Platform
 } from '@angular/cdk/platform';
 import { Injectable } from '@angular/core';
+import { AppPlatform } from '../models/app.model';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -14,9 +15,10 @@ export class BrowserCompatibilityService {
 
   constructor(private platform: Platform) { }
 
-  public checkCompatibility(): {warning?: string, error?: string} {
-    const rtn: {error?: string, warning?: string} = {};
-    console.log('platform', this.platform);
+  public checkCompatibility(): {platform: AppPlatform, warning?: string, error?: string} {
+    const rtn: { platform: AppPlatform, error?: string, warning?: string} = {
+      platform: AppPlatform.desktop
+    };
     if (this.platform.FIREFOX || this.platform.EDGE) {
       rtn.error = 'ERRORS.missingApi';
     } else {
@@ -28,7 +30,8 @@ export class BrowserCompatibilityService {
       }
     }
 
-    if (true || this.platform.ANDROID || this.platform.IOS) {
+    if (this.platform.ANDROID || this.platform.IOS) {
+      rtn.platform = AppPlatform.mobile;
       rtn.warning = 'ERRORS.liveTextMissing';
     }
     return rtn;
