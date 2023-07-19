@@ -37,7 +37,7 @@ export class RecognitionEnableComponent {
   }
 
   toggleState(): void {
-    if (this.connected()) {
+    if (this.connected() || this.error()) {
       this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'default'}));
     } else {
       this.store.dispatch(RecognitionActions.connectRecognition({id: 'default'}))
