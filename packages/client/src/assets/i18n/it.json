@@ -249,7 +249,8 @@
   "WELCOME": {
     "p1": "L'accessibilità dovrebbe essere gratuita",
     "p2": "Zip Captions fornisce un'esperienza di didascalie dal vivo facile da usare che vive direttamente nel vostro browser. Non catturiamo, memorizziamo o condividiamo nessuno dei vostri dati, non ci sono costi nascosti né accordi da firmare",
-    "p3": "Clicca sul pulsante in alto per iniziare."
+    "p3": "Clicca sul pulsante in alto per iniziare.",
+    "warning": "Per ottenere risultati ottimali, si consiglia di utilizzare Chrome o Safari su desktop."
   },
   "SETTINGS": {
     "t1": "Anteprima",

@@ -249,7 +249,8 @@
   "WELCOME": {
     "p1": "Zugänglichkeit sollte kostenlos sein.",
     "p2": "Zip Captions bietet eine einfach zu bedienende Live-Untertitelung, die direkt in Ihrem Browser läuft. Wir erfassen, speichern oder teilen keine Ihrer Daten, und es gibt keine versteckten Gebühren und keine zu unterzeichnenden Vereinbarungen.",
-    "p3": "Klicken Sie auf die Schaltfläche oben, um loszulegen."
+    "p3": "Klicken Sie auf die Schaltfläche oben, um loszulegen.",
+    "warning": "Um optimale Ergebnisse zu erzielen, empfehlen wir die Verwendung von Chrome oder Safari auf dem Desktop."
   },
   "SETTINGS": {
     "t1": "Vorschau",
