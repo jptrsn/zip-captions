@@ -2,6 +2,7 @@ import {
   Platform
 } from '@angular/cdk/platform';
 import { Injectable } from '@angular/core';
+import { AppPlatform } from '../models/app.model';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -14,22 +15,25 @@ export class BrowserCompatibilityService {
 
   constructor(private platform: Platform) { }
 
-  public checkCompatibility(): string | undefined {
-    console.log('platform', this.platform);
+  public checkCompatibility(): {platform: AppPlatform, warning?: string, error?: string} {
+    const rtn: { platform: AppPlatform, error?: string, warning?: string} = {
+      platform: AppPlatform.desktop
+    };
     if (this.platform.FIREFOX || this.platform.EDGE) {
-      return 'ERRORS.missingApi';
-    }
-    
-    try {
-      new webkitSpeechRecognition();
-    } catch(e) {
-      console.error(e);
-      return 'ERRORS.serviceUnavailable';
+      rtn.error = 'ERRORS.missingApi';
+    } else {
+      try {
+        new webkitSpeechRecognition();
+      } catch(e) {
+        console.error(e);
+        rtn.error = 'ERRORS.serviceUnavailable';
+      }
     }
 
     if (this.platform.ANDROID || this.platform.IOS) {
-      return 'ERRORS.liveTextMissing';
+      rtn.platform = AppPlatform.mobile;
+      rtn.warning = 'ERRORS.liveTextMissing';
     }
-    return undefined;
+    return rtn;
   }
 }

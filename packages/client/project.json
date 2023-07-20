@@ -55,6 +55,9 @@
       "defaultConfiguration": "production"
     },
     "serve": {
+      "options": {
+        "disableHostCheck": true
+      },
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
@@ -62,18 +65,9 @@
         },
         "development": {
           "browserTarget": "client:build:development"
-        },
-        "en": {
-          "browserTarget": "client:build:development,en"
         }
       },
       "defaultConfiguration": "development"
-    },
-    "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
-      "options": {
-        "browserTarget": "client:build"
-      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",

@@ -21,8 +21,8 @@ export class RecognizedLiveTextComponent {
   public text: Signal<string>;
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService) {
-                this.state = toSignal(this.store.select(selectRecognition));
-                this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
-                this.text = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
+    this.state = toSignal(this.store.select(selectRecognition));
+    this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
+    this.text = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
   }
 }

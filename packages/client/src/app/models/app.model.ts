@@ -2,12 +2,18 @@ import { SettingsState } from "../modules/settings/models/settings.model";
 import { AudioStreamState } from "./audio-stream.model";
 import { RecognitionState } from "./recognition.model";
 
+export enum AppPlatform {
+  mobile = "MOBILE",
+  desktop = "DESKTOP"
+}
+
 export interface AppAppearanceState {
   loading: boolean;
   cookiesAccepted: boolean;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
-  browserIncompatible?: boolean;
+  platform?: AppPlatform;
+  warning?: string;
   error?: string;
 }
 export interface AppState {

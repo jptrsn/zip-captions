@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL": {
+      "name": "Cookies",
       "title": "Este sitio web utiliza cookies",
       "p1": "Utilizamos cookies para proporcionar la funcionalidad del sitio web. Solo almacenamos las cookies estrictamente necesarias, requeridas para permitir la funcionalidad de estas aplicaciones (por ejemplo, ajustes personalizados, etc.).",
       "p2": "No rastreamos ni almacenamos cookies no funcionales en su dispositivo",
@@ -248,7 +249,8 @@
   "WELCOME": {
     "p1": "La accesibilidad debe ser libre",
     "p2": "Zip Captions proporciona una experiencia de subtítulos en directo fácil de usar que vive dentro de tu navegador. No capturamos, almacenamos ni compartimos ninguno de tus datos, y no hay cargos ocultos ni acuerdos que firmar",
-    "p3": "Haz clic en el botón de la parte superior para empezar."
+    "p3": "Haz clic en el botón de la parte superior para empezar.",
+    "warning": "Para obtener resultados óptimos, recomendamos utilizar Chrome o Safari en Desktop."
   },
   "SETTINGS": {
     "t1": "Vista previa",
@@ -289,9 +291,22 @@
     "lang": "Idioma",
     "theme": "Theme"
   },
+  "HINTS": {
+    "beginSpeaking": "Habla y te escucharemos"
+  },
   "ERRORS": {
     "missingApi": "Lo sentimos, su navegador aún no ha implementado las API necesarias para que ZipCaptions se ejecute. Recomendamos Chrome o Safari",
     "serviceUnavailable": "Parece que el servicio aún no está disponible en esta plataforma. Recomendamos Chrome o Safari",
-    "liveTextMissing": "Parece que los resultados de transmisión en vivo aún no son compatibles con su plataforma"
+    "liveTextMissing": "Parece que los resultados de transmisión en vivo aún no son compatibles con su plataforma",
+    "RECOGNITION": {
+      "no-speech": "Error de reconocimiento de voz: No se detectó habla",
+      "aborted": "Error de reconocimiento de voz: La entrada de voz se abortó de alguna manera",
+      "audio-capture": "Error de reconocimiento de voz: Fallo de captura de audio",
+      "red": "Error de reconocimiento de voz: Falló la comunicación de red necesaria para completar el reconocimiento.",
+      "no permitido": "Error de reconocimiento de voz: El agente de usuario no permitió que se produjera ninguna entrada de voz por motivos de seguridad, privacidad o preferencias del usuario.",
+      "service-not-allowed": "Error de reconocimiento de voz: El agente de usuario no permitió el servicio de reconocimiento de voz solicitado, ya sea porque el agente de usuario no lo admite o por motivos de seguridad, privacidad o preferencia del usuario.",
+      "bad-grammar": "Error de reconocimiento de voz: Se ha producido un error en la gramática o en las etiquetas semánticas de reconocimiento del habla, o el formato de gramática o de etiqueta semántica elegido no es compatible.",
+      "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition."
+    }
   }
 }

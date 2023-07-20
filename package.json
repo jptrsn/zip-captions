@@ -1,13 +1,12 @@
 {
   "name": "zip-captions",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
     "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
     "build": "nx build",
-    "build:client": "nx build --project=client --base-href=https://zipcaptions.app/",
-    "i18n:extract": "nx extract-i18n --project=client --output-path=./packages/client/src/locales --format=json"
+    "build:client": "nx build --project=client"
   },
   "private": true,
   "dependencies": {

@@ -13,7 +13,6 @@ import { selectAppAppearance } from '../../selectors/app.selector';
 export class CookieModalComponent implements AfterViewInit {
   @ViewChild('modal', { read: ElementRef }) modal!: ElementRef;
   @ViewChild('close', { read: ElementRef }) closeButton!: ElementRef;
-  public buttonTooltip: string = $localize`Cookies`;
   public accepted: Signal<boolean | undefined>;
   public declinedDate: Signal<number | undefined>;
   constructor(private store: Store<AppState>,
@@ -46,7 +45,6 @@ export class CookieModalComponent implements AfterViewInit {
   }
 
   private _openModal(): void {
-    // this.renderer.addClass(this.modal.nativeElement, 'modal-open')
     this.renderer.setAttribute(this.modal.nativeElement, 'open', '')
   }
 

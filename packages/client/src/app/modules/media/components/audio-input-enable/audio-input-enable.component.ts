@@ -30,7 +30,7 @@ export class AudioInputEnableComponent {
     
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
-      filter((err) => err !== 'liveTextMissing'),
+      filter((err) => err !== 'ERRORS.liveTextMissing'),
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => this.streamState().error || appError());
@@ -38,11 +38,11 @@ export class AudioInputEnableComponent {
   }
 
   toggleState(): void {
-    if (this.error()) {
-      console.error(this.error());
-      return;
-    }
-    if (this.connected()) {
+    // if (this.error()) {
+    //   this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}));
+    //   return;
+    // }
+    if (this.connected() || this.error()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
       this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
