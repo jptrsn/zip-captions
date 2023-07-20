@@ -1,13 +1,13 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
-import { Subject, auditTime, bufferTime, debounceTime, delay, takeUntil, throttleTime } from 'rxjs';
-import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
+import { Subject, auditTime, debounceTime, takeUntil, throttleTime } from 'rxjs';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
-import { Language } from '../../settings/models/settings.model';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { languageSelector } from '../../../selectors/settings.selector';
+import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
 import { platformSelector } from '../../../selectors/app.selector';
+import { languageSelector } from '../../../selectors/settings.selector';
+import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -24,14 +24,14 @@ export class RecognitionService {
   private DEBOUNCE_TIME_MS = 150;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 5;
-  // private historyWorker: Worker;
+  private historyWorker: Worker;
   private language: Signal<Language>;
 
   constructor(private store: Store<AppState>) {
-    // this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
-    // this.historyWorker.addEventListener('message', ({data}) => {
-      // console.log(data);
-    // })
+    this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
+    this.historyWorker.addEventListener('message', ({data}) => {
+      console.log(data);
+    })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
   }
@@ -58,7 +58,6 @@ export class RecognitionService {
     const recognition = this.recognitionMap.get(streamId);
     if (recognition) {
       this.activeRecognitionStreams.delete(streamId);
-      console.log('stopping');
       recognition.stop();
     }
   }
@@ -134,7 +133,7 @@ export class RecognitionService {
         if (partialTranscript !== '') {
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
-            // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
+            this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
           console.log('clearing live output')
@@ -160,7 +159,7 @@ export class RecognitionService {
     })
 
     recognition.addEventListener('result', (e: any) => {
-      console.log('result', liveOutput())
+      // console.log('result')
       debounce$.next();
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
@@ -186,7 +185,7 @@ export class RecognitionService {
     });
 
     recognition.addEventListener('end', (e) => {
-      console.log('end', Date.now())
+      // console.log('end', Date.now())
       mostRecentResults = undefined;
       if (this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition still active, restarting')
