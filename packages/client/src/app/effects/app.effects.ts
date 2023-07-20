@@ -16,7 +16,7 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(AppActions.checkUserAgent),
       map(() => this.browserCompatibilityService.checkCompatibility()),
-      map((error: string | undefined)=> AppActions.checkUserAgentComplete({error}))
+      map(({platform, error, warning})=> AppActions.checkUserAgentComplete({platform, error, warning}))
     )
   )
 

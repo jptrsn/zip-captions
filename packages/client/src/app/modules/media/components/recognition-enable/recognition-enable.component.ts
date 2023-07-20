@@ -30,14 +30,14 @@ export class RecognitionEnableComponent {
     const recogError = toSignal(this.store.select(recognitionErrorSelector))
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
-      filter((err) => err !== 'liveTextMissing'),
+      filter((err) => err !== 'ERRORS.liveTextMissing'),
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => recogError() || appError())
   }
 
   toggleState(): void {
-    if (this.connected()) {
+    if (this.connected() || this.error()) {
       this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'default'}));
     } else {
       this.store.dispatch(RecognitionActions.connectRecognition({id: 'default'}))

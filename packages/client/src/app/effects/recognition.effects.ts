@@ -13,7 +13,6 @@ export class RecognitionEffects {
   connectRecognition$ = createEffect(() => 
     this.actions$.pipe(
       ofType(RecognitionActions.connectRecognition),
-      tap((props) => console.log('connect recogntion', props.id)),
       map((props) => this.recognitionService.connectToStream(props.id)),
       switchMap(() => [RecognitionActions.connectRecognitionSuccess(), AppActions.hideFooter()]),
       catchError((err: any) => of(RecognitionActions.connectRecognitionFailure({error: err.message})))
@@ -23,7 +22,6 @@ export class RecognitionEffects {
   disconnectRecognition$ = createEffect(() => 
     this.actions$.pipe(
       ofType(RecognitionActions.disconnectRecognition),
-      tap((props) => console.log('disconnect recognition', props.id)),
       map((props) => this.recognitionService.disconnectFromStream(props.id)),
       switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter()]),
       catchError((err: any) => of(RecognitionActions.disconnectRecognitionFailure({error: err.message})))

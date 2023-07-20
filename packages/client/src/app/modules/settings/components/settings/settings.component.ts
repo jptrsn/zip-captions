@@ -53,7 +53,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     ).subscribe((lang: Language | null) => {
       if (lang) {
         this.translate.use(lang).subscribe(() => {
-          console.log('used lang', lang)
+          // console.log('used lang', lang)
         })
       }
     })

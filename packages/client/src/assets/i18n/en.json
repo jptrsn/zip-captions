@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL": {
+      "name": "Cookies",
       "title": "This website uses cookies",
       "p1": "We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).",
       "p2": "We do not track or store any non-functional cookies on your device.",
@@ -248,7 +249,8 @@
   "WELCOME": {
     "p1": "Accessibility should be free.",
     "p2": "Zip Captions provides an easy to use live captions experience which lives right inside your browser. We don't capture, store, or share any of your data, and there are no hidden fees, and no agreements to sign.",
-    "p3": "Click the button at the top to get started."
+    "p3": "Click the button at the top to get started.",
+    "warning": "For optimal results, we recommend using Chrome or Safari on Desktop."
   },
   "SETTINGS": {
     "t1": "Preview",
@@ -289,9 +291,22 @@
     "lang": "Language",
     "theme": "Theme"
   },
+  "HINTS": {
+    "beginSpeaking": "Start speaking..."
+  },
   "ERRORS": {
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
     "serviceUnavailable": "It looks like the service is not yet available on this platform. We recommend Chrome or Safari",
-    "liveTextMissing": "It appears that live streaming results are not yet supported on your platform."
+    "liveTextMissing": "It appears that live streaming results are not yet supported on your platform.",
+    "RECOGNITION": {
+      "no-speech": "Speech recognition error: No speech was detected.",
+      "aborted": "Speech recognition error: Speech input was aborted in some manner.",
+      "audio-capture": "Speech recognition error: Audio capture failure.",
+      "network": "Speech recognition error: Network communication required for completing the recognition failed.",
+      "not-allowed": "Speech recognition error: The user agent disallowed any speech input from occurring for reasons of security, privacy or user preference.",
+      "service-not-allowed": "Speech recognition error: The user agent disallowed the requested speech recognition service, either because the user agent doesn't support it or because of reasons of security, privacy or user preference.",
+      "bad-grammar": "Speech recognition error: There was an error in the speech recognition grammar or semantic tags, or the chosen grammar format or semantic tag format was unsupported.",
+      "language-not-supported": "Speech recognition error: The user agent does not support the language specified in the value of lang attribute of the SpeechRecognition object."
+    }
   }
 }

@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL": {
+      "name": "Cookies",
       "title": "Questo sito web utilizza i cookie",
       "p1": "Utilizziamo i cookie per fornire le funzionalità del sito web. Memorizziamo solo i cookie strettamente necessari, richiesti per consentire la funzionalità di queste applicazioni (ad esempio, impostazioni personalizzate, ecc.)",
       "p2": "Non tracciamo né memorizziamo alcun cookie non funzionale sul vostro dispositivo",
@@ -248,7 +249,8 @@
   "WELCOME": {
     "p1": "L'accessibilità dovrebbe essere gratuita",
     "p2": "Zip Captions fornisce un'esperienza di didascalie dal vivo facile da usare che vive direttamente nel vostro browser. Non catturiamo, memorizziamo o condividiamo nessuno dei vostri dati, non ci sono costi nascosti né accordi da firmare",
-    "p3": "Clicca sul pulsante in alto per iniziare."
+    "p3": "Clicca sul pulsante in alto per iniziare.",
+    "warning": "Per ottenere risultati ottimali, si consiglia di utilizzare Chrome o Safari su desktop."
   },
   "SETTINGS": {
     "t1": "Anteprima",
@@ -289,9 +291,22 @@
     "lang": "Language",
     "theme": "Tema"
   },
+  "HINTS": {
+    "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!"
+  },
   "ERRORS": {
     "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
     "serviceUnavailable": "Sembra che il servizio non sia ancora disponibile su questa piattaforma. Consigliamo Chrome o Safari",
-    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma."
+    "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma.",
+    "RECOGNITION": {
+      "no-speech": "Errore di riconoscimento vocale: Non è stato rilevato alcun parlato",
+      "aborted": "Errore di riconoscimento vocale: L'input vocale è stato interrotto in qualche modo",
+      "audio-capture": "Errore di riconoscimento vocale: Errore di acquisizione audio",
+      "network": "Errore di riconoscimento vocale: Comunicazione di rete necessaria per completare il riconoscimento fallita",
+      "not-allowed": "Errore di riconoscimento vocale: L'agente utente non ha consentito l'immissione di dati vocali per motivi di sicurezza, privacy o preferenze dell'utente",
+      "service-not-allowed": "Errore di riconoscimento vocale: L'agente utente ha rifiutato il servizio di riconoscimento vocale richiesto, perché l'agente utente non lo supporta o per motivi di sicurezza, privacy o preferenze dell'utente",
+      "bad-grammar": "Errore di riconoscimento vocale: Si è verificato un errore nella grammatica del riconoscimento vocale o nei tag semantici, oppure il formato della grammatica o del tag semantico scelto non è supportato.",
+      "language-not-supported": "Errore nel riconoscimento vocale: L'interprete non supporta la lingua specificata nel valore dell'attributo lang dell'oggetto SpeechRecognition"
+    }
   }
 }
