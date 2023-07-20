@@ -45,7 +45,6 @@ export class CookieModalComponent implements AfterViewInit {
   }
 
   private _openModal(): void {
-    // this.renderer.addClass(this.modal.nativeElement, 'modal-open')
     this.renderer.setAttribute(this.modal.nativeElement, 'open', '')
   }
 

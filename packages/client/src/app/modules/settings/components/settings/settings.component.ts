@@ -2,12 +2,13 @@ import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal } from '@an
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
-import { AppActions, AppState } from '../../../../models/app.model';
+import { Store, select } from '@ngrx/store';
+import { Subject, map, takeUntil } from 'rxjs';
+import { AppActions, AppAppearanceState, AppState } from '../../../../models/app.model';
 import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
 import { TranslateService } from '@ngx-translate/core'
+import { selectAppAppearance } from 'packages/client/src/app/selectors/app.selector';
 
 @Component({
   selector: 'app-settings',
@@ -19,6 +20,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     theme: FormControl<AppTheme | null>,
     lang: FormControl<Language | null>
   }>;
+  public acceptedCookies: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
@@ -37,10 +39,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language())
     });
+
+    this.acceptedCookies = toSignal(this.store.pipe(
+      select(selectAppAppearance),
+      map((appearance: AppAppearanceState) => appearance.cookiesAccepted)
+    ));
   }
 
   ngOnInit(): void {
-    this.store.dispatch(AppActions.hideFooter())
+    if (this.acceptedCookies()) {
+      this.store.dispatch(AppActions.hideFooter())
+    }
     this.formGroup.get('theme')?.valueChanges.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((theme) => {

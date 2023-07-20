@@ -24,12 +24,13 @@
       </div>
     </div>
   </div>
-  <footer class="flex w-full justify-end gap-1 sm:gap-3">
+  <footer class="flex w-full justify-end items-center gap-1 sm:gap-3">
+    <div *ngIf="!acceptedCookies()" class="text-error text-sm">You must accept cookies in order to save settings.</div>
     <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
       BUTTONS.cancel
     </button>
 
-    <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit" translate>
+    <button class="btn btn-primary rounded-xl" [disabled]="acceptedCookies() === false || formGroup.pristine" type="submit" translate>
       BUTTONS.saveAndClose
     </button>
   </footer>
