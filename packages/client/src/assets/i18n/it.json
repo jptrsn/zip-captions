@@ -291,6 +291,9 @@
     "lang": "Language",
     "theme": "Tema"
   },
+  "HINTS": {
+    "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!"
+  },
   "ERRORS": {
     "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
     "serviceUnavailable": "Sembra che il servizio non sia ancora disponibile su questa piattaforma. Consigliamo Chrome o Safari",

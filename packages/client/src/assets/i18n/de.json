@@ -291,6 +291,9 @@
     "lang": "Sprache",
     "theme": "Thema"
   },
+  "HINTS": {
+    "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint."
+  },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
     "serviceUnavailable": "Es sieht so aus, als ob der Dienst auf dieser Plattform noch nicht verfügbar ist. Wir empfehlen Chrome oder Safari",

@@ -97,6 +97,7 @@ export class RecognitionService {
     // TODO: Allow adjustment of debounce
     const debounce$: Subject<void> = new Subject<void>()
     const disconnect$: Subject<void> = new Subject<void>();
+    // Live results logic
     debounce$.pipe(
       takeUntil(disconnect$),
       debounceTime(this.DEBOUNCE_TIME_MS),
@@ -144,6 +145,7 @@ export class RecognitionService {
       }
     });
 
+    // Segmentation delay and logic
     debounce$.pipe(
       takeUntil(disconnect$),
       debounceTime(this.SEGMENTATION_DEBOUNCE_MS),
@@ -225,6 +227,12 @@ export class RecognitionService {
       this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
       this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
     });
+
+    recognition.addEventListener('nospeech', () => this._noSpeechWarning())
+  }
+
+  private _noSpeechWarning(): void {
+    console.log('no speech!');
   }
 
   private _debugAllEventListeners(recognition: SpeechRecognition): void {

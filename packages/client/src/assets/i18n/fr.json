@@ -291,6 +291,9 @@
     "lang" : "Langue",
     "theme" : "Thème"
   },
+  "HINTS": {
+    "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons..."
+  },
   "ERRORS": {
     "missingApi": "Désolé, votre navigateur n'a pas encore implémenté les API nécessaires au fonctionnement de ZipCaptions. Nous recommandons Chrome ou Safari.",
     "serviceUnavailable": "Il semble que le service ne soit pas encore disponible sur cette plateforme. Nous recommandons Chrome ou Safari",

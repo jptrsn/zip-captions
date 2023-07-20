@@ -7,10 +7,10 @@
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>
     <ng-container *ngIf="connected(); else inactive">
-      <ng-icon name="heroStopCircle"></ng-icon>
+      <ng-icon name="heroMicrophone"></ng-icon>
     </ng-container>
     <ng-template #inactive>
-      <ng-icon name="heroPlayCircle"></ng-icon>
+      <ng-icon name="heroMicrophoneSlash"></ng-icon>
     </ng-template>
   </ng-template>
 </button>
