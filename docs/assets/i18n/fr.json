@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL" : {
+      "name": "Cookies",
       "title" : "Ce site web utilise des cookies",
       "p1" : "Nous utilisons des cookies pour assurer la fonctionnalité du site web. Nous ne stockons que les cookies strictement nécessaires, requis pour permettre la fonctionnalité de ces applications (par exemple, les paramètres personnalisés, etc.)",
       "p2" : "Nous ne suivons ni ne stockons aucun cookie non fonctionnel sur votre appareil",
@@ -248,7 +249,8 @@
   "WELCOME": {
     "p1" : "L'accessibilité devrait être gratuite",
     "p2" : "Zip Captions fournit une expérience de sous-titrage en direct facile à utiliser, qui vit directement dans votre navigateur. Nous ne capturons, ne stockons, ni ne partageons aucune de vos données, et il n'y a pas de frais cachés, ni d'accord à signer",
-    "p3" : "Cliquez sur le bouton en haut pour commencer."
+    "p3" : "Cliquez sur le bouton en haut pour commencer.",
+    "warning": "Pour des résultats optimaux, nous recommandons d'utiliser Chrome ou Safari sur un ordinateur de bureau."
   },
   "SETTINGS": {
     "t1" : "Aperçu",
@@ -289,10 +291,23 @@
     "lang" : "Langue",
     "theme" : "Thème"
   },
+  "HINTS": {
+    "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons..."
+  },
   "ERRORS": {
     "missingApi": "Désolé, votre navigateur n'a pas encore implémenté les API nécessaires au fonctionnement de ZipCaptions. Nous recommandons Chrome ou Safari.",
     "serviceUnavailable": "Il semble que le service ne soit pas encore disponible sur cette plateforme. Nous recommandons Chrome ou Safari",
-    "liveTextMissing": "Il semble que les résultats de diffusion en direct ne soient pas encore pris en charge sur votre plateforme."
+    "liveTextMissing": "Il semble que les résultats de diffusion en direct ne soient pas encore pris en charge sur votre plateforme.",
+    "RECOGNITION": {
+      "no-speech" : "Erreur de reconnaissance vocale : Aucune parole n'a été détectée",
+      "aborted" : "Erreur de reconnaissance vocale : La saisie de la parole a été interrompue d'une manière ou d'une autre",
+      "audio-capture" : "Erreur de reconnaissance vocale : Échec de la capture audio",
+      "network" : "Erreur de reconnaissance vocale : La communication réseau nécessaire à la réalisation de la reconnaissance a échoué.",
+      "not-allowed" : "Erreur de reconnaissance vocale : L'agent utilisateur a refusé toute entrée vocale pour des raisons de sécurité, de confidentialité ou de préférence de l'utilisateur",
+      "service-not-allowed" : "Erreur de reconnaissance vocale : L'agent utilisateur a refusé le service de reconnaissance vocale demandé, soit parce qu'il ne le prend pas en charge, soit pour des raisons de sécurité, de confidentialité ou de préférence de l'utilisateur",
+      "bad-grammar" : "Erreur de reconnaissance vocale : Il y a eu une erreur dans la grammaire ou les balises sémantiques de la reconnaissance vocale, ou le format de grammaire ou de balise sémantique choisi n'était pas pris en charge.",
+      "language-not-supported" : "Erreur de reconnaissance vocale : L'agent utilisateur ne prend pas en charge la langue spécifiée dans la valeur de l'attribut lang de l'objet SpeechRecognition."
+    }
   }
   
 }

@@ -61,6 +61,7 @@
   },
   "COOKIES": {
     "MODAL": {
+      "name": "Cookies",
       "title": "Diese Website verwendet Cookies",
       "p1": "Wir verwenden Cookies, um die Funktionalität der Website zu gewährleisten. Wir speichern nur unbedingt notwendige Cookies, die für die Funktionalität dieser Anwendungen erforderlich sind (z. B. angepasste Einstellungen usw.).",
       "p2": "Wir verfolgen oder speichern keine nicht-funktionalen Cookies auf Ihrem Gerät.",
@@ -248,7 +249,8 @@
   "WELCOME": {
     "p1": "Zugänglichkeit sollte kostenlos sein.",
     "p2": "Zip Captions bietet eine einfach zu bedienende Live-Untertitelung, die direkt in Ihrem Browser läuft. Wir erfassen, speichern oder teilen keine Ihrer Daten, und es gibt keine versteckten Gebühren und keine zu unterzeichnenden Vereinbarungen.",
-    "p3": "Klicken Sie auf die Schaltfläche oben, um loszulegen."
+    "p3": "Klicken Sie auf die Schaltfläche oben, um loszulegen.",
+    "warning": "Um optimale Ergebnisse zu erzielen, empfehlen wir die Verwendung von Chrome oder Safari auf dem Desktop."
   },
   "SETTINGS": {
     "t1": "Vorschau",
@@ -289,9 +291,22 @@
     "lang": "Sprache",
     "theme": "Thema"
   },
+  "HINTS": {
+    "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint."
+  },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
     "serviceUnavailable": "Es sieht so aus, als ob der Dienst auf dieser Plattform noch nicht verfügbar ist. Wir empfehlen Chrome oder Safari",
-    "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden"
+    "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden",
+    "RECOGNITION": {
+      "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
+      "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",
+      "audio-capture": "Spracherkennungsfehler: Audio-Erfassung fehlgeschlagen.",
+      "network": "Fehler bei der Spracherkennung: Die für den Abschluss der Erkennung erforderliche Netzwerkkommunikation ist fehlgeschlagen.",
+      "not-allowed": "Fehler bei der Spracherkennung: Der Benutzeragent hat die Spracheingabe aus Gründen der Sicherheit, des Datenschutzes oder der Benutzerpräferenz nicht zugelassen.",
+      "service-not-allowed": "Fehler bei der Spracherkennung: Der Benutzeragent hat den angeforderten Spracherkennungsdienst nicht zugelassen, entweder weil der Benutzeragent ihn nicht unterstützt oder aus Gründen der Sicherheit, des Datenschutzes oder der Benutzerpräferenz.",
+      "bad-grammar": "Fehler bei der Spracherkennung: Es gab einen Fehler in der Spracherkennungsgrammatik oder den semantischen Tags, oder das gewählte Grammatikformat oder semantische Tag-Format wurde nicht unterstützt.",
+      "language-not-supported": "Spracherkennungsfehler: Der User Agent unterstützt die im Wert des Attributs lang des SpeechRecognition-Objekts angegebene Sprache nicht."
+    }
   }
 }
