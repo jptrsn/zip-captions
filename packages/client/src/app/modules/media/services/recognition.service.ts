@@ -30,7 +30,7 @@ export class RecognitionService {
   constructor(private store: Store<AppState>) {
     this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
     this.historyWorker.addEventListener('message', ({data}) => {
-      console.log(data);
+      // console.log(data);
     })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
@@ -137,7 +137,6 @@ export class RecognitionService {
             this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
-          console.log('clearing live output')
           transcript = '';
           liveOutput.set('');
           debounce$.next();
