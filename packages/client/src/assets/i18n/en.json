@@ -289,7 +289,10 @@
     "stop": "Stop",
     "listen": "Listen",
     "lang": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "wakelock": "Screen Wake",
+    "wakelockOn": "Prevent the screen from sleeping while captions are active",
+    "wakelockOff": "Zip Captions will respect your system settings for sleep."
   },
   "HINTS": {
     "beginSpeaking": "Start speaking..."
