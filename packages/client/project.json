@@ -56,7 +56,7 @@
     },
     "serve": {
       "options": {
-        "disableHostCheck": true
+        "disableHostCheck": false
       },
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
