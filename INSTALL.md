@@ -14,6 +14,16 @@ Clone the repository and navigate into the cloned folder. From the root of the r
 
 To run the development server on your local machine, use the command `nx serve client` to build and serve the application. Then, in your web browser, navigate to `http://localhost:4200` to view the app running on your local machine.
 
+## Docker or Docker Compose
+
+If you prefer to use docker to build and run the application, this is easily done. From the root directory of this project, you can use the following command with docker and docker compose:
+
+*Build the application*
+`docker compose build ./`
+
+*Run the container*
+`docker compose up`
+
 ## Adding to the Application
 
 All modules, components, and services are generated using the Nx CLI, or the VS Code Nx extension. Any new additions should be organized according to the existing folder structure, and adhere to the following guidelines:
