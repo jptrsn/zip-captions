@@ -24,6 +24,18 @@ If you prefer to use docker to build and run the application, this is easily don
 *Run the container*
 `docker compose up`
 
+Alternatively, if you would like to pull the next release candidate from the develop branch, you can use the image from docker hub. A sample entry `docker-compose.yml` file entry would look like this:
+```docker-compose.yml
+version: '3'
+
+services:
+  zipcaptions:
+    container_name: zip-captions
+    image: educoder/zip-captions:develop
+    ports:
+      - 4200:80
+```
+
 ## Adding to the Application
 
 All modules, components, and services are generated using the Nx CLI, or the VS Code Nx extension. Any new additions should be organized according to the existing folder structure, and adhere to the following guidelines:
