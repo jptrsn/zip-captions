@@ -35,7 +35,7 @@ Animations are provided by the Angular Animations package. Custom animations sho
 Each module contains all required files for implementation of an existing feature within the app. These are built with lazy-loading routes, so that the application will only load the files if/when required. Modules implement their own NGRX feature state, and respect any user settings to enable/disable features. Be sure to verify that the routes defined appear and work as expected when using the application.
 
 ## Forks
-You are welcome to fork this repository for your own uses. You must adhere to the license as described in [LICENSE.txt](./license.txt), as well as all licenses from all 3rd party libraries, defined in [3rdpartylicenses.txt](./docs/3rdpartylicenses.txt). If you are creating a fork for reasons other than submitting a pull request, we would love to hear from you! Submit an issue to let us know what we're missing!
+You are welcome to fork this repository for your own uses. You must adhere to the license as described in [LICENSE.txt](./license.txt), as well as all licenses from all 3rd party libraries, defined in [3rdpartylicenses](./docs/3rdpartylicenses). If you are creating a fork for reasons other than submitting a pull request, we would love to hear from you! Submit an issue to let us know what we're missing!
 
 ## Pull Requests
 Please fork the repository, make your changes, and submit a pull request describing the changes made, as well as a rationale for why they are necessary/useful. Pull requests will be reviewed as soon as possible, clear actionable changes will be requests if required, and once all is approved, the PR will be merged into the main project and deployed.
