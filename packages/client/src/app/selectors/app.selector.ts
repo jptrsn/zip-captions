@@ -27,8 +27,3 @@ export const platformSelector = createSelector(
   selectAppAppearance,
   (state) => state.platform
 )
-
-export const wakeLockEnabledSelector = createSelector(
-  selectAppAppearance,
-  (state) => state.wakeLock
-)

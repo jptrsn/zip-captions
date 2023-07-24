@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subject, map, takeUntil } from 'rxjs';
 import { AppActions, AppAppearanceState, AppState } from '../../../../models/app.model';
-import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
+import { languageSelector, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
 import { TranslateService } from '@ngx-translate/core'
-import { selectAppAppearance, wakeLockEnabledSelector } from 'packages/client/src/app/selectors/app.selector';
+import { selectAppAppearance } from '../../../../selectors/app.selector';
 
 @Component({
   selector: 'app-settings',
@@ -36,7 +36,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
               private translate: TranslateService) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
-    this.wakeLockEnabled = toSignal(this.store.select(wakeLockEnabledSelector))
+    this.wakeLockEnabled = toSignal(this.store.select(wakeLockEnabledSelector));
     
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
@@ -86,6 +86,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setTheme({theme}));
     const language: Language = this.formGroup.get('lang')!.value as Language;
     this.store.dispatch(SettingsActions.setLanguage({language}))
+    const wakelockEnabled: boolean = this.formGroup.get('wakelock')!.value as boolean;
+    this.store.dispatch(SettingsActions.updateWakeLockEnabled({enabled: wakelockEnabled}));
     this.router.navigate([''])
   }
 }

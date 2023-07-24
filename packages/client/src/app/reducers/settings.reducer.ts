@@ -4,6 +4,7 @@ import { AppTheme, Language, SettingsActions, SettingsState } from "../modules/s
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
+  wakeLock: true,
 }
 
 export const settingsReducers = createReducer(
@@ -11,4 +12,5 @@ export const settingsReducers = createReducer(
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
   on(SettingsActions.setLanguage, (state: SettingsState, action: { language: Language}) => ({...state, lang: action.language})),
   on(SettingsActions.initSettingsComplete, (state: SettingsState, action: { settings: SettingsState}) => ({...state, ...action.settings })),
+  on(SettingsActions.updateWakeLockEnabled, (state: SettingsState, action: { enabled: boolean}) => ({...state, wakeLock: action.enabled})),
 )

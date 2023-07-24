@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { map, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap, tap } from "rxjs";
 import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { StorageService } from "../services/storage.service";
 import { TranslateService } from '@ngx-translate/core'
@@ -15,6 +15,7 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.initSettings),
       map(() => this.storage.get('settings')),
+      tap((settings) => console.log('settings', settings)),
       map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
     )
   )
@@ -33,6 +34,15 @@ export class SettingsEffects {
       tap(({language}) => this.storage.update('settings', 'lang',  language)),
       switchMap(({language}) => this.translate.use(language)),
       map(() => SettingsActions.setLanguageComplete())
+    )
+  )
+
+  applyWakeLock$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.updateWakeLockEnabled),
+      map(({enabled}) => this.storage.update('settings', 'wakeLock', enabled)),
+      map(() => SettingsActions.updateWakeLockEnabledSuccess()),
+      catchError((err) => of(SettingsActions.updateWakeLockEnabledFailure({error: err.message})))
     )
   )
 }

@@ -13,3 +13,8 @@ export const languageSelector = createSelector(
   selectAppSettings,
   (state) => state.lang as Language
 )
+
+export const wakeLockEnabledSelector = createSelector(
+  selectAppSettings,
+  (state) => state.wakeLock
+)

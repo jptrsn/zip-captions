@@ -9,7 +9,6 @@ export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
   cookiesAccepted: false,
   footerVisible: true,
-  wakeLock: true,
 }
 
 export const defaultAppState: AppState = {

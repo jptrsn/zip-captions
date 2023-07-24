@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Observable, catchError, from, map, of } from 'rxjs';
 import { AppState } from '../models/app.model';
-import { wakeLockEnabledSelector } from '../selectors/app.selector';
+import { wakeLockEnabledSelector } from '../selectors/settings.selector';
 
 @Injectable({
   providedIn: 'root'
