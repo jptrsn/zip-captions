@@ -58,6 +58,7 @@
     "@nx/web": "16.2.2",
     "@schematics/angular": "~16.0.0",
     "@tailwindcss/forms": "^0.5.3",
+    "@types/dom-screen-wake-lock": "^1.0.1",
     "@types/jest": "^29.4.0",
     "@types/node": "16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.58.0",

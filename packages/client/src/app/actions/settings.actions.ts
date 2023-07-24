@@ -10,3 +10,7 @@ export const setThemeComplete = createAction('[Settings] Set Theme Complete');
 
 export const setLanguage = createAction('[Settings] Set Language', props<{language: Language}>());
 export const setLanguageComplete = createAction('[Settings] Set Language Complete');
+
+export const updateWakeLockEnabled = createAction('[Settings] Update WakeLock Enabled', props<{enabled: boolean}>());
+export const updateWakeLockEnabledSuccess = createAction('[Settings] Update WakeLock Enabled Success');
+export const updateWakeLockEnabledFailure = createAction('[Settings] Update WakeLock Enabled Failure', props<{error: string}>());

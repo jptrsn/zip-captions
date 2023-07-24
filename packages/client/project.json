@@ -55,16 +55,17 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "options": {
-        "disableHostCheck": true
-      },
+      
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
           "browserTarget": "client:build:production"
         },
         "development": {
-          "browserTarget": "client:build:development"
+          "browserTarget": "client:build:development",
+          "liveReload": true,
+          "disableHostCheck": true,
+          "host": "0.0.0.0"
         }
       },
       "defaultConfiguration": "development"
