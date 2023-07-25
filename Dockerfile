@@ -7,8 +7,9 @@ RUN npm ci
 
 # DEVELOPMENT
 FROM base_image as dev
-CMD [sh, -c, 'npm run start:client']
+CMD [""]
 
+# STAGING
 FROM base_image as staging_build
 RUN npm run build:client
 

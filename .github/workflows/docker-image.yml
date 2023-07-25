@@ -1,8 +1,14 @@
 name: Docker Image CI/CD Staging Env
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "develop", "main" ]
+    branches: 
+      - 'develop'
+      - 'main'
+  pull_request:
+    branches:
+      - 'develop'
   
 jobs:
   push_to_registry:
@@ -26,9 +32,10 @@ jobs:
       
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        target: staging
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: ${{ github.event_name != 'ull_'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
