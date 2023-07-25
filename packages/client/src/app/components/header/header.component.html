@@ -16,12 +16,34 @@
     <summary class="m-1 btn btn-circle btn-ghost text-2xl" role="button" [attr.aria-label]="'LABELS.menu' | translate">
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
-    <ul tabindex="0" class="dropdown-content menu menu-vertical p-2 shadow bg-neutral text-neutral-content rounded-box">
-      <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of menuItems">
-        <button [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" class="text-lg">
-          {{'ROUTES.' + item.label | translate }}
-        </button>
-      </li>
-    </ul>
+
+    <ng-template #routeList let-entries="items" let-largeText="largeText">
+      <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-neutral text-neutral-content rounded-box">
+        <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of entries">
+          <ng-container *ngIf="item.children; else routeButton">
+            <details>
+              <summary [ngClass]="{'text-lg': largeText}">{{'ROUTES.' + item.label | translate}}</summary>
+              <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
+            </details>
+          </ng-container>
+          <ng-template #routeButton>
+            <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
+              {{'ROUTES.' + item.label | translate }}
+            </button>
+            <ng-template #linkButton>
+              <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
+                <span class="flex basis-full">
+                  {{'ROUTES.' + item.label | translate}}
+                </span>
+                <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+              </a>
+            </ng-template>
+          </ng-template>
+        </li>
+      </ul>
+    </ng-template>
+    <div class="dropdown-content w-64">
+      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true}"></ng-container>
+    </div>
   </details>
 </div>
