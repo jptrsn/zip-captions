@@ -1,12 +1,10 @@
 import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
-import { themeSelector } from './selectors/settings.selector';
-import { TranslateService } from '@ngx-translate/core'
-import { languageSelector } from './selectors/settings.selector';
-import { errorSelector } from './selectors/app.selector';
+import { languageSelector, themeSelector } from './selectors/settings.selector';
 
 @Component({
   selector: 'app-root',
