@@ -68,7 +68,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'donate', href: 'https://www.buymeacoffee.com/zipcaptions' }
       ]}
     ]
-    console.log(this.menuItems);
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)))
   }
 

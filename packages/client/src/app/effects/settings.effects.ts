@@ -15,7 +15,6 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.initSettings),
       map(() => this.storage.get('settings')),
-      tap((settings) => console.log('settings', settings)),
       map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
     )
   )
