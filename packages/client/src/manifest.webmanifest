@@ -1,6 +1,7 @@
 {
   "name": "Zip Captions",
   "short_name": "ZipCaptions",
+  "description": "Zip Captions provides a free, easy to use live captions experience which lives right inside your browser. No sign-ups, no ads, just accessibility.",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
