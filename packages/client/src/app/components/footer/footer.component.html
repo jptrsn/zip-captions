@@ -4,16 +4,13 @@
       <a [href]="repoUrl" target="_blank" [attr.aria-label]="'LABELS.viewGithub' | translate" class="tooltip tooltip-right" [attr.data-tip]="'LABELS.viewGithub' | translate">
         <ng-icon name="githubLogo" size="24"></ng-icon>
       </a>
-      <a [href]="discordUrl" target="_blank" [attr.aria-label]="'LABELS.joinDiscord' | translate" class="tooltip tooltip-right" [attr.data-tip]="'LABELS.joinDiscord' | translate">
-        <ng-icon name="discordLogo" size="24"></ng-icon>
-      </a>
       <app-cookie-modal></app-cookie-modal>
     </div>
     <div class="flex-auto flex-grow justify-items-center text-error text-lg">
       <span *ngIf="error$() as err" translate class="text-center">{{err}}</span>
     </div>
     <div class="flex-initial flex-row">
-      <span class="text-sm mx-4 my-2 text-base-content"><span>{{ 'FOOTER.copyright' | translate}} 2023</span> - Zip Captions</span>
+      <a [href]="licenseUrl" target="_blank" class="text-sm mx-4 my-2 text-base-content"><span>{{ 'FOOTER.copyright' | translate}} 2023</span> - Zip Captions</a>
     </div>
   </footer>
 </div>

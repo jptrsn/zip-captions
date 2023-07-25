@@ -6,6 +6,7 @@ export {
   heroStopCircle,
   heroExclamationTriangle,
   heroCheckCircle,
+  heroArrowTopRightOnSquare,
 } from '@ng-icons/heroicons/outline';
 
 // Custom vectors to add

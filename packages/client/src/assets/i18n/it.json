@@ -265,7 +265,13 @@
     "settings": "Impostazioni",
     "privacy": "Riservatezza",
     "terms": "Termini e Condizioni",
-    "cookies": "Politica dei Cookie"
+    "cookies": "Politica dei Cookie",
+    "policies": "Politiche",
+    "support": "Assistenza",
+    "helpdesk": "Aiuto",
+    "github": "Tracciamento dei problemi su Github",
+    "discord": "Discord Server",
+    "donate": "Donare"
   },
   "FOOTER": {
     "copyright": "Copyright"
