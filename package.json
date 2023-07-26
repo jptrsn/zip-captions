@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500",
+    "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500 --disable-host-check",
     "build": "nx build",
     "build:client": "nx build --project=client"
   },
