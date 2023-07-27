@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgIconsModule } from '@ng-icons/core';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { TranslateTestingModule } from 'ngx-translate-testing';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
 import { Icons } from 'shared-ui';
 import * as DE_TRANSLATIONS from '../assets/i18n/de.json';
 import * as EN_TRANSLATIONS from '../assets/i18n/en.json';
@@ -27,6 +28,9 @@ import { defaultAppState } from './reducers/app.reducer';
 import { languageSelector } from './selectors/settings.selector';
 import { MediaModule } from './modules/media/media.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { EffectsModule, EffectsRootModule } from '@ngrx/effects';
+
+const actions$ = new Observable<Action>();
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -49,7 +53,7 @@ describe('AppComponent', () => {
             .withTranslations('it', IT_TRANSLATIONS)
             .withTranslations('sp', SP_TRANSLATIONS),
           MediaModule,
-          SettingsModule,
+          EffectsModule.forRoot(),
         ],
         declarations: [
           AppComponent, 
@@ -63,7 +67,8 @@ describe('AppComponent', () => {
           TermsAndConditionsComponent,
         ],
         providers: [
-          provideMockStore({ initialState: defaultAppState })
+          provideMockStore({ initialState: defaultAppState }),
+          provideMockActions(() => actions$)
         ],
       }).compileComponents();
     })
