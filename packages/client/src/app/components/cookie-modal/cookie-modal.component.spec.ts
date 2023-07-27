@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CookieModalComponent } from './cookie-modal.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 
 describe('CookieModalComponent', () => {
   let component: CookieModalComponent;
@@ -7,7 +8,9 @@ describe('CookieModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [CookieModalComponent],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(CookieModalComponent);

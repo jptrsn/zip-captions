@@ -1,21 +1,45 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FooterComponent } from './footer.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
+import { CookieModalComponent } from '../cookie-modal/cookie-modal.component';
+import { AppActions, AppState } from '../../models/app.model';
+import { Store } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { footerVisibleSelector } from '../../selectors/app.selector';
+import { lastValueFrom } from 'rxjs';
 
 describe('FooterComponent', () => {
   let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;
+  let store: MockStore<AppState>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FooterComponent],
+      imports: TestingModuleImports,
+      declarations: [
+        FooterComponent,
+        CookieModalComponent,
+      ],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(FooterComponent);
     component = fixture.componentInstance;
+    store = TestBed.get<Store>(Store);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('show show and hide with app state', waitForAsync(async() => {
+    expect(component.hidden()).toBeFalsy();
+    store.dispatch(AppActions.hideFooter());
+    await lastValueFrom(store.select(footerVisibleSelector))
+    expect(component.hidden()).toBeTruthy();
+    store.dispatch(AppActions.showFooter());
+    await lastValueFrom(store.select(footerVisibleSelector))
+    expect(component.hidden()).toBeFalsy();
+  }))
 });
