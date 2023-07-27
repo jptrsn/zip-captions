@@ -36,10 +36,13 @@ describe('FooterComponent', () => {
   it('show show and hide with app state', waitForAsync(async() => {
     expect(component.hidden()).toBeFalsy();
     store.dispatch(AppActions.hideFooter());
-    await lastValueFrom(store.select(footerVisibleSelector))
+    let stateUpdate = await lastValueFrom(store.select(footerVisibleSelector))
+    expect(stateUpdate).toBeTruthy();
     expect(component.hidden()).toBeTruthy();
     store.dispatch(AppActions.showFooter());
-    await lastValueFrom(store.select(footerVisibleSelector))
+    stateUpdate = await lastValueFrom(store.select(footerVisibleSelector))
+    expect(stateUpdate).toBeFalsy();
     expect(component.hidden()).toBeFalsy();
-  }))
+  }));
+
 });

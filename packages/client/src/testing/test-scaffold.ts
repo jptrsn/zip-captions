@@ -16,10 +16,6 @@ import * as IT_TRANSLATIONS from '../assets/i18n/it.json';
 import * as SP_TRANSLATIONS from '../assets/i18n/sp.json';
 const actions$ = new Observable<Action>();
 
-export class MockElementRef extends ElementRef {
-  constructor() { super(null); }
-}
-
 export const TestingModuleImports = [
   NoopAnimationsModule,
   RouterTestingModule,
@@ -37,5 +33,4 @@ export const TestingModuleImports = [
 export const TestingModuleProviders = [
   provideMockStore({ initialState: defaultAppState }),
   provideMockActions(() => actions$),
-  { provide: ElementRef, useClass: MockElementRef }
 ]
