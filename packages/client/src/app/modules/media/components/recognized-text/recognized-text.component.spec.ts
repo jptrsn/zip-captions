@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecognizedTextComponent } from './recognized-text.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 
 describe('RecognizedTextComponent', () => {
   let component: RecognizedTextComponent;
@@ -7,7 +8,9 @@ describe('RecognizedTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [RecognizedTextComponent],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(RecognizedTextComponent);

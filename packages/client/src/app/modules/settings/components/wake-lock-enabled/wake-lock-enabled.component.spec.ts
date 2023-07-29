@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WakeLockEnabledComponent } from './wake-lock-enabled.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 describe('WakeLockEnabledComponent', () => {
   let component: WakeLockEnabledComponent;
@@ -7,11 +9,20 @@ describe('WakeLockEnabledComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        ...TestingModuleImports,
+        ReactiveFormsModule
+      ],
       declarations: [WakeLockEnabledComponent],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(WakeLockEnabledComponent);
     component = fixture.componentInstance;
+    component.group = new FormGroup({
+      wakeLock: new FormControl(true)
+    })
+    component.controlName = 'wakeLock';
     fixture.detectChanges();
   });
 

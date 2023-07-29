@@ -1,10 +1,10 @@
 import { Component, Signal } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Observable, map, tap } from 'rxjs';
-import { AppState } from '../../models/app.model';
-import { collapseAnimation } from 'angular-animations';
-import { errorSelector, footerVisibleSelector } from '../../selectors/app.selector';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Store, select } from '@ngrx/store';
+import { collapseAnimation } from 'angular-animations';
+import { map } from 'rxjs';
+import { AppState } from '../../models/app.model';
+import { errorSelector, footerVisibleSelector } from '../../selectors/app.selector';
 
 @Component({
   selector: 'app-footer',

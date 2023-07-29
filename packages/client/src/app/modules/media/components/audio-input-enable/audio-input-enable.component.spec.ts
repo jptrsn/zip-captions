@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AudioInputEnableComponent } from './audio-input-enable.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { BackgroundMagnitudeDirective } from '../../../../directives/background-magnitude.directive';
 
 describe('AudioInputEnableComponent', () => {
   let component: AudioInputEnableComponent;
@@ -7,7 +9,14 @@ describe('AudioInputEnableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AudioInputEnableComponent],
+      imports: [
+        ...TestingModuleImports,
+        BackgroundMagnitudeDirective,
+      ],
+      declarations: [
+        AudioInputEnableComponent,
+      ],
+      providers: TestingModuleProviders,
     }).compileComponents();
 
     fixture = TestBed.createComponent(AudioInputEnableComponent);

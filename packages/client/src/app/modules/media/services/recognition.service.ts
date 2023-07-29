@@ -8,6 +8,7 @@ import { RecognitionActions, SpeechRecognition } from '../../../models/recogniti
 import { platformSelector } from '../../../selectors/app.selector';
 import { languageSelector } from '../../../selectors/settings.selector';
 import { Language } from '../../settings/models/settings.model';
+import { getWorker } from '../../../services/worker.util';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -28,7 +29,7 @@ export class RecognitionService {
   private language: Signal<Language>;
 
   constructor(private store: Store<AppState>) {
-    this.historyWorker = new Worker(new URL('../workers/recognition-history.worker', import.meta.url));
+    this.historyWorker = getWorker();
     this.historyWorker.addEventListener('message', ({data}) => {
       // console.log(data);
     })

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Directive({
   selector: '[appBackgroundMagnitude]',
@@ -8,7 +8,7 @@ export class BackgroundMagnitudeDirective implements OnChanges {
   @Input() magnitude!: number | null | undefined;
   @Input() lower = 'darkblue';
   @Input() upper = 'transparent';
-  constructor(private el: ElementRef) {}
+  constructor(@Inject(ElementRef) private el: ElementRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     const numValue: number = changes['magnitude'].currentValue;

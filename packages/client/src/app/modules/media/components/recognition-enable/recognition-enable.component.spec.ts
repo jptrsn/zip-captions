@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecognitionEnableComponent } from './recognition-enable.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 
 describe('RecorderEnableComponent', () => {
   let component: RecognitionEnableComponent;
@@ -7,7 +8,9 @@ describe('RecorderEnableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [RecognitionEnableComponent],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(RecognitionEnableComponent);

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import { WelcomeSplashComponent } from './welcome-splash.component';
 
 describe('WelcomeSplashComponent', () => {
@@ -7,7 +8,15 @@ describe('WelcomeSplashComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WelcomeSplashComponent],
+      imports: [
+        ...TestingModuleImports
+      ],
+      declarations: [
+        WelcomeSplashComponent
+      ],
+      providers: [
+        ...TestingModuleProviders
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WelcomeSplashComponent);
