@@ -249,7 +249,7 @@
   "WELCOME": {
     "p1" : "L'accessibilité devrait être gratuite",
     "p2" : "Zip Captions fournit une expérience de sous-titrage en direct facile à utiliser, qui vit directement dans votre navigateur. Nous ne capturons, ne stockons, ni ne partageons aucune de vos données, et il n'y a pas de frais cachés, ni d'accord à signer",
-    "p3" : "Cliquez sur le bouton en haut pour commencer.",
+    "p3" : "Cliquez sur le microphone en haut de la page pour commencer.",
     "warning": "Pour des résultats optimaux, nous recommandons d'utiliser Chrome ou Safari sur un ordinateur de bureau."
   },
   "SETTINGS": {
