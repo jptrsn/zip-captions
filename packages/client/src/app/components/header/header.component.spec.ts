@@ -1,20 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
+import { lastValueFrom } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionActions } from '../../models/recognition.model';
 import { RecognitionEnableComponent } from '../../modules/media/components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from '../../modules/media/components/recognition-render/recognition-render.component';
-import { HeaderComponent } from './header.component';
-import { recognitionStatusSelector } from '../../selectors/recognition.selector';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
-import { defaultRecognitionState } from '../../reducers/recognition.reducer';
-import { defaultAppAppearance, defaultAppState } from '../../reducers/app.reducer';
-import { DebugElement } from '@angular/core';
-import { AudioInputEnableComponent } from '../../modules/media/components/audio-input-enable/audio-input-enable.component';
-import { By } from '@angular/platform-browser';
+import { defaultAppState } from '../../reducers/app.reducer';
 import { platformSelector } from '../../selectors/app.selector';
+import { recognitionStatusSelector } from '../../selectors/recognition.selector';
+import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
