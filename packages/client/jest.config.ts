@@ -1,7 +1,11 @@
 /* eslint-disable */
 export default {
   displayName: 'client',
+  moduleNameMapper: {
+    '.*worker.util': 'packages/client/src/app/services/worker.util.mock.ts'
+  },
   preset: '../../jest.preset.js',
+  setupFiles: ['jest-wake-lock-mock'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/packages/client',
   transform: {

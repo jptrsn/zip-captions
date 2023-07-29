@@ -55,9 +55,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "options": {
-        "disableHostCheck": true
-      },
+      
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {

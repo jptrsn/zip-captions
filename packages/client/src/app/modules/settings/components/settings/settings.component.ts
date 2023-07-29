@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subject, map, takeUntil } from 'rxjs';
 import { AppActions, AppAppearanceState, AppState } from '../../../../models/app.model';
-import { languageSelector, themeSelector } from '../../../../selectors/settings.selector';
+import { languageSelector, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, SettingsActions } from '../../models/settings.model';
 import { TranslateService } from '@ngx-translate/core'
-import { selectAppAppearance } from 'packages/client/src/app/selectors/app.selector';
+import { selectAppAppearance } from '../../../../selectors/app.selector';
 
 @Component({
   selector: 'app-settings',
@@ -18,13 +18,15 @@ import { selectAppAppearance } from 'packages/client/src/app/selectors/app.selec
 export class SettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
-    lang: FormControl<Language | null>
+    lang: FormControl<Language | null>,
+    wakelock: FormControl<boolean | undefined | null>
   }>;
   public acceptedCookies: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
   private language: Signal<Language>;
+  private wakeLockEnabled: Signal<boolean | undefined>;
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
@@ -34,10 +36,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
               private translate: TranslateService) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
+    this.wakeLockEnabled = toSignal(this.store.select(wakeLockEnabledSelector));
     
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
-      lang: this.fb.control(this.language())
+      lang: this.fb.control(this.language()),
+      wakelock: this.fb.control(this.wakeLockEnabled())
     });
 
     this.acceptedCookies = toSignal(this.store.pipe(
@@ -82,6 +86,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setTheme({theme}));
     const language: Language = this.formGroup.get('lang')!.value as Language;
     this.store.dispatch(SettingsActions.setLanguage({language}))
+    const wakelockEnabled: boolean = this.formGroup.get('wakelock')!.value as boolean;
+    this.store.dispatch(SettingsActions.updateWakeLockEnabled({enabled: wakelockEnabled}));
     this.router.navigate([''])
   }
 }

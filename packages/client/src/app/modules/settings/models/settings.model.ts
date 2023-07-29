@@ -46,6 +46,7 @@ export const AvailableLanguages: Language[] = [
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
+  wakeLock: boolean;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

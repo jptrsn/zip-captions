@@ -265,7 +265,13 @@
     "settings" : "Paramètres",
     "privacy": "Confidentialité",
     "terms": "Conditions Générales d'Utilisation",
-    "cookies": "Politique en Matière de Cookies"
+    "cookies": "Politique en Matière de Cookies",
+    "policies": "Politiques",
+    "support": "Assistance",
+    "helpdesk": "Bureau d'Aide",
+    "github": "GitHub Issue Tracker",
+    "discord": "Serveur Discord",
+    "donate": "Faire un Don"
   },
   "FOOTER" : {
     "copyright" : "Copyright"

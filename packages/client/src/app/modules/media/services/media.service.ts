@@ -45,7 +45,7 @@ export class MediaService {
 
   public getVolumeForStream(streamId: string): Signal<number> {
     if (!this.volumeAnalyserMap.has(streamId)) {
-      throw new Error($localize`Stream id does not appear to have a volume analyzer`);
+      throw new Error(`Stream id does not appear to have a volume analyzer`);
     }
     return this.volumeAnalyserMap.get(streamId) as Signal<number>;
   }

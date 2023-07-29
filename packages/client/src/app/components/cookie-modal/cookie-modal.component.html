@@ -1,4 +1,4 @@
-<button (click)="modal.showModal()" class="tooltip tooltip-right" [attr.data-tip]="'COOKIES.MODAL.name' | translate" aria-label="Cookie Policy" *ngIf="!accepted()">
+<button #open (click)="modal.showModal()" class="tooltip tooltip-right" [attr.data-tip]="'COOKIES.MODAL.name' | translate" aria-label="Cookie Policy" *ngIf="!accepted()">
   <ng-icon name="cookie" size="24"></ng-icon>
 </button>
 <dialog #modal class="modal modal-bottom">

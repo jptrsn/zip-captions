@@ -11,6 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { SettingsEffects } from '../../effects/settings.effects';
 import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ThemeSelectorComponent,
     LanguageSelectorComponent,
     CookiePolicyComponent,
+    WakeLockEnabledComponent,
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     EffectsModule.forFeature([SettingsEffects]),
-    TranslateModule.forChild({extend: true})
+    TranslateModule.forChild({ extend: true }),
   ],
   exports: [
     SettingsComponent,

@@ -51,12 +51,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ).subscribe((ev) => {
       this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
     })
-    this.menuItems = this.router.config.map((route: Route) => {
-      return {
-        label: route.data?.['name'] || route.path,
-        routerOutlet: `/${route.path}`
-      }
-    });
+    
+    this.menuItems = [
+      { label: 'home', routerOutlet: '/'},
+      { label: 'about', routerOutlet: '/about' },
+      { label: 'policies', children: [
+        { label: 'privacy', routerOutlet: '/privacy' },
+        { label: 'terms', routerOutlet: '/terms' },
+        { label: 'cookies', routerOutlet: '/cookies' }
+      ]},
+      { label: 'settings', routerOutlet: '/settings' },
+      { label: 'support', children: [
+        { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
+        { label: 'discord', href: 'https://discord.gg/Swe2JeHnPc' },
+        { label: 'helpdesk', href: 'https://zipcaptions.zohodesk.com/portal/en/home' },
+        { label: 'donate', href: 'https://www.buymeacoffee.com/zipcaptions' }
+      ]}
+    ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)))
   }
 

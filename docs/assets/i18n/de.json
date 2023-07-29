@@ -265,7 +265,13 @@
     "settings": "Einstellungen",
     "privacy": "Privatsphäre",
     "terms": "Bedingungen und Konditionen",
-    "cookies": "Cookie-Richtlinie"
+    "cookies": "Cookie-Richtlinie",
+    "policies": "Politiken",
+    "support": "Unterstützung",
+    "helpdesk": "Hilfe-Schreibtisch",
+    "github": "GitHub Issue Tracker",
+    "discord": "Diskord-Server",
+    "donate": "Spende"
   },
   "FOOTER": {
     "copyright": "Copyright"

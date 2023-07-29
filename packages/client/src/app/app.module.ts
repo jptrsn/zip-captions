@@ -69,7 +69,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       settings: settingsReducers,
     }),
     EffectsModule.forRoot([AppEffects]),
-    EffectsModule.forFeature([SettingsEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

@@ -1,4 +1,6 @@
 export interface MenuItem {
   label: string;
-  routerOutlet: string;
+  routerOutlet?: string;
+  href?: string;
+  children?: MenuItem[];
 }

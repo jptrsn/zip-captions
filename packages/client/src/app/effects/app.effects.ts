@@ -1,16 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { map, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap, tap } from "rxjs";
 import { AppActions, AppAppearanceState } from "../models/app.model";
 import { BrowserCompatibilityService } from "../services/browser-compatibility.service";
 import { StorageService } from "../services/storage.service";
 import { SettingsActions } from "../modules/settings/models/settings.model";
+import { WakeLockService } from "../services/wake-lock.service";
 
 @Injectable()
 export class AppEffects {
   constructor(private actions$: Actions,
-              private browserCompatibilityService: BrowserCompatibilityService,
-              private storage: StorageService) {}
+              @Inject(BrowserCompatibilityService) private browserCompatibilityService: BrowserCompatibilityService,
+              @Inject(StorageService) private storage: StorageService,
+              @Inject(WakeLockService) private wakelockService: WakeLockService ) {}
 
   checkUserAgent$ = createEffect(() => 
     this.actions$.pipe(
@@ -57,6 +59,24 @@ export class AppEffects {
         this.storage.update('appearance', 'cookiesDeclinedTimestamp', Date.now())
       }),
       map(() => AppActions.setCookiePolicyComplete())
+    )
+  )
+
+  applyLock$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActions.applyWakeLock),
+      switchMap(() => this.wakelockService.requestLock()),
+      map(() => AppActions.applyWakeLockSuccess()),
+      catchError((err) => of(AppActions.applyWakeLockFailure({error: err.message})))
+    )
+  )
+
+  releaseLock$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.releaseWakeLock),
+      switchMap(() => this.wakelockService.releaseLock()),
+      map(() => AppActions.releaseWakeLockSuccess()),
+      catchError((err) => of(AppActions.releaseWakeLockFailure({error: err.message})))
     )
   )
 }

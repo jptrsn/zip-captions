@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { RecognitionService } from "../modules/media/services/recognition.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { RecognitionActions } from "../models/recognition.model";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap } from "rxjs";
 import { AppActions } from "../models/app.model";
+import { RecognitionActions } from "../models/recognition.model";
+import { RecognitionService } from "../modules/media/services/recognition.service";
 
 @Injectable()
 export class RecognitionEffects {
@@ -14,7 +14,7 @@ export class RecognitionEffects {
     this.actions$.pipe(
       ofType(RecognitionActions.connectRecognition),
       map((props) => this.recognitionService.connectToStream(props.id)),
-      switchMap(() => [RecognitionActions.connectRecognitionSuccess(), AppActions.hideFooter()]),
+      switchMap(() => [RecognitionActions.connectRecognitionSuccess(), AppActions.hideFooter(), AppActions.applyWakeLock()]),
       catchError((err: any) => of(RecognitionActions.connectRecognitionFailure({error: err.message})))
     )
   )
@@ -23,7 +23,7 @@ export class RecognitionEffects {
     this.actions$.pipe(
       ofType(RecognitionActions.disconnectRecognition),
       map((props) => this.recognitionService.disconnectFromStream(props.id)),
-      switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter()]),
+      switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock()]),
       catchError((err: any) => of(RecognitionActions.disconnectRecognitionFailure({error: err.message})))
     )
   )

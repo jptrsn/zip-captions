@@ -265,7 +265,13 @@
     "settings": "Settings",
     "privacy": "Privacy",
     "terms": "Terms & Conditions",
-    "cookies": "Cookie Policy"
+    "cookies": "Cookie Policy",
+    "policies": "Policies",
+    "support": "Support",
+    "helpdesk": "Help Desk",
+    "github": "GitHub Issue Tracker",
+    "discord": "Discord Server",
+    "donate": "Donate"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -289,7 +295,13 @@
     "stop": "Stop",
     "listen": "Listen",
     "lang": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "wakelock": "Screen Wake",
+    "wakelockOn": "Prevent the screen from sleeping while captions are active",
+    "wakelockOff": "Zip Captions will respect your system settings for sleep."
+  },
+  "HINTS": {
+    "beginSpeaking": "Start speaking..."
   },
   "HINTS": {
     "beginSpeaking": "Start speaking..."
