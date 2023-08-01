@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "start:client": "nx serve --project=client --host=0.0.0.0 --poll=500 --disable-host-check",
-    "start:signal": "nx serve signal",
+    "start:client": "nx serve client --host=0.0.0.0 --poll=500",
+    "start:signal": "nx serve signal --host=0.0.0.0",
+    "start:all": "nx run-many -t serve --host=0.0.0.0 --parallel",
     "build": "nx build",
+    "build:all": "nx run-many -t build -p client,signal --parallel",
     "build:client": "nx build --project=client"
   },
   "private": true,
@@ -32,6 +34,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "^16.2.2",
+    "@nx/nx-linux-x64-musl": "^16.6.0",
     "@types/dom-speech-recognition": "^0.0.1",
     "angular-animations": "^0.11.0",
     "axios": "^1.0.0",
@@ -96,6 +99,9 @@
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "typescript": "~5.0.2"
+  },
+  "optionalDependencies": {
+    "@nrwl/nx-linux-arm64-gnu": "15.8.5"
   },
   "workspaces": [
     "packages/*"

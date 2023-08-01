@@ -1,25 +1,11 @@
-import express from 'express';
-import { Server } from 'socket.io';
 import { PeerServer } from 'peer';
+import { Server } from 'socket.io';
 
-// const host = process.env.HOST ?? 'localhost';
-// const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 const socketPort = process.env.SOCKET_PORT ? Number(process.env.SOCKET_PORT) : 3000;
 const peerPort = process.env.PEER_PORT ? Number(process.env.PEER_PORT) : 9000;
 
 const ioServer = new Server(socketPort, {});
 const peerServer = PeerServer({ port: peerPort });
-// const app = express();
-
-// app.get('/', (req, res) => {
-//   res.send({ message: 'Hello API' });
-// });
-
-// app.listen(port, host, () => {
-//   console.log(`[ ready ] http://${host}:${port}`);
-// });
-
-
 
 ioServer.on('connection', (socket) => {
   console.info(`client connected: ${socket.id}`);
