@@ -3,13 +3,34 @@ version: '3'
 services:
   client:
     container_name: client
-    image: zip_captions
+    image: zip_captions_client
     build:
       context: .
       dockerfile: Dockerfile
       target: dev
     volumes:
       - .:/usr/src/app:delegated
-    command: [sh, -c, 'npm run start:client']
+      - mono-node-modules:/app/node_modules
+    command: 'npm run start:client'
     ports:
       - 4200:4200
+    depends_on: 
+      - signal
+
+  signal:
+    container_name: signal
+    image: zip_captions_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - .:/usr/src/app:delegated
+      - mono-node-modules:/app/node_modules
+    command: 'npm run start:signal'
+    ports:
+      - 3000:3000
+      - 9000:9000
+
+volumes:
+  mono-node-modules: null
