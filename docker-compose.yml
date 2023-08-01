@@ -3,7 +3,7 @@ version: '3'
 services:
   client:
     container_name: client
-    image: zip_captions
+    image: zip_captions_client
     build:
       context: .
       dockerfile: Dockerfile
@@ -19,7 +19,7 @@ services:
 
   signal:
     container_name: signal
-    image: zip_captions
+    image: zip_captions_server
     build:
       context: .
       dockerfile: Dockerfile
