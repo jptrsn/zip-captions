@@ -1,8 +1,21 @@
 version: '3'
 
 services:
-  client:
-    container_name: client
+  # client:
+  #   container_name: client
+  #   image: zip_captions
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: dev
+  #   volumes:
+  #     - .:/usr/src/app:delegated
+  #   command: [sh, -c, 'npm run start:client']
+  #   ports:
+  #     - 4200:4200
+
+  signal:
+    container_name: signal
     image: zip_captions
     build:
       context: .
@@ -10,6 +23,7 @@ services:
       target: dev
     volumes:
       - .:/usr/src/app:delegated
-    command: [sh, -c, 'npm run start:client']
+    command: [sh, -c, 'npm run start:signal']
     ports:
-      - 4200:4200
+      - 3000:3000
+      - 9000:9000
