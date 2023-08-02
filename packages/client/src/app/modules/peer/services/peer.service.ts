@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket } from 'ngx-socket-io';
 import { PeerActions } from '../../../actions/peer.actions';
-import { Observable, Subject, shareReplay, take, timeout } from 'rxjs';
+import { Observable, Subject, shareReplay, take, tap, timeout } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +27,12 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('connected', this.socket.ioSocket.id);
       sub.next(this.socket.ioSocket.id);
     });
+    this.socket.on('error', (err: any) => {
+      console.error(err);
+      sub.error(err.message);
+    })
     this.socket.on('message', (data: any) => {
       console.log('message', data);
       this.store.dispatch(PeerActions.socketServerMessageReceived(data));
@@ -37,23 +40,22 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  disconnectSocket(): Observable<void> {
-    const sub = new Subject<void>();
-    this.socket.on('disconnect', () => {{
-      console.log('disconnected');
-      sub.next();
-    }})
-    this.socket.disconnect();
+  disconnectSocket(): Observable<boolean> {
+    const sub = new Subject<boolean>();
+    this.socket.on('disconnect', () => {
+      sub.next(true);
+    });
+    setTimeout(() => this.socket.disconnect(), 1)
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
   joinRoom(data?: { room: string }) {
     const room: string = data?.room || this._generateRoomId();
-    this.socket.emit('join', {room});
+    this.socket.volatile().emit('join', {room});
   }
 
   sendServerMessage(data: any) {
-    this.socket.emit('message', data);
+    this.socket.volatile().emit('message', data);
   }
 
   private _generateRoomId(): string {

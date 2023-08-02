@@ -2,9 +2,10 @@ import { createAction, props } from "@ngrx/store";
 
 export const PeerActions = {
   connectSocketServer: createAction('[Peer] Connect Socket Server'),
-  socketServerConnected: createAction('[Peer] Server Connected', props<{id: string}>()),
+  socketServerConnected: createAction('[Peer] Socket Server Connected', props<{id: string}>()),
+  connectSocketServerFailure: createAction('[Peer] Connect Socket Server Error', props<{error: string}>()),
   disconnectSocketServer: createAction('[Peer] Disconnect Socket Server'),
-  socketServerDisconnected: createAction('[Peer] Server Disconnected'),
+  socketServerDisconnected: createAction('[Peer] Socket Server Disconnected'),
   socketServerMessageReceived: createAction('[Peer] Server Message Received', props<{data: any}>()),
   createBroadcastRoom: createAction('[Peer] Create Broadcast Room'),
   createBroadcastRoomSuccess: createAction('[Peer] Create Broadcast Room Success', props<{id:string}>()),

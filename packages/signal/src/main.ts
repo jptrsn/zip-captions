@@ -10,10 +10,9 @@ const peerServer = PeerServer({ port: peerPort });
 ioServer.on('connection', (socket) => {
   console.info(`client connected: ${socket.id}`);
   
-  
-  socket.on('join', (data: { room: string }) => {
-    
-    console.info(`socket ${socket.id} joined room: ${data.room}`);
+
+  socket.on('join', (data: { room: string }) => {    
+    console.info(`socket id ${socket.id} joined room: ${data.room}`);
     socket.join(data.room);
     socket.broadcast.to(data.room).emit('user joined');
     socket.send({user: socket.id, message: 'room joined', room: data.room })

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PeerService } from '../modules/peer/services/peer.service';
 import { PeerActions } from '../actions/peer.actions';
-import { map, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 
 
@@ -15,7 +15,8 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.connectSocketServer),
       switchMap(() => this.peerService.connectSocket()),
-      map((id) => PeerActions.socketServerConnected({id}))
+      map((id) => PeerActions.socketServerConnected({id})),
+      catchError((err: any) => of(PeerActions.connectSocketServerFailure({error: err.message})))
     )
   )
 
