@@ -6,6 +6,9 @@ import { BroadcastSessionComponent } from './components/broadcast-session/broadc
 import { JoinSessionComponent } from './components/join-session/join-session.component';
 import { EndBroadcastComponent } from './components/end-broadcast/end-broadcast.component';
 import { LeaveSessionComponent } from './components/leave-session/leave-session.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { EffectsModule } from '@ngrx/effects';
+import { PeerEffects } from '../../effects/peer.effects';
 
 @NgModule({
   declarations: [
@@ -14,7 +17,12 @@ import { LeaveSessionComponent } from './components/leave-session/leave-session.
     EndBroadcastComponent,
     LeaveSessionComponent,
   ],
-  imports: [CommonModule, PeerRoutingModule],
+  imports: [
+    CommonModule, 
+    PeerRoutingModule,
+    TranslateModule.forChild({extend: true}),
+    EffectsModule.forFeature([PeerEffects])
+  ],
   exports: [
     BroadcastSessionComponent,
     JoinSessionComponent,

@@ -1,30 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
+import { Store } from '@ngrx/store';
+import { PeerActions } from '../../../../actions/peer.actions';
 
 @Component({
   selector: 'app-broadcast-session',
   templateUrl: './broadcast-session.component.html',
   styleUrls: ['./broadcast-session.component.scss'],
 })
-export class BroadcastSessionComponent {
-  constructor(private peer: PeerService) {}
+export class BroadcastSessionComponent implements OnInit, OnDestroy {
+  constructor(private store: Store) {}
 
-  joinRoom() {
-    this.peer.joinRoom({ room: this._generateRoomId() });
+  ngOnInit(): void {
+    this.store.dispatch(PeerActions.connectSocketServer());
   }
 
-  private _generateRoomId(): string {
-    let outString = '';
-    const outParts: string[] = [];
-    const inOptions = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  ngOnDestroy(): void {
+    this.store.dispatch(PeerActions.disconnectSocketServer());
+  }
 
-    for (let i = 0; i < 3; i++) {
-      outString = '';
-      for (let j = 0; j < 4; j++) {
-        outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
-      }
-      outParts.push(outString);
-    }
-    return outParts.join('-');
+  createRoom() {
+    this.store.dispatch(PeerActions.createBroadcastRoom())
   }
 }
