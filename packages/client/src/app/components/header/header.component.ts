@@ -54,6 +54,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     
     this.menuItems = [
       { label: 'home', routerOutlet: '/'},
+      { label: 'stream', routerOutlet: '/stream' },
       { label: 'about', routerOutlet: '/about' },
       { label: 'policies', children: [
         { label: 'privacy', routerOutlet: '/privacy' },
