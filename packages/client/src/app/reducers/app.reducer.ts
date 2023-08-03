@@ -4,6 +4,7 @@ import { AppAppearanceState, AppPlatform, AppState } from '../models/app.model';
 import { defaultAudioStreamState } from './audio-stream.reducer';
 import { defaultRecognitionState } from './recognition.reducer';
 import { defaultSettingsState } from './settings.reducer';
+import { defaultPeerState } from './peer.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
@@ -16,6 +17,7 @@ export const defaultAppState: AppState = {
   settings: defaultSettingsState,
   audioStream: defaultAudioStreamState,
   recognition: defaultRecognitionState,
+  peer: defaultPeerState,
 }
 
 export const appAppearanceReducers = createReducer(

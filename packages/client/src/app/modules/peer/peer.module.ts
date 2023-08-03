@@ -9,6 +9,7 @@ import { LeaveSessionComponent } from './components/leave-session/leave-session.
 import { TranslateModule } from '@ngx-translate/core';
 import { EffectsModule } from '@ngrx/effects';
 import { PeerEffects } from '../../effects/peer.effects';
+import { PeerLandingComponent } from './components/peer-landing/peer-landing.component';
 
 @NgModule({
   declarations: [
@@ -16,12 +17,13 @@ import { PeerEffects } from '../../effects/peer.effects';
     JoinSessionComponent,
     EndBroadcastComponent,
     LeaveSessionComponent,
+    PeerLandingComponent,
   ],
   imports: [
-    CommonModule, 
+    CommonModule,
     PeerRoutingModule,
-    TranslateModule.forChild({extend: true}),
-    EffectsModule.forFeature([PeerEffects])
+    TranslateModule.forChild({ extend: true }),
+    EffectsModule.forFeature([PeerEffects]),
   ],
   exports: [
     BroadcastSessionComponent,

@@ -15,7 +15,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.connectSocketServer),
       switchMap(() => this.peerService.connectSocket()),
-      map((id) => PeerActions.socketServerConnected({id})),
+      switchMap((id) => [PeerActions.socketServerConnected({id}), PeerActions.connectPeerServer()]),
       catchError((err: any) => of(PeerActions.connectSocketServerFailure({error: err.message})))
     )
   )
@@ -27,4 +27,23 @@ export class PeerEffects {
       map(() => PeerActions.socketServerDisconnected())
     )
   )
+
+  connectPeerServer$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(PeerActions.connectPeerServer),
+      switchMap(() => this.peerService.connectPeerServer()),
+      map((id) => PeerActions.peerServerConnected({id})),
+      catchError((err: any) => of(PeerActions.connectPeerServerFailure({error: err.message})))
+    )
+  )
+
+  disconnectPeerServer$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(PeerActions.disconnectPeerServer),
+      switchMap(() => this.peerService.disconnectPeerServer()),
+      switchMap(() => [PeerActions.peerServerDisconnected(), PeerActions.disconnectSocketServer()])
+    )
+  )
+
+
 }

@@ -13,7 +13,17 @@ export const PeerActions = {
   joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string}>()),
   joinBroadcastRoomSuccess: createAction('[Peer] Join Broadcast Room Success'),
   joinBroadcastRoomFailure: createAction('[Peer] Join Broadcast Room Failure', props<{error: string}>()),
-  connectPeer: createAction('[Peer] Connect Peer', props<{id: string}>()),
-  connectPeerSuccess: createAction('[Peer] Connect Peer Success'),
-  connectPeerFailure: createAction('[Peer] Connect Peer Failure', props<{error: string}>())
+  connectPeerServer: createAction('[Peer] Connect Peer Server'),
+  peerServerConnected: createAction('[Peer] Peer Server Connected', props<{id: string}>()),
+  connectPeerServerFailure: createAction('[Peer] Connect Peer Server Error', props<{error: string}>()),
+  disconnectPeerServer: createAction('[Peer] Disconnect Peer Server'),
+  peerServerDisconnected: createAction('[Peer] Peer Server Disconnected'), 
+
+  connectToRemotePeer: createAction('[Peer] Connect to Remote Peer', props<{id: string}>()),
+  connectToRemotePeerSuccess: createAction('[Peer] Connect to Remote Peer Success'),
+  connectToRemotePeerFailure: createAction('[Peer] Connect to Remote Peer Failure', props<{error: string}>()),
+
+  acceptPeerConnection: createAction('[Peer] Accept Peer Connection'),
+  acceptPeerConnectionSuccess: createAction('[Peer] Peer Connection Accepted'),
+  acceptPeerConnectionFailure: createAction('[Peer] Accept Peer Connection Failure', props<{error: string}>()),
 }
