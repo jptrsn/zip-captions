@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
-import { Observable, Subject, take, timeout } from 'rxjs';
+import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import Peer, { PeerJSOption } from 'peerjs';
 
@@ -18,8 +18,10 @@ export class PeerService {
   private readonly TURN_SERVER: string;
   private readonly TURN_PASS: string;
   private readonly SOCKET_CONFIG: SocketIoConfig;
+
   private CONNECT_OPTS: PeerJSOption;
   private myId?: string;
+  private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private socket!: Socket;
   private peer?: Peer;
   private peerMap: Map<string, Peer> = new Map();
@@ -58,13 +60,17 @@ export class PeerService {
   }
 
   connectSocket(): Observable<string> {
-    this.socket = new Socket(this.SOCKET_CONFIG)
+    if (!this.socket) {
+      this.socket = new Socket(this.SOCKET_CONFIG)
+    } else {
+      this.socket.removeAllListeners();
+    }
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      this.myId = this.socket.ioSocket.id as string;
-      this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
-      sub.next(this.myId);
+      console.log('socket server connected');
+      this.socket.emit('setId', { id: this.myId })
+      this.store.dispatch(PeerActions.socketServerConnected())
     });
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
@@ -73,7 +79,30 @@ export class PeerService {
     })
     this.socket.on('message', (data: any) => {
       console.log('message', data);
-      this.store.dispatch(PeerActions.socketServerMessageReceived(data));
+      switch (data.message) {
+        case 'room joined': {
+          if (data.room) {
+            console.log('nexting room id', data.room)
+            this.roomId.next(data.room);
+          }
+          break;
+        }
+        case 'set user id': {
+          if (this.myId) {
+            console.log('already have ID locally');
+            this.socket.emit('setId', { id: this.myId })
+          } else if (data.id) {
+            this.myId = data.id;
+            sub.next(data.id);
+          }
+          break;
+        }
+        default: {
+          this.store.dispatch(PeerActions.socketServerMessageReceived(data));
+          break;
+        }
+      }
+      
     })
     return sub.asObservable().pipe(timeout(500), take(1));
   }
@@ -88,8 +117,10 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  joinRoom(data?: { room: string }) {
+  joinRoom(data?: { room: string }): Observable<string> {
+    console.log('join room');
     this.socket.volatile().emit('join', data);
+    return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 
   sendServerMessage(data: any) {
@@ -103,10 +134,10 @@ export class PeerService {
     const sub: Subject<string> = new Subject<string>();
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
-      console.log('peer server connected')
-      sub.next(this.myId as string);
+      this.store.dispatch(PeerActions.peerServerConnected())
+      sub.next(this.myId as string)
     });
-    this.peer.addListener('close', () => this.store.dispatch(PeerActions.peerServerDisconnected()))
+    this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()))
     return sub.asObservable().pipe(take(1));
   }
 

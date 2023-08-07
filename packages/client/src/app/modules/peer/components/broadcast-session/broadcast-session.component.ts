@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { PeerActions } from '../../../../actions/peer.actions';
 
 @Component({
   selector: 'app-broadcast-session',
@@ -8,6 +7,7 @@ import { PeerActions } from '../../../../actions/peer.actions';
   styleUrls: ['./broadcast-session.component.scss'],
 })
 export class BroadcastSessionComponent {
+  @Input() roomId!: string;
   constructor(private store: Store) {}
   
 }

@@ -15,7 +15,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.connectSocketServer),
       switchMap(() => this.peerService.connectSocket()),
-      switchMap((id) => [PeerActions.socketServerConnected({id}), PeerActions.connectPeerServer()]),
+      switchMap((id) => [PeerActions.socketServerUserId({id}), PeerActions.connectPeerServer()]),
       catchError((err: any) => of(PeerActions.connectSocketServerFailure({error: err.message})))
     )
   )
@@ -32,7 +32,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.connectPeerServer),
       switchMap(() => this.peerService.connectPeerServer()),
-      map((id) => PeerActions.peerServerConnected({id})),
+      map((id) => PeerActions.peerServerConnected()),
       catchError((err: any) => of(PeerActions.connectPeerServerFailure({error: err.message})))
     )
   )
@@ -45,5 +45,13 @@ export class PeerEffects {
     )
   )
 
+  createRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PeerActions.createBroadcastRoom),
+      switchMap(() => this.peerService.joinRoom()),
+      map((id) => PeerActions.createBroadcastRoomSuccess({id})),
+      catchError((err: any) => of(PeerActions.createBroadcastRoomFailure({error: err.message})))
+    )
+  )
 
 }

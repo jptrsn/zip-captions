@@ -1,0 +1,7 @@
+<button 
+  class="badge" 
+  [ngClass]="{'badge-success': connected(), 'badge-error': serverError()}"
+  (click)="reconnect()"
+  >
+  Peer Status: {{connected() ? 'Connected' : 'Disconnected'}}
+</button>

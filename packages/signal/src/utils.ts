@@ -15,6 +15,4 @@ export const generateRoomId = (): string => {
   return outParts.join('-');
 }
 
-export const generateUserId = (): string => {
-  return v4();
-}
+export const generateUserId = v4;

@@ -1,6 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store, select } from '@ngrx/store';
 import { PeerActions } from '../../../../actions/peer.actions';
+import { AppState } from '../../../../models/app.model';
+import { selectPeerError, selectPeerServerConnected, selectRoomId, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
+import { filter, take } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-peer-landing',
@@ -8,7 +13,19 @@ import { PeerActions } from '../../../../actions/peer.actions';
   styleUrls: ['./peer-landing.component.scss'],
 })
 export class PeerLandingComponent implements OnInit, OnDestroy {
-  constructor(private store: Store) {}
+  public socketServerConnected: Signal<boolean | undefined>;
+  public peerServerConnected: Signal<boolean | undefined>;
+  public serverError: Signal<string | undefined>;
+  public roomId: Signal<string | undefined>;
+
+  constructor(private store: Store<AppState>,
+              private router: Router,
+              private route: ActivatedRoute) {
+    this.socketServerConnected = toSignal(this.store.select(selectSocketServerConnected))
+    this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
+    this.roomId = toSignal(this.store.select(selectRoomId));
+    this.serverError = toSignal(this.store.select(selectPeerError));
+  }
 
   ngOnInit(): void {
     this.store.dispatch(PeerActions.connectSocketServer());
@@ -19,7 +36,6 @@ export class PeerLandingComponent implements OnInit, OnDestroy {
   }
 
   createRoom() {
-    
     this.store.dispatch(PeerActions.createBroadcastRoom());
   }
 }
