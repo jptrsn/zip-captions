@@ -62,7 +62,7 @@ export class PeerService {
 
   connectSocket(): Observable<string> {
     if (!this.socket) {
-      this.socket = new Socket(this.SOCKET_CONFIG)
+      this.socket = new Socket(this.SOCKET_CONFIG);
     } else {
       this.socket.removeAllListeners();
     }
@@ -166,15 +166,14 @@ export class PeerService {
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
       this.store.dispatch(PeerActions.peerServerConnected())
-      sub.next(this.myId as string)
+      sub.next(this.myId as string);
     });
+    this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()));
     this.peer.once('error', (err: any) => {
       console.log(err.message);
       this._reconnectPeer();
     })
-    this.peer.once('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()));
     this.peer.addListener('connection', (connection: DataConnection) => {
-      console.log('connection!', connection);
       this.peerMap.set(connection.connectionId, connection);
     })
     return sub.asObservable().pipe(take(1));
@@ -187,7 +186,6 @@ export class PeerService {
     const sub: Subject<boolean> = new Subject<boolean>();
     this.peer.removeListener('close');
     this.peer.addListener('disconnected', () => {
-      console.log('disconnected')
       sub.next(true)
     });
     setTimeout(() => this.peer!.destroy(), 1);
@@ -196,17 +194,23 @@ export class PeerService {
 
   private _reconnectPeer(tryNumber?: number): void {
     let thisTry = tryNumber || 0;
-    setTimeout(() => {
-      console.log('attempting this try', thisTry);
+    const timerId = setTimeout(() => {
       if (this.peer?.disconnected) {
         this.peer.once('error', () => {
           this._reconnectPeer(++thisTry);
         })
+        this.peer!.once('open', () => {
+          thisTry = 0;
+          clearTimeout(timerId)
+        })
         this.peer?.reconnect();
       } else if (thisTry < 5) {
         this._reconnectPeer(++thisTry);
+      } else {
+        this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Reconnect timed out'}))
+        thisTry = 0;
       }
-    }, (thisTry * 1000) + 150)
+    }, (thisTry * 1000) + 150);
   }
 
   
