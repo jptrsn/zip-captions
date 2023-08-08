@@ -49,8 +49,6 @@ ioServer.on('connection', (socket) => {
   })
 });
 
-
-
 peerServer.listen(() => {
   console.log('peer server running');
 });

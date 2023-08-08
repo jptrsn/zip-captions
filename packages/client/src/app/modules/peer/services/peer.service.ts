@@ -4,11 +4,14 @@ import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import Peer, { PeerJSOption, DataConnection } from 'peerjs';
+import { CacheService } from '../../../services/cache/cache.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PeerService {
+
+  private readonly CACHE_PERSIST_MINS = 60;
 
   private readonly SOCKET_URL: string;
   private readonly SOCKET_PORT: number;
@@ -27,7 +30,8 @@ export class PeerService {
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
   
-  constructor(private store: Store) { 
+  constructor(private store: Store,
+              private cache: CacheService) { 
     this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost';
     this.SOCKET_PORT = process.env['ZIP_SOCKET_PORT'] ? Number(process.env['ZIP_SOCKET_PORT']) : 3000;
     this.SOCKET_CONFIG = {
@@ -58,12 +62,20 @@ export class PeerService {
         ]
       }
     }
+
+    const cached = this.cache.load('userId')
+    if (cached?.id) {
+      console.log('cached', cached.id);
+      this.myId = cached.id;
+    }
+    
   }
 
   connectSocket(): Observable<string> {
     if (!this.socket) {
       this.socket = new Socket(this.SOCKET_CONFIG);
     } else {
+      console.log('resetting existing socket')
       this.socket.removeAllListeners();
     }
     
@@ -71,6 +83,10 @@ export class PeerService {
     this.socket.on('connect', () => {
       this.socket.emit('setId', { id: this.myId })
       this.store.dispatch(PeerActions.socketServerConnected())
+      if (this.myId) {
+        console.log('socket server connected, myId defined')
+        sub.next(this.myId);
+      }
     });
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
@@ -81,12 +97,14 @@ export class PeerService {
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
-            console.log('nexting room id', data.room)
+            console.log('nexting room id', data.room);
+            this.cache.save({key: 'roomId', data: { room: data.room}, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
           }
           break;
         }
         case 'set user id': {
+          console.log('set user id', data.id, this.myId)
           if (this.myId) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
@@ -94,6 +112,8 @@ export class PeerService {
             }
           } else if (data.id) {
             this.myId = data.id;
+            console.log('SAVING USER ID', data.id)
+            this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             sub.next(data.id);
           }
           break;
@@ -154,6 +174,13 @@ export class PeerService {
 
   joinRoom(data?: { room: string }): Observable<string> {
     this.myBroadcast = !(data?.room); // If we do not have a room ID to join, we are creating a broadcast
+    if (!data?.room) {
+      const fromCache = this.cache.load('roomId');
+      console.log('fromCache', fromCache);
+      if (fromCache?.room) {
+        data = { room: fromCache.room }
+      }
+    }
     this.socket.volatile().emit('join', data);
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
@@ -191,9 +218,12 @@ export class PeerService {
     const sub: Subject<boolean> = new Subject<boolean>();
     this.peer.removeListener('close');
     this.peer.addListener('disconnected', () => {
-      sub.next(true)
+      sub.next(true);
     });
-    setTimeout(() => this.peer!.destroy(), 1);
+    setTimeout(() => {
+      this.peer!.destroy();
+      console.log('peer destroyed');
+    }, 1);
     return sub.asObservable().pipe(take(1));
   }
 
@@ -203,6 +233,12 @@ export class PeerService {
       throw new Error(`connection ${peerId} not found`)
     } else {
       connection.send(data)
+    }
+  }
+
+  broadcastData(data: any): void {
+    for (const conn of this.peerMap.values()) {
+      conn.send(data);
     }
   }
 
