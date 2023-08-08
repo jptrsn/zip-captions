@@ -16,13 +16,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class ViewBroadcastComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   private roomId: string;
-  private state: Signal<PeerState>;
   private connected: Signal<boolean | undefined>;
   constructor(private route: ActivatedRoute,
               private store: Store<AppState>) {
     this.roomId = this.route.snapshot.params['id'].toLowerCase();
-    console.log('roomId', this.roomId, this.route.snapshot.params);
-    this.state = toSignal(this.store.select(selectPeerState)) as Signal<PeerState>;
     this.connected = toSignal(this.store.select(selectPeerServerConnected));
   }
 
@@ -32,12 +29,9 @@ export class ViewBroadcastComponent implements OnInit, OnDestroy {
         select(selectPeerServerConnected),
         filter((connected) => !!connected),
         take(1))
-        .subscribe((connected) => {
-          console.log('peer server connected', connected);
+        .subscribe(() => {
           this.store.dispatch(PeerActions.joinBroadcastRoom({id: this.roomId}))
         })
-      
-      console.log('dispatching connect')
       this.store.dispatch(PeerActions.connectSocketServer())
     }
   }

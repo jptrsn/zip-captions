@@ -14,6 +14,7 @@ import { SocketServerStatusChipComponent } from './components/socket-server-stat
 import { PeerServerStatusChipComponent } from './components/peer-server-status-chip/peer-server-status-chip.component';
 import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
 import { RouterModule } from '@angular/router';
+import { ConnectedPeerCountChipComponent } from './components/connected-peer-count-chip/connected-peer-count-chip.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { RouterModule } from '@angular/router';
     SocketServerStatusChipComponent,
     PeerServerStatusChipComponent,
     ViewBroadcastComponent,
+    ConnectedPeerCountChipComponent,
   ],
   imports: [
     CommonModule,

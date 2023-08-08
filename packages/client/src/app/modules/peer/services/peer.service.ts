@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
@@ -105,8 +105,13 @@ export class PeerService {
             }
             console.log('connect to this peer!', data.user);
             if (this.myBroadcast) {
-              this.peer.connect(data.user);
-              this.store.dispatch(PeerActions.connectToRemotePeer({id: data.user}))
+              const connection = this.peer.connect(data.user);
+              this.peerMap.set(data.user, connection);
+              this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+              connection.on('close', () => {
+                this.peerMap.delete(data.user);
+                this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+              })
             }
           }
           break;
@@ -174,7 +179,7 @@ export class PeerService {
       this._reconnectPeer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
-      this.peerMap.set(connection.connectionId, connection);
+      console.log('incoming connection!', connection);
     })
     return sub.asObservable().pipe(take(1));
   }
@@ -190,6 +195,15 @@ export class PeerService {
     });
     setTimeout(() => this.peer!.destroy(), 1);
     return sub.asObservable().pipe(take(1));
+  }
+
+  sendData(peerId: string, data: any): void {
+    const connection: DataConnection | undefined = this.peerMap.get(peerId);
+    if (!connection) {
+      throw new Error(`connection ${peerId} not found`)
+    } else {
+      connection.send(data)
+    }
   }
 
   private _reconnectPeer(tryNumber?: number): void {

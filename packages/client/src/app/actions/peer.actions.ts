@@ -22,6 +22,7 @@ export const PeerActions = {
   connectPeerServer: createAction('[Peer] Connect Peer Server'),
   peerServerConnected: createAction('[Peer] Peer Server Connected'),
   connectPeerServerFailure: createAction('[Peer] Connect Peer Server Error', props<{error: string}>()),
+  
   disconnectPeerServer: createAction('[Peer] Disconnect Peer Server'),
   peerServerDisconnected: createAction('[Peer] Peer Server Disconnected'), 
 
@@ -32,4 +33,6 @@ export const PeerActions = {
   acceptPeerConnection: createAction('[Peer] Accept Peer Connection'),
   acceptPeerConnectionSuccess: createAction('[Peer] Peer Connection Accepted'),
   acceptPeerConnectionFailure: createAction('[Peer] Accept Peer Connection Failure', props<{error: string}>()),
+
+  updateConnectedPeerCount: createAction('[Peer] Update Connected Peer Count', props<{count: number}>()),
 }

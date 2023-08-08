@@ -7,6 +7,7 @@ export interface PeerState {
   socketConnected: boolean;
   peerConnected: boolean;
   serverOffline: boolean;
+  peerConnectionCount: number;
   id?: string;
   roomId?: string;
   error?: string;
@@ -15,7 +16,8 @@ export interface PeerState {
 export const defaultPeerState: PeerState = {
   socketConnected: false,
   peerConnected: false,
-  serverOffline: false
+  serverOffline: false,
+  peerConnectionCount: 0
 };
 
 export const peerReducers = createReducer(
@@ -31,5 +33,7 @@ export const peerReducers = createReducer(
 
   on(PeerActions.createBroadcastRoomSuccess, (state: PeerState, action: { id: string}) => ({...state, roomId: action.id})),
   on(PeerActions.createBroadcastRoomFailure, (state: PeerState, action: { error: string}) => ({...state, error: action.error})),
+
+  on(PeerActions.updateConnectedPeerCount, (state, action: { count: number}) => ({...state, peerConnectionCount: action.count})),
 );
 

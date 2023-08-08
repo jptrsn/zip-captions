@@ -28,3 +28,8 @@ export const selectRoomId = createSelector(
   selectPeerState,
   (state) => state.roomId
 )
+
+export const selectConnectedPeerCount = createSelector(
+  selectPeerState,
+  (state) => state.peerConnectionCount
+)
