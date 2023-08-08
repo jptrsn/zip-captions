@@ -75,8 +75,8 @@ export class PeerService {
     if (!this.socket) {
       this.socket = new Socket(this.SOCKET_CONFIG);
     } else {
-      console.log('resetting existing socket')
       this.socket.removeAllListeners();
+      this.socket.connect();
     }
     
     const sub = new Subject<string>();
@@ -84,7 +84,6 @@ export class PeerService {
       this.socket.emit('setId', { id: this.myId })
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
-        console.log('socket server connected, myId defined')
         sub.next(this.myId);
       }
     });
@@ -98,7 +97,7 @@ export class PeerService {
         case 'room joined': {
           if (data.room) {
             console.log('nexting room id', data.room);
-            this.cache.save({key: 'roomId', data: { room: data.room}, expirationMins: this.CACHE_PERSIST_MINS});
+            this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
           }
           break;
@@ -123,15 +122,11 @@ export class PeerService {
             if (!this.peer) {
               throw new Error('Cannot connect to peer - peer server connection not established');
             }
-            console.log('connect to this peer!', data.user);
             if (this.myBroadcast) {
-              const connection = this.peer.connect(data.user);
-              this.peerMap.set(data.user, connection);
-              this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
-              connection.on('close', () => {
-                this.peerMap.delete(data.user);
-                this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
-              })
+              console.log('connect to this peer!', data.user);
+              this._connectToPeer(data.user);
+            } else {
+              console.log('not my broadcast, peer connected', data.user)
             }
           }
           break;
@@ -150,6 +145,18 @@ export class PeerService {
           }
           break;
         }
+        case 'connect clients': {
+          if (data.clients) {
+            const clientIds: string[] = data.clients;
+            console.log('clientIds', clientIds, this.myId);
+            for (const id of clientIds) {
+              if (id !== this.myId) {
+                this._connectToPeer(id);
+              }
+            }
+          }
+          break;
+        }
         default: {
           console.warn('UNHANDLED MESSAGE!!!', data);
           this.store.dispatch(PeerActions.socketServerMessageReceived(data));
@@ -159,6 +166,7 @@ export class PeerService {
       
     })
     
+    console.log('returning subject with timeout')
     return sub.asObservable().pipe(timeout(1500), take(1));
   }
 
@@ -172,13 +180,16 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  joinRoom(data?: { room: string }): Observable<string> {
+  joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
     this.myBroadcast = !(data?.room); // If we do not have a room ID to join, we are creating a broadcast
     if (!data?.room) {
       const fromCache = this.cache.load('roomId');
       console.log('fromCache', fromCache);
       if (fromCache?.room) {
-        data = { room: fromCache.room }
+        data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
+      }
+      if (fromCache?.myBroadcast !== undefined) {
+        this.myBroadcast = fromCache.myBroadcast;
       }
     }
     this.socket.volatile().emit('join', data);
@@ -261,6 +272,16 @@ export class PeerService {
         thisTry = 0;
       }
     }, (thisTry * 1000) + 150);
+  }
+
+  private _connectToPeer(peerId: string): void {
+    const connection = this.peer!.connect(peerId);
+    this.peerMap.set(peerId, connection);
+    this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+    connection.on('close', () => {
+      this.peerMap.delete(peerId);
+      this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+    })
   }
 
   

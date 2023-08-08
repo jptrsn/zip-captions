@@ -12,12 +12,19 @@ const peerServer = PeerServer({ port: peerPort });
 ioServer.on('connection', (socket) => {
   console.info(`client connected: ${socket.id}`);
   
-  socket.on('join', (data?: { room: string }) => {    
+  socket.on('join', (data?: { room: string, myBroadcast?: boolean }) => {    
     const room: string = data?.room || generateRoomId();
     console.info(`socket id ${socket['userId']} joined room: ${room}`);
     socket['roomId'] = room;
     socket.join(room);
-    socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room });
+    if (data.myBroadcast) {
+      const clientIds = Array.from(ioServer.sockets.adapter.rooms.get(room));
+      const clients: string[] = clientIds.filter((id) => id !== socket.id).map((id) => ioServer.sockets.sockets.get(id)).map((socket) => socket['userId'])
+      console.log('clients', clients);
+      socket.send({message: 'connect clients', clients });
+    } else {
+      socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room, isHost: data?.myBroadcast });
+    }
     socket.send({user: socket['userId'], message: 'room joined', room })
   });
 
