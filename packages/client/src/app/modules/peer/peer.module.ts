@@ -12,6 +12,8 @@ import { PeerLandingComponent } from './components/peer-landing/peer-landing.com
 import { PeerRoutingModule } from './peer-routing.module';
 import { SocketServerStatusChipComponent } from './components/socket-server-status-chip/socket-server-status-chip.component';
 import { PeerServerStatusChipComponent } from './components/peer-server-status-chip/peer-server-status-chip.component';
+import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -22,10 +24,12 @@ import { PeerServerStatusChipComponent } from './components/peer-server-status-c
     PeerLandingComponent,
     SocketServerStatusChipComponent,
     PeerServerStatusChipComponent,
+    ViewBroadcastComponent,
   ],
   imports: [
     CommonModule,
     PeerRoutingModule,
+    RouterModule,
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([PeerEffects]),
   ],

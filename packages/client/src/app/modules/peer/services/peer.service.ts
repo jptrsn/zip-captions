@@ -20,6 +20,7 @@ export class PeerService {
   private readonly SOCKET_CONFIG: SocketIoConfig;
 
   private CONNECT_OPTS: PeerJSOption;
+  private myBroadcast = false;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private socket!: Socket;
@@ -97,13 +98,24 @@ export class PeerService {
           }
           break;
         }
+        case 'user joined room': {
+          if (data.user && data.user !== this.myId) {
+            console.log('connect to this peer!');
+            if (this.myBroadcast) {
+              this.store.dispatch(PeerActions.connectToRemotePeer({id: data.user}))
+            }
+          }
+          break;
+        }
         default: {
+          console.warn('UNHANDLED MESSAGE!!!', data);
           this.store.dispatch(PeerActions.socketServerMessageReceived(data));
           break;
         }
       }
       
     })
+    
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
@@ -118,7 +130,7 @@ export class PeerService {
   }
 
   joinRoom(data?: { room: string }): Observable<string> {
-    console.log('join room');
+    this.myBroadcast = !(data?.room); // If we do not have a room ID to join, we are creating a broadcast
     this.socket.volatile().emit('join', data);
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
@@ -138,6 +150,7 @@ export class PeerService {
       sub.next(this.myId as string)
     });
     this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()))
+    
     return sub.asObservable().pipe(take(1));
   }
 

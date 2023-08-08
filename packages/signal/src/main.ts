@@ -16,7 +16,7 @@ ioServer.on('connection', (socket) => {
     const room: string = data?.room || generateRoomId();
     console.info(`socket id ${socket['userId']} joined room: ${room}`);
     socket.join(room);
-    socket.broadcast.to(room).emit('user joined');
+    socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room });
     socket.send({user: socket['userId'], message: 'room joined', room })
   });
 
