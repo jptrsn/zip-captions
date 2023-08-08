@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
-import Peer, { PeerJSOption } from 'peerjs';
+import Peer, { PeerJSOption, DataConnection } from 'peerjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class PeerService {
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private socket!: Socket;
   private peer?: Peer;
-  private peerMap: Map<string, Peer> = new Map();
+  private peerMap: Map<string, DataConnection> = new Map();
   
   constructor(private store: Store) { 
     this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost';
@@ -69,13 +69,11 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('socket server connected');
       this.socket.emit('setId', { id: this.myId })
       this.store.dispatch(PeerActions.socketServerConnected())
     });
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
-      console.error(err);
       sub.error(err.message);
     })
     this.socket.on('message', (data: any) => {
@@ -90,8 +88,10 @@ export class PeerService {
         }
         case 'set user id': {
           if (this.myId) {
-            console.log('already have ID locally');
             this.socket.emit('setId', { id: this.myId })
+            if (data.id === this.myId) {
+              sub.next(this.myId);
+            }
           } else if (data.id) {
             this.myId = data.id;
             sub.next(data.id);
@@ -100,9 +100,27 @@ export class PeerService {
         }
         case 'user joined room': {
           if (data.user && data.user !== this.myId) {
-            console.log('connect to this peer!');
+            if (!this.peer) {
+              throw new Error('Cannot connect to peer - peer server connection not established');
+            }
+            console.log('connect to this peer!', data.user);
             if (this.myBroadcast) {
+              this.peer.connect(data.user);
               this.store.dispatch(PeerActions.connectToRemotePeer({id: data.user}))
+            }
+          }
+          break;
+        }
+        case 'user left room': {
+          if (data.user) {
+            console.log('disconnect from peer!', data)
+            const connection: DataConnection | undefined = this.peerMap.get(data.user);
+            if (connection) {
+              connection.addListener('close', () => {
+                console.log('closed!');
+                this.peerMap.delete(data.user);
+              })
+              connection.close();
             }
           }
           break;
@@ -116,7 +134,7 @@ export class PeerService {
       
     })
     
-    return sub.asObservable().pipe(timeout(500), take(1));
+    return sub.asObservable().pipe(timeout(1500), take(1));
   }
 
   disconnectSocket(): Observable<boolean> {
@@ -144,13 +162,21 @@ export class PeerService {
       throw new Error('Must obtain ID from socket server');
     }
     const sub: Subject<string> = new Subject<string>();
+    this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
       this.store.dispatch(PeerActions.peerServerConnected())
       sub.next(this.myId as string)
     });
-    this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()))
-    
+    this.peer.once('error', (err: any) => {
+      console.log(err.message);
+      this._reconnectPeer();
+    })
+    this.peer.once('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()));
+    this.peer.addListener('connection', (connection: DataConnection) => {
+      console.log('connection!', connection);
+      this.peerMap.set(connection.connectionId, connection);
+    })
     return sub.asObservable().pipe(take(1));
   }
 
@@ -166,6 +192,21 @@ export class PeerService {
     });
     setTimeout(() => this.peer!.destroy(), 1);
     return sub.asObservable().pipe(take(1));
+  }
+
+  private _reconnectPeer(tryNumber?: number): void {
+    let thisTry = tryNumber || 0;
+    setTimeout(() => {
+      console.log('attempting this try', thisTry);
+      if (this.peer?.disconnected) {
+        this.peer.once('error', () => {
+          this._reconnectPeer(++thisTry);
+        })
+        this.peer?.reconnect();
+      } else if (thisTry < 5) {
+        this._reconnectPeer(++thisTry);
+      }
+    }, (thisTry * 1000) + 150)
   }
 
   

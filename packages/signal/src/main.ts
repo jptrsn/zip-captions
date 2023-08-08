@@ -15,6 +15,7 @@ ioServer.on('connection', (socket) => {
   socket.on('join', (data?: { room: string }) => {    
     const room: string = data?.room || generateRoomId();
     console.info(`socket id ${socket['userId']} joined room: ${room}`);
+    socket['roomId'] = room;
     socket.join(room);
     socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room });
     socket.send({user: socket['userId'], message: 'room joined', room })
@@ -23,11 +24,12 @@ ioServer.on('connection', (socket) => {
   socket.on('setId', (data?: {id?: string}) => {
     if (data?.id) {
       socket['userId'] = data.id;
+      console.log(`user ID received: ${socket['userId']}`)
     } else {
       socket['userId'] = generateUserId();
       socket.send({message: 'set user id', id: socket['userId']});
+      console.log(`user ID generated: ${socket['userId']}`)
     }
-    console.log(`user ID active: ${socket['userId']}`)
   })
   
   socket.on('message', (data) => {
@@ -35,11 +37,14 @@ ioServer.on('connection', (socket) => {
     if (data.user && data.message && data.room) {
       ioServer.in(data.room).emit('new messsage', { user: data.user, message: data.message });
     } else {
-      console.log('uhandled message', data);
+      console.warn('uhandled message', data);
     }
   })
   
   socket.on('disconnect', () => {
+    if (socket['roomId']) {
+      socket.broadcast.to(socket['roomId']).emit('message', {user: socket['userId'], message: 'user left room', room: socket['roomId']})
+    }
     console.info(`client disconnected: ${socket['userId']}`);
   })
 });
