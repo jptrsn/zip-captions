@@ -1,4 +1,5 @@
 import { SettingsState } from "../modules/settings/models/settings.model";
+import { PeerState } from "../reducers/peer.reducer";
 import { AudioStreamState } from "./audio-stream.model";
 import { RecognitionState } from "./recognition.model";
 
@@ -21,6 +22,7 @@ export interface AppState {
   settings: SettingsState;
   audioStream: AudioStreamState;
   recognition: RecognitionState;
+  peer: PeerState;
 }
 
 interface SubSection {

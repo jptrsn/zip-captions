@@ -1,0 +1,10 @@
+<div>
+  <app-socket-server-status-chip></app-socket-server-status-chip>
+  <app-peer-server-status-chip></app-peer-server-status-chip>
+  <app-connected-peer-count-chip></app-connected-peer-count-chip>
+  <div class="badge badge-primary" *ngIf="roomId()">Room ID: {{roomId()?.toUpperCase()}}</div>
+  <button *ngIf="!roomId()" class="btn btn-primary" [disabled]="serverError()" (click)="createRoom()">Create Broadcast</button>
+  <div *ngIf="roomId() as roomId">
+    <app-broadcast-session [roomId]="roomId"></app-broadcast-session>
+  </div>
+</div>

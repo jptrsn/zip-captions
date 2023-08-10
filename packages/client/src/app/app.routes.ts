@@ -12,5 +12,6 @@ export const appRoutes: Route[] = [
   { path: 'privacy', component: PrivacyComponent, data: { name: 'privacy'}},
   { path: 'terms', component: TermsAndConditionsComponent, data: { name: 'terms'}},
   { path: 'cookies', component: CookiePolicyComponent, data: { name: 'cookies'}},
-  { path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule), data: { name: `settings`} }
+  { path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule), data: { name: `settings`} },
+  { path: 'stream', loadChildren: () => import('./modules/peer/peer.module').then(m =>m.PeerModule), data: { name: 'stream' }}
 ];

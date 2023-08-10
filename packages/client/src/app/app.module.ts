@@ -29,6 +29,7 @@ import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
+import { peerReducers } from './reducers/peer.reducer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -67,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       audioStream: audioStreamReducers,
       recognition: recognitionReducers,
       settings: settingsReducers,
+      peer: peerReducers,
     }),
     EffectsModule.forRoot([AppEffects]),
     StoreDevtoolsModule.instrument({

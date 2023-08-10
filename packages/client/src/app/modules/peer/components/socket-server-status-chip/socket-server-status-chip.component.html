@@ -1,0 +1,7 @@
+<button 
+  class="badge" 
+  [ngClass]="{'badge-success': connected(), 'badge-error': serverError()}"
+  (click)="reconnect()"
+  >
+    Server Status: {{connected() ? 'Online' : 'Offline'}}
+</button>
