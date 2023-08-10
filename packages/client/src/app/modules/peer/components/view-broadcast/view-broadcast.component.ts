@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit, Signal, computed, effect } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subject, filter, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
-import { PeerState } from '../../../../reducers/peer.reducer';
-import { selectPeerServerConnected, selectPeerState } from '../../../../selectors/peer.selectors';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 
 @Component({
   selector: 'app-view-broadcast',
