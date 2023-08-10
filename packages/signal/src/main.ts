@@ -14,10 +14,10 @@ ioServer.on('connection', (socket) => {
   
   socket.on('join', (data?: { room: string, myBroadcast?: boolean }) => {    
     const room: string = data?.room || generateRoomId();
-    console.info(`socket id ${socket['userId']} joined room: ${room} as ${data.myBroadcast ? 'host' : 'listener'}`);
+    console.info(`socket id ${socket['userId']} joined room: ${room} as ${data?.myBroadcast ? 'host' : 'listener'}`);
     socket['roomId'] = room;
     socket.join(room);
-    if (data.myBroadcast) {
+    if (data?.myBroadcast) {
       const clientIds = Array.from(ioServer.sockets.adapter.rooms.get(room));
       const clients: string[] = clientIds.filter((id) => id !== socket.id).map((id) => ioServer.sockets.sockets.get(id)).map((socket) => socket['userId'])
       socket.send({message: 'connect clients', clients });
