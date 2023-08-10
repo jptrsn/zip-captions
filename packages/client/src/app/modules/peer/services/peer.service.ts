@@ -1,9 +1,9 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
+import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
-import Peer, { PeerJSOption, DataConnection } from 'peerjs';
 import { CacheService } from '../../../services/cache/cache.service';
 
 @Injectable({
@@ -49,6 +49,7 @@ export class PeerService {
       debug: 3,
       host: this.PEER_URL,
       port: this.PEER_PORT,
+      secure: this.PEER_URL === 'localhost',
       config: {
         iceServers: [{
           urls: [
@@ -68,6 +69,9 @@ export class PeerService {
       console.log('cached', cached.id);
       this.myId = cached.id;
     }
+
+    console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
+    console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
   }
 
@@ -167,7 +171,7 @@ export class PeerService {
     })
     
     console.log('returning subject with timeout')
-    return sub.asObservable().pipe(timeout(1500), take(1));
+    return sub.asObservable().pipe(timeout(30000), take(1));
   }
 
   disconnectSocket(): Observable<boolean> {

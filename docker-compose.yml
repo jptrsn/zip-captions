@@ -12,6 +12,11 @@ services:
       - .:/usr/src/app:delegated
       - mono-node-modules:/app/node_modules
     command: 'npm run start:client'
+    environment:
+      - ZIP_SOCKET_SERVER=https://socket.fartyparts.work
+      - ZIP_PEER_SERVER=peer.fartyparts.work
+      - ZIP_STUN_SERVER=stun.fartyparts.work
+      - ZIP_TURN_SERVER=turn.fartyparts.work
     ports:
       - 4200:4200
     depends_on: 
@@ -31,6 +36,18 @@ services:
     ports:
       - 3000:3000
       - 9000:9000
+
+  # coturn:
+  #   container_name: coturn
+  #   image: coturn/coturn
+  #   ports:
+  #     - "3478"
+  #     - "3478:3478/udp"
+  #     - "3479:3479"
+  #     - "3479:3479/udp"
+  #     - "5349"
+  #     - "5349:5349/udp"
+  #     - "49160-49200"
 
 volumes:
   mono-node-modules: null
