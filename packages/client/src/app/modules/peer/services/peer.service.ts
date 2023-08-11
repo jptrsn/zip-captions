@@ -49,7 +49,7 @@ export class PeerService {
       debug: 3,
       host: this.PEER_URL,
       port: this.PEER_PORT,
-      secure: this.PEER_URL === 'localhost',
+      secure: (this.PEER_URL !== 'localhost'),
       config: {
         iceServers: [{
           urls: [
