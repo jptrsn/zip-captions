@@ -69,7 +69,7 @@ export class PeerService {
       console.log('cached', cached.id);
       this.myId = cached.id;
     }
-
+    console.log('env', process.env)
     console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
     console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
