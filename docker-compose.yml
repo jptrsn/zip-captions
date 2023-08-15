@@ -32,5 +32,17 @@ services:
       - 3000:3000
       - 9000:9000
 
+  # coturn:
+  #   container_name: coturn
+  #   image: coturn/coturn
+  #   ports:
+  #     - "3478"
+  #     - "3478:3478/udp"
+  #     - "3479:3479"
+  #     - "3479:3479/udp"
+  #     - "5349"
+  #     - "5349:5349/udp"
+  #     - "49160-49200"
+
 volumes:
   mono-node-modules: null

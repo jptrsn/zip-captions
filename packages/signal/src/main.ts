@@ -6,7 +6,7 @@ import { generateRoomId, generateUserId } from './utils';
 const socketPort = process.env.SOCKET_PORT ? Number(process.env.SOCKET_PORT) : 3000;
 const peerPort = process.env.PEER_PORT ? Number(process.env.PEER_PORT) : 9000;
 
-const ioServer = new Server(socketPort, { cors: { origin: 'http://localhost:4200'}, transports: ['polling', 'websocket']});
+const ioServer = new Server(socketPort, { cors: { origin: ['http://localhost:4200', 'https://zipcaptions.app', 'https://fartyparts.work']}, transports: ['polling', 'websocket']});
 const peerServer = PeerServer({ port: peerPort });
 
 ioServer.on('connection', (socket) => {
