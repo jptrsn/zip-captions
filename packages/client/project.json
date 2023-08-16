@@ -10,6 +10,11 @@
       "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": [
+          "peerjs-js-binarypack",
+          "sdp",
+          "rtcpeerconnection-shim"
+        ],
         "outputPath": "docs",
         "index": "packages/client/src/index.html",
         "main": "packages/client/src/main.ts",
