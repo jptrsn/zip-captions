@@ -3,7 +3,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "esnext",
     "removeComments": true,
     "types": ["node"]
   },
