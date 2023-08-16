@@ -10,7 +10,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      'sans': ['Lexend', ...defaultTheme.fontFamily.sans]
+      'sans': ['Atkinson Hyperlegible', ...defaultTheme.fontFamily.sans]
     },
     extend: {},
   },
