@@ -3,5 +3,9 @@
   [ngClass]="{'badge-success': connected(), 'badge-error': serverError()}"
   (click)="reconnect()"
   >
-    Server Status: {{connected() ? 'Online' : 'Offline'}}
+    {{'STREAM.serverStatus' | translate}}: 
+    <ng-container *ngIf="connected() === undefined; else state">{{'STREAM.connecting' | translate}}</ng-container>
+    <ng-template #state>
+      {{(connected() ? 'STREAM.online' : 'STREAM.offline') | translate}}
+    </ng-template>
 </button>

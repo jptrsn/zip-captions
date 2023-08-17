@@ -17,6 +17,7 @@ import { PeerServerStatusChipComponent } from './components/peer-server-status-c
 import { SocketServerStatusChipComponent } from './components/socket-server-status-chip/socket-server-status-chip.component';
 import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
 import { PeerRoutingModule } from './peer-routing.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { PeerRoutingModule } from './peer-routing.module';
     CommonModule,
     PeerRoutingModule,
     RouterModule,
+    ReactiveFormsModule,
     NgIconsModule,
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([PeerEffects]),

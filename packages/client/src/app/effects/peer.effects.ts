@@ -57,7 +57,7 @@ export class PeerEffects {
   joinRoom$ = createEffect(() => 
     this.actions$.pipe(
       ofType(PeerActions.joinBroadcastRoom),
-      switchMap(({id}) => this.peerService.joinRoom({room: id})),
+      switchMap(({id, joinCode}) => this.peerService.joinRoom({room: id, joinCode})),
       map(() => PeerActions.joinBroadcastRoomSuccess()),
       catchError((error: any) => of(PeerActions.joinBroadcastRoomFailure({error: error.message})))
     )
@@ -68,7 +68,7 @@ export class PeerEffects {
       ofType(PeerActions.endBroadcast),
       switchMap(() => this.peerService.endBroadcast()),
       map(() => PeerActions.endBroadcastSuccess()),
-      // catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
+      catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
     )
   )
 

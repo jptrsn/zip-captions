@@ -5,7 +5,6 @@ import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +94,8 @@ export class PeerService {
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
+      console.log('error', err);
+      this.store.dispatch(PeerActions.socketServerError({error: err.message}))
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
@@ -184,13 +185,16 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
-    this.myBroadcast = !(data?.room); // If we do not have a room ID to join, we are creating a broadcast
+  joinRoom(data?: { room: string, myBroadcast?: boolean, joinCode?: string }): Observable<string> {
+    this.myBroadcast = !(data?.room || data?.joinCode); // If we do not have a room ID or join code, we are creating a broadcast
     if (!data?.room) {
       const fromCache = this.cache.load('roomId');
       console.log('fromCache', fromCache);
       if (fromCache?.room) {
         data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
+        if (fromCache?.joinCode) {
+          data.joinCode = fromCache.joinCode;
+        }
       }
       if (fromCache?.myBroadcast !== undefined) {
         this.myBroadcast = fromCache.myBroadcast;
@@ -218,7 +222,8 @@ export class PeerService {
     this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()));
     this.peer.once('error', (err: any) => {
       console.log(err.message);
-      this._reconnectPeer();
+      this.store.dispatch(PeerActions.peerServerError({error: err.message}));
+      this._reconnectPeerServer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
       console.log('incoming connection!', connection);
@@ -276,12 +281,12 @@ export class PeerService {
     return sub;
   }
 
-  private _reconnectPeer(tryNumber?: number): void {
+  private _reconnectPeerServer(tryNumber?: number): void {
     let thisTry = tryNumber || 0;
     const timerId = setTimeout(() => {
       if (this.peer?.disconnected) {
         this.peer.once('error', () => {
-          this._reconnectPeer(++thisTry);
+          this._reconnectPeerServer(++thisTry);
         })
         this.peer!.once('open', () => {
           thisTry = 0;
@@ -289,7 +294,7 @@ export class PeerService {
         })
         this.peer?.reconnect();
       } else if (thisTry < 5) {
-        this._reconnectPeer(++thisTry);
+        this._reconnectPeerServer(++thisTry);
       } else {
         this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Reconnect timed out'}))
         thisTry = 0;

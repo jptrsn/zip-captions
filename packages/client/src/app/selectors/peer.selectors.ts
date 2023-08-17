@@ -14,6 +14,11 @@ export const selectPeerServerConnected = createSelector(
   (state) => state.peerConnected
 )
 
+export const selectServerOffline = createSelector(
+  selectPeerState,
+  (state) => state.serverOffline
+)
+
 export const selectPeerError = createSelector(
   selectPeerState,
   (state) => state.error

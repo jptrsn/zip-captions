@@ -10,6 +10,7 @@ export const PeerActions = {
   socketServerDisconnected: createAction('[Peer] Socket Server Disconnected'),
   
   socketServerMessageReceived: createAction('[Peer] Server Message Received', props<{data: any}>()),
+  socketServerError: createAction('[Peer] Socket Server Error Recieved', props<{error: string}>()),
 
   createBroadcastRoom: createAction('[Peer] Create Broadcast Room'),
   createBroadcastRoomSuccess: createAction('[Peer] Create Broadcast Room Success', props<{id:string}>()),
@@ -19,7 +20,7 @@ export const PeerActions = {
   endBroadcastSuccess: createAction('[Peer] End Broadcast Success'),
   endBroadcastFailure: createAction('[Peer] End Broadcast Failure', props<{error: string}>()),
   
-  joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string}>()),
+  joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string, joinCode: string}>()),
   joinBroadcastRoomSuccess: createAction('[Peer] Join Broadcast Room Success'),
   joinBroadcastRoomFailure: createAction('[Peer] Join Broadcast Room Failure', props<{error: string}>()),
 
@@ -30,6 +31,8 @@ export const PeerActions = {
   connectPeerServer: createAction('[Peer] Connect Peer Server'),
   peerServerConnected: createAction('[Peer] Peer Server Connected'),
   connectPeerServerFailure: createAction('[Peer] Connect Peer Server Error', props<{error: string}>()),
+  
+  peerServerError: createAction('[Peer] Peer Server Error Recieved', props<{error: string}>()),
   
   disconnectPeerServer: createAction('[Peer] Disconnect Peer Server'),
   peerServerDisconnected: createAction('[Peer] Peer Server Disconnected'), 
