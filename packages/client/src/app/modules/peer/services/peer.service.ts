@@ -5,6 +5,7 @@ import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +96,7 @@ export class PeerService {
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
     })
+    this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
       console.log('message', data);
       switch (data.message) {
@@ -127,7 +129,6 @@ export class PeerService {
               throw new Error('Cannot connect to peer - peer server connection not established');
             }
             if (this.myBroadcast) {
-              console.log('connect to this peer!', data.user);
               this._connectToPeer(data.user);
             } else {
               console.log('not my broadcast, peer connected', data.user)
@@ -170,7 +171,6 @@ export class PeerService {
       
     })
     
-    console.log('returning subject with timeout')
     return sub.asObservable().pipe(timeout(30000), take(1));
   }
 
@@ -257,6 +257,25 @@ export class PeerService {
     }
   }
 
+  endBroadcast(): Observable<void> {
+    const sub = new ReplaySubject<void>();
+    const fromCache = this.cache.load('roomId');
+    const room: string | undefined = fromCache?.room;
+    if (!room) {
+      throw new Error('No room defined for broadcast');
+    }
+    this.cache.remove('roomId');
+    console.log('removed all listeners')
+    this.socket.once('endBroadcast', () => {
+      console.log('endbroadcast response recieved');
+      sub.next();
+    })
+    console.log('emitting event', room)
+    this.socket.emit('endBroadcast', { room });
+    console.log('returning observable')
+    return sub;
+  }
+
   private _reconnectPeer(tryNumber?: number): void {
     let thisTry = tryNumber || 0;
     const timerId = setTimeout(() => {
@@ -286,6 +305,13 @@ export class PeerService {
       this.peerMap.delete(peerId);
       this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     })
+  }
+
+  private _disconnectAllPeers(): void {
+    for (const conn of this.peerMap.values()) {
+      conn.close();
+    }
+    this.peerMap.clear();
   }
 
   

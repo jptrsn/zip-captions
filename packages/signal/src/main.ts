@@ -53,6 +53,12 @@ ioServer.on('connection', (socket) => {
     }
     console.info(`client disconnected: ${socket['userId']}`);
   })
+  
+  socket.on('endBroadcast', (data: {room: string}) => {
+    console.log('endBroadcast', data.room)
+    ioServer.in(data.room).emit('endBroadcast');
+  })
+
 });
 
 peerServer.listen(() => {

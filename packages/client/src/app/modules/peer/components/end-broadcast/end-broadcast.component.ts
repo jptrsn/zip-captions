@@ -20,7 +20,6 @@ export class EndBroadcastComponent {
   }
 
   endBroadcast(): void {
-    console.log('end broadcast');
     this.store.dispatch(PeerActions.endBroadcast());
     this._closeModal();
   }
