@@ -26,6 +26,7 @@ export class PeerService {
   private myBroadcast = false;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
+  private sessionJoinCode?: string;
   private socket!: Socket;
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
@@ -185,22 +186,23 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  joinRoom(data?: { room: string, myBroadcast?: boolean, joinCode?: string }): Observable<string> {
-    this.myBroadcast = !(data?.room || data?.joinCode); // If we do not have a room ID or join code, we are creating a broadcast
+  joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
+    this.myBroadcast = !(data?.room); // If we do not have a room ID, we are creating a broadcast
     if (!data?.room) {
       const fromCache = this.cache.load('roomId');
       console.log('fromCache', fromCache);
       if (fromCache?.room) {
         data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
-        if (fromCache?.joinCode) {
-          data.joinCode = fromCache.joinCode;
-        }
       }
       if (fromCache?.myBroadcast !== undefined) {
         this.myBroadcast = fromCache.myBroadcast;
       }
     }
-    this.socket.volatile().emit('join', data);
+    if (this.myBroadcast) {
+      const joinCode: string = this._generateJoinCode();
+      this.store.dispatch(PeerActions.setJoinCode({joinCode}));
+    }
+    this.socket.volatile().emit('join', { room: data?.room, myBroadcast: this.myBroadcast });
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 
@@ -304,6 +306,9 @@ export class PeerService {
 
   private _connectToPeer(peerId: string): void {
     const connection = this.peer!.connect(peerId);
+    connection.on('open', () => {
+      console.log('peer connection opened');
+    })
     this.peerMap.set(peerId, connection);
     this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     connection.on('close', () => {
@@ -317,6 +322,15 @@ export class PeerService {
       conn.close();
     }
     this.peerMap.clear();
+  }
+
+  private _generateJoinCode(): string {
+    let outString = '';
+    const inOptions = 'acdefghjkmnpqrstuvwxyz2345679';
+    for (let j = 0; j < 4; j++) {
+      outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+    }
+    return outString;
   }
 
   

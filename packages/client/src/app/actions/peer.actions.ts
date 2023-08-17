@@ -20,9 +20,12 @@ export const PeerActions = {
   endBroadcastSuccess: createAction('[Peer] End Broadcast Success'),
   endBroadcastFailure: createAction('[Peer] End Broadcast Failure', props<{error: string}>()),
   
-  joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string, joinCode: string}>()),
+  joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string}>()),
   joinBroadcastRoomSuccess: createAction('[Peer] Join Broadcast Room Success'),
   joinBroadcastRoomFailure: createAction('[Peer] Join Broadcast Room Failure', props<{error: string}>()),
+
+
+  setJoinCode: createAction('[Peer] Set Join Code', props<{joinCode: string}>()),
 
   leaveBroadcastRoom: createAction('[Peer] Leave Broadcast Room'),
   leaveBroadcastRoomSuccess: createAction('[Peer] Leave Broadcast Room Success'),

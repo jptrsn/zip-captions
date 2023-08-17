@@ -7,6 +7,7 @@ import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-
 import { AppState } from '../../../../models/app.model';
 import { selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, streamIsActive } from '../../../../selectors/peer.selectors';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-peer-landing',
@@ -27,7 +28,9 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   })
 
   constructor(private store: Store<AppState>,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private router: Router,
+              private route: ActivatedRoute) {
     this.socketServerConnected = toSignal(this.store.select(selectSocketServerConnected))
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
@@ -52,12 +55,11 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   }
 
   joinSession(): boolean {
-    console.log('joinSession')
     this.joinSessionFormGroup.updateValueAndValidity();
     if (this.joinSessionFormGroup.valid) {
       const id: string = this.joinSessionFormGroup.value.session as string;
       const joinCode: string = this.joinSessionFormGroup.value.joinCode as string;
-      this.store.dispatch(PeerActions.joinBroadcastRoom({id, joinCode}));
+      this.router.navigate([id], { queryParams: { joinCode }, relativeTo: this.route})
     } else {
       this.joinSessionFormGroup.markAllAsTouched();
     }
