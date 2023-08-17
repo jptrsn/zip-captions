@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { selectJoinCode } from '../../../selectors/peer.selectors';
+import { AppState } from '../../../models/app.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,12 +29,12 @@ export class PeerService {
   private myBroadcast = false;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
-  private sessionJoinCode?: string;
+  private sessionJoinCode: Signal<string | undefined>;
   private socket!: Socket;
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
   
-  constructor(private store: Store,
+  constructor(private store: Store<AppState>,
               private cache: CacheService) { 
     this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost';
     this.SOCKET_PORT = process.env['ZIP_SOCKET_PORT'] ? Number(process.env['ZIP_SOCKET_PORT']) : 3000;
@@ -47,7 +50,7 @@ export class PeerService {
     this.TURN_SERVER = process.env['ZIP_TURN_SERVER'] || 'localhost:3478';
     this.TURN_PASS = process.env['ZIP_TURN_PASSWORD'] || 'coturn';
     this.CONNECT_OPTS = {
-      debug: 3,
+      debug: 0,
       host: this.PEER_URL,
       port: this.PEER_PORT,
       secure: (this.PEER_URL !== 'localhost'),
@@ -63,14 +66,14 @@ export class PeerService {
         }
         ]
       }
+
     }
+    this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
 
     const cached = this.cache.load('userId')
     if (cached?.id) {
-      console.log('cached', cached.id);
       this.myId = cached.id;
     }
-    console.log('env', process.env)
     console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
     console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
@@ -190,7 +193,6 @@ export class PeerService {
     this.myBroadcast = !(data?.room); // If we do not have a room ID, we are creating a broadcast
     if (!data?.room) {
       const fromCache = this.cache.load('roomId');
-      console.log('fromCache', fromCache);
       if (fromCache?.room) {
         data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
       }
@@ -229,6 +231,7 @@ export class PeerService {
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
       console.log('incoming connection!', connection);
+      this._handlePeerData(connection);
     })
     return sub.asObservable().pipe(take(1));
   }
@@ -272,14 +275,12 @@ export class PeerService {
       throw new Error('No room defined for broadcast');
     }
     this.cache.remove('roomId');
-    console.log('removed all listeners')
     this.socket.once('endBroadcast', () => {
       console.log('endbroadcast response recieved');
       sub.next();
     })
-    console.log('emitting event', room)
     this.socket.emit('endBroadcast', { room });
-    console.log('returning observable')
+    this._disconnectAllPeers();
     return sub;
   }
 
@@ -306,12 +307,11 @@ export class PeerService {
 
   private _connectToPeer(peerId: string): void {
     const connection = this.peer!.connect(peerId);
-    connection.on('open', () => {
-      console.log('peer connection opened');
-    })
+    this._handlePeerData(connection);
     this.peerMap.set(peerId, connection);
     this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     connection.on('close', () => {
+      console.log('connection closed', peerId)
       this.peerMap.delete(peerId);
       this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     })
@@ -333,5 +333,55 @@ export class PeerService {
     return outString;
   }
 
+  private _handlePeerData(connection: DataConnection) {
+    
+    connection.on('close', () => {
+      connection.removeAllListeners();
+    });
+    
+    connection.on('open', () => {
+      console.log('peer connection opened', this.myBroadcast);
+      if (this.myBroadcast) {
+        console.log('must validate join code', this.sessionJoinCode());
+        connection.send({request: 'joinCode'})
+      }
+    });
+    
+    connection.on('data', (data: any) => {
+      console.log('data', data);
+      if (data?.request) {
+        switch (data.request) {
+          case 'joinCode': 
+            connection.send({request: 'validateJoinCode', joinCode: this.sessionJoinCode()});
+            break;
+          case 'validateJoinCode':
+            console.log('validateJoinCode', data.joinCode)
+            if (this._verifyJoinCode(data.joinCode)) {
+              console.log('join code verified')
+              connection.send({response: 'valid'})
+            } else {
+              console.log('closing connection'); 
+              connection.send({response: 'invalid'})
+              // connection.close()
+            }
+            break;
+        }
+      } else if (data?.response) {
+        switch (data.response) {
+          case 'valid':
+            console.log('join code valid!');
+            break;
+          case 'invalid':
+            this.store.dispatch(PeerActions.clearJoinCode());
+            break;
+        }
+      }
+    })
+  }
+
+  private _verifyJoinCode(incomingCode?: string): boolean {
+    const thisCode = this.sessionJoinCode();
+    return !!(thisCode && incomingCode && thisCode === incomingCode.toLowerCase())
+  }
   
 }

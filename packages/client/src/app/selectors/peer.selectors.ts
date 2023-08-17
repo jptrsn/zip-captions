@@ -34,6 +34,11 @@ export const selectRoomId = createSelector(
   (state) => state.roomId
 )
 
+export const selectJoinCode = createSelector(
+  selectPeerState,
+  (state) => state.joinCode
+)
+
 export const selectConnectedPeerCount = createSelector(
   selectPeerState,
   (state) => state.peerConnectionCount

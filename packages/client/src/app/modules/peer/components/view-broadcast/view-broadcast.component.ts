@@ -1,22 +1,24 @@
-import { Component, Signal } from '@angular/core';
+import { Component, OnDestroy, Signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { filter, take } from 'rxjs';
+import { Observable, filter, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
-import { selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 
 @Component({
   selector: 'app-view-broadcast',
   templateUrl: './view-broadcast.component.html',
   styleUrls: ['./view-broadcast.component.scss'],
 })
-export class ViewBroadcastComponent {
+export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy {
   private roomId: string;
   private joinCode?: string;
   private connected: Signal<boolean | undefined>;
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private store: Store<AppState>) {
     this.roomId = this.route.snapshot.params['id'].toLowerCase();
     this.joinCode = this.route.snapshot.queryParams['joinCode']?.toLowerCase();
@@ -25,6 +27,21 @@ export class ViewBroadcastComponent {
       this.store.dispatch(PeerActions.setJoinCode({joinCode: this.joinCode}));
       this._joinRoom();
     }
+    const stateJoinCode = toSignal(this.store.select(selectJoinCode));
+    effect(() => {
+      if (stateJoinCode() === undefined) {
+        this.joinCode = undefined;
+        this.router.navigate([], { relativeTo: this.route, queryParams: { joinCode: null}, queryParamsHandling: 'merge'})
+      }
+    })
+  }
+
+  canDeactivate(): boolean | Observable<boolean> {
+    return true;
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(PeerActions.leaveBroadcastRoom());
   }
 
   private _joinRoom(): void {

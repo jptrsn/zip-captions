@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppState } from '../../../../models/app.model';
-import { selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, streamIsActive } from '../../../../selectors/peer.selectors';
+import { selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, streamIsActive } from '../../../../selectors/peer.selectors';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -21,6 +21,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   public serverError: Signal<string | undefined>;
   public serverOffline: Signal<boolean | undefined>;
   public roomId: Signal<string | undefined>;
+  public joinCode: Signal<string | undefined>;
+  public isBroadcasting: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -34,6 +36,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.socketServerConnected = toSignal(this.store.select(selectSocketServerConnected))
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
+    this.joinCode = toSignal(this.store.select(selectJoinCode));
+    this.isBroadcasting = toSignal(this.store.select(streamIsActive))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
   }
@@ -43,7 +47,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   }
 
   ngOnDestroy(): void {
-    this.store.dispatch(PeerActions.disconnectPeerServer());
+    console.log('destroy')
+    // this.store.dispatch(PeerActions.disconnectPeerServer());
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -59,6 +64,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     if (this.joinSessionFormGroup.valid) {
       const id: string = this.joinSessionFormGroup.value.session as string;
       const joinCode: string = this.joinSessionFormGroup.value.joinCode as string;
+      this.store.dispatch(PeerActions.setJoinCode({joinCode}));
       this.router.navigate([id], { queryParams: { joinCode }, relativeTo: this.route})
     } else {
       this.joinSessionFormGroup.markAllAsTouched();
