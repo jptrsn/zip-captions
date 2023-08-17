@@ -201,7 +201,14 @@ export class PeerService {
       }
     }
     if (this.myBroadcast) {
-      const joinCode: string = this._generateJoinCode();
+      const fromCache = this.cache.load('joinCode');
+      let joinCode: string;
+      if (fromCache) {
+        joinCode = fromCache.joinCode;
+      } else {
+        joinCode = this._generateJoinCode();
+        this.cache.save({key: 'joinCode', data: { joinCode }})
+      }
       this.store.dispatch(PeerActions.setJoinCode({joinCode}));
     }
     this.socket.volatile().emit('join', { room: data?.room, myBroadcast: this.myBroadcast });
@@ -275,6 +282,7 @@ export class PeerService {
       throw new Error('No room defined for broadcast');
     }
     this.cache.remove('roomId');
+    this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
       console.log('endbroadcast response recieved');
       sub.next();
@@ -351,7 +359,7 @@ export class PeerService {
       console.log('data', data);
       if (data?.request) {
         switch (data.request) {
-          case 'joinCode': 
+          case 'joinCode':
             connection.send({request: 'validateJoinCode', joinCode: this.sessionJoinCode()});
             break;
           case 'validateJoinCode':
@@ -372,7 +380,8 @@ export class PeerService {
             console.log('join code valid!');
             break;
           case 'invalid':
-            this.store.dispatch(PeerActions.clearJoinCode());
+            // connection.close();
+            // this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
       }

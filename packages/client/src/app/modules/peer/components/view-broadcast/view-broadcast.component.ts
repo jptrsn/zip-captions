@@ -15,25 +15,19 @@ import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-
 })
 export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy {
   private roomId: string;
-  private joinCode?: string;
+  public joinCode: Signal<string | undefined>;
   private connected: Signal<boolean | undefined>;
   constructor(private route: ActivatedRoute,
               private router: Router,
               private store: Store<AppState>) {
     this.roomId = this.route.snapshot.params['id'].toLowerCase();
-    this.joinCode = this.route.snapshot.queryParams['joinCode']?.toLowerCase();
     this.connected = toSignal(this.store.select(selectPeerServerConnected));
-    if (this.joinCode) {
-      this.store.dispatch(PeerActions.setJoinCode({joinCode: this.joinCode}));
+    this.joinCode = toSignal(this.store.select(selectJoinCode));
+    if (this.route.snapshot.queryParams['joinCode']) {
+      console.log('setting join code', this.route.snapshot.queryParams['joinCode'])
+      this.store.dispatch(PeerActions.setJoinCode({joinCode: this.route.snapshot.queryParams['joinCode'].toLowerCase()}));
       this._joinRoom();
     }
-    const stateJoinCode = toSignal(this.store.select(selectJoinCode));
-    effect(() => {
-      if (stateJoinCode() === undefined) {
-        this.joinCode = undefined;
-        this.router.navigate([], { relativeTo: this.route, queryParams: { joinCode: null}, queryParamsHandling: 'merge'})
-      }
-    })
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -49,8 +43,8 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
       this.store.pipe(
         select(selectPeerServerConnected),
         filter((connected) => !!connected),
-        take(1))
-        .subscribe(() => {
+        take(1),
+      ).subscribe(() => {
           this.store.dispatch(PeerActions.joinBroadcastRoom({id: this.roomId }))
         })
       this.store.dispatch(PeerActions.connectSocketServer())
