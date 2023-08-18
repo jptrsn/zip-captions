@@ -269,7 +269,7 @@
     "connecting": "Connecting...",
     "connectedPeers": "Viewers Connected",
     "createBroadcast": "Start Broadcast",
-    "broadcastExplanantion": "Create a session where users can connect and view closed-captions on their own device by joining with the session ID and join code.",
+    "broadcastExplanantion": "Create a session where users can connect and view closed-captions by joining on their own device using the session ID and join code.",
     "joinSession": "Join a session",
     "joinSessionExplanation": "View closed captions from an existing broadcast"
   },
