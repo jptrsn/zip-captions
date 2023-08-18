@@ -17,7 +17,7 @@ describe('ViewBroadcastComponent', () => {
       declarations: [ViewBroadcastComponent],
       providers: [
         ...TestingModuleProviders,
-        {provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'test-room'}}}}
+        {provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'test-room'}, queryParams: { 'joinCode': 'ABCD'}}}}
       ]
     }).compileComponents();
 

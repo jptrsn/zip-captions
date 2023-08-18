@@ -14,6 +14,7 @@ import * as EN_TRANSLATIONS from '../assets/i18n/en.json';
 import * as FR_TRANSLATIONS from '../assets/i18n/fr.json';
 import * as IT_TRANSLATIONS from '../assets/i18n/it.json';
 import * as SP_TRANSLATIONS from '../assets/i18n/sp.json';
+import { ReactiveFormsModule } from '@angular/forms';
 const actions$ = new Observable<Action>();
 
 export const TestingModuleImports = [
@@ -28,6 +29,7 @@ export const TestingModuleImports = [
     .withTranslations('fr', FR_TRANSLATIONS)
     .withTranslations('it', IT_TRANSLATIONS)
     .withTranslations('sp', SP_TRANSLATIONS),
+  ReactiveFormsModule,
 ]
 
 export const TestingModuleProviders = [
