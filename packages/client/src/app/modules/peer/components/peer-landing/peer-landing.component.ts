@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppState } from '../../../../models/app.model';
-import { selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, streamIsActive } from '../../../../selectors/peer.selectors';
+import { selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -37,7 +37,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
-    this.isBroadcasting = toSignal(this.store.select(streamIsActive))
+    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
   }
@@ -52,7 +52,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   }
 
   canDeactivate(): boolean | Observable<boolean> {
-    return !toSignal(this.store.select(streamIsActive))();
+    return !toSignal(this.store.select(selectIsBroadcasting))();
   }
 
   createRoom() {

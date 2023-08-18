@@ -10,7 +10,6 @@ import { MediaModule } from '../media/media.module';
 import { BroadcastSessionComponent } from './components/broadcast-session/broadcast-session.component';
 import { ConnectedPeerCountChipComponent } from './components/connected-peer-count-chip/connected-peer-count-chip.component';
 import { EndBroadcastComponent } from './components/end-broadcast/end-broadcast.component';
-import { JoinSessionComponent } from './components/join-session/join-session.component';
 import { LeaveSessionComponent } from './components/leave-session/leave-session.component';
 import { PeerLandingComponent } from './components/peer-landing/peer-landing.component';
 import { PeerServerStatusChipComponent } from './components/peer-server-status-chip/peer-server-status-chip.component';
@@ -22,7 +21,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     BroadcastSessionComponent,
-    JoinSessionComponent,
     EndBroadcastComponent,
     LeaveSessionComponent,
     PeerLandingComponent,
@@ -43,7 +41,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   exports: [
     BroadcastSessionComponent,
-    JoinSessionComponent,
     EndBroadcastComponent,
     LeaveSessionComponent,
   ],

@@ -44,7 +44,12 @@ export const selectConnectedPeerCount = createSelector(
   (state) => state.peerConnectionCount
 )
 
-export const streamIsActive = createSelector(
+export const selectIsBroadcasting = createSelector(
   selectPeerState,
   (state) => state.isBroadcasting
+)
+
+export const selectIsViewing = createSelector(
+  selectPeerState,
+  (state) => state.isViewingBroadcast
 )

@@ -370,7 +370,6 @@ export class PeerService {
             } else {
               console.log('closing connection'); 
               connection.send({response: 'invalid'})
-              // connection.close()
             }
             break;
         }
@@ -380,8 +379,8 @@ export class PeerService {
             console.log('join code valid!');
             break;
           case 'invalid':
-            // connection.close();
-            // this.store.dispatch(PeerActions.clearJoinCode());
+            connection.close();
+            this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
       }

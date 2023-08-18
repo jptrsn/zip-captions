@@ -1,2 +1,33 @@
-<p>view Broadcast works</p>
-<pre>{{joinCode()}}</pre>
+<div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
+  <ng-container *ngIf="joinCode() as code; else setJoinCode">
+    <div class="badge badge-success" *ngIf="isViewing()" translate>STREAM.connected</div>
+    
+  </ng-container>
+  <ng-template #setJoinCode>
+    <div class="flex basis-full justify-center">
+      <form class="flex flex-col gap-12 p-3 sm:p-12 max-w-2xl" [formGroup]="formGroup" (submit)="rejoin()">
+        
+        <div class="text-3xl sm:text-5xl text-center" translate>STREAM.joinCodeRequired</div>
+
+        <div class="flex flex-row items-center justify-between gap-12 sm:gap-24">
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text" [ngClass]="{'text-error': formGroup.controls['joinCode'].invalid && formGroup.controls['joinCode'].touched}" translate>STREAM.joinCode</span>
+            </label>
+            <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.controls['joinCode'].invalid && formGroup.controls['joinCode'].touched}" placeholder="E5F6" formControlName="joinCode" />
+            <label class="label no-height">
+              <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['joinCode'].hasError('invalid') && formGroup.controls['joinCode'].touched">Invalid ID</span>
+              <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['joinCode'].hasError('required') && formGroup.controls['joinCode'].touched">Required</span>
+            </label>
+          </div>
+
+          <div class="flex flex-row gap-3">
+            <button class="btn btn-lg btn-primary mt-3" translate>BUTTONS.connect</button>
+            <button class="btn btn-lg mt-3" translate type="button" [routerLink]="['..']">BUTTONS.cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</div>
