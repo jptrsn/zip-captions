@@ -1,10 +1,60 @@
-<div>
-  <app-socket-server-status-chip></app-socket-server-status-chip>
-  <app-peer-server-status-chip></app-peer-server-status-chip>
-  <app-connected-peer-count-chip></app-connected-peer-count-chip>
-  <div class="badge badge-primary" *ngIf="roomId()">Room ID: {{roomId()?.toUpperCase()}}</div>
-  <button *ngIf="!roomId()" class="btn btn-primary" [disabled]="serverError()" (click)="createRoom()">Create Broadcast</button>
-  <div *ngIf="roomId() as roomId">
-    <app-broadcast-session [roomId]="roomId"></app-broadcast-session>
+<div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
+  <div class="flex flex-row gap-3 items-center p-3">
+    <ng-container *ngIf="!isBroadcasting()">
+      <app-socket-server-status-chip></app-socket-server-status-chip>
+      <app-peer-server-status-chip></app-peer-server-status-chip>
+    </ng-container>
+    <div class="badge badge-primary" *ngIf="roomId() as id">{{'STREAM.sessionId' | translate}}: {{id.toUpperCase()}}</div>
+    <div class="badge badge-info" *ngIf="roomId() && joinCode() as code">{{'STREAM.joinCode' | translate}}: {{code.toUpperCase()}}</div>
+    <div class="badge badge-error" *ngIf="serverError() as err">{{err}}</div>
+    <div class="flex flex-1"></div>
+    <app-connected-peer-count-chip *ngIf="roomId()"></app-connected-peer-count-chip>
   </div>
+  
+  <app-broadcast-session *ngIf="roomId() as roomId; else landing" [roomId]="roomId"></app-broadcast-session>
+
+  <ng-template #landing>
+    <div class="flex basis-full items-stretch justify-center">
+      <div class="flex flex-col basis-full p-3 max-w-4xl gap-24 sm:gap-12 p-3">
+        <div class="flex flex-row items-center gap-24 sm:gap-12">
+          <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" (click)="createRoom()" translate>STREAM.createBroadcast</button>
+          <div class="flex basis-1/2" translate>
+            STREAM.broadcastExplanantion
+          </div>
+        </div>
+    
+        <form class="flex flex-col gap-3" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
+          <div class="flex flex-row items-center gap-24 sm:gap-12">
+            <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" translate>STREAM.joinSession</button>
+            <div class="flex basis-1/2" translate>
+              STREAM.joinSessionExplanation
+            </div>
+          </div>
+          <div class="flex flex-row items-center gap-24 sm:gap-12">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" translate>STREAM.sessionId</span>
+              </label>
+              <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="A79E-F2GV" formControlName="session" />
+              <label class="label no-height">
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('invalid') && joinSessionFormGroup.controls['session'].touched">Invalid ID</span>
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('required') && joinSessionFormGroup.controls['session'].touched">Required</span>
+              </label>
+            </div>
+    
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" translate>STREAM.joinCode</span>
+              </label>
+              <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" placeholder="E5F6" formControlName="joinCode" />
+              <label class="label no-height">
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('invalid') && joinSessionFormGroup.controls['joinCode'].touched">Invalid ID</span>
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('required') && joinSessionFormGroup.controls['joinCode'].touched">Required</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
 </div>

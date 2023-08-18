@@ -14,6 +14,11 @@ export const selectPeerServerConnected = createSelector(
   (state) => state.peerConnected
 )
 
+export const selectServerOffline = createSelector(
+  selectPeerState,
+  (state) => state.serverOffline
+)
+
 export const selectPeerError = createSelector(
   selectPeerState,
   (state) => state.error
@@ -29,7 +34,17 @@ export const selectRoomId = createSelector(
   (state) => state.roomId
 )
 
+export const selectJoinCode = createSelector(
+  selectPeerState,
+  (state) => state.joinCode
+)
+
 export const selectConnectedPeerCount = createSelector(
   selectPeerState,
   (state) => state.peerConnectionCount
+)
+
+export const streamIsActive = createSelector(
+  selectPeerState,
+  (state) => state.isBroadcasting
 )

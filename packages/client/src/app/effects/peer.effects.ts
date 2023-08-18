@@ -63,4 +63,13 @@ export class PeerEffects {
     )
   )
 
+  endBroadcast$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PeerActions.endBroadcast),
+      switchMap(() => this.peerService.endBroadcast()),
+      map(() => PeerActions.endBroadcastSuccess()),
+      catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
+    )
+  )
+
 }

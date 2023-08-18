@@ -259,6 +259,23 @@
     "p3": "With each new result appearing underneath the previous.",
     "p4": "Live text shows like this"
   },
+  "STREAM": {
+    "serverStatus": "Broadcast Server",
+    "peerStatus": "Peer Connections",
+    "sessionId": "Session ID",
+    "joinCode": "Join Code",
+    "online": "Online",
+    "offline": "Offline",
+    "connecting": "Connecting...",
+    "connectedPeers": "Viewers Connected",
+    "createBroadcast": "Start Broadcast",
+    "broadcastExplanantion": "Create a session where users can connect and view closed-captions by joining on their own device using the session ID and join code.",
+    "joinSession": "Join a session",
+    "joinSessionExplanation": "View closed captions from an existing broadcast"
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers."
+  },
   "ROUTES": {
     "home": "Home",
     "about": "About",
@@ -271,7 +288,8 @@
     "helpdesk": "Help Desk",
     "github": "GitHub Issue Tracker",
     "discord": "Discord Server",
-    "donate": "Donate"
+    "donate": "Donate",
+    "stream": "Broadcast"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -284,7 +302,9 @@
     "rejected": "Rejected",
     "viewPolicy": "View Policy",
     "saveAndClose": "Save and Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Yes, I'm sure",
+    "decline": "No"
   },
   "LABELS": {
     "menu": "Menu",

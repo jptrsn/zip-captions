@@ -80,7 +80,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
-  saveSettings(): void {
+  saveSettings(): boolean {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
     this.store.dispatch(SettingsActions.setTheme({theme}));
@@ -89,5 +89,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const wakelockEnabled: boolean = this.formGroup.get('wakelock')!.value as boolean;
     this.store.dispatch(SettingsActions.updateWakeLockEnabled({enabled: wakelockEnabled}));
     this.router.navigate([''])
+    return false;
   }
 }
