@@ -16,7 +16,7 @@
     </ng-container>
   </div>
   
-  <app-recognition-render class="flex basis-full" *ngIf="isBroadcasting(); else landing"></app-recognition-render>
+  <app-broadcast-room class="flex basis-full" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
 
   <ng-template #landing>
     <div class="flex basis-full items-stretch justify-center">
@@ -41,7 +41,7 @@
               <label class="label">
                 <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" translate>STREAM.sessionId</span>
               </label>
-              <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="A79E-F2GV" formControlName="session" />
+              <input type="text" class="input input-bordered input-lg" maxlength="9" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="A79E-F2GV" formControlName="session" />
               <label class="label no-height">
                 <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('invalid') && joinSessionFormGroup.controls['session'].touched">Invalid ID</span>
                 <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('required') && joinSessionFormGroup.controls['session'].touched">Required</span>
@@ -52,7 +52,7 @@
               <label class="label">
                 <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" translate>STREAM.joinCode</span>
               </label>
-              <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" placeholder="E5F6" formControlName="joinCode" />
+              <input type="text" class="input input-bordered input-lg" maxlength="4" [ngClass]="{'input-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" placeholder="E5F6" formControlName="joinCode" />
               <label class="label no-height">
                 <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('invalid') && joinSessionFormGroup.controls['joinCode'].touched">Invalid ID</span>
                 <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('required') && joinSessionFormGroup.controls['joinCode'].touched">Required</span>

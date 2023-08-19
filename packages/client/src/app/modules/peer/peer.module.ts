@@ -18,6 +18,8 @@ import { PeerRoutingModule } from './peer-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RoomIdComponent } from './components/room-id/room-id.component';
 import { JoinCodeComponent } from './components/join-code/join-code.component';
+import { BroadcastRoomComponent } from './components/broadcast-room/broadcast-room.component';
+import { BroadcastControlsSidebarComponent } from './components/broadcast-controls-sidebar/broadcast-controls-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { JoinCodeComponent } from './components/join-code/join-code.component';
     ConnectedPeerCountChipComponent,
     RoomIdComponent,
     JoinCodeComponent,
+    BroadcastRoomComponent,
+    BroadcastControlsSidebarComponent,
   ],
   imports: [
     CommonModule,

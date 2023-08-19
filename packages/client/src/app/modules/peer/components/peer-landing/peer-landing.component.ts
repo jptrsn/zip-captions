@@ -40,18 +40,7 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
-
-    const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
-
-    sessionControl.valueChanges.pipe(
-      takeUntilDestroyed(),
-    ).subscribe((value) => {
-      if (value && value.length > 4) {
-        if (value[4] !== '-') {
-          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
-        }
-      }
-    })
+    this._injectDashIfRequired();
   }
 
   ngOnInit(): void {
@@ -100,6 +89,16 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   }
 
   private _injectDashIfRequired(): void {
+    const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
 
+    sessionControl.valueChanges.pipe(
+      takeUntilDestroyed(),
+    ).subscribe((value) => {
+      if (value && value.length > 4) {
+        if (value[4] !== '-') {
+          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
+        }
+      }
+    })
   }
 }
