@@ -222,7 +222,7 @@ export class RecognitionService {
         return;
       }
       this.activeRecognitionStreams.delete(streamId);
-      // console.log('stopping');
+      console.log('stopping');
       recognition.stop();
       this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
       this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))

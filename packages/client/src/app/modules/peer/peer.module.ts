@@ -16,6 +16,8 @@ import { SocketServerStatusChipComponent } from './components/socket-server-stat
 import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
 import { PeerRoutingModule } from './peer-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RoomIdComponent } from './components/room-id/room-id.component';
+import { JoinCodeComponent } from './components/join-code/join-code.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     PeerServerStatusChipComponent,
     ViewBroadcastComponent,
     ConnectedPeerCountChipComponent,
+    RoomIdComponent,
+    JoinCodeComponent,
   ],
   imports: [
     CommonModule,

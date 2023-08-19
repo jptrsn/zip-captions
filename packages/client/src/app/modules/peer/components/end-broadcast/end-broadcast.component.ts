@@ -1,7 +1,11 @@
-import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component, ElementRef, Renderer2, Signal, ViewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store, select } from '@ngrx/store';
+import { map } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
+import { RecognitionStatus } from '../../../../models/recognition.model';
+import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-end-broadcast',
@@ -12,8 +16,15 @@ export class EndBroadcastComponent {
   @ViewChild('modal', { read: ElementRef }) modal!: ElementRef;
   @ViewChild('close', { read: ElementRef }) closeButton!: ElementRef;
 
+  public isActive: Signal<boolean | undefined>;
+
   constructor(private store: Store<AppState>,
-              private renderer: Renderer2) {}
+              private renderer: Renderer2) {
+    this.isActive = toSignal(this.store.pipe(
+      select(recognitionStatusSelector),
+      map((status: RecognitionStatus) => status === RecognitionStatus.connected)
+    ))
+  }
 
   confirmEndBroadcast(): void {
     this._openModal();

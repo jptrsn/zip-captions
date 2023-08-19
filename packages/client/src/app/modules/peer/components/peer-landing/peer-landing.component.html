@@ -5,8 +5,8 @@
       <app-peer-server-status-chip></app-peer-server-status-chip>
     </ng-container>
     <ng-template #broadcastControls>
-      <div class="badge h-auto badge-primary" *ngIf="roomId() as id">{{'STREAM.sessionId' | translate}}: {{id.toUpperCase()}}</div>
-      <div class="badge h-auto badge-info" *ngIf="joinCode() as code">{{'STREAM.joinCode' | translate}}: {{code.toUpperCase()}}</div>
+      <app-room-id [roomId]="roomId()"></app-room-id>
+      <app-join-code [joinCode]="joinCode()"></app-join-code>
     </ng-template>
     <div class="badge h-auto badge-error" *ngIf="serverError() as err">{{err}}</div>
     <div class="flex flex-1"></div>
