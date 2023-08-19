@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable, filter, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
-import { AppState } from '../../../../models/app.model';
+import { AppActions, AppState } from '../../../../models/app.model';
 import { selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -38,6 +38,14 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     } else {
       this._joinRoom();
     }
+
+    effect(() => {
+      if (this.isViewing()) {
+        this.store.dispatch(AppActions.hideFooter())
+      } else {
+        this.store.dispatch(AppActions.showFooter())
+      }
+    }, {allowSignalWrites: true})
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -46,6 +54,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
 
   ngOnDestroy(): void {
     this.store.dispatch(PeerActions.leaveBroadcastRoom());
+    this.store.dispatch(AppActions.showFooter());
   }
 
   rejoin(): void {
