@@ -1,7 +1,7 @@
 <div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
   <ng-container *ngIf="joinCode() as code; else setJoinCode">
     <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
-      <div class="badge badge-success" translate>STREAM.connected</div>
+      <div class="badge h-auto badge-success" translate>STREAM.connected</div>
       <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.streamConnected</div>
       <app-leave-session></app-leave-session>
     </div>
@@ -13,7 +13,7 @@
         
         <div class="text-3xl sm:text-5xl text-center" translate>STREAM.joinCodeRequired</div>
 
-        <div class="flex flex-row items-center justify-between gap-12 sm:gap-24">
+        <div class="flex flex-row flex-wrap items-center justify-between gap-12 sm:gap-24">
           
           <div class="form-control">
             <label class="label">
