@@ -63,6 +63,15 @@ export class PeerEffects {
     )
   )
 
+  leaveRoom$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(PeerActions.leaveBroadcastRoom),
+      switchMap(() => this.peerService.leaveSession()),
+      map(() => PeerActions.leaveBroadcastRoomSuccess()),
+      catchError((error: any) => of(PeerActions.leaveBroadcastRoomFailure({error: error.message})))
+    )
+  )
+
   endBroadcast$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PeerActions.endBroadcast),

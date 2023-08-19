@@ -238,6 +238,7 @@ export class PeerService {
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
       console.log('incoming connection!', connection);
+      this.peerMap.set(connection.connectionId, connection);
       this._handlePeerData(connection);
     })
     return sub.asObservable().pipe(take(1));
@@ -289,6 +290,16 @@ export class PeerService {
     })
     this.socket.emit('endBroadcast', { room });
     this._disconnectAllPeers();
+    return sub;
+  }
+
+  leaveSession(): Observable<void> {
+    console.log('leaveSession', this.peerMap.size);
+    const sub = new ReplaySubject<void>();
+    this.peerMap.forEach((connection: DataConnection, id: string) => {
+      console.log('peer', id);
+      connection.close();
+    })
     return sub;
   }
 
@@ -363,15 +374,17 @@ export class PeerService {
             connection.send({request: 'validateJoinCode', joinCode: this.sessionJoinCode()});
             break;
           case 'validateJoinCode':
-            console.log('validateJoinCode', data.joinCode)
             if (this._verifyJoinCode(data.joinCode)) {
               console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
               console.log('closing connection'); 
               connection.send({response: 'invalid'})
-              // connection.close()
             }
+            break;
+          case 'disconnect':
+            console.log('disconnect requested');
+            connection.close();
             break;
         }
       } else if (data?.response) {
@@ -380,8 +393,8 @@ export class PeerService {
             console.log('join code valid!');
             break;
           case 'invalid':
-            // connection.close();
-            // this.store.dispatch(PeerActions.clearJoinCode());
+            connection.close();
+            this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
       }

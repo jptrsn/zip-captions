@@ -52,6 +52,8 @@
                 <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('required') && joinSessionFormGroup.controls['joinCode'].touched">Required</span>
               </label>
             </div>
+
+            <button class="w-64 btn btn-lg mt-3" [ngClass]="{'btn-primary': joinSessionFormGroup.valid, 'btn-neutral': joinSessionFormGroup.invalid}" [disabled]="serverOffline() || serverError()" translate>BUTTONS.connect</button>
           </div>
         </form>
       </div>

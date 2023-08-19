@@ -268,13 +268,18 @@
     "offline": "Offline",
     "connecting": "Connecting...",
     "connectedPeers": "Viewers Connected",
+    "connected": "Connected",
     "createBroadcast": "Start Broadcast",
+    "endBroadcast": "End Broadcast",
     "broadcastExplanantion": "Create a session where users can connect and view closed-captions by joining on their own device using the session ID and join code.",
     "joinSession": "Join a session",
-    "joinSessionExplanation": "View closed captions from an existing broadcast"
+    "joinSessionExplanation": "View closed captions from an existing broadcast",
+    "joinCodeRequired": "Please enter the correct join code to view the session",
+    "leaveSession": "Leave session"
   },
   "MODAL": {
-    "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers."
+    "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers.",
+    "confirmLeaveSession": "Are you sure you want to disconnect from this session? You will need to re-enter the ID and join code to reconnect."
   },
   "ROUTES": {
     "home": "Home",
@@ -289,7 +294,7 @@
     "github": "GitHub Issue Tracker",
     "discord": "Discord Server",
     "donate": "Donate",
-    "stream": "Broadcast"
+    "stream": "Share"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -304,7 +309,9 @@
     "saveAndClose": "Save and Close",
     "cancel": "Cancel",
     "confirm": "Yes, I'm sure",
-    "decline": "No"
+    "decline": "No",
+    "connect": "Connect",
+    "disconnect": "Disconnect"
   },
   "LABELS": {
     "menu": "Menu",
@@ -321,7 +328,8 @@
     "wakelockOff": "Zip Captions will respect your system settings for sleep."
   },
   "HINTS": {
-    "beginSpeaking": "Start speaking..."
+    "beginSpeaking": "Start speaking...",
+    "streamConnected": "Text will appear once we hear something..."
   },
   "ERRORS": {
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
