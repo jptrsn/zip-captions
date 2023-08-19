@@ -1,6 +1,10 @@
 <div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
   <ng-container *ngIf="joinCode() as code; else setJoinCode">
-    <div class="badge badge-success" *ngIf="isViewing()" translate>STREAM.connected</div>
+    <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
+      <div class="badge badge-success" translate>STREAM.connected</div>
+      <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.streamConnected</div>
+      <app-leave-session></app-leave-session>
+    </div>
     
   </ng-container>
   <ng-template #setJoinCode>

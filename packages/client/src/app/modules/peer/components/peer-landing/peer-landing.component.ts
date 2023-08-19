@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
@@ -40,6 +40,20 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
+
+    const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
+
+    sessionControl.valueChanges.pipe(
+      takeUntilDestroyed(),
+    ).subscribe((value) => {
+      console.log('session', value);
+      if (value && value.length > 4) {
+        if (value[4] !== '-') {
+          console.log('splice required', value);
+          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
+        }
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -90,5 +104,9 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
       }
     }
     return null;
+  }
+
+  private _injectDashIfRequired(): void {
+
   }
 }

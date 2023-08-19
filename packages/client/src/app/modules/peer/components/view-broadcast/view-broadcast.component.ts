@@ -2,7 +2,7 @@ import { Component, OnDestroy, Signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, take } from 'rxjs';
+import { Observable, filter, map, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppActions, AppState } from '../../../../models/app.model';
 import { selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
@@ -49,11 +49,17 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   }
 
   canDeactivate(): boolean | Observable<boolean> {
+    if (this.isViewing()) {
+      this.store.dispatch(PeerActions.leaveBroadcastRoom());
+      return this.store.select(selectIsViewing).pipe(
+        filter((val) => !!val),
+        map((val) => !!val)
+      )
+    }
     return true;
   }
 
   ngOnDestroy(): void {
-    this.store.dispatch(PeerActions.leaveBroadcastRoom());
     this.store.dispatch(AppActions.showFooter());
   }
 
