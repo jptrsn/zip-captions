@@ -7,7 +7,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { TranslateModule } from '@ngx-translate/core';
 import { PeerEffects } from '../../effects/peer.effects';
 import { MediaModule } from '../media/media.module';
-import { BroadcastSessionComponent } from './components/broadcast-session/broadcast-session.component';
 import { ConnectedPeerCountChipComponent } from './components/connected-peer-count-chip/connected-peer-count-chip.component';
 import { EndBroadcastComponent } from './components/end-broadcast/end-broadcast.component';
 import { LeaveSessionComponent } from './components/leave-session/leave-session.component';
@@ -20,7 +19,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    BroadcastSessionComponent,
     EndBroadcastComponent,
     LeaveSessionComponent,
     PeerLandingComponent,
@@ -38,11 +36,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([PeerEffects]),
     MediaModule,
-  ],
-  exports: [
-    BroadcastSessionComponent,
-    EndBroadcastComponent,
-    LeaveSessionComponent,
   ],
 })
 export class PeerModule {}

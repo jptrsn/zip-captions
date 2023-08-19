@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './peer-landing.component.html',
   styleUrls: ['./peer-landing.component.scss'],
 })
-export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
+export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
   public socketServerConnected: Signal<boolean | undefined>;
   public peerServerConnected: Signal<boolean | undefined>;
@@ -46,10 +46,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     sessionControl.valueChanges.pipe(
       takeUntilDestroyed(),
     ).subscribe((value) => {
-      console.log('session', value);
       if (value && value.length > 4) {
         if (value[4] !== '-') {
-          console.log('splice required', value);
           sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
         }
       }
@@ -58,11 +56,6 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
 
   ngOnInit(): void {
     this.store.dispatch(PeerActions.connectSocketServer());
-  }
-
-  ngOnDestroy(): void {
-    console.log('destroy')
-    // this.store.dispatch(PeerActions.disconnectPeerServer());
   }
 
   canDeactivate(): boolean | Observable<boolean> {

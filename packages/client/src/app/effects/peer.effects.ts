@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PeerService } from '../modules/peer/services/peer.service';
 import { PeerActions } from '../actions/peer.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { RecognitionActions } from '../models/recognition.model';
 
 
 
@@ -49,7 +50,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.createBroadcastRoom),
       switchMap(() => this.peerService.joinRoom()),
-      map((id) => PeerActions.createBroadcastRoomSuccess({id})),
+      switchMap((id) => [PeerActions.createBroadcastRoomSuccess({id}), RecognitionActions.connectRecognition({id: 'broadcast'})]),
       catchError((err: any) => of(PeerActions.createBroadcastRoomFailure({error: err.message})))
     )
   )
@@ -76,7 +77,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.endBroadcast),
       switchMap(() => this.peerService.endBroadcast()),
-      map(() => PeerActions.endBroadcastSuccess()),
+      switchMap(() => [PeerActions.endBroadcastSuccess(), RecognitionActions.disconnectRecognition({id: 'broadcast'})]),
       catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
     )
   )
