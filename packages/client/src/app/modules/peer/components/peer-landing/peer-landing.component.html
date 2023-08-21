@@ -1,18 +1,22 @@
 <div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
-  <div class="flex flex-row flex-wrap gap-3 items-center p-3">
+  <div class="flex flex-row gap-3 items-center p-3">
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
       <app-peer-server-status-chip></app-peer-server-status-chip>
     </ng-container>
     <ng-template #broadcastControls>
-      <app-room-id [roomId]="roomId()"></app-room-id>
-      <app-join-code [joinCode]="joinCode()"></app-join-code>
+      <div class="flex flex-row flex-wrap gap-3">
+        <app-room-id [roomId]="roomId()"></app-room-id>
+        <app-join-code [joinCode]="joinCode()"></app-join-code>
+      </div>
     </ng-template>
     <div class="badge h-auto badge-error" *ngIf="serverError() as err">{{err}}</div>
     <div class="flex flex-1"></div>
     <ng-container *ngIf="isBroadcasting()">
-      <app-connected-peer-count-chip></app-connected-peer-count-chip>
-      <app-end-broadcast></app-end-broadcast>
+      <div class="flex flex-grow flex-row flex-wrap-reverse gap-3 justify-end">
+        <app-connected-peer-count-chip></app-connected-peer-count-chip>
+        <app-end-broadcast></app-end-broadcast>
+      </div>
     </ng-container>
   </div>
   

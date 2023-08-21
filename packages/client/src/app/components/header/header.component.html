@@ -2,11 +2,11 @@
   
   <!-- App Icon with return-to-home route -->
   <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
-    <ng-icon name="zipCaptionsLogo" [size]="isActive() ? '24' : '48'"></ng-icon>
+    <ng-icon name="zipCaptionsLogo" [size]="isActive() && !isBroadcasting() ? '24' : '48'"></ng-icon>
   </button>
   
   <!-- App Title -->
-  <div class="flex-1">
+  <div class="flex-1" *ngIf="!isBroadcasting()">
     <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
       <div class="normal-case text-sm">ZipCaptions.app</div>
@@ -17,6 +17,12 @@
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
+  </ng-container>
+
+  <ng-container *ngIf="isBroadcasting()">
+    <div class="flex flex-auto flex-row justify-center">
+      <span class="sm:text-xl md:text-2xl text-center">Visit ZipCaptions.app and use the session ID and join code to view captions on your own device.</span>
+    </div>
   </ng-container>
 
   <!-- Nav menu -->

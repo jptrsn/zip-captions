@@ -11,6 +11,7 @@ import { recognitionStatusSelector } from '../../selectors/recognition.selector'
 import { MenuItem } from './header.model';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { platformSelector } from '../../selectors/app.selector';
+import { selectIsBroadcasting } from '../../selectors/peer.selectors';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -32,6 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public activeRoute: WritableSignal<string>;
   public showRecordButton: Signal<boolean | undefined>;
   public isActive: Signal<boolean | undefined>;
+  public isBroadcasting: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -42,14 +44,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isActive = toSignal(this.store.pipe(
       select(recognitionStatusSelector),
       map((status: RecognitionStatus) => status === RecognitionStatus.connected)
-    ))
+    ));
+
+    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(
       filter((ev) => ev instanceof NavigationStart),
       takeUntil(this.onDestroy$)
     ).subscribe((ev) => {
-      this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
+      if (this.menuElement?.nativeElement) {
+        this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
+      }
     })
     
     this.menuItems = [

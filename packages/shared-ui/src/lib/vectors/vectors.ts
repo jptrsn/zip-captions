@@ -9,7 +9,8 @@ export {
   heroCheckCircle,
   heroArrowTopRightOnSquare,
   heroArrowLeft,
-  heroArrowRight
+  heroArrowRight,
+  heroSignalSlash,
 } from '@ng-icons/heroicons/outline';
 
 // Custom vectors to add

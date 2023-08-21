@@ -267,7 +267,7 @@
     "online": "Online",
     "offline": "Offline",
     "connecting": "Connecting...",
-    "connectedPeers": "Viewers Connected",
+    "connectedPeers": "Viewers",
     "connected": "Connected",
     "createBroadcast": "Start Broadcast",
     "endBroadcast": "End Broadcast",
