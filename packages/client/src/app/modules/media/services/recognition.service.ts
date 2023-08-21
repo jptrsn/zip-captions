@@ -42,7 +42,7 @@ export class RecognitionService {
       this.DEBOUNCE_TIME_MS = 750;
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
     }
-    // console.log('recognize stream', this.DEBOUNCE_TIME_MS, this.platform());
+    console.log('recognize stream', streamId, this.recognitionMap.get(streamId));
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
@@ -56,9 +56,12 @@ export class RecognitionService {
   }
 
   public disconnectFromStream(streamId: string): void {
+    console.log(`disconnect from stream ${streamId}`)
     const recognition = this.recognitionMap.get(streamId);
     if (recognition) {
+      console.log('found in map - stopping', streamId)
       this.activeRecognitionStreams.delete(streamId);
+      this.recognitionMap.delete(streamId);
       recognition.stop();
     }
   }
@@ -153,7 +156,10 @@ export class RecognitionService {
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{ 
       if (liveOutput() !== '') {
-        console.log('stopping', liveOutput())
+        console.log('live output is not blank - stopping', liveOutput())
+        recognition.stop();
+      } else if (!this.activeRecognitionStreams.has(streamId)) {
+        console.log('recognition stream inactive - stopping')
         recognition.stop();
       } else {
         console.log('not ending - liveoutput blank')
@@ -161,7 +167,7 @@ export class RecognitionService {
     })
 
     recognition.addEventListener('result', (e: any) => {
-      // console.log('result')
+      console.log('result')
       debounce$.next();
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
@@ -189,13 +195,6 @@ export class RecognitionService {
     recognition.addEventListener('end', (e) => {
       // console.log('end', Date.now())
       mostRecentResults = undefined;
-      if (this.activeRecognitionStreams.has(streamId)) {
-        // console.log('recognition still active, restarting')
-        recognition.start();
-      } else {
-        // console.log('recognition inactive, disconnecting')
-        disconnect$.next();
-      }
       const mostRecentOutput = liveOutput();
       // console.log('mostRecentOutput', mostRecentOutput);
       transcriptSegments.clear();
@@ -209,10 +208,18 @@ export class RecognitionService {
         liveOutput.set('');
         transcript = '';
       }
+      if (this.activeRecognitionStreams.has(streamId)) {
+        console.log('recognition still active, restarting')
+        recognition.start();
+      } else {
+        console.log('recognition inactive, disconnecting')
+        disconnect$.next();
+      }
     });
 
     recognition.addEventListener('error', (err: any) => {
       console.log('recognition error', err);
+      console.error(err);
       if (err.error === 'no-speech') {
         if (liveOutput() !== '') {
           liveOutput.set('');
@@ -220,23 +227,33 @@ export class RecognitionService {
           recognizedText.update((previous) => previous.slice(0, previous.length - 1))
         }
         return;
+      // } else if (err.error === 'aborted' && this.activeRecognitionStreams.has(streamId)) {
+      //   console.log('supressing aborted error, still acive');
+      //   return;
       }
       this.activeRecognitionStreams.delete(streamId);
-      // console.log('stopping');
+      console.log('stopping due to error');
       recognition.stop();
       this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
       this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
     });
 
-    recognition.addEventListener('nospeech', () => this._noSpeechWarning())
-  }
-
-  private _noSpeechWarning(): void {
-    console.log('no speech!');
   }
 
   private _debugAllEventListeners(recognition: SpeechRecognition): void {
-    const events: string[] = ['audioend', 'audiostart', 'end', 'error', 'nomatch', 'result', 'soundend', 'soundstart', 'speechend', 'speechstart', 'start']
+    const events: string[] = [
+      'audioend', 
+      'audiostart', 
+      'end', 
+      'error', 
+      'nomatch', 
+      'result', 
+      'soundend', 
+      'soundstart', 
+      'speechend', 
+      'speechstart', 
+      'start'
+    ]
     for (const ev of events) {
       recognition.addEventListener(ev, (e: any) => console.log(ev, e));
     }

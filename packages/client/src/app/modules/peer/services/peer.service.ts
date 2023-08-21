@@ -80,12 +80,10 @@ export class PeerService {
   }
 
   connectSocket(): Observable<string> {
-    if (!this.socket) {
-      this.socket = new Socket(this.SOCKET_CONFIG);
-    } else {
+    if (this.socket) {
       this.socket.removeAllListeners();
-      this.socket.connect();
     }
+    this.socket = new Socket(this.SOCKET_CONFIG);
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {

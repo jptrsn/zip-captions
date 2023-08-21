@@ -47,8 +47,8 @@ export const peerReducers = createReducer(
 
   on(PeerActions.leaveBroadcastRoom, (state: PeerState) => ({...state, roomId: undefined, joinCode: undefined, isViewing: false})),
 
-  on(PeerActions.endBroadcastSuccess, (state: PeerState) => ({...state, isBroadcasting: false, roomId: undefined})),
-  on(PeerActions.endBroadcastFailure, (state:PeerState, action: { error: string}) => ({...state, isBroadcasting: false, error: action.error})),
+  on(PeerActions.endBroadcastSuccess, (state: PeerState) => ({...state, isBroadcasting: false, roomId: undefined, joinCode: undefined})),
+  on(PeerActions.endBroadcastFailure, (state:PeerState, action: { error: string}) => ({...state, roomId: undefined, joinCode: undefined, isBroadcasting: false, error: action.error})),
 
   on(PeerActions.updateConnectedPeerCount, (state, action: { count: number}) => ({...state, peerConnectionCount: action.count})),
 );

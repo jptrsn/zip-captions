@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './peer-landing.component.html',
   styleUrls: ['./peer-landing.component.scss'],
 })
-export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
+export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
   public socketServerConnected: Signal<boolean | undefined>;
   public peerServerConnected: Signal<boolean | undefined>;
@@ -40,29 +40,13 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
-
-    const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
-
-    sessionControl.valueChanges.pipe(
-      takeUntilDestroyed(),
-    ).subscribe((value) => {
-      console.log('session', value);
-      if (value && value.length > 4) {
-        if (value[4] !== '-') {
-          console.log('splice required', value);
-          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
-        }
-      }
-    })
+    this._injectDashIfRequired();
   }
 
   ngOnInit(): void {
-    this.store.dispatch(PeerActions.connectSocketServer());
-  }
-
-  ngOnDestroy(): void {
-    console.log('destroy')
-    // this.store.dispatch(PeerActions.disconnectPeerServer());
+    if (!this.socketServerConnected()) {
+      this.store.dispatch(PeerActions.connectSocketServer());
+    }
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -107,6 +91,16 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   }
 
   private _injectDashIfRequired(): void {
+    const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
 
+    sessionControl.valueChanges.pipe(
+      takeUntilDestroyed(),
+    ).subscribe((value) => {
+      if (value && value.length > 4) {
+        if (value[4] !== '-') {
+          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
+        }
+      }
+    })
   }
 }

@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PeerService } from '../modules/peer/services/peer.service';
 import { PeerActions } from '../actions/peer.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { RecognitionActions } from '../models/recognition.model';
 
 
 
@@ -77,6 +78,7 @@ export class PeerEffects {
       ofType(PeerActions.endBroadcast),
       switchMap(() => this.peerService.endBroadcast()),
       map(() => PeerActions.endBroadcastSuccess()),
+      // switchMap(() => [RecognitionActions.disconnectRecognition({id: 'broadcast'}), PeerActions.endBroadcastSuccess()]),
       catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
     )
   )

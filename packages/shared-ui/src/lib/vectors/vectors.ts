@@ -3,10 +3,13 @@ export {
   heroBars3,
   heroMicrophone,
   heroPlayCircle,
+  heroPauseCircle,
   heroStopCircle,
   heroExclamationTriangle,
   heroCheckCircle,
   heroArrowTopRightOnSquare,
+  heroArrowLeft,
+  heroArrowRight
 } from '@ng-icons/heroicons/outline';
 
 // Custom vectors to add
