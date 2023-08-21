@@ -44,7 +44,9 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(PeerActions.connectSocketServer());
+    if (!this.socketServerConnected()) {
+      this.store.dispatch(PeerActions.connectSocketServer());
+    }
   }
 
   canDeactivate(): boolean | Observable<boolean> {

@@ -50,7 +50,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.createBroadcastRoom),
       switchMap(() => this.peerService.joinRoom()),
-      switchMap((id) => [PeerActions.createBroadcastRoomSuccess({id}), RecognitionActions.connectRecognition({id: 'broadcast'})]),
+      map((id) => PeerActions.createBroadcastRoomSuccess({id})),
       catchError((err: any) => of(PeerActions.createBroadcastRoomFailure({error: err.message})))
     )
   )
@@ -77,7 +77,8 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.endBroadcast),
       switchMap(() => this.peerService.endBroadcast()),
-      switchMap(() => [PeerActions.endBroadcastSuccess(), RecognitionActions.disconnectRecognition({id: 'broadcast'})]),
+      map(() => PeerActions.endBroadcastSuccess()),
+      // switchMap(() => [RecognitionActions.disconnectRecognition({id: 'broadcast'}), PeerActions.endBroadcastSuccess()]),
       catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
     )
   )

@@ -1,10 +1,10 @@
 import { Component, ElementRef, Renderer2, Signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs';
+import { filter, map, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
 import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
@@ -31,7 +31,14 @@ export class EndBroadcastComponent {
   }
 
   endBroadcast(): void {
-    this.store.dispatch(PeerActions.endBroadcast());
+    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'broadcast'}));
+    this.store.select(recognitionStatusSelector).pipe(
+      filter((status) => status === RecognitionStatus.disconnected),
+      take(1)
+    ).subscribe(() => {
+      console.log('recognition ended, ending broadcast');
+      this.store.dispatch(PeerActions.endBroadcast());
+    })
     this._closeModal();
   }
 
