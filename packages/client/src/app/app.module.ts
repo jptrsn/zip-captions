@@ -19,17 +19,16 @@ import { CookieModalComponent } from './components/cookie-modal/cookie-modal.com
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
+import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
 import { AppEffects } from './effects/app.effects';
-import { SettingsEffects } from './effects/settings.effects';
 import { MediaModule } from './modules/media/media.module';
 import { appAppearanceReducers } from './reducers/app.reducer';
 import { audioStreamReducers } from './reducers/audio-stream.reducer';
+import { peerReducers } from './reducers/peer.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
-import { PrivacyComponent } from './components/privacy/privacy.component';
-import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
-import { peerReducers } from './reducers/peer.reducer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

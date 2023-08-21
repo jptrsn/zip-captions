@@ -1,6 +1,8 @@
-<button class="btn btn-circle btn-info" (click)="confirmEndBroadcast()">
-  <ng-icon name="heroStopCircle"></ng-icon>
-</button>
+<div class="tooltip tooltip-left tooltip-warning" [attr.data-tip]="'STREAM.endBroadcast' | translate">
+  <button class="btn btn-circle btn-info" (click)="confirmEndBroadcast()">
+    <ng-icon name="heroSignalSlash"></ng-icon>
+  </button>
+</div>
 <dialog #modal class="modal">
   <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
     <p translate>MODAL.confirmEndBroadcast</p>

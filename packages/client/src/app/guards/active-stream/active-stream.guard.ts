@@ -6,5 +6,5 @@ export interface ComponentCanDeactivate {
 }
 
 export const activeStreamGuard: CanDeactivateFn<ComponentCanDeactivate> = (component: ComponentCanDeactivate, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState: RouterStateSnapshot): boolean | Observable<boolean> => {
-  return component.canDeactivate() ? true : confirm('WARNING: Leaving this page will end the current stream.');
+  return component.canDeactivate() ? true : confirm('WARNING: Leaving this page will end the current broadcast.');
 };
