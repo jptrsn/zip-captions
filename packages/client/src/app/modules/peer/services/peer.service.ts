@@ -1,4 +1,4 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
@@ -13,6 +13,9 @@ import { AppState } from '../../../models/app.model';
   providedIn: 'root'
 })
 export class PeerService {
+
+  public liveText$: ReplaySubject<string> = new ReplaySubject();
+  public textOutput$: ReplaySubject<string[]> = new ReplaySubject();
 
   private readonly CACHE_PERSIST_MINS = 60;
 
@@ -370,7 +373,6 @@ export class PeerService {
     });
     
     connection.on('data', (data: any) => {
-      console.log('data', data);
       if (data?.request) {
         switch (data.request) {
           case 'joinCode':
@@ -406,8 +408,19 @@ export class PeerService {
             this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
-      } else if (data?.recognition) {
-        console.log('data recognition', data.recognition);
+      } else if ('recognition' in data && 'type' in data) {
+        switch (data.type) {
+          case 'live': 
+            console.log(data.recognition);
+            this.liveText$.next(data.recognition);
+            break;
+          case 'segment':
+            console.log('segment');
+            this.textOutput$.next(data.recognition);
+            break;
+        }
+      } else {
+        console.warn(`UNHANDLED DATA`, data)
       }
     })
   }

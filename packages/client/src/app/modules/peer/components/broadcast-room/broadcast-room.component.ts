@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, Signal, computed, effect } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionConnectedSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
-import { Observable, Subject, filter, map, switchMap, take, takeUntil } from 'rxjs';
+import { RecognitionActions } from '../../../../models/recognition.model';
+import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../../media/services/recognition.service';
 import { PeerService } from '../../services/peer.service';
 
@@ -42,7 +42,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
     this.recognizedText.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((recognized) => {
-      this.peerService.broadcastData({ recognition: recognized, type: 'segments'})
+      this.peerService.broadcastData({ recognition: recognized, type: 'segment'})
     })
   }
 

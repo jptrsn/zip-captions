@@ -1,4 +1,4 @@
-import { Component, Input, Signal } from '@angular/core';
+import { Component, Input, Signal, signal } from '@angular/core';
 import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 
 @Component({
@@ -13,7 +13,10 @@ import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnim
 })
 export class RecognizedTextComponent {
   @Input({ required: true}) connected!: Signal<boolean | undefined>;
-  @Input({ required: true}) hasLiveResults!: Signal<boolean>;
+  @Input() hasLiveResults: Signal<boolean>;
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
+  constructor() {
+    this.hasLiveResults = signal(true);
+  }
 }

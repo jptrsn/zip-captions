@@ -42,7 +42,7 @@ export class RecognitionService {
       this.DEBOUNCE_TIME_MS = 750;
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
     }
-    console.log('recognize stream', streamId);
+    // console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
@@ -53,14 +53,14 @@ export class RecognitionService {
     this._addEventListeners(streamId, recog);
     // this._debugAllEventListeners(recog);
     recog.start();
-    console.log('started', streamId);
+    // console.log('started', streamId);
   }
 
   public disconnectFromStream(streamId: string): void {
-    console.log(`disconnect from stream ${streamId}`)
+    // console.log(`disconnect from stream ${streamId}`)
     const recognition = this.recognitionMap.get(streamId);
     if (recognition) {
-      console.log('found in map - stopping', streamId)
+      // console.log('found in map - stopping', streamId)
       this.activeRecognitionStreams.delete(streamId);
       this.recognitionMap.delete(streamId);
       recognition.stop();
@@ -139,7 +139,7 @@ export class RecognitionService {
         if (partialTranscript !== '') {
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
-            this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
+            // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
           transcript = '';
@@ -157,13 +157,13 @@ export class RecognitionService {
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{ 
       if (liveOutput() !== '') {
-        console.log('live output is not blank - stopping', liveOutput())
+        // console.log('live output is not blank - stopping', liveOutput())
         recognition.stop();
       } else if (!this.activeRecognitionStreams.has(streamId)) {
-        console.log('recognition stream inactive - stopping')
+        // console.log('recognition stream inactive - stopping')
         recognition.stop();
       } else {
-        console.log('not ending - liveoutput blank')
+        // console.log('not ending - liveoutput blank')
       }
     })
 
@@ -210,16 +210,16 @@ export class RecognitionService {
         transcript = '';
       }
       if (this.activeRecognitionStreams.has(streamId)) {
-        console.log('recognition still active, restarting')
+        // console.log('recognition still active, restarting')
         recognition.start();
       } else {
-        console.log('recognition inactive, disconnecting')
+        // console.log('recognition inactive, disconnecting')
         disconnect$.next();
       }
     });
 
     recognition.addEventListener('error', (err: any) => {
-      console.log('recognition error', err);
+      // console.log('recognition error', err);
       console.error(err);
       if (err.error === 'no-speech') {
         if (liveOutput() !== '') {
@@ -233,7 +233,7 @@ export class RecognitionService {
       //   return;
       }
       this.activeRecognitionStreams.delete(streamId);
-      console.log('stopping due to error');
+      // console.log('stopping due to error');
       recognition.stop();
       this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
       this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))

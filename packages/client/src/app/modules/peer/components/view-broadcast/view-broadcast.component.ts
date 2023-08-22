@@ -1,13 +1,15 @@
-import { Component, OnDestroy, Signal, effect } from '@angular/core';
+import { Component, OnDestroy, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, interval, map, take, takeWhile, timeout, timer } from 'rxjs';
+import { Observable, filter, interval, map, take, takeWhile, tap } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
-import { AppActions, AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AppActions, AppState } from '../../../../models/app.model';
+import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerError, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
+import { PeerService } from '../../services/peer.service';
 
 @Component({
   selector: 'app-view-broadcast',
@@ -20,6 +22,12 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   public formGroup: FormGroup;
   public hostOnline: Signal<boolean | undefined>;
   public verifyJoinCodeTimer?: Observable<number>;
+  public liveText: Signal<string>;
+  public textOutput: Signal<string[]>;
+  public hasLiveResults: Signal<boolean>;
+  public error: Signal<string | undefined>;
+  public recognitionConnected: Signal<boolean | undefined>;
+
   public readonly HOST_ONLINE_TIMEOUT_SECONDS = 30;
 
   private roomId: string;
@@ -28,12 +36,30 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   constructor(private route: ActivatedRoute,
               private router: Router,
               private fb: FormBuilder,
+              private peerService: PeerService,
               private store: Store<AppState>) {
     this.roomId = this.route.snapshot.params['id'].toLowerCase();
     this.connected = toSignal(this.store.select(selectPeerServerConnected));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isViewing = toSignal(this.store.select(selectIsViewing));
     this.hostOnline = toSignal(this.store.select(selectHostOnline));
+
+    const peerError = toSignal(this.store.select(selectPeerError));
+    const recognitionError = toSignal(this.store.select(recognitionErrorSelector));
+    this.error = computed(() => peerError() || recognitionError());
+    this.recognitionConnected = computed(() => (this.connected() && this.hostOnline()))
+
+    this.liveText = toSignal(this.peerService.liveText$.pipe(tap((val) => console.log(val)))) as Signal<string>
+    this.textOutput = toSignal(this.peerService.textOutput$) as Signal<string[]>
+    this.hasLiveResults = computed(() => {
+      if (this.recognitionConnected()) {
+        if (this.liveText() == '' && this.textOutput().length === 0) {
+          return false;
+        }
+        return true;
+      }
+      return false;
+    });
 
     this.formGroup = this.fb.group({
       joinCode: this.fb.control<string>('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])

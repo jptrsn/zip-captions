@@ -2,11 +2,22 @@
   <ng-container *ngIf="joinCode() as code; else setJoinCode">
     <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
       <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
-      <div class="text-sm text-accent flex flex-row text-center" *ngIf="hostOnline(); else waitingForHost" translate>HINTS.streamConnected</div>
-      <ng-template #waitingForHost>
-        <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.hostConnecting</div>
-      </ng-template>
+      <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
+      <div class="text-sm text-accent flex flex-row text-center" *ngIf="hostOnline() && !hasLiveResults()" translate>HINTS.streamConnected</div>
       <app-leave-session></app-leave-session>
+    </div>
+
+    <div class="flex flex-col basis-full">
+      <div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
+        <app-recognized-text 
+          [connected]="recognitionConnected"
+          [textOutput]="textOutput"
+          [error]="error"
+          class="flex flex-grow-0 flex-shrink basis-full overflow-y-hidden"></app-recognized-text>
+        <app-recognized-live-text 
+          [text]="liveText"
+          class="flex flex-grow flex-shrink"></app-recognized-live-text>
+      </div>
     </div>
 
     <div class="flex self-center justify-self-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
