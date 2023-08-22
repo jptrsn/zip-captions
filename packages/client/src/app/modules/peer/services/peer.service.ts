@@ -359,8 +359,10 @@ export class PeerService {
     
     connection.on('close', () => {
       console.log('connection closed');
-      this.store.dispatch(PeerActions.clearJoinCode());
-      this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+      if (!this.myBroadcast) {
+        this.store.dispatch(PeerActions.clearJoinCode());
+        this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+      }
       connection.removeAllListeners();
     });
     
