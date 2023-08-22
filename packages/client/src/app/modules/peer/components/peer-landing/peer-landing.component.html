@@ -1,5 +1,5 @@
 <div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
-  <div class="flex flex-row gap-3 items-center p-3">
+  <div class="flex flex-row gap-3 items-center p-3" *ngIf="acceptedPeerConnections()">
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
       <app-peer-server-status-chip></app-peer-server-status-chip>
