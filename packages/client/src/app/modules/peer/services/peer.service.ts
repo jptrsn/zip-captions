@@ -411,11 +411,9 @@ export class PeerService {
       } else if ('recognition' in data && 'type' in data) {
         switch (data.type) {
           case 'live': 
-            console.log('live');
             this.liveText$.next(data.recognition);
             break;
           case 'segment':
-            console.log('segment')
             this.textOutput$.next(data.recognition);
             break;
         }

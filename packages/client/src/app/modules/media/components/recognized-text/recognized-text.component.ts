@@ -16,6 +16,7 @@ export class RecognizedTextComponent {
   @Input() hasLiveResults: Signal<boolean>;
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
+  @Input() hintText = 'HINTS.beginSpeaking';
   constructor() {
     this.hasLiveResults = signal(true);
   }

@@ -1,7 +1,7 @@
 <div class="flex flex-col justify-start items-start basis-full flex-grow-0 flex-shrink-0 bg-base-100 text-base-content p-6 gap-3 overflow-hidden">
   <div *ngIf="error() as err" class="text-error text-md sm:text-xl">{{'ERRORS.RECOGNITION.' + err | translate}}</div>
   <div *ngIf="!hasLiveResults()" @fadeOutOnLeave class="flex flex-col flex-auto justify-center self-center">
-    <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.beginSpeaking</div>
+    <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
   <div *ngFor="let text of textOutput()" class="text-sm md:text-xl" @fadeInUpOnEnter @fadeOutUpOnLeave>{{text | proper}}</div>
 </div>
