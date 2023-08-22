@@ -13,7 +13,7 @@
     <div class="badge h-auto badge-error" *ngIf="serverError() as err">{{err}}</div>
     <div class="flex flex-1"></div>
     <ng-container *ngIf="isBroadcasting()">
-      <div class="flex flex-grow flex-row flex-wrap-reverse gap-3 justify-end">
+      <div class="flex flex-grow flex-row flex-wrap-reverse items-center gap-3 justify-end">
         <app-connected-peer-count-chip></app-connected-peer-count-chip>
         <app-end-broadcast></app-end-broadcast>
       </div>

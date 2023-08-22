@@ -293,11 +293,13 @@ export class PeerService {
 
   leaveSession(): Observable<void> {
     console.log('leaveSession', this.peerMap.size);
+    this.cache.remove('roomId');
+    this.cache.remove('joinCode');
     const sub = new ReplaySubject<void>();
     this.peerMap.forEach((connection: DataConnection, id: string) => {
       console.log('peer', id);
       connection.close();
-    })
+    });
     return sub;
   }
 
