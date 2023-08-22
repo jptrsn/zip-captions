@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BroadcastRenderComponent } from './broadcast-render.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { RecognizedLiveTextComponent } from '../../../media/components/recognized-live-text/recognized-live-text.component';
+import { RecognizedTextComponent } from '../../../media/components/recognized-text/recognized-text.component';
 
 describe('BroadcastRenderComponent', () => {
   let component: BroadcastRenderComponent;
@@ -7,7 +10,13 @@ describe('BroadcastRenderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BroadcastRenderComponent],
+      imports: TestingModuleImports,
+      declarations: [
+        BroadcastRenderComponent,
+        RecognizedLiveTextComponent,
+        RecognizedTextComponent,
+      ],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(BroadcastRenderComponent);
