@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, Signal, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { AppState } from '../../../../models/app.model';
 import { selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { peerConnectionsAcceptedSelector } from '../../../../selectors/app.selector';
 
 @Component({
   selector: 'app-peer-landing',
@@ -16,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
+  public acceptedPeerConnections: Signal<boolean | undefined>;
   public socketServerConnected: Signal<boolean | undefined>;
   public peerServerConnected: Signal<boolean | undefined>;
   public serverError: Signal<string | undefined>;
@@ -33,6 +35,7 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
               private fb: FormBuilder,
               private router: Router,
               private route: ActivatedRoute) {
+    this.acceptedPeerConnections = toSignal(this.store.select(peerConnectionsAcceptedSelector))
     this.socketServerConnected = toSignal(this.store.select(selectSocketServerConnected))
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
@@ -41,10 +44,15 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
     this._injectDashIfRequired();
+    effect(() => {
+      if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
+        this.store.dispatch(PeerActions.connectSocketServer())
+      }
+    }, { allowSignalWrites: true})
   }
 
   ngOnInit(): void {
-    if (!this.socketServerConnected()) {
+    if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
       this.store.dispatch(PeerActions.connectSocketServer());
     }
   }

@@ -280,7 +280,10 @@
   },
   "MODAL": {
     "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers.",
-    "confirmLeaveSession": "Are you sure you want to disconnect from this session? You will need to re-enter the ID and join code to reconnect."
+    "confirmLeaveSession": "Are you sure you want to disconnect from this session? You will need to re-enter the ID and join code to reconnect.",
+    "accessModalTitle": "Privacy Warning",
+    "accessP1": "Streaming or viewing a stream can potentially expose private information about your computer to others on the internet.",
+    "accessP2": "Would you like to enable this feature?"
   },
   "ROUTES": {
     "home": "Home",
@@ -326,7 +329,8 @@
     "theme": "Theme",
     "wakelock": "Screen Wake",
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
-    "wakelockOff": "Zip Captions will respect your system settings for sleep."
+    "wakelockOff": "Zip Captions will respect your system settings for sleep.",
+    "rememberSetting": "Remember my response on this device."
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

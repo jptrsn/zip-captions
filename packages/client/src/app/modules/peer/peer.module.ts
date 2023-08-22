@@ -21,6 +21,7 @@ import { JoinCodeComponent } from './components/join-code/join-code.component';
 import { BroadcastRoomComponent } from './components/broadcast-room/broadcast-room.component';
 import { BroadcastControlsSidebarComponent } from './components/broadcast-controls-sidebar/broadcast-controls-sidebar.component';
 import { BroadcastRenderComponent } from './components/broadcast-render/broadcast-render.component';
+import { AcceptPeerConnectionsModalComponent } from './components/accept-peer-connections-modal/accept-peer-connections-modal.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { BroadcastRenderComponent } from './components/broadcast-render/broadcas
     BroadcastRoomComponent,
     BroadcastControlsSidebarComponent,
     BroadcastRenderComponent,
+    AcceptPeerConnectionsModalComponent,
   ],
   imports: [
     CommonModule,

@@ -9,7 +9,10 @@ export const initAppearance = createAction('[App] Init Appearance');
 
 export const acceptCookies = createAction('[App] Accept Cookies');
 export const declineCookies = createAction('[App] Decline Cookies');
-export const setCookiePolicyComplete = createAction('[App] Set Cookie Policy Complete')
+export const setCookiePolicyComplete = createAction('[App] Set Cookie Policy Complete');
+
+export const setPeerConnectionsAccepted = createAction('[App] Set Peer Connections Accepted', props<{accepted: boolean, save?: boolean}>());
+export const setPeerConnectionsComplete = createAction('[App] Set Peer Connections Complete');
 
 export const applyWakeLock = createAction('[App] Apply WakeLock');
 export const applyWakeLockSuccess = createAction('[App] Apply WakeLock Success');
