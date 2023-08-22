@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, OnDestroy, OnInit, Signal, computed, effect } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
-import { Subject } from 'rxjs';
+import { recognitionConnectedSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
+import { Observable, Subject, filter, map, switchMap, take, takeUntil } from 'rxjs';
+import { RecognitionService } from '../../../media/services/recognition.service';
+import { PeerService } from '../../services/peer.service';
 
 @Component({
   selector: 'app-broadcast-room',
@@ -17,19 +19,35 @@ import { Subject } from 'rxjs';
   ]
 })
 export class BroadcastRoomComponent implements OnInit, OnDestroy {
-  public recognitionStatus: Signal<RecognitionStatus>
+  public recognitionConnected: Signal<boolean | undefined>;
+  
+  private liveText: Observable<string>;
+  private recognizedText: Observable<string[]>;
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private store: Store<AppState>) {
-    this.recognitionStatus = toSignal(this.store.select(recognitionStatusSelector)) as Signal<RecognitionStatus>;
+  constructor(private store: Store<AppState>,
+              private recognitionService: RecognitionService,
+              private peerService: PeerService) {
+    this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
+    this.liveText = toObservable(computed(() => this.recognitionConnected() ? this.recognitionService.getLiveOutput('broadcast')() : ''))
+    this.recognizedText = toObservable(computed(() => this.recognitionConnected() ? this.recognitionService.getRecognizedText('broadcast')() : []));
   }
 
   ngOnInit(): void {
     this.store.dispatch(RecognitionActions.connectRecognition({id: 'broadcast'}));
+    this.liveText.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((live) => {
+      this.peerService.broadcastData({ recognition: live, type: 'live' })
+    });
+    this.recognizedText.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((recognized) => {
+      this.peerService.broadcastData({ recognition: recognized, type: 'segments'})
+    })
   }
 
   ngOnDestroy(): void {
-    if (this.recognitionStatus() === RecognitionStatus.connected) {
-      console.log('still connected on destroy!');
+    if (this.recognitionConnected()) {
       this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'broadcast'}));
     }
     this.onDestroy$.next();

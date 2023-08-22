@@ -1,9 +1,19 @@
 <div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
   <ng-container *ngIf="joinCode() as code; else setJoinCode">
     <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
-      <div class="badge h-auto badge-success" translate>STREAM.connected</div>
-      <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.streamConnected</div>
+      <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
+      <div class="text-sm text-accent flex flex-row text-center" *ngIf="hostOnline(); else waitingForHost" translate>HINTS.streamConnected</div>
+      <ng-template #waitingForHost>
+        <div class="text-sm text-accent flex flex-row text-center" translate>HINTS.hostConnecting</div>
+      </ng-template>
       <app-leave-session></app-leave-session>
+    </div>
+
+    <div class="flex self-center justify-self-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
+      <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
+      <ng-template #timedOut>
+        <span translate>STREAM.hostOffline</span>
+      </ng-template>
     </div>
     
   </ng-container>

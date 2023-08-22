@@ -53,3 +53,8 @@ export const selectIsViewing = createSelector(
   selectPeerState,
   (state) => state.isViewingBroadcast
 )
+
+export const selectHostOnline = createSelector(
+  selectPeerState,
+  (state) => state.hostOnline
+)

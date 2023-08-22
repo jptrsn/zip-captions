@@ -2,10 +2,10 @@ import { Component, OnDestroy, Signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, take } from 'rxjs';
+import { Observable, filter, interval, map, take, takeWhile, timeout, timer } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppActions, AppState } from '../../../../models/app.model';
-import { selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -18,8 +18,13 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   public joinCode: Signal<string | undefined>;
   public isViewing: Signal<boolean | undefined>;
   public formGroup: FormGroup;
+  public hostOnline: Signal<boolean | undefined>;
+  public verifyJoinCodeTimer?: Observable<number>;
+  public readonly HOST_ONLINE_TIMEOUT_SECONDS = 30;
+
   private roomId: string;
   private connected: Signal<boolean | undefined>;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private fb: FormBuilder,
@@ -28,6 +33,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     this.connected = toSignal(this.store.select(selectPeerServerConnected));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isViewing = toSignal(this.store.select(selectIsViewing));
+    this.hostOnline = toSignal(this.store.select(selectHostOnline));
 
     this.formGroup = this.fb.group({
       joinCode: this.fb.control<string>('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])
@@ -91,6 +97,11 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     } else {
       this.store.dispatch(PeerActions.joinBroadcastRoom({id: this.roomId }))
     }
+    
+    this.verifyJoinCodeTimer = interval(1000).pipe(
+      takeWhile((value) => (value < this.HOST_ONLINE_TIMEOUT_SECONDS && this.hostOnline() === undefined)),
+      map((value) => value + 1)
+    );
   }
 
   private _updateJoinCodeAndConnect(updatedJoinCode: string): void {

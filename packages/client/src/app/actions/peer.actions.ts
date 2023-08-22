@@ -24,9 +24,10 @@ export const PeerActions = {
   joinBroadcastRoomSuccess: createAction('[Peer] Join Broadcast Room Success'),
   joinBroadcastRoomFailure: createAction('[Peer] Join Broadcast Room Failure', props<{error: string}>()),
 
-
   setJoinCode: createAction('[Peer] Set Join Code', props<{joinCode: string}>()),
   clearJoinCode: createAction('[Peer] Clear Join Code'),
+
+  setHostStatus: createAction('[Peer] Set Host Status', props<{hostOnline: boolean}>()),
 
   leaveBroadcastRoom: createAction('[Peer] Leave Broadcast Room'),
   leaveBroadcastRoomSuccess: createAction('[Peer] Leave Broadcast Room Success'),

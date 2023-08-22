@@ -1,4 +1,4 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, EventEmitter, Output, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
@@ -17,13 +17,14 @@ import { RecognitionService } from '../../services/recognition.service';
   ]
 })
 export class RecognitionRenderComponent {
+
   public state: Signal<RecognitionState | undefined>;
   public connected: Signal<boolean | undefined>;
   public liveText: Signal<string>;
   public textOutput: Signal<string[]>;
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
-  
+
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition));

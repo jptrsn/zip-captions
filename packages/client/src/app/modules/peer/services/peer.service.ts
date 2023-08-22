@@ -353,6 +353,9 @@ export class PeerService {
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
+      console.log('connection closed');
+      this.store.dispatch(PeerActions.clearJoinCode());
+      this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       connection.removeAllListeners();
     });
     
@@ -376,25 +379,33 @@ export class PeerService {
               console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
-              console.log('closing connection'); 
+              console.log('closing connection');
               connection.send({response: 'invalid'})
             }
             break;
           case 'disconnect':
             console.log('disconnect requested');
             connection.close();
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+            break;
+          case 'hostOffline':
+            console.log('host offline');
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
         }
       } else if (data?.response) {
         switch (data.response) {
           case 'valid':
             console.log('join code valid!');
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':
             connection.close();
             this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
+      } else if (data?.recognition) {
+        console.log('data recognition', data.recognition);
       }
     })
   }

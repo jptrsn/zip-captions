@@ -42,7 +42,7 @@ export class RecognitionService {
       this.DEBOUNCE_TIME_MS = 750;
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
     }
-    console.log('recognize stream', streamId, this.recognitionMap.get(streamId));
+    console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
     recog.continuous = true;
@@ -53,6 +53,7 @@ export class RecognitionService {
     this._addEventListeners(streamId, recog);
     // this._debugAllEventListeners(recog);
     recog.start();
+    console.log('started', streamId);
   }
 
   public disconnectFromStream(streamId: string): void {
@@ -167,7 +168,7 @@ export class RecognitionService {
     })
 
     recognition.addEventListener('result', (e: any) => {
-      console.log('result')
+      // console.log('result')
       debounce$.next();
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
