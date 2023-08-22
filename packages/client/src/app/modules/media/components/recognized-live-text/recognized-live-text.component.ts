@@ -1,4 +1,4 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectRecognition } from '../../../../selectors/recognition.selector';
 import { Store } from '@ngrx/store';
@@ -16,13 +16,5 @@ import { fadeOutOnLeaveAnimation } from 'angular-animations';
   ]
 })
 export class RecognizedLiveTextComponent {
-  public state: Signal<RecognitionState | undefined>;
-  public connected: Signal<boolean | undefined>;
-  public text: Signal<string>;
-  constructor(private store: Store<AppState>,
-              private recognitionService: RecognitionService) {
-    this.state = toSignal(this.store.select(selectRecognition));
-    this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
-    this.text = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
-  }
+  @Input() text!: Signal<string>;
 }

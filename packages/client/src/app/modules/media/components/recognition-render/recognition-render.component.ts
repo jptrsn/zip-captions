@@ -1,11 +1,11 @@
-import { Component, Signal } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
-import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
+import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
+import { recognitionErrorSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
   selector: 'app-recognition-render',
@@ -17,12 +17,28 @@ import { recognitionStatusSelector } from '../../../../selectors/recognition.sel
   ]
 })
 export class RecognitionRenderComponent {
-  public isActive: Signal<boolean | undefined>;
-  constructor(private store: Store<AppState>) {
-    this.isActive = toSignal(this.store.pipe(
-      select(recognitionStatusSelector),
-      map((status: RecognitionStatus) => status === RecognitionStatus.connected)
-      )
-    )
+  public state: Signal<RecognitionState | undefined>;
+  public connected: Signal<boolean | undefined>;
+  public liveText: Signal<string>;
+  public textOutput: Signal<string[]>;
+  public hasLiveResults: Signal<boolean>;
+  public error: Signal<string | undefined>;
+  
+  constructor(private store: Store<AppState>,
+              private recognitionService: RecognitionService) {
+    this.state = toSignal(this.store.select(selectRecognition));
+    this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
+    this.liveText = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
+    this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state()?.id as string)() : [])
+    this.hasLiveResults = computed(() => {
+      if (this.connected()) {
+        if (this.liveText() == '' && this.textOutput().length === 0) {
+          return false;
+        }
+        return true;
+      }
+      return false;
+    });
+    this.error = toSignal(this.store.select(recognitionErrorSelector));
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, Input, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
@@ -18,26 +18,9 @@ import { RecognitionService } from '../../services/recognition.service';
   ]
 })
 export class RecognizedTextComponent {
-  public state: Signal<RecognitionState>;
-  public connected: Signal<boolean | undefined>;
-  public textOutput: Signal<string[]>;
-  public hasLiveResults: Signal<boolean>;
-  public error: Signal<string | undefined>;
+  @Input() connected!: Signal<boolean | undefined>;
+  @Input() hasLiveResults!: Signal<boolean>;
+  @Input() textOutput!: Signal<string[]>;
+  @Input() error!: Signal<string | undefined>;
 
-  constructor(private store: Store<AppState>,
-              private recognitionService: RecognitionService) {
-    this.state = toSignal(this.store.select(selectRecognition)) as Signal<RecognitionState>;
-    this.connected = computed(() => this.state().status !== RecognitionStatus.uninitialized);
-    this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state().id as string)() : [])
-    this.error = toSignal(this.store.select(recognitionErrorSelector));
-    this.hasLiveResults = computed(() => {
-      if (this.connected()) {
-        const liveText = this.recognitionService.getLiveOutput(this.state()?.id as string);
-        if (liveText() == '' && this.textOutput().length === 0) {
-          return false;
-        }
-      }
-      return true;
-    })
-  }
 }
