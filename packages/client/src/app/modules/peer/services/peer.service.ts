@@ -1,8 +1,8 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -13,6 +13,9 @@ import { AppState } from '../../../models/app.model';
   providedIn: 'root'
 })
 export class PeerService {
+
+  public liveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  public textOutput$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   private readonly CACHE_PERSIST_MINS = 60;
 
@@ -293,11 +296,13 @@ export class PeerService {
 
   leaveSession(): Observable<void> {
     console.log('leaveSession', this.peerMap.size);
+    this.cache.remove('roomId');
+    this.cache.remove('joinCode');
     const sub = new ReplaySubject<void>();
     this.peerMap.forEach((connection: DataConnection, id: string) => {
       console.log('peer', id);
       connection.close();
-    })
+    });
     return sub;
   }
 
@@ -353,6 +358,9 @@ export class PeerService {
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
+      console.log('connection closed');
+      this.store.dispatch(PeerActions.clearJoinCode());
+      this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       connection.removeAllListeners();
     });
     
@@ -365,7 +373,6 @@ export class PeerService {
     });
     
     connection.on('data', (data: any) => {
-      console.log('data', data);
       if (data?.request) {
         switch (data.request) {
           case 'joinCode':
@@ -376,25 +383,42 @@ export class PeerService {
               console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
-              console.log('closing connection'); 
+              console.log('closing connection');
               connection.send({response: 'invalid'})
             }
             break;
           case 'disconnect':
             console.log('disconnect requested');
             connection.close();
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+            break;
+          case 'hostOffline':
+            console.log('host offline');
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
         }
       } else if (data?.response) {
         switch (data.response) {
           case 'valid':
             console.log('join code valid!');
+            this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':
             connection.close();
             this.store.dispatch(PeerActions.clearJoinCode());
             break;
         }
+      } else if ('recognition' in data && 'type' in data) {
+        switch (data.type) {
+          case 'live': 
+            this.liveText$.next(data.recognition);
+            break;
+          case 'segment':
+            this.textOutput$.next(data.recognition);
+            break;
+        }
+      } else {
+        console.warn(`UNHANDLED DATA`, data)
       }
     })
   }

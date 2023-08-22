@@ -20,6 +20,7 @@ import { RoomIdComponent } from './components/room-id/room-id.component';
 import { JoinCodeComponent } from './components/join-code/join-code.component';
 import { BroadcastRoomComponent } from './components/broadcast-room/broadcast-room.component';
 import { BroadcastControlsSidebarComponent } from './components/broadcast-controls-sidebar/broadcast-controls-sidebar.component';
+import { BroadcastRenderComponent } from './components/broadcast-render/broadcast-render.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { BroadcastControlsSidebarComponent } from './components/broadcast-contro
     JoinCodeComponent,
     BroadcastRoomComponent,
     BroadcastControlsSidebarComponent,
+    BroadcastRenderComponent,
   ],
   imports: [
     CommonModule,
