@@ -22,11 +22,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   public formGroup: FormGroup;
   public hostOnline: Signal<boolean | undefined>;
   public verifyJoinCodeTimer?: Observable<number>;
-  public liveText: Signal<string>;
-  public textOutput: Signal<string[]>;
-  public hasLiveResults: Signal<boolean>;
-  public error: Signal<string | undefined>;
-  public recognitionConnected: Signal<boolean | undefined>;
+
 
   public readonly HOST_ONLINE_TIMEOUT_SECONDS = 30;
 
@@ -36,30 +32,12 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   constructor(private route: ActivatedRoute,
               private router: Router,
               private fb: FormBuilder,
-              private peerService: PeerService,
               private store: Store<AppState>) {
     this.roomId = this.route.snapshot.params['id'].toLowerCase();
     this.connected = toSignal(this.store.select(selectPeerServerConnected));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isViewing = toSignal(this.store.select(selectIsViewing));
     this.hostOnline = toSignal(this.store.select(selectHostOnline));
-
-    const peerError = toSignal(this.store.select(selectPeerError));
-    const recognitionError = toSignal(this.store.select(recognitionErrorSelector));
-    this.error = computed(() => peerError() || recognitionError());
-    this.recognitionConnected = computed(() => (this.connected() && this.hostOnline()))
-
-    this.liveText = toSignal(this.peerService.liveText$.pipe(tap((val) => console.log(val)))) as Signal<string>
-    this.textOutput = toSignal(this.peerService.textOutput$) as Signal<string[]>
-    this.hasLiveResults = computed(() => {
-      if (this.recognitionConnected()) {
-        if (this.liveText() == '' && this.textOutput().length === 0) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    });
 
     this.formGroup = this.fb.group({
       joinCode: this.fb.control<string>('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])

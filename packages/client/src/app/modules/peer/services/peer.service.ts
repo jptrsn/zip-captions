@@ -2,7 +2,7 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,8 +14,8 @@ import { AppState } from '../../../models/app.model';
 })
 export class PeerService {
 
-  public liveText$: ReplaySubject<string> = new ReplaySubject();
-  public textOutput$: ReplaySubject<string[]> = new ReplaySubject();
+  public liveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  public textOutput$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   private readonly CACHE_PERSIST_MINS = 60;
 
@@ -411,11 +411,11 @@ export class PeerService {
       } else if ('recognition' in data && 'type' in data) {
         switch (data.type) {
           case 'live': 
-            console.log(data.recognition);
+            console.log('live');
             this.liveText$.next(data.recognition);
             break;
           case 'segment':
-            console.log('segment');
+            console.log('segment')
             this.textOutput$.next(data.recognition);
             break;
         }
