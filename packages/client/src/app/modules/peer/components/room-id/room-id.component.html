@@ -1,1 +1,13 @@
-<div class="badge h-auto badge-primary text-xl sm:text-2xl md:text-4xl lg:text-6xl" *ngIf="roomId">{{'STREAM.sessionId' | translate}}: {{roomId.toUpperCase()}}</div>
+<div 
+  class="badge h-auto badge-primary text-xl sm:text-2xl md:text-4xl lg:text-6xl cursor-pointer tooltip tooltip-bottom" 
+  *ngIf="roomId" 
+  ngxClipboard 
+  [cbContent]="roomId"
+  [attr.data-tip]="'STREAM.copyIdTip' | translate"
+  (click)="showCopiedToClipboard()">
+    {{'STREAM.sessionId' | translate}}: {{roomId.toUpperCase()}}
+</div>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showToast()">
+  <div class="alert alert-info" translate>STREAM.sessionIdCopied</div>
+</div>

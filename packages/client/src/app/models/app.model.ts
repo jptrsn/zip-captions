@@ -11,6 +11,7 @@ export enum AppPlatform {
 export interface AppAppearanceState {
   loading: boolean;
   cookiesAccepted: boolean;
+  peerConnectionsAccepted: boolean;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   platform?: AppPlatform;

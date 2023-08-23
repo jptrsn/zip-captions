@@ -255,8 +255,8 @@ export class PeerService {
       sub.next(true);
     });
     setTimeout(() => {
-      this.peer!.destroy();
-      console.log('peer destroyed');
+      this.peer!.disconnect();
+      console.log('peer disconnected');
     }, 1);
     return sub.asObservable().pipe(take(1));
   }
@@ -359,8 +359,10 @@ export class PeerService {
     
     connection.on('close', () => {
       console.log('connection closed');
-      this.store.dispatch(PeerActions.clearJoinCode());
-      this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+      if (!this.myBroadcast) {
+        this.store.dispatch(PeerActions.clearJoinCode());
+        this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
+      }
       connection.removeAllListeners();
     });
     

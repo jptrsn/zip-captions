@@ -9,6 +9,7 @@ import { defaultPeerState } from './peer.reducer';
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
   cookiesAccepted: false,
+  peerConnectionsAccepted: false,
   footerVisible: true,
 }
 
@@ -30,4 +31,5 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.initAppearanceComplete, (state: AppAppearanceState, action: { appearance: AppAppearanceState }) => ({...state, ...action.appearance, loading: false})),
   on(AppActions.acceptCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: true})),
   on(AppActions.declineCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: false, cookiesDeclinedTimestamp: Date.now()})),
+  on(AppActions.setPeerConnectionsAccepted, (state: AppAppearanceState, action: { accepted: boolean }) => ({...state, peerConnectionsAccepted: action.accepted}))
 )

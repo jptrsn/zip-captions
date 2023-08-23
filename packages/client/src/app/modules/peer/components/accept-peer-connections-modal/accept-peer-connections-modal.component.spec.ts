@@ -1,21 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RecognizedLiveTextComponent } from './recognized-live-text.component';
+import { AcceptPeerConnectionsModalComponent } from './accept-peer-connections-modal.component';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
-import { signal } from '@angular/core';
 
-describe('RecognizedLiveTextComponent', () => {
-  let component: RecognizedLiveTextComponent;
-  let fixture: ComponentFixture<RecognizedLiveTextComponent>;
+describe('AcceptPeerConnectionsModalComponent', () => {
+  let component: AcceptPeerConnectionsModalComponent;
+  let fixture: ComponentFixture<AcceptPeerConnectionsModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: TestingModuleImports,
-      declarations: [RecognizedLiveTextComponent],
+      declarations: [AcceptPeerConnectionsModalComponent],
       providers: TestingModuleProviders
     }).compileComponents();
-    fixture = TestBed.createComponent(RecognizedLiveTextComponent);
+
+    fixture = TestBed.createComponent(AcceptPeerConnectionsModalComponent);
     component = fixture.componentInstance;
-    component.text = signal('');
     fixture.detectChanges();
   });
 
