@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, take, time
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectJoinCode } from '../../../selectors/peer.selectors';
+import { selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { AppState } from '../../../models/app.model';
 
 @Injectable({
@@ -36,6 +36,7 @@ export class PeerService {
   private socket!: Socket;
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
+  private peerServerConnected: Signal<boolean | undefined>;
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
@@ -69,8 +70,8 @@ export class PeerService {
         }
         ]
       }
-
     }
+    this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
 
     const cached = this.cache.load('userId')
@@ -99,23 +100,23 @@ export class PeerService {
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
-      console.log('error', err);
+      // console.log('error', err);
       this.store.dispatch(PeerActions.socketServerError({error: err.message}))
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
-      console.log('message', data);
+      // console.log('message', data);
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
-            console.log('nexting room id', data.room);
+            // console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
           }
           break;
         }
         case 'set user id': {
-          console.log('set user id', data.id, this.myId)
+          // console.log('set user id', data.id, this.myId)
           if (this.myId) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
@@ -123,7 +124,7 @@ export class PeerService {
             }
           } else if (data.id) {
             this.myId = data.id;
-            console.log('SAVING USER ID', data.id)
+            // console.log('SAVING USER ID', data.id)
             this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             sub.next(data.id);
           }
@@ -137,18 +138,18 @@ export class PeerService {
             if (this.myBroadcast) {
               this._connectToPeer(data.user);
             } else {
-              console.log('not my broadcast, peer connected', data.user)
+              // console.log('not my broadcast, peer connected', data.user)
             }
           }
           break;
         }
         case 'user left room': {
           if (data.user) {
-            console.log('disconnect from peer!', data)
+            // console.log('disconnect from peer!', data)
             const connection: DataConnection | undefined = this.peerMap.get(data.user);
             if (connection) {
               connection.addListener('close', () => {
-                console.log('closed!');
+                // console.log('closed!');
                 this.peerMap.delete(data.user);
               })
               connection.close();
@@ -159,7 +160,7 @@ export class PeerService {
         case 'connect clients': {
           if (data.clients) {
             const clientIds: string[] = data.clients;
-            console.log('clientIds', clientIds, this.myId);
+            // console.log('clientIds', clientIds, this.myId);
             for (const id of clientIds) {
               if (id !== this.myId) {
                 this._connectToPeer(id);
@@ -231,14 +232,18 @@ export class PeerService {
       this.store.dispatch(PeerActions.peerServerConnected())
       sub.next(this.myId as string);
     });
-    this.peer.addListener('disconnected', () => this.store.dispatch(PeerActions.peerServerDisconnected()));
+    this.peer.addListener('disconnected', () => {
+      if (this.peerServerConnected()) {
+        this.store.dispatch(PeerActions.peerServerDisconnected());
+      }
+    });
     this.peer.once('error', (err: any) => {
-      console.log(err.message);
+      // console.log(err.message);
       this.store.dispatch(PeerActions.peerServerError({error: err.message}));
       this._reconnectPeerServer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
-      console.log('incoming connection!', connection);
+      // console.log('incoming connection!', connection);
       this.peerMap.set(connection.connectionId, connection);
       this._handlePeerData(connection);
     })
@@ -256,7 +261,7 @@ export class PeerService {
     });
     setTimeout(() => {
       this.peer!.disconnect();
-      console.log('peer disconnected');
+      // console.log('peer disconnected');
     }, 1);
     return sub.asObservable().pipe(take(1));
   }
@@ -286,7 +291,7 @@ export class PeerService {
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
-      console.log('endbroadcast response recieved');
+      // console.log('endbroadcast response recieved');
       sub.next();
     })
     this.socket.emit('endBroadcast', { room });
@@ -295,12 +300,12 @@ export class PeerService {
   }
 
   leaveSession(): Observable<void> {
-    console.log('leaveSession', this.peerMap.size);
+    // console.log('leaveSession', this.peerMap.size);
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     const sub = new ReplaySubject<void>();
     this.peerMap.forEach((connection: DataConnection, id: string) => {
-      console.log('peer', id);
+      // console.log('peer', id);
       connection.close();
     });
     return sub;
@@ -309,7 +314,7 @@ export class PeerService {
   private _reconnectPeerServer(tryNumber?: number): void {
     let thisTry = tryNumber || 0;
     const timerId = setTimeout(() => {
-      if (this.peer?.disconnected) {
+      if (this.peer?.disconnected && thisTry < 5) {
         this.peer.once('error', () => {
           this._reconnectPeerServer(++thisTry);
         })
@@ -321,7 +326,7 @@ export class PeerService {
       } else if (thisTry < 5) {
         this._reconnectPeerServer(++thisTry);
       } else {
-        this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Reconnect timed out'}))
+        this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Peer server conneection lost.'}))
         thisTry = 0;
       }
     }, (thisTry * 1000) + 150);
@@ -333,7 +338,7 @@ export class PeerService {
     this.peerMap.set(peerId, connection);
     this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     connection.on('close', () => {
-      console.log('connection closed', peerId)
+      // console.log('connection closed', peerId)
       this.peerMap.delete(peerId);
       this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
     })
@@ -358,7 +363,7 @@ export class PeerService {
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
-      console.log('connection closed');
+      // console.log('connection closed');
       if (!this.myBroadcast) {
         this.store.dispatch(PeerActions.clearJoinCode());
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
@@ -367,9 +372,9 @@ export class PeerService {
     });
     
     connection.on('open', () => {
-      console.log('peer connection opened', this.myBroadcast);
+      // console.log('peer connection opened', this.myBroadcast);
       if (this.myBroadcast) {
-        console.log('must validate join code', this.sessionJoinCode());
+        // console.log('must validate join code', this.sessionJoinCode());
         connection.send({request: 'joinCode'})
       }
     });
@@ -382,27 +387,27 @@ export class PeerService {
             break;
           case 'validateJoinCode':
             if (this._verifyJoinCode(data.joinCode)) {
-              console.log('join code verified')
+              // console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
-              console.log('closing connection');
+              // console.log('closing connection');
               connection.send({response: 'invalid'})
             }
             break;
           case 'disconnect':
-            console.log('disconnect requested');
+            // console.log('disconnect requested');
             connection.close();
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
           case 'hostOffline':
-            console.log('host offline');
+            // console.log('host offline');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
         }
       } else if (data?.response) {
         switch (data.response) {
           case 'valid':
-            console.log('join code valid!');
+            // console.log('join code valid!');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':

@@ -219,7 +219,7 @@ export class RecognitionService {
     });
 
     recognition.addEventListener('error', (err: any) => {
-      // console.log('recognition error', err);
+      console.log('recognition error', err.message);
       console.error(err);
       if (err.error === 'no-speech') {
         if (liveOutput() !== '') {
