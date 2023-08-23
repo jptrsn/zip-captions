@@ -1,15 +1,13 @@
-import { Component, OnDestroy, Signal, computed, effect } from '@angular/core';
+import { Component, HostListener, OnDestroy, Signal, WritableSignal, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, interval, map, take, takeWhile, tap } from 'rxjs';
+import { Observable, Subject, filter, interval, map, take, takeWhile, tap } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppActions, AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerError, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
-import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
-import { PeerService } from '../../services/peer.service';
+import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 
 @Component({
   selector: 'app-view-broadcast',
@@ -17,11 +15,14 @@ import { PeerService } from '../../services/peer.service';
   styleUrls: ['./view-broadcast.component.scss'],
 })
 export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy {
+  @HostListener('window:beforeunload')
   public joinCode: Signal<string | undefined>;
   public isViewing: Signal<boolean | undefined>;
   public formGroup: FormGroup;
   public hostOnline: Signal<boolean | undefined>;
   public verifyJoinCodeTimer?: Observable<number>;
+  public showLeaveBroadcastDialog: WritableSignal<boolean> = signal(false);
+  public dialogClosedSubject: Subject<boolean> = new Subject<boolean>();
 
 
   public readonly HOST_ONLINE_TIMEOUT_SECONDS = 30;
@@ -38,6 +39,8 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isViewing = toSignal(this.store.select(selectIsViewing));
     this.hostOnline = toSignal(this.store.select(selectHostOnline));
+
+    this.dialogClosedSubject.subscribe((closed) => console.log('dialog closed', closed))
 
     this.formGroup = this.fb.group({
       joinCode: this.fb.control<string>('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])
@@ -59,17 +62,21 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   }
 
   canDeactivate(): boolean | Observable<boolean> {
+    console.log('candeactivate')
     if (this.isViewing()) {
-      this.store.dispatch(PeerActions.leaveBroadcastRoom());
-      return this.store.select(selectIsViewing).pipe(
-        filter((val) => !!val),
-        map((val) => !!val)
+      this.showLeaveBroadcastDialog.set(true);
+      return this.dialogClosedSubject.asObservable().pipe(
+        take(1),
+        tap(() => this.showLeaveBroadcastDialog.set(false))
       )
     }
     return true;
   }
 
   ngOnDestroy(): void {
+    if (this.isViewing()) {
+      this.store.dispatch(PeerActions.leaveBroadcastRoom());
+    }
     this.store.dispatch(AppActions.showFooter());
   }
 
@@ -82,6 +89,10 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     } else {
       this.formGroup.markAllAsTouched();
     }
+  }
+
+  leaveSessionDialogClosed(confirmed: boolean): void {
+    this.dialogClosedSubject.next(confirmed);
   }
 
   private _updateQueryParamsCode(joinCode: string): void {

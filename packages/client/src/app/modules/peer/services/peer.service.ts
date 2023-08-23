@@ -255,8 +255,8 @@ export class PeerService {
       sub.next(true);
     });
     setTimeout(() => {
-      this.peer!.destroy();
-      console.log('peer destroyed');
+      this.peer!.disconnect();
+      console.log('peer disconnected');
     }, 1);
     return sub.asObservable().pipe(take(1));
   }

@@ -1,14 +1,14 @@
-import { Component, HostListener, OnDestroy, OnInit, Signal, effect } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppState } from '../../../../models/app.model';
-import { selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected, selectIsBroadcasting } from '../../../../selectors/peer.selectors';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { peerConnectionsAcceptedSelector } from '../../../../selectors/app.selector';
+import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 
 @Component({
   selector: 'app-peer-landing',
