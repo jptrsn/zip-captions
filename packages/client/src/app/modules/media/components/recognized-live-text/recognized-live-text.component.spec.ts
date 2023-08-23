@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecognizedLiveTextComponent } from './recognized-live-text.component';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { signal } from '@angular/core';
 
 describe('RecognizedLiveTextComponent', () => {
   let component: RecognizedLiveTextComponent;
@@ -12,9 +13,9 @@ describe('RecognizedLiveTextComponent', () => {
       declarations: [RecognizedLiveTextComponent],
       providers: TestingModuleProviders
     }).compileComponents();
-
     fixture = TestBed.createComponent(RecognizedLiveTextComponent);
     component = fixture.componentInstance;
+    component.text = signal('');
     fixture.detectChanges();
   });
 
