@@ -1,5 +1,5 @@
 <div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
-  <div class="flex flex-row gap-3 items-center p-3" *ngIf="acceptedPeerConnections()">
+  <div class="flex flex-row gap-3 items-center p-3" *ngIf="acceptedPeerConnections(); else acceptPermissions">
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
       <app-peer-server-status-chip></app-peer-server-status-chip>
@@ -19,6 +19,12 @@
       </div>
     </ng-container>
   </div>
+
+  <ng-template #acceptPermissions>
+    <div class="flex flex-row self-stretch gap-3 items-center justify-center p-3 text-warning text-lg">
+      <span translate>STREAM.permissionRequired</span>
+    </div>
+  </ng-template>
   
   <app-broadcast-room class="flex basis-full" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
 

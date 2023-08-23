@@ -2,14 +2,15 @@
 </button>
 <dialog #modal class="modal">
   <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
-    <div class="flex flex-row gap-1 items-center">
-      <div class="badge badge-warning h-8">
+    <div class="flex flex-row gap-3 items-center bg-warning rounded-lg mb-3">
+      <div class="badge badge-warning h-10 w-10">
         <ng-icon name="heroExclamationTriangle" class="text-error text-3xl"></ng-icon>
       </div>
       <h1 class="font-bold text-2xl" translate>MODAL.accessModalTitle</h1>
     </div>
-    <p class="text-base mt-1" translate>MODAL.accessP1</p>
-    <p class="text-base mt-1" translate>MODAL.accessP2</p>
+    <p class="text-base mt-2" translate>MODAL.accessP1</p>
+    <p class="text-base mt-2" translate>MODAL.accessP2</p>
+    <p class="text-base mt-2" translate>MODAL.accessP3</p>
     <div class="modal-action">
       <button class="btn" type="button" (click)="decline()" translate>BUTTONS.decline</button>
       <button class="btn" type="button" (click)="accept()" translate>BUTTONS.confirm</button>
