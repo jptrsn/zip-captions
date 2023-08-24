@@ -1,6 +1,7 @@
 import { PeerServer } from 'peer';
-import { Server } from 'socket.io';
-import { generateRoomId, generateUserId } from './utils';
+import { Server, Socket } from 'socket.io';
+import { generateRoomId, generateUserId } from './libs/utils';
+import { CacheService } from './libs/cache';
 
 
 const socketPort = process.env.SOCKET_PORT ? Number(process.env.SOCKET_PORT) : 3000;
@@ -8,11 +9,12 @@ const peerPort = process.env.PEER_PORT ? Number(process.env.PEER_PORT) : 9000;
 const allowedOrigin = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : 'http://localhost:4200';
 const ioServer = new Server(socketPort, { cors: { origin: allowedOrigin}, transports: ['polling', 'websocket']});
 const peerServer = PeerServer({ port: peerPort });
+const cache = new CacheService();
 
-ioServer.on('connection', (socket) => {
+ioServer.on('connection', (socket: Socket) => {
   console.info(`client connected: ${socket.id}`);
 
-  socket.on('join', (data?: { room: string, myBroadcast?: boolean }) => {    
+  socket.on('join', (data?: { room: string, myBroadcast?: boolean }) => {
     const room: string = data?.room || generateRoomId();
     console.info(`socket id ${socket['userId']} joined room: ${room} as ${data?.myBroadcast ? 'host' : 'listener'}`);
     socket['roomId'] = room;

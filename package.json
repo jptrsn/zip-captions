@@ -39,6 +39,7 @@
     "@types/dom-speech-recognition": "^0.0.1",
     "angular-animations": "^0.11.0",
     "axios": "^1.0.0",
+    "cache-manager": "^5.2.3",
     "express": "~4.18.1",
     "ngx-clipboard": "^16.0.0",
     "ngx-socket-io": "^4.5.1",

@@ -78,7 +78,6 @@ export class PeerEffects {
       ofType(PeerActions.endBroadcast),
       switchMap(() => this.peerService.endBroadcast()),
       map(() => PeerActions.endBroadcastSuccess()),
-      // switchMap(() => [RecognitionActions.disconnectRecognition({id: 'broadcast'}), PeerActions.endBroadcastSuccess()]),
       catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
     )
   )
