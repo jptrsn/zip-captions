@@ -20,7 +20,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public liveText: WritableSignal<string> = signal('');
   public textOutput: WritableSignal<string[]> = signal([]);
   public hasLiveResults: Signal<boolean>;
-  public error: Signal<string | undefined>;
+  public recognitionError: Signal<string | undefined>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
@@ -31,18 +31,15 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     const hostOnline = toSignal(this.store.select(selectHostOnline));
     this.connected = computed(() => (peerConnected() && hostOnline()));
 
-    const peerError = toSignal(this.store.select(selectPeerError));
-    const recognitionError = toSignal(this.store.select(recognitionErrorSelector));
-    this.error = computed(() => peerError() || recognitionError());
+    this.recognitionError = toSignal(this.store.select(recognitionErrorSelector));
+    
 
     this.hasLiveResults = computed(() => {
-      if (this.connected()) {
-        if (this.liveText() == '' && this.textOutput().length === 0) {
-          return false;
-        }
-        return true;
+      if (this.liveText() == '' && this.textOutput().length === 0) {
+        return false;
       }
-      return false;
+      
+      return true;
     });
   }
 

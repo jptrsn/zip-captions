@@ -16,7 +16,7 @@ export class PeerEffects {
     this.actions$.pipe(
       ofType(PeerActions.connectSocketServer),
       switchMap(() => this.peerService.connectSocket()),
-      switchMap((id) => [PeerActions.socketServerUserId({id}), PeerActions.connectPeerServer()]),
+      switchMap((id) => [PeerActions.socketServerUserId({id})]),
       catchError((err: any) => of(PeerActions.connectSocketServerFailure({error: err.message})))
     )
   )

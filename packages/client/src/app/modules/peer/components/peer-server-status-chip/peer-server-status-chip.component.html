@@ -1,6 +1,6 @@
 <button 
   class="badge h-auto" 
-  [ngClass]="{'badge-success': connected(), 'badge-error': serverError()}"
+  [ngClass]="{'badge-neutral': !connected(), 'badge-success': connected(), 'badge-error': serverError()}"
   (click)="reconnect()"
   >
   {{'STREAM.peerStatus' | translate}}: 

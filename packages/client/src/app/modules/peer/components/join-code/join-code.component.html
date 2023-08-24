@@ -3,7 +3,7 @@
   *ngIf="joinCode"
   ngxClipboard
   [cbContent]="joinCode"
-  [attr.data-tip]="'STREAM.copyJoinCode' | translate"
+  [attr.data-tip]="'STREAM.copyJoinCodeTip' | translate"
   (click)="showCopiedToClipboard()">
   {{'STREAM.joinCode' | translate}}: {{joinCode.toUpperCase()}}
 </div>

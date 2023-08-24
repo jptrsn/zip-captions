@@ -1,9 +1,10 @@
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, Signal, ViewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { PeerActions } from 'packages/client/src/app/actions/peer.actions';
-import { AppState } from 'packages/client/src/app/models/app.model';
-import { selectIsViewing } from 'packages/client/src/app/selectors/peer.selectors';
+import { PeerActions } from '../../../../actions/peer.actions';
+import { AppState } from '../../../../models/app.model';
+import { selectHostOnline, selectIsViewing } from '../../../../selectors/peer.selectors';
 import { filter, take } from 'rxjs';
 
 @Component({
@@ -21,13 +22,20 @@ export class LeaveSessionComponent {
   }
   @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  private confirmationRequired: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private router: Router,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute) {
+    this.confirmationRequired = toSignal(this.store.select(selectHostOnline))
+  }
 
   confirmLeaveBroadcast(): void {
-    this._openModal();
+    if (this.confirmationRequired()) {
+      this._openModal();
+    } else {
+      this.leaveBroadcast();
+    }
   }
 
   leaveBroadcast(): void {
@@ -39,7 +47,7 @@ export class LeaveSessionComponent {
       this.dialogClosed.next(true);
     })
     this._closeModal();
-    this.router.navigate(['..'], { queryParams: { joinCode: null}, queryParamsHandling: 'merge', relativeTo: this.route})
+    this.router.navigate(['..'], { queryParams: { joinCode: null}, queryParamsHandling: 'merge', relativeTo: this.route});
   }
 
   hideModal(): void {

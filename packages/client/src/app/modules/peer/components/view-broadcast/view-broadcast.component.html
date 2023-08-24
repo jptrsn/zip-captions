@@ -1,21 +1,30 @@
 <div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
-  <ng-container *ngIf="joinCode() as code; else setJoinCode">
-    <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
-      <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
-      <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
-      <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
-    </div>
-
-    <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
-
-    <div class="flex self-center justify-self-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
-      <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
-      <ng-template #timedOut>
-        <span translate>STREAM.hostOffline</span>
-      </ng-template>
-    </div>
-    
+  <ng-container *ngIf="connected(); else connectingToServer">
+    <ng-container *ngIf="joinCode() as code; else setJoinCode">
+      <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
+        <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
+        <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
+        <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
+      </div>
+  
+      <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
+  
+      <div class="flex flex-col basis-full self-center justify-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
+        <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
+        <ng-template #timedOut>
+          <span translate>STREAM.hostOffline</span>
+        </ng-template>
+      </div>
+      
+    </ng-container>
   </ng-container>
+  <ng-template #connectingToServer>
+    <div class="flex flex-col basis-full justify-center items-center gap-12">
+      <div class="text-2xl text-error-content w-1/2 text-center" translate>STREAM.connectionPendingHint</div>
+      <app-socket-server-status-chip></app-socket-server-status-chip>
+      <app-peer-server-status-chip></app-peer-server-status-chip>
+    </div>
+  </ng-template>
   <ng-template #setJoinCode>
     <div class="flex basis-full justify-center">
       <form class="flex flex-col gap-12 p-3 sm:p-12 max-w-2xl" [formGroup]="formGroup" (submit)="rejoin()">

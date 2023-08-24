@@ -27,6 +27,7 @@ RUN npm run build:signal
 
 FROM nginx:alpine as staging_client
 COPY --from=staging_build_client /usr/src/app/docs /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 FROM staging_build_server as staging_server
@@ -44,6 +45,7 @@ RUN npm run build:client
 
 FROM nginx:alpine as prod_client
 COPY --from=staging_build_client /usr/src/app/docs /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 FROM dev as prod_build_server
