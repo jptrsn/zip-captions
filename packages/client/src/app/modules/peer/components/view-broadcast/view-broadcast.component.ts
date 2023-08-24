@@ -77,7 +77,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   }
 
   ngOnDestroy(): void {
-    if (this.isViewing()) {
+    if (this.isViewing() || this.broadcastEndedTimestamp()) {
       this.store.dispatch(PeerActions.leaveBroadcastRoom());
     }
     this.store.dispatch(AppActions.showFooter());

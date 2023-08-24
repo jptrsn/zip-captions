@@ -3,7 +3,7 @@
     <ng-container *ngIf="joinCode() as code; else setJoinCode">
       <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
         <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
-        <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline() && !broadcastEndedTimestamp()" translate>HINTS.hostConnecting</div>
+        <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
         <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
       </div>
 
