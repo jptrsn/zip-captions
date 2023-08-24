@@ -6,14 +6,21 @@
         <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline() && !broadcastEndedTimestamp()" translate>HINTS.hostConnecting</div>
         <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
       </div>
+
+      <div class="flex flex-row items-center justify-end p-3" *ngIf="broadcastEndedTimestamp()">
+        <button class="btn btn-primary" [routerLink]="['..']" translate>BUTTONS.goBack</button>
+      </div>
   
       <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
 
       <div class="flex flex-col basis-full self-center justify-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
         <ng-container *ngIf="broadcastEndedTimestamp() as ts; else hostMissing">
-          <div>
+          <div *ngIf="ts > 1; else noRoomFound">
             {{ 'STREAM.broadcastEnded' | translate }} {{ ts | timeago }}.
           </div>
+          <ng-template #noRoomFound>
+            <div translate>STREAM.noSessionForRoom</div>
+          </ng-template>
         </ng-container>
         <ng-template #hostMissing>
           <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">

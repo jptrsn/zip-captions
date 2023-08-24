@@ -10,6 +10,7 @@ const allowedOrigin = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.
 const ioServer = new Server(socketPort, { cors: { origin: allowedOrigin}, transports: ['polling', 'websocket']});
 const peerServer = PeerServer({ port: peerPort });
 const socketRoomIdMap: Map<string, string> = new Map<string, string>();
+const roomsThatExist: Set<string> = new Set<string>();
 const cache = new CacheService();
 
 ioServer.on('connection', (socket: Socket) => {
@@ -22,9 +23,15 @@ ioServer.on('connection', (socket: Socket) => {
       if (expiredAt) {
         console.info(`room ${data.room} expired at ${new Date(expiredAt).toISOString()}`)
         socket.send({message: 'broadcast expired', expiredAt});
+        return;
+      } else if (!roomsThatExist.has(data.room)) {
+        console.log('room does not exist')
+        socket.send({message: 'broadcast expired', expiredAt: 1});
+        return;
       }
     }
     const room: string = data?.room || generateRoomId();
+    roomsThatExist.add(room);
     console.info(`socket id ${socket['userId']} joined room: ${room} as ${data?.myBroadcast ? 'host' : 'listener'}`);
     socket.join(room);
     if (data?.myBroadcast) {
@@ -76,6 +83,7 @@ ioServer.on('connection', (socket: Socket) => {
       ioServer.in(data.room).emit('endBroadcast');
       await cache.set(`${data.room}_broadcast_ended`, expiredAt);
       socketRoomIdMap.delete(socket.id);
+      roomsThatExist.delete(isMyRoom);
       socket.broadcast.to(data.room).emit('message', {message: 'broadcast ended', expiredAt});
     } else {
       console.warn(`endBroadcast from non-room-owner socket ${socket.id}`)
