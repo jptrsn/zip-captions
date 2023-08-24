@@ -10,8 +10,13 @@
       <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
   
       <div class="flex flex-col basis-full self-center justify-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
-        <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
-        <ng-template #timedOut>
+        <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">
+          <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
+          <ng-template #timedOut>
+            <span translate>STREAM.noSessionForRoom</span>
+          </ng-template>
+        </ng-container>
+        <ng-template #hostDisconnected>
           <span translate>STREAM.hostOffline</span>
         </ng-template>
       </div>

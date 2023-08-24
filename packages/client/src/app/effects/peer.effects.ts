@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { PeerService } from '../modules/peer/services/peer.service';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { PeerActions } from '../actions/peer.actions';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { RecognitionActions } from '../models/recognition.model';
-
+import { PeerService } from '../modules/peer/services/peer.service';
 
 
 @Injectable()
@@ -67,7 +65,7 @@ export class PeerEffects {
   leaveRoom$ = createEffect(() => 
     this.actions$.pipe(
       ofType(PeerActions.leaveBroadcastRoom),
-      switchMap(() => this.peerService.leaveSession()),
+      map(() => this.peerService.leaveSession()),
       map(() => PeerActions.leaveBroadcastRoomSuccess()),
       catchError((error: any) => of(PeerActions.leaveBroadcastRoomFailure({error: error.message})))
     )

@@ -9,17 +9,25 @@ const peerPort = process.env.PEER_PORT ? Number(process.env.PEER_PORT) : 9000;
 const allowedOrigin = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : 'http://localhost:4200';
 const ioServer = new Server(socketPort, { cors: { origin: allowedOrigin}, transports: ['polling', 'websocket']});
 const peerServer = PeerServer({ port: peerPort });
+const socketRoomIdMap: Map<string, string> = new Map<string, string>();
 const cache = new CacheService();
 
 ioServer.on('connection', (socket: Socket) => {
   console.info(`client connected: ${socket.id}`);
 
-  socket.on('join', (data?: { room: string, myBroadcast?: boolean }) => {
+  socket.on('join', async (data?: { room: string, myBroadcast?: boolean }) => {
+    if (data?.room) {
+      // Check if broadcast ended
+      const expiredAt: number | undefined = await cache.get<number>(`${data.room}_broadcast_ended`);
+      if (expiredAt) {
+        console.info(`room ${data.room} expired at ${new Date(expiredAt).toISOString()}`)
+      }
+    }
     const room: string = data?.room || generateRoomId();
     console.info(`socket id ${socket['userId']} joined room: ${room} as ${data?.myBroadcast ? 'host' : 'listener'}`);
-    socket['roomId'] = room;
     socket.join(room);
     if (data?.myBroadcast) {
+      socketRoomIdMap.set(socket.id, room)
       // Reconnect to all viewers if this is the broadcast host
       const clientIds = Array.from(ioServer.sockets.adapter.rooms.get(room));
       const clients: string[] = clientIds.filter((id) => id !== socket.id).map((id) => ioServer.sockets.sockets.get(id)).map((socket) => socket['userId'])
@@ -27,9 +35,9 @@ ioServer.on('connection', (socket: Socket) => {
         socket.send({message: 'connect clients', clients });
       }
     } else {
-      socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room, isHost: data?.myBroadcast });
+      socket.broadcast.to(room).emit('message', {user: socket['userId'], message: 'user joined room', room, isHost: false });
     }
-    socket.send({user: socket['userId'], message: 'room joined', room })
+    socket.send({user: socket['userId'], message: 'room joined', room });
   });
 
   socket.on('setId', (data?: {id?: string}) => {
@@ -52,16 +60,23 @@ ioServer.on('connection', (socket: Socket) => {
     }
   })
   
-  socket.on('disconnect', () => {
+  socket.on('disconnect', async () => {
     if (socket['roomId']) {
       socket.broadcast.to(socket['roomId']).emit('message', {user: socket['userId'], message: 'user left room', room: socket['roomId']})
     }
     console.info(`client disconnected: ${socket['userId']}`);
   })
   
-  socket.on('endBroadcast', (data: {room: string}) => {
-    console.log('endBroadcast', data.room)
-    ioServer.in(data.room).emit('endBroadcast');
+  socket.on('endBroadcast', async (data: {room: string}) => {
+    console.log('endBroadcast', data.room);
+    const isMyRoom = socketRoomIdMap.get(socket.id);
+    if (isMyRoom) {
+      ioServer.in(data.room).emit('endBroadcast');
+      await cache.set(`${data.room}_broadcast_ended`, Date.now());
+      socketRoomIdMap.delete(socket.id);
+    } else {
+      console.warn(`endBroadcast from non-room-owner socket ${socket.id}`)
+    }
   })
 
 });

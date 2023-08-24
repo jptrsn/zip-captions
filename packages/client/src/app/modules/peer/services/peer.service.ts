@@ -298,7 +298,7 @@ export class PeerService {
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
-      // console.log('endbroadcast response recieved');
+      console.log('endbroadcast response recieved');
       sub.next();
     })
     this.socket.emit('endBroadcast', { room });
@@ -306,16 +306,15 @@ export class PeerService {
     return sub;
   }
 
-  leaveSession(): Observable<void> {
-    // console.log('leaveSession', this.peerMap.size);
+  leaveSession(): void {
+    console.log('leaveSession', this.peerMap.size);
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
-    const sub = new ReplaySubject<void>();
-    this.peerMap.forEach((connection: DataConnection, id: string) => {
+    this.peerMap.forEach((connection: DataConnection) => {
       // console.log('peer', id);
       connection.close();
     });
-    return sub;
+    this.peerMap.clear();
   }
 
   private _reconnectPeerServer(tryNumber?: number): void {
@@ -372,7 +371,6 @@ export class PeerService {
     connection.on('close', () => {
       // console.log('connection closed');
       if (!this.myBroadcast) {
-        this.store.dispatch(PeerActions.clearJoinCode());
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       }
       connection.removeAllListeners();
