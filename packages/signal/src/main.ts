@@ -21,6 +21,7 @@ ioServer.on('connection', (socket: Socket) => {
       const expiredAt: number | undefined = await cache.get<number>(`${data.room}_broadcast_ended`);
       if (expiredAt) {
         console.info(`room ${data.room} expired at ${new Date(expiredAt).toISOString()}`)
+        socket.send({message: 'broadcast expired', expiredAt});
       }
     }
     const room: string = data?.room || generateRoomId();
@@ -71,9 +72,11 @@ ioServer.on('connection', (socket: Socket) => {
     console.log('endBroadcast', data.room);
     const isMyRoom = socketRoomIdMap.get(socket.id);
     if (isMyRoom) {
+      const expiredAt: number = Date.now();
       ioServer.in(data.room).emit('endBroadcast');
-      await cache.set(`${data.room}_broadcast_ended`, Date.now());
+      await cache.set(`${data.room}_broadcast_ended`, expiredAt);
       socketRoomIdMap.delete(socket.id);
+      socket.broadcast.to(data.room).emit('message', {message: 'broadcast ended', expiredAt});
     } else {
       console.warn(`endBroadcast from non-room-owner socket ${socket.id}`)
     }

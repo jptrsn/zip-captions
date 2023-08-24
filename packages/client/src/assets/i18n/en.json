@@ -277,6 +277,7 @@
     "joinCodeRequired": "Please enter the correct join code to view the session",
     "noSessionForRoom": "It looks like there is no session being hosted for this ID.",
     "hostOffline": "It looks like the session host is not currently connected.",
+    "broadcastEnded": "It looks like this broadcast ended",
     "leaveSession": "Leave session",
     "permissionRequired": "You must accept the risks of connecting to peers before you can broadcast or view.",
     "copyIdTip": "Copy session ID",

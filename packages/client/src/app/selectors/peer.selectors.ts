@@ -58,3 +58,8 @@ export const selectHostOnline = createSelector(
   selectPeerState,
   (state) => state.hostOnline
 )
+
+export const selectBroadcastEndedTimestamp = createSelector(
+  selectPeerState,
+  (state) => state.broadcastEndedTimestamp
+)

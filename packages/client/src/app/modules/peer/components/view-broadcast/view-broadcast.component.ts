@@ -7,7 +7,7 @@ import { Observable, Subject, filter, interval, map, take, takeWhile, tap } from
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppActions, AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectIsViewing, selectJoinCode, selectPeerError, selectPeerServerConnected, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
+import { selectBroadcastEndedTimestamp, selectHostOnline, selectIsViewing, selectJoinCode, selectPeerError, selectPeerServerConnected, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 
 @Component({
   selector: 'app-view-broadcast',
@@ -25,6 +25,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
   public dialogClosedSubject: Subject<boolean> = new Subject<boolean>();
   public connected: Signal<boolean | undefined>;
   public serverError: Signal<string | undefined>;
+  public broadcastEndedTimestamp: Signal<number | undefined>;
 
   public readonly HOST_ONLINE_TIMEOUT_SECONDS = 30;
 
@@ -39,6 +40,7 @@ export class ViewBroadcastComponent implements ComponentCanDeactivate, OnDestroy
     this.isViewing = toSignal(this.store.select(selectIsViewing));
     this.hostOnline = toSignal(this.store.select(selectHostOnline));
     this.serverError = toSignal(this.store.select(selectPeerError));
+    this.broadcastEndedTimestamp = toSignal(this.store.select(selectBroadcastEndedTimestamp));
     
     const socketConnected: Signal<boolean | undefined> = toSignal(this.store.select(selectSocketServerConnected));
     const peerConnected: Signal<boolean | undefined> = toSignal(this.store.select(selectPeerServerConnected));

@@ -176,6 +176,13 @@ export class PeerService {
           }
           break;
         }
+        case 'broadcast expired':
+        case 'broadcast ended': {
+          if (data.expiredAt) {
+            this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt}))
+          }
+          break;
+        }
         default: {
           console.warn('UNHANDLED MESSAGE!!!', data);
           this.store.dispatch(PeerActions.socketServerMessageReceived(data));
@@ -300,7 +307,7 @@ export class PeerService {
     this.socket.once('endBroadcast', () => {
       console.log('endbroadcast response recieved');
       sub.next();
-    })
+    });
     this.socket.emit('endBroadcast', { room });
     this._disconnectAllPeers();
     return sub;
@@ -314,6 +321,8 @@ export class PeerService {
       // console.log('peer', id);
       connection.close();
     });
+    this.textOutput$.next([]);
+    this.liveText$.next('')
     this.peerMap.clear();
   }
 
