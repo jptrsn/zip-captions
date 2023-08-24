@@ -29,6 +29,7 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { peerReducers } from './reducers/peer.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
+import { TimeagoModule } from "ngx-timeago";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -82,6 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
+    TimeagoModule.forRoot()
   ],
   bootstrap: [AppComponent],
 })

@@ -23,6 +23,7 @@ import { RoomIdComponent } from './components/room-id/room-id.component';
 import { SocketServerStatusChipComponent } from './components/socket-server-status-chip/socket-server-status-chip.component';
 import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
 import { PeerRoutingModule } from './peer-routing.module';
+import { TimeagoModule } from 'ngx-timeago';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { PeerRoutingModule } from './peer-routing.module';
     EffectsModule.forFeature([PeerEffects]),
     MediaModule,
     ClipboardModule,
+    TimeagoModule,
   ],
 })
 export class PeerModule {}
