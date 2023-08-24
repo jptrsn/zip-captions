@@ -92,13 +92,13 @@ export class PeerService {
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
       console.log('socket connected');
-      this.socket.emit('setId', { id: this.myId })
+      this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
         sub.next(this.myId);
-      }
-      if (!this.peerServerConnected()) {
-        this.store.dispatch(PeerActions.connectPeerServer());
+        if (!this.peerServerConnected()) {
+          this.store.dispatch(PeerActions.connectPeerServer());
+        }
       }
     });
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
@@ -120,7 +120,7 @@ export class PeerService {
           break;
         }
         case 'set user id': {
-          // console.log('set user id', data.id, this.myId)
+          console.log('set user id', data.id, this.myId)
           if (this.myId) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
@@ -131,6 +131,9 @@ export class PeerService {
             // console.log('SAVING USER ID', data.id)
             this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             sub.next(data.id);
+          }
+          if (!this.peerServerConnected() && this.myId) {
+            this.store.dispatch(PeerActions.connectPeerServer());
           }
           break;
         }
