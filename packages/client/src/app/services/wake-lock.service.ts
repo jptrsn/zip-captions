@@ -24,7 +24,6 @@ export class WakeLockService {
         }),
         catchError((err) => of(false))
       )
-      
     }
     return of(false);
   }

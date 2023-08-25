@@ -239,7 +239,7 @@ export class PeerService {
     if (!this.myId) {
       throw new Error('Must obtain ID from socket server');
     }
-    const sub: Subject<string> = new Subject<string>();
+    const sub: ReplaySubject<string> = new ReplaySubject<string>(1);
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {

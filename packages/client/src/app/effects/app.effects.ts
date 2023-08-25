@@ -78,7 +78,7 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(AppActions.applyWakeLock),
       switchMap(() => this.wakelockService.requestLock()),
-      map(() => AppActions.applyWakeLockSuccess()),
+      map((isLocked: boolean) => AppActions.applyWakeLockSuccess({ isLocked })),
       catchError((err) => of(AppActions.applyWakeLockFailure({error: err.message})))
     )
   )

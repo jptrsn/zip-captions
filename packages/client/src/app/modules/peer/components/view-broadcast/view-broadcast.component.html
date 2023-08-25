@@ -13,7 +13,7 @@
   
       <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
 
-      <div class="flex flex-col basis-full self-center justify-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
+      <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="!hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
         <ng-container *ngIf="broadcastEndedTimestamp() as ts; else hostMissing">
           <div *ngIf="ts > 1; else noRoomFound">
             {{ 'STREAM.broadcastEnded' | translate }} {{ ts | timeago }}.
