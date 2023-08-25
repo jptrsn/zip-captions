@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, take, time
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
+import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { AppState } from '../../../models/app.model';
 
 @Injectable({
@@ -37,6 +37,7 @@ export class PeerService {
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
   private peerServerConnected: Signal<boolean | undefined>;
+  private peerCount: Signal<number | undefined>;
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
@@ -73,6 +74,7 @@ export class PeerService {
     }
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
+    this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
 
     const cached = this.cache.load('userId')
     if (cached?.id) {
@@ -351,12 +353,18 @@ export class PeerService {
     const connection = this.peer!.connect(peerId);
     this._handlePeerData(connection);
     this.peerMap.set(peerId, connection);
-    this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+    this._updateConnectedPeerCount();
     connection.on('close', () => {
       // console.log('connection closed', peerId)
       this.peerMap.delete(peerId);
-      this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+      this._updateConnectedPeerCount();
     })
+  }
+
+  private _updateConnectedPeerCount(): void {
+    if (this.peerMap.size !== this.peerCount()) {
+      this.store.dispatch(PeerActions.updateConnectedPeerCount({count: this.peerMap.size}));
+    }
   }
 
   private _disconnectAllPeers(): void {
@@ -364,6 +372,7 @@ export class PeerService {
       conn.close();
     }
     this.peerMap.clear();
+    this._updateConnectedPeerCount();
   }
 
   private _generateJoinCode(): string {
