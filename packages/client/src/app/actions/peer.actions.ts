@@ -3,7 +3,7 @@ import { createAction, props } from "@ngrx/store";
 export const PeerActions = {
   connectSocketServer: createAction('[Peer] Connect Socket Server'),
   socketServerConnected: createAction('[Peer] Socket Server Connected'),
-  socketServerUserId: createAction('[Peer] Socket Server User ID Assigned', props<{id: string}>()),
+  socketServerUserIdAssigned: createAction('[Peer] Socket Server User ID Assigned', props<{id: string}>()),
   connectSocketServerFailure: createAction('[Peer] Connect Socket Server Error', props<{error: string}>()),
   
   disconnectSocketServer: createAction('[Peer] Disconnect Socket Server'),

@@ -24,6 +24,7 @@ import { SocketServerStatusChipComponent } from './components/socket-server-stat
 import { ViewBroadcastComponent } from './components/view-broadcast/view-broadcast.component';
 import { PeerRoutingModule } from './peer-routing.module';
 import { TimeagoModule } from 'ngx-timeago';
+import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { TimeagoModule } from 'ngx-timeago';
     MediaModule,
     ClipboardModule,
     TimeagoModule,
+    SocketDebugComponent,
   ],
 })
 export class PeerModule {}

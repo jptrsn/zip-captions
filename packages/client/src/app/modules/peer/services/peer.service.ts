@@ -2,7 +2,7 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -241,7 +241,12 @@ export class PeerService {
     if (!this.myId) {
       throw new Error('Must obtain ID from socket server');
     }
-    const sub: ReplaySubject<string> = new ReplaySubject<string>(1);
+    if (this.peer?.id === this.myId && !this.peer.disconnected) {
+      console.log('peer server connection already exists and appears to be connected!!!');
+      return of(this.myId);
+
+    }
+    const sub: ReplaySubject<string> = new ReplaySubject<string>();
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
