@@ -5,6 +5,8 @@ import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../../../models/app.model';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 import { ActivatedRoute } from '@angular/router';
+import { SocketServerStatusChipComponent } from '../socket-server-status-chip/socket-server-status-chip.component';
+import { PeerServerStatusChipComponent } from '../peer-server-status-chip/peer-server-status-chip.component';
 
 describe('ViewBroadcastComponent', () => {
   let component: ViewBroadcastComponent;
@@ -14,7 +16,11 @@ describe('ViewBroadcastComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: TestingModuleImports,
-      declarations: [ViewBroadcastComponent],
+      declarations: [
+        ViewBroadcastComponent,
+        SocketServerStatusChipComponent,
+        PeerServerStatusChipComponent,
+      ],
       providers: [
         ...TestingModuleProviders,
         {provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'test-room'}, queryParams: { 'joinCode': 'ABCD'}}}}
