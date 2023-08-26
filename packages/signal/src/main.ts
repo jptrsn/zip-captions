@@ -24,7 +24,7 @@ ioServer.on('connection', (socket: Socket) => {
         console.info(`room ${data.room} expired at ${new Date(expiredAt).toISOString()}`)
         socket.send({message: 'broadcast expired', expiredAt});
         return;
-      } else if (!roomsThatExist.has(data.room)) {
+      } else if (!roomsThatExist.has(data.room) && !data.myBroadcast) {
         console.log('room does not exist')
         socket.send({message: 'broadcast expired', expiredAt: 1});
         return;

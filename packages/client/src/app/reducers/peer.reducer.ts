@@ -27,7 +27,7 @@ export const defaultPeerState: PeerState = {
 export const peerReducers = createReducer(
   defaultPeerState,
   on(PeerActions.socketServerConnected, (state: PeerState) => ({...state, socketConnected: true, serverOffline: false, error: undefined})),
-  on(PeerActions.socketServerUserId, (state: PeerState, action: { id: string}) => ({...state, id: action.id})),
+  on(PeerActions.socketServerUserIdAssigned, (state: PeerState, action: { id: string}) => ({...state, id: action.id})),
   on(PeerActions.connectSocketServerFailure, (state: PeerState, action: {error: string}) => ({...state, socketConnected: false, serverOffline: true, error: action.error})),
   on(PeerActions.socketServerError, (state: PeerState, action: { error: string}) => ({...state, socketConnected: false, error: action.error })),
   on(PeerActions.socketServerDisconnected, (state: PeerState) => ({...state, socketConnected: false, id: undefined})),

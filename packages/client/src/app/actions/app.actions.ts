@@ -15,7 +15,7 @@ export const setPeerConnectionsAccepted = createAction('[App] Set Peer Connectio
 export const setPeerConnectionsComplete = createAction('[App] Set Peer Connections Complete');
 
 export const applyWakeLock = createAction('[App] Apply WakeLock');
-export const applyWakeLockSuccess = createAction('[App] Apply WakeLock Success');
+export const applyWakeLockSuccess = createAction('[App] Apply WakeLock Success', props<{isLocked: boolean}>());
 export const applyWakeLockFailure = createAction('[App] Apply WakeLock Failure', props<{error: string}>());
 
 export const releaseWakeLock = createAction('[App] Release WakeLock');

@@ -2,12 +2,12 @@ import { Component, HostListener, OnInit, Signal, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable, map } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
-import { AppState } from '../../../../models/app.model';
-import { peerConnectionsAcceptedSelector } from '../../../../selectors/app.selector';
+import { AppPlatform, AppState } from '../../../../models/app.model';
+import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 
 @Component({
@@ -25,6 +25,7 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
   public roomId: Signal<string | undefined>;
   public joinCode: Signal<string | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
+  public disableBroadcast: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -43,6 +44,7 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
+    this.disableBroadcast = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.mobile)));
     this._injectDashIfRequired();
     effect(() => {
       if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
