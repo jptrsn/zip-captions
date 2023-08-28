@@ -249,7 +249,7 @@
   "WELCOME": {
     "p1": "Zugänglichkeit sollte kostenlos sein.",
     "p2": "Zip Captions bietet eine einfach zu bedienende Live-Untertitelung, die direkt in Ihrem Browser läuft. Wir erfassen, speichern oder teilen keine Ihrer Daten, und es gibt keine versteckten Gebühren und keine zu unterzeichnenden Vereinbarungen.",
-    "p3": "Klicken Sie auf die Schaltfläche oben, um loszulegen.",
+    "p3": "Klicken sie oben auf das mikrofon, um loszulegen.",
     "warning": "Um optimale Ergebnisse zu erzielen, empfehlen wir die Verwendung von Chrome oder Safari auf dem Desktop."
   },
   "SETTINGS": {
@@ -258,6 +258,41 @@
     "p2": "Von unten nach oben blättern.",
     "p3": "Jedes neue Ergebnis erscheint unterhalb des vorherigen.",
     "p4": "Live-Ergebnisse sehen so aus"
+  },
+  "STREAM": {
+    "serverStatus": "Broadcast-Server",
+    "peerStatus": "Peer-Verbindungen",
+    "sessionId": "Sitzungs-ID",
+    "joinCode": "Beitritts-Code",
+    "online": "Online",
+    "offline": "Offline",
+    "connecting": "Verbinden...",
+    "connectedPeers": "Betrachter",
+    "connected": "Verbunden",
+    "createBroadcast": "Sendung starten",
+    "endBroadcast": "Sendung beenden",
+    "broadcastExplanantion": "Erstellen Sie eine Sitzung, in der Benutzer eine Verbindung herstellen und Untertitel anzeigen können, indem sie mit ihrem eigenen Gerät unter Verwendung der Sitzungs-ID und des Beitrittscodes beitreten.",
+    "joinSession": "An einer Sitzung teilnehmen",
+    "joinSessionExplanation": "Anzeigen von Untertiteln einer bestehenden Sendung",
+    "joinCodeRequired": "Bitte geben Sie den richtigen Beitrittscode ein, um die Sitzung anzuzeigen",
+    "noSessionForRoom": "Es sieht so aus, als ob für diese ID keine Sitzung gehostet wird.",
+    "hostOffline": "Es sieht so aus, als ob der Sitzungshost derzeit nicht verbunden ist.",
+    "broadcastEnded": "Es sieht so aus, als ob diese Sendung beendet wurde.",
+    "leaveSession": "Sitzung verlassen",
+    "permissionRequired": "Sie müssen die Risiken einer Verbindung zu Peers akzeptieren, bevor Sie senden oder anzeigen können.",
+    "copyIdTip": "Sitzungs-ID kopieren",
+    "sessionIdCopied": "Kopieren Sie die Sitzungs-ID in Ihre Zwischenablage",
+    "copyJoinCodeTip": "Verbindungscode kopieren",
+    "joinCodeCopied": "Kopiert den Beitrittscode in die Zwischenablage",
+    "connectionPendingHint": "Bleiben Sie dran, während wir eine Verbindung zum Signalisierungsserver herstellen, damit Sie sich mit anderen Geräten verbinden können..."
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "Dadurch wird die aktuelle Übertragung beendet und die Verbindung zu allen Teilnehmern getrennt.",
+    "confirmLeaveSession": "Sind Sie sicher, dass Sie die Verbindung zu dieser Sitzung trennen möchten? Sie müssen die ID und den Verbindungscode erneut eingeben, um die Verbindung wiederherzustellen.",
+    "accessModalTitle": "Warnung zum Datenschutz",
+    "accessP1": "Das Streamen oder Betrachten eines Streams kann dazu führen, dass private Informationen über Ihr Gerät anderen im Internet zugänglich gemacht werden.",
+    "accessP2": "ZipCaptions anonymisiert Ihre Informationen so weit wie möglich, aber bestimmte unveränderliche Details (z. B. die IP-Adresse) können offengelegt werden, wenn Sie eine Verbindung zu Online-Kollegen herstellen.",
+    "accessP3": "Möchten Sie diese Funktion aktivieren?"
   },
   "ROUTES": {
     "home": "Hauptsächlich",
@@ -271,7 +306,8 @@
     "helpdesk": "Hilfe-Schreibtisch",
     "github": "GitHub Issue Tracker",
     "discord": "Diskord-Server",
-    "donate": "Spende"
+    "donate": "Spende",
+    "stream": "Sendung"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -284,7 +320,12 @@
     "rejected": "Abgelehnt",
     "viewPolicy": "Ansichtsrichtlinie",
     "saveAndClose": "Speichern und schließen",
-    "cancel": "Stornieren"
+    "cancel": "Stornieren",
+    "confirm": "Ja, ich bin mir sicher",
+    "decline": "Nein",
+    "connect": "Verbinden",
+    "disconnect": "Trennen Sie die Verbindung",
+    "goBack": "Zurückgehen"
   },
   "LABELS": {
     "menu": "Menü",
@@ -295,10 +336,18 @@
     "stop": "Stop",
     "listen": "Listen",
     "lang": "Sprache",
-    "theme": "Thema"
+    "theme": "Thema",
+    "wakelock": "Bildschirm aufwecken",
+    "wakelockOn": "Verhindern, dass der Bildschirm bei aktiven Untertiteln in den Ruhezustand versetzt wird",
+    "wakelockOff": "Zip Captions respektiert Ihre Systemeinstellungen für den Ruhezustand.",
+    "rememberSetting": "Erinnern Sie sich an meine Antwort zu diesem Gerät."
   },
   "HINTS": {
-    "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint."
+    "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
+    "streamConnected": "Text wird erscheinen, sobald wir etwas hören...",
+    "verifyingConnection": "Verifizierung des Beitrittscodes...",
+    "hostConnecting": "Warten auf Sitzungsleiter...",
+    "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen."
   },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
