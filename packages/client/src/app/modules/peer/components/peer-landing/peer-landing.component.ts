@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Signal, effect } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, Signal, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,13 +9,14 @@ import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-
 import { AppPlatform, AppState } from '../../../../models/app.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
+import { RecognitionActions } from '../../../../models/recognition.model';
 
 @Component({
   selector: 'app-peer-landing',
   templateUrl: './peer-landing.component.html',
   styleUrls: ['./peer-landing.component.scss'],
 })
-export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
+export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
   public acceptedPeerConnections: Signal<boolean | undefined>;
   public socketServerConnected: Signal<boolean | undefined>;
@@ -57,6 +58,10 @@ export class PeerLandingComponent implements OnInit, ComponentCanDeactivate {
     if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
       this.store.dispatch(PeerActions.connectSocketServer());
     }
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(RecognitionActions.resetRecogntionState());
   }
 
   canDeactivate(): boolean | Observable<boolean> {
