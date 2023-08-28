@@ -2,7 +2,7 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, catchError, filter, of, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -244,7 +244,6 @@ export class PeerService {
     if (this.peer?.id === this.myId && !this.peer.disconnected) {
       console.log('peer server connection already exists and appears to be connected!!!');
       return of(this.myId);
-
     }
     const sub: ReplaySubject<string> = new ReplaySubject<string>();
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
@@ -314,9 +313,9 @@ export class PeerService {
     this.socket.once('endBroadcast', () => {
       console.log('endbroadcast response recieved');
       sub.next();
+      sub.complete();
     });
     this.socket.emit('endBroadcast', { room });
-    this._disconnectAllPeers();
     return sub;
   }
 
@@ -348,8 +347,9 @@ export class PeerService {
       } else if (thisTry < 5) {
         this._reconnectPeerServer(++thisTry);
       } else {
-        this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Peer server conneection lost.'}))
+        this.store.dispatch(PeerActions.connectPeerServerFailure({error: 'Peer server connection lost.'}))
         thisTry = 0;
+        clearTimeout(timerId);
       }
     }, (thisTry * 1000) + 150);
   }

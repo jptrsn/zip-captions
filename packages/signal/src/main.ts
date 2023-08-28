@@ -77,10 +77,10 @@ ioServer.on('connection', (socket: Socket) => {
   
   socket.on('endBroadcast', async (data: {room: string}) => {
     console.log('endBroadcast', data.room);
+    ioServer.in(data.room).emit('endBroadcast');
     const isMyRoom = socketRoomIdMap.get(socket.id);
     if (isMyRoom) {
       const expiredAt: number = Date.now();
-      ioServer.in(data.room).emit('endBroadcast');
       await cache.set(`${data.room}_broadcast_ended`, expiredAt);
       socketRoomIdMap.delete(socket.id);
       roomsThatExist.delete(isMyRoom);
