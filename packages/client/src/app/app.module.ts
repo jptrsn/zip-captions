@@ -30,6 +30,8 @@ import { peerReducers } from './reducers/peer.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
 import { TimeagoModule } from "ngx-timeago";
+import { SettingsEffects } from './effects/settings.effects';
+import { RecognitionEffects } from './effects/recognition.effects';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -70,7 +72,11 @@ export function HttpLoaderFactory(http: HttpClient) {
       settings: settingsReducers,
       peer: peerReducers,
     }),
-    EffectsModule.forRoot([AppEffects]),
+    EffectsModule.forRoot([
+      AppEffects, 
+      SettingsEffects,
+      RecognitionEffects
+    ]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

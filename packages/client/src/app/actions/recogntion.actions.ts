@@ -10,3 +10,5 @@ export const connectRecognitionFailure = createAction('[Recognition] Connect fai
 export const disconnectRecognitionSuccess = createAction('[Recognition] Disconnect success');
 export const disconnectRecognitionFailure = createAction('[Recognition] Disconnect failure', props<{error: string}>());
 
+export const resetRecogntionState = createAction('[Recognition] Reset state')
+
