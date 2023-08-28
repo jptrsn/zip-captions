@@ -28,6 +28,5 @@ export class AppComponent {
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
-
   }
 }

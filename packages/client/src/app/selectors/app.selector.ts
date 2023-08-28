@@ -27,3 +27,8 @@ export const platformSelector = createSelector(
   selectAppAppearance,
   (state) => state.platform
 )
+
+export const peerConnectionsAcceptedSelector = createSelector(
+  selectAppAppearance,
+  (state) => state.peerConnectionsAccepted
+)

@@ -249,7 +249,7 @@
   "WELCOME": {
     "p1": "Accessibility should be free.",
     "p2": "Zip Captions provides an easy to use live captions experience which lives right inside your browser. We don't capture, store, or share any of your data, there are no hidden fees, and no agreements to sign.",
-    "p3": "Click the button at the top to get started.",
+    "p3": "Click the microphone at the top to get started.",
     "warning": "For optimal results, we recommend using Chrome or Safari on Desktop."
   },
   "SETTINGS": {
@@ -258,6 +258,41 @@
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
     "p4": "Live text shows like this"
+  },
+  "STREAM": {
+    "serverStatus": "Broadcast Server",
+    "peerStatus": "Peer Connections",
+    "sessionId": "Session ID",
+    "joinCode": "Join Code",
+    "online": "Online",
+    "offline": "Offline",
+    "connecting": "Connecting...",
+    "connectedPeers": "Viewers",
+    "connected": "Connected",
+    "createBroadcast": "Start Broadcast",
+    "endBroadcast": "End Broadcast",
+    "broadcastExplanantion": "Create a session where users can connect and view closed-captions by joining on their own device using the session ID and join code.",
+    "joinSession": "Join a session",
+    "joinSessionExplanation": "View closed captions from an existing broadcast",
+    "joinCodeRequired": "Please enter the correct join code to view the session",
+    "noSessionForRoom": "It looks like there is no session being hosted for this ID.",
+    "hostOffline": "It looks like the session host is not currently connected.",
+    "broadcastEnded": "It looks like this broadcast ended",
+    "leaveSession": "Leave session",
+    "permissionRequired": "You must accept the risks of connecting to peers before you can broadcast or view.",
+    "copyIdTip": "Copy session ID",
+    "sessionIdCopied": "Copied session ID to your clipboard",
+    "copyJoinCodeTip": "Copy join code",
+    "joinCodeCopied": "Copied join code to your clipboard",
+    "connectionPendingHint": "Hang on while we connect to the signaling server so you can connect to other devices..."
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers.",
+    "confirmLeaveSession": "Are you sure you want to disconnect from this session? You will need to re-enter the ID and join code to reconnect.",
+    "accessModalTitle": "Privacy Warning",
+    "accessP1": "Streaming or viewing a stream can potentially expose private information about your device to others on the internet.",
+    "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
+    "accessP3": "Would you like to enable this feature?"
   },
   "ROUTES": {
     "home": "Home",
@@ -271,7 +306,8 @@
     "helpdesk": "Help Desk",
     "github": "GitHub Issue Tracker",
     "discord": "Discord Server",
-    "donate": "Donate"
+    "donate": "Donate",
+    "stream": "Sharing"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -284,7 +320,12 @@
     "rejected": "Rejected",
     "viewPolicy": "View Policy",
     "saveAndClose": "Save and Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Yes, I'm sure",
+    "decline": "No",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "goBack": "Go Back"
   },
   "LABELS": {
     "menu": "Menu",
@@ -298,10 +339,15 @@
     "theme": "Theme",
     "wakelock": "Screen Wake",
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
-    "wakelockOff": "Zip Captions will respect your system settings for sleep."
+    "wakelockOff": "Zip Captions will respect your system settings for sleep.",
+    "rememberSetting": "Remember my response on this device."
   },
   "HINTS": {
-    "beginSpeaking": "Start speaking..."
+    "beginSpeaking": "Start speaking...",
+    "streamConnected": "Text will appear once we hear something...",
+    "verifyingConnection": "Verifying join code...",
+    "hostConnecting": "Waiting for session host...",
+    "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device."
   },
   "HINTS": {
     "beginSpeaking": "Start speaking..."

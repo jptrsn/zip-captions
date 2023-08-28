@@ -1,4 +1,5 @@
 import { SettingsState } from "../modules/settings/models/settings.model";
+import { PeerState } from "../reducers/peer.reducer";
 import { AudioStreamState } from "./audio-stream.model";
 import { RecognitionState } from "./recognition.model";
 
@@ -10,6 +11,7 @@ export enum AppPlatform {
 export interface AppAppearanceState {
   loading: boolean;
   cookiesAccepted: boolean;
+  peerConnectionsAccepted: boolean;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   platform?: AppPlatform;
@@ -21,6 +23,7 @@ export interface AppState {
   settings: SettingsState;
   audioStream: AudioStreamState;
   recognition: RecognitionState;
+  peer: PeerState;
 }
 
 interface SubSection {

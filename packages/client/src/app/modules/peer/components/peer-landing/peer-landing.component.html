@@ -1,0 +1,81 @@
+<div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
+  <div class="flex flex-row gap-3 items-center p-3" *ngIf="acceptedPeerConnections(); else acceptPermissions">
+    <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
+      <app-socket-server-status-chip></app-socket-server-status-chip>
+      <app-peer-server-status-chip></app-peer-server-status-chip>
+    </ng-container>
+    <ng-template #broadcastControls>
+      <div class="flex flex-row flex-wrap gap-3">
+        <app-room-id [roomId]="roomId()"></app-room-id>
+        <app-join-code [joinCode]="joinCode()"></app-join-code>
+      </div>
+    </ng-template>
+    <div class="badge h-auto badge-error" *ngIf="serverError() as err">{{err}}</div>
+    <div class="flex flex-1"></div>
+    <ng-container *ngIf="isBroadcasting()">
+      <div class="flex flex-grow flex-row flex-wrap-reverse items-center gap-3 justify-end">
+        <app-connected-peer-count-chip></app-connected-peer-count-chip>
+        <app-end-broadcast></app-end-broadcast>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-template #acceptPermissions>
+    <div class="flex flex-row self-stretch gap-3 items-center justify-center p-3 text-warning text-lg">
+      <span translate>STREAM.permissionRequired</span>
+    </div>
+  </ng-template>
+  
+  <app-broadcast-room class="flex basis-full" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
+
+  <ng-template #landing>
+    <div class="flex basis-full items-stretch justify-center">
+      <div class="flex flex-col basis-full max-w-4xl lg:gap-24 sm:gap-12 gap-6 p-3">
+        <div class="form-row" *ngIf="!disableBroadcast()">
+          <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" (click)="createRoom()" translate>STREAM.createBroadcast</button>
+          <div class="flex basis-1/2" translate>
+            STREAM.broadcastExplanantion
+          </div>
+        </div>
+    
+        <form class="flex flex-col sm:gap-12 gap-6" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
+          <div class="form-row">
+            
+            <button class="hidden sm:block w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" translate>STREAM.joinSession</button>
+
+            <div class="flex basis-1/2" translate>
+              STREAM.joinSessionExplanation
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" translate>STREAM.sessionId</span>
+              </label>
+              <input type="text" class="input input-bordered input-lg" maxlength="9" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="A79E-F2GV" formControlName="session" />
+              <label class="label no-height">
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('invalid') && joinSessionFormGroup.controls['session'].touched">Invalid ID</span>
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('required') && joinSessionFormGroup.controls['session'].touched">Required</span>
+              </label>
+            </div>
+    
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" translate>STREAM.joinCode</span>
+              </label>
+              <input type="text" class="input input-bordered input-lg" maxlength="4" [ngClass]="{'input-error': joinSessionFormGroup.controls['joinCode'].invalid && joinSessionFormGroup.controls['joinCode'].touched}" placeholder="E5F6" formControlName="joinCode" />
+              <label class="label no-height">
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('invalid') && joinSessionFormGroup.controls['joinCode'].touched">Invalid ID</span>
+                <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['joinCode'].hasError('required') && joinSessionFormGroup.controls['joinCode'].touched">Required</span>
+              </label>
+            </div>
+
+            <button class="w-64 btn btn-lg mt-3" [ngClass]="{'btn-primary': joinSessionFormGroup.valid, 'btn-neutral': joinSessionFormGroup.invalid}" [disabled]="serverOffline() || serverError()" translate>BUTTONS.connect</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+  <app-accept-peer-connections-modal *ngIf="!acceptedPeerConnections()"></app-accept-peer-connections-modal>
+</div>

@@ -62,11 +62,23 @@ export class AppEffects {
     )
   )
 
+  updateAcceptedPeerConnections = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AppActions.setPeerConnectionsAccepted),
+      map(({accepted, save}) => {
+        if (save) {
+          this.storage.update('appearance', 'peerConnectionsAccepted', accepted)
+        }
+      }),
+      map(() => AppActions.setPeerConnectionsComplete())
+    )
+  )
+
   applyLock$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActions.applyWakeLock),
       switchMap(() => this.wakelockService.requestLock()),
-      map(() => AppActions.applyWakeLockSuccess()),
+      map((isLocked: boolean) => AppActions.applyWakeLockSuccess({ isLocked })),
       catchError((err) => of(AppActions.applyWakeLockFailure({error: err.message})))
     )
   )

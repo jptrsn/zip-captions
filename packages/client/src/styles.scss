@@ -28,3 +28,14 @@ button.btn.btn-circle {
     }
   }
 }
+
+.btn.btn-half-circle-left {
+  height: 3rem;
+  width: 2rem;
+  border-radius: 50% 0 0 50%;
+}
+
+.no-height {
+  height: 0;
+  margin-top: 3px;
+}

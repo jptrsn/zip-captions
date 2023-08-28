@@ -1,0 +1,11 @@
+<button 
+  class="badge h-auto"
+  [ngClass]="{'badge-neutral': !connected(), 'badge-success': connected(), 'badge-error': serverError()}"
+  (click)="reconnect()"
+  >
+    {{'STREAM.serverStatus' | translate}}: 
+    <ng-container *ngIf="connected() === undefined; else state">{{'STREAM.connecting' | translate}}</ng-container>
+    <ng-template #state>
+      {{(connected() ? 'STREAM.online' : 'STREAM.offline') | translate}}
+    </ng-template>
+</button>

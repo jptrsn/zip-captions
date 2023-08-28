@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { RecognitionState } from "../models/recognition.model";
+import { RecognitionState, RecognitionStatus } from "../models/recognition.model";
 
 export const selectRecognition = (state: AppState): RecognitionState => state.recognition;
 
@@ -17,4 +17,9 @@ export const recognitionErrorSelector = createSelector(
 export const recognitionStatusSelector = createSelector(
   selectRecognition,
   (state) => state.status
+)
+
+export const recognitionConnectedSelector = createSelector(
+  selectRecognition,
+  (state) => state.status === RecognitionStatus.connected
 )

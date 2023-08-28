@@ -29,10 +29,6 @@ import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lo
     EffectsModule.forFeature([SettingsEffects]),
     TranslateModule.forChild({ extend: true }),
   ],
-  exports: [
-    SettingsComponent,
-    ThemeSelectorComponent,
-    LanguageSelectorComponent,
-  ],
+  
 })
 export class SettingsModule {}

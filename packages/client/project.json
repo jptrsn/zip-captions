@@ -7,9 +7,14 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": [
+          "peerjs-js-binarypack",
+          "sdp",
+          "rtcpeerconnection-shim"
+        ],
         "outputPath": "docs",
         "index": "packages/client/src/index.html",
         "main": "packages/client/src/main.ts",
@@ -25,7 +30,10 @@
         "scripts": [],
         "serviceWorker": true,
         "ngswConfigPath": "packages/client/ngsw-config.json",
-        "webWorkerTsConfig": "packages/client/tsconfig.worker.json"
+        "webWorkerTsConfig": "packages/client/tsconfig.worker.json",
+        "customWebpackConfig": {
+          "path": "packages/client/webpack.config.js"
+        }
       },
       "configurations": {
         "production": {
@@ -56,7 +64,7 @@
     },
     "serve": {
       
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:webpack-dev-server",
       "configurations": {
         "production": {
           "browserTarget": "client:build:production"
