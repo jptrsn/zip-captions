@@ -259,6 +259,41 @@
     "p3": "Con ogni nuovo risultato che appare sotto il precedente",
     "p4": "Il testo in tempo reale viene visualizzato in questo modo"
   },
+  "STREAM": {
+    "serverStatus": "Server di trasmissione",
+    "peerStatus": "Connessioni tra pari",
+    "sessionId": "ID sessione",
+    "joinCode": "Codice di partecipazione",
+    "online": "In linea",
+    "offline": "Non in linea",
+    "connecting": "Connessione...",
+    "connectedPeers": "Spettatori",
+    "connected": "Collegato",
+    "createBroadcast": "Inizio trasmissione",
+    "endBroadcast": "Fine trasmissione",
+    "broadcastExplanantion": "Creare una sessione in cui gli utenti possano connettersi e visualizzare le didascalie chiuse, unendosi al proprio dispositivo utilizzando l'ID di sessione e il codice di adesione.",
+    "joinSession": "Unirsi a una sessione",
+    "joinSessionExplanation": "Visualizza le didascalie chiuse di una trasmissione esistente",
+    "joinCodeRequired": "Inserire il codice di adesione corretto per visualizzare la sessione",
+    "noSessionForRoom": "Sembra che non vi sia alcuna sessione ospitata per questo ID.",
+    "hostOffline": "Sembra che l'host della sessione non sia attualmente connesso.",
+    "broadcastEnded": "Sembra che questa trasmissione sia terminata",
+    "leaveSession": "Lasciare la sessione",
+    "permissionRequired": "È necessario accettare i rischi della connessione ai peer prima di poter trasmettere o visualizzare.",
+    "copyIdTip": "Copia dell'ID di sessione",
+    "sessionIdCopied": "Copia l'ID della sessione negli appunti",
+    "copyJoinCodeTip": "Copia del codice di adesione",
+    "joinCodeCopied": "Copia del codice di adesione negli appunti",
+    "connectionPendingHint": "Rimanete in attesa mentre ci connettiamo al server di segnalazione in modo che possiate connettervi ad altri dispositivi...."
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "Questo terminerà la trasmissione corrente e disconnetterà tutti i peer",
+    "confirmLeaveSession": "Siete sicuri di volervi disconnettere da questa sessione? Per riconnettersi è necessario inserire nuovamente l'ID e il codice di adesione",
+    "accessModalTitle": "Avviso sulla privacy",
+    "accessP1": "Lo streaming o la visualizzazione di un flusso possono potenzialmente esporre informazioni private sul vostro dispositivo ad altri su Internet",
+    "accessP2": "ZipCaptions anonimizza il più possibile le informazioni, ma alcuni dettagli immutabili (ad esempio l'indirizzo IP) possono essere esposti quando ci si connette ai peer online.",
+    "accessP3": "Vuoi abilitare questa funzione?"
+  },
   "ROUTES": {
     "home": "Home",
     "about": "About",
@@ -271,7 +306,8 @@
     "helpdesk": "Aiuto",
     "github": "Tracciamento dei problemi su Github",
     "discord": "Discord Server",
-    "donate": "Donare"
+    "donate": "Donare",
+    "stream": "Trasmissione"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -284,7 +320,12 @@
     "rejected": "Rifiutato",
     "viewPolicy": "View Policy",
     "saveAndClose": "Salva e chiudi",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "confirm": "Sì, sono sicuro",
+    "decline": "No",
+    "connect": "Collegare",
+    "disconnect": "Disconnettersi",
+    "goBack": "Torna indietro"
   },
   "LABELS": {
     "menu": "Menu",
@@ -295,10 +336,18 @@
     "stop": "Stop",
     "listen": "Ascolta",
     "lang": "Language",
-    "theme": "Tema"
+    "theme": "Tema",
+    "wakelock": "Sveglia schermo",
+    "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
+    "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
+    "rememberSetting": "Ricordate la mia risposta su questo dispositivo."
   },
   "HINTS": {
-    "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!"
+    "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
+    "streamConnected": "Il testo apparirà quando avremo notizie...",
+    "verifyingConnection": "Verifica del codice di adesione...",
+    "hostConnecting": "In attesa dell'host di sessione...",
+    "viewStream": "Visitare ZipCaptions.app e utilizzare l'ID di sessione e il codice di adesione per visualizzare le didascalie sul proprio dispositivo."
   },
   "ERRORS": {
     "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",

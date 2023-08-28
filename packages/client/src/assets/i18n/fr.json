@@ -259,6 +259,41 @@
     "p3" : "Chaque nouveau résultat apparaissant sous le précédent.",
     "p4" : "Des émissions de texte en direct comme celle-ci"
   },
+  "STREAM": {
+    "serverStatus": "Serveur de diffusion",
+    "peerStatus": "Connexions entre pairs",
+    "sessionId": "ID de la session",
+    "joinCode": "Code d'adhésion",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "connecting": "Connexion...",
+    "connectedPeers": "Visiteurs",
+    "connected": "Connecté",
+    "createBroadcast": "Début de la diffusion",
+    "endBroadcast": "Fin de la diffusion",
+    "broadcastExplanantion": "Créez une session où les utilisateurs peuvent se connecter et visionner les sous-titres en se connectant sur leur propre appareil à l'aide de l'identifiant de session et du code de connexion.",
+    "joinSession": "Rejoindre une session",
+    "joinSessionExplanation": "Visualiser les sous-titres d'une diffusion existante",
+    "joinCodeRequired": "Veuillez saisir le code de participation correct pour visualiser la session.",
+    "noSessionForRoom": "Il semble qu'aucune session ne soit hébergée pour cet identifiant.",
+    "hostOffline": "Il semble que l'hôte de la session ne soit pas actuellement connecté.",
+    "broadcastEnded": "Il semble que cette diffusion soit terminée",
+    "leaveSession": "Quitter la session",
+    "permissionRequired": "Vous devez accepter les risques liés à la connexion à des pairs avant de pouvoir diffuser ou visualiser.",
+    "copyIdTip": "Copier l'ID de la session",
+    "sessionIdCopied": "Copie de l'identifiant de la session dans le presse-papiers",
+    "copyJoinCodeTip": "Copier le code de jointure",
+    "joinCodeCopied": "Copie du code de jointure dans votre presse-papiers",
+    "connectionPendingHint": "Attendez que nous nous connections au serveur de signalisation pour que vous puissiez vous connecter à d'autres appareils...."
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "Cette opération met fin à la diffusion en cours et déconnecte tous les pairs.",
+    "confirmLeaveSession": "Êtes-vous sûr de vouloir vous déconnecter de cette session ? Vous devrez saisir à nouveau l'identifiant et le code d'adhésion pour vous reconnecter.",
+    "accessModalTitle": "Avertissement sur la confidentialité",
+    "accessP1": "La diffusion ou la visualisation d'un flux peut potentiellement exposer des informations privées sur votre appareil à d'autres personnes sur Internet.",
+    "accessP2": "ZipCaptions anonymise vos informations autant que possible, mais certains détails immuables (par exemple l'adresse IP) peuvent être exposés lors de la connexion avec des pairs en ligne.",
+    "accessP3": "Souhaitez-vous activer cette fonctionnalité?"
+  },
   "ROUTES" : {
     "home" : "Principal",
     "about" : "À Propos",
@@ -271,7 +306,8 @@
     "helpdesk": "Bureau d'Aide",
     "github": "GitHub Issue Tracker",
     "discord": "Serveur Discord",
-    "donate": "Faire un Don"
+    "donate": "Faire un Don",
+    "stream": "Diffusion"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
@@ -284,7 +320,12 @@
     "rejeté" : "Rejected",
     "viewPolicy" : "Voir détails",
     "saveAndClose": "Sauver et Fermer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "confirm": "Oui, je suis sûr",
+    "decline": "Non",
+    "connect": "Connecter",
+    "disconnect": "Déconnecter",
+    "goBack": "Revenir en arrière"
   },
   "LABELS" : {
     "menu" : "Menu",
@@ -295,10 +336,18 @@
     "stop" : "Stop",
     "listen" : "Listen",
     "lang" : "Langue",
-    "theme" : "Thème"
+    "theme" : "Thème",
+    "wakelock": "Réveil de l'écran",
+    "wakelockOn": "Empêche l'écran de se mettre en veille lorsque les sous-titres sont actifs",
+    "wakelockOff": "Zip Captions respectera les paramètres de votre système pour la mise en veille.",
+    "rememberSetting": "Se souvenir de ma réponse sur cet appareil."
   },
   "HINTS": {
-    "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons..."
+    "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
+    "streamConnected": "Le texte apparaîtra dès que nous aurons entendu quelque chose...",
+    "verifyingConnection": "Vérification du code d'adhésion...",
+    "hostConnecting": "Attente de l'hôte de la session...",
+    "viewStream": "Visitez ZipCaptions.app et utilisez l'identifiant de session et le code de participation pour visualiser les sous-titres sur votre propre appareil."
   },
   "ERRORS": {
     "missingApi": "Désolé, votre navigateur n'a pas encore implémenté les API nécessaires au fonctionnement de ZipCaptions. Nous recommandons Chrome ou Safari.",
@@ -315,5 +364,4 @@
       "language-not-supported" : "Erreur de reconnaissance vocale : L'agent utilisateur ne prend pas en charge la langue spécifiée dans la valeur de l'attribut lang de l'objet SpeechRecognition."
     }
   }
-  
 }

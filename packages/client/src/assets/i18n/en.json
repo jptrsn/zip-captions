@@ -346,7 +346,8 @@
     "beginSpeaking": "Start speaking...",
     "streamConnected": "Text will appear once we hear something...",
     "verifyingConnection": "Verifying join code...",
-    "hostConnecting": "Waiting for session host..."
+    "hostConnecting": "Waiting for session host...",
+    "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device."
   },
   "ERRORS": {
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
@@ -360,8 +361,7 @@
       "not-allowed": "Speech recognition error: The user agent disallowed any speech input from occurring for reasons of security, privacy or user preference.",
       "service-not-allowed": "Speech recognition error: The user agent disallowed the requested speech recognition service, either because the user agent doesn't support it or because of reasons of security, privacy or user preference.",
       "bad-grammar": "Speech recognition error: There was an error in the speech recognition grammar or semantic tags, or the chosen grammar format or semantic tag format was unsupported.",
-      "language-not-supported": "Speech recognition error: The user agent does not support the language specified in the value of lang attribute of the SpeechRecognition object.",
-      "Lost connection to server.": "The connection to the server has been lost."
+      "language-not-supported": "Speech recognition error: The user agent does not support the language specified in the value of lang attribute of the SpeechRecognition object."
     }
   }
 }

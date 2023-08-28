@@ -259,6 +259,41 @@
     "p3": "Con cada nuevo resultado apareciendo debajo del anterior",
     "p4": "Texto en directo se muestra así"
   },
+  "STREAM": {
+    "serverStatus": "Servidor de difusión",
+    "peerStatus": "Conexiones de pares",
+    "sessionId": "ID de sesión",
+    "joinCode": "Código de conexión",
+    "online": "En línea",
+    "offline": "Fuera de línea",
+    "connecting": "Conectando...",
+    "connectedPeers": "Visores",
+    "connected": "Conectado",
+    "createBroadcast": "Inicio de la emisión",
+    "endBroadcast": "Finalizar emisión",
+    "broadcastExplanantion": "Cree una sesión en la que los usuarios puedan conectarse y ver los subtítulos uniéndose desde su propio dispositivo mediante el identificador de sesión y el código de conexión.",
+    "joinSession": "Unirse a una sesión",
+    "joinSessionExplanation": "Ver los subtítulos de una emisión existente",
+    "joinCodeRequired": "Introduzca el código de participación correcto para ver la sesión",
+    "noSessionForRoom": "Parece que no hay ninguna sesión alojada para este ID.",
+    "hostOffline": "Parece que el anfitrión de la sesión no está conectado actualmente.",
+    "broadcastEnded": "Parece que esta emisión ha finalizado",
+    "leaveSession": "Abandone la sesión",
+    "permissionRequired": "Debe aceptar los riesgos de conectarse a los pares antes de poder emitir o ver.",
+    "copyIdTip": "Copiar ID de sesión",
+    "sessionIdCopied": "Copia el ID de sesión en el portapapeles",
+    "copyJoinCodeTip": "Copiar código de unión",
+    "joinCodeCopied": "Copiar código de conexión al portapapeles",
+    "connectionPendingHint": "Espere mientras nos conectamos al servidor de señalización para que pueda conectarse a otros dispositivos..."
+  },
+  "MODAL": {
+    "confirmEndBroadcast": "Esto terminará la transmisión actual y desconectará a todos los pares",
+    "confirmLeaveSession": "¿Estás seguro de que quieres desconectarte de esta sesión? Deberá volver a introducir el ID y el código de unión para volver a conectarse.",
+    "accessModalTitle": "Advertencia de privacidad",
+    "accessP1": "Transmitir o ver un stream puede potencialmente exponer información privada sobre tu dispositivo a otros en Internet",
+    "accessP2": "ZipCaptions anonimiza tu información en la medida de lo posible, pero ciertos detalles inmutables (por ejemplo, la dirección IP) pueden quedar expuestos cuando te conectas a compañeros en línea",
+    "accessP3": "¿Desea activar esta función?"
+  },
   "ROUTES": {
     "home": "Casa",
     "about": "Acerca de",
@@ -271,7 +306,8 @@
     "helpdesk": "Servicio de Asistencia",
     "github": "GitHub Issue Tracker",
     "discord": "Servidor de Discordia",
-    "donate": "Donar"
+    "donate": "Donar",
+    "stream": "Difusión"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -284,7 +320,12 @@
     "rejected": "Rechazado",
     "viewPolicy": "Ver Política",
     "saveAndClose": "Guardar y Cerrar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "confirm": "Sí, estoy seguro",
+    "decline": "No",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "goBack": "Volver atrás"
   },
   "LABELS": {
     "menu": "Menu",
@@ -295,10 +336,18 @@
     "stop": "Stop",
     "listen": "Escuchar",
     "lang": "Idioma",
-    "theme": "Theme"
+    "theme": "Theme",
+    "wakelock": "Sveglia schermo",
+    "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
+    "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
+    "rememberSetting": "Ricordate la mia risposta su questo dispositivo."
   },
   "HINTS": {
-    "beginSpeaking": "Habla y te escucharemos"
+    "beginSpeaking": "Habla y te escucharemos",
+    "streamConnected": "El texto aparecerá cuando sepamos algo...",
+    "verifyingConnection": "Verificando código de unión...",
+    "hostConnecting": "Esperando al anfitrión de la sesión...",
+    "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo."
   },
   "ERRORS": {
     "missingApi": "Lo sentimos, su navegador aún no ha implementado las API necesarias para que ZipCaptions se ejecute. Recomendamos Chrome o Safari",
