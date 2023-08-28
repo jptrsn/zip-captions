@@ -9,7 +9,7 @@ import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-
 import { AppPlatform, AppState } from '../../../../models/app.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
-import { RecognitionActions } from 'packages/client/src/app/models/recognition.model';
+import { RecognitionActions } from '../../../../models/recognition.model';
 
 @Component({
   selector: 'app-peer-landing',
