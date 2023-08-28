@@ -37,11 +37,15 @@
       },
       "configurations": {
         "production": {
+          "optimization": true,
+          "customWebpackConfig": {
+            "path": "packages/client/webpack.config.prod.js"
+          },
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "750kb",
+              "maximumError": "1.5mb"
             },
             {
               "type": "anyComponentStyle",
@@ -60,7 +64,7 @@
           "namedChunks": true
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "serve": {
       

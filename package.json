@@ -9,7 +9,7 @@
     "start:all": "nx run-many -t serve --host=0.0.0.0 --parallel",
     "build": "nx build",
     "build:all": "nx run-many -t build -p client,signal --parallel",
-    "build:client": "nx build --project=client",
+    "build:client": "nx build --project=client --configuration=production",
     "build:signal": "nx build --project=signal",
     "act": "act --secret-file .secret.env"
   },
@@ -84,6 +84,8 @@
     "autoprefixer": "^10.4.0",
     "cypress": "^12.11.0",
     "daisyui": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "dotenv-webpack": "^8.0.1",
     "esbuild": "^0.17.17",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
