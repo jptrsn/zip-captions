@@ -1,7 +1,7 @@
 import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
+import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
 import { recognitionErrorSelector, selectRecognition } from '../../../../selectors/recognition.selector';
@@ -12,8 +12,10 @@ import { RecognitionService } from '../../services/recognition.service';
   templateUrl: './recognition-render.component.html',
   styleUrls: ['./recognition-render.component.scss'],
   animations: [
+    slideInRightOnEnterAnimation(),
     slideInUpOnEnterAnimation(),
-    slideOutDownOnLeaveAnimation()
+    slideOutDownOnLeaveAnimation(),
+    slideOutRightOnLeaveAnimation()
   ]
 })
 export class RecognitionRenderComponent {
