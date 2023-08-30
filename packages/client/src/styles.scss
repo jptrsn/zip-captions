@@ -18,7 +18,7 @@ body {
   }
 }
 
-button.btn.btn-circle {
+button.btn.btn-circle, button.btn-lg {
   ng-icon {
     @apply text-2xl;
   }

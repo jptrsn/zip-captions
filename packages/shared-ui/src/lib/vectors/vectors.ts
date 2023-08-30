@@ -5,6 +5,8 @@ export {
   heroPlayCircle,
   heroPauseCircle,
   heroStopCircle,
+  heroPlusCircle,
+  heroMinusCircle,
   heroExclamationTriangle,
   heroCheckCircle,
   heroArrowTopRightOnSquare,
