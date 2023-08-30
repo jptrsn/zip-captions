@@ -1,5 +1,10 @@
-import { Component, Input, Signal, signal } from '@angular/core';
+import { Component, Input, Signal, computed, signal } from '@angular/core';
 import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
+import { TextSize } from '../../../settings/models/settings.model';
+import { AppState } from '../../../../models/app.model';
+import { Store } from '@ngrx/store';
+import { selectTextSize } from '../../../../selectors/settings.selector';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recognized-text',
@@ -17,7 +22,11 @@ export class RecognizedTextComponent {
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
-  constructor() {
+  public textSize: Signal<TextSize>;
+  public classList: Signal<string>;
+  constructor(private store: Store<AppState>) {
     this.hasLiveResults = signal(true);
+    this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
+    this.classList = computed(() => `recognized-text ${this.textSize()}`)
   }
 }

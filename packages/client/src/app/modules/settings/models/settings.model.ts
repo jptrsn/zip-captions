@@ -43,10 +43,28 @@ export const AvailableLanguages: Language[] = [
   // 'pt' // TODO: Portuguese translation file
 ]
 
+export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';
+
+export const AvailableTextSizes: TextSize[] = [
+  'textSize-xs',
+  'textSize-sm',
+  'textSize-base',
+  'textSize-lg',
+  'textSize-xl',
+  'textSize-2xl',
+  'textSize-3xl',
+  'textSize-4xl',
+  'textSize-5xl',
+  'textSize-6xl',
+  'textSize-7xl',
+  'textSize-8xl',
+  'textSize-9xl',
+];
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
   wakeLock: boolean;
+  textSize: TextSize;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

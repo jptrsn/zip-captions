@@ -37,6 +37,7 @@ import { RecognitionControlSidebarComponent } from './components/recognition-con
     RecognizedLiveTextComponent,
     RecognitionEnableComponent,
     RecognitionRenderComponent,
+    RecognitionControlSidebarComponent,
   ],
 })
 export class MediaModule {}

@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, Language, SettingsState } from "../modules/settings/models/settings.model";
+import { AppTheme, Language, SettingsState, TextSize } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -14,3 +14,5 @@ export const setLanguageComplete = createAction('[Settings] Set Language Complet
 export const updateWakeLockEnabled = createAction('[Settings] Update WakeLock Enabled', props<{enabled: boolean}>());
 export const updateWakeLockEnabledSuccess = createAction('[Settings] Update WakeLock Enabled Success');
 export const updateWakeLockEnabledFailure = createAction('[Settings] Update WakeLock Enabled Failure', props<{error: string}>());
+
+export const setTextSize = createAction('[Settings] Set Text Size', props<{size: TextSize}>())
