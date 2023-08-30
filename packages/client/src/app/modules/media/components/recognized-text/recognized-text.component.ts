@@ -18,14 +18,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class RecognizedTextComponent {
   @Input({ required: true}) connected!: Signal<boolean | undefined>;
-  @Input() hasLiveResults: Signal<boolean>;
+  @Input() hasLiveResults: Signal<boolean> = signal(true);
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
+  
   public textSize: Signal<TextSize>;
   public classList: Signal<string>;
   constructor(private store: Store<AppState>) {
-    this.hasLiveResults = signal(true);
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.classList = computed(() => `recognized-text ${this.textSize()}`)
   }
