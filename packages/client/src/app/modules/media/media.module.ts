@@ -12,6 +12,7 @@ import { RecognitionRenderComponent } from './components/recognition-render/reco
 import { RecognizedLiveTextComponent } from './components/recognized-live-text/recognized-live-text.component';
 import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecognitionControlSidebarComponent } from './components/recognition-control-sidebar/recognition-control-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     RecognizedLiveTextComponent,
     RecognitionEnableComponent,
     RecognitionRenderComponent,
+    RecognitionControlSidebarComponent,
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EffectsModule.forFeature([AudioStreamEffects, RecognitionEffects]),
     NgIconsModule,
     BackgroundMagnitudeDirective,
-    TranslateModule.forChild({extend: true})
+    TranslateModule.forChild({ extend: true }),
   ],
   exports: [
     AudioInputEnableComponent,
@@ -35,6 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     RecognizedLiveTextComponent,
     RecognitionEnableComponent,
     RecognitionRenderComponent,
+    RecognitionControlSidebarComponent,
   ],
 })
 export class MediaModule {}

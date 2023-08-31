@@ -6,12 +6,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectPeerError, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-broadcast-render',
-  templateUrl: './broadcast-render.component.html',
+  templateUrl: '../../../media/components/recognition-render/recognition-render.component.html',
   styleUrls: ['./broadcast-render.component.scss'],
 })
 export class BroadcastRenderComponent implements OnInit, OnDestroy {
@@ -20,7 +20,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public liveText: WritableSignal<string> = signal('');
   public textOutput: WritableSignal<string[]> = signal([]);
   public hasLiveResults: Signal<boolean>;
-  public recognitionError: Signal<string | undefined>;
+  public error: Signal<string | undefined>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
@@ -31,7 +31,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     const hostOnline = toSignal(this.store.select(selectHostOnline));
     this.connected = computed(() => (peerConnected() && hostOnline()));
 
-    this.recognitionError = toSignal(this.store.select(recognitionErrorSelector));
+    this.error = toSignal(this.store.select(recognitionErrorSelector));
     
 
     this.hasLiveResults = computed(() => {

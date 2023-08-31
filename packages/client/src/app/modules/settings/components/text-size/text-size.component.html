@@ -1,0 +1,6 @@
+<label class="form-control" [formGroup]="group">
+  <span class="text-accent label" translate>LABELS.textSize</span>
+  <select class="select select-lg mt-1 w-full" [formControlName]="controlName">
+    <option *ngFor="let size of availableTextSizes" [value]="size">{{ 'TEXT_SIZE.' + size | translate }}</option>
+  </select>
+</label>

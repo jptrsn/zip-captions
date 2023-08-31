@@ -1,0 +1,50 @@
+<div class="flex flex-col p-3 gap-3 drop-shadow bg-secondary-content rounded-s-xl">
+  
+    <button class="btn btn-lg btn-outline" *ngIf="showPause">
+      <ng-icon name="heroPauseCircle"></ng-icon>
+    </button>
+
+    <details #fontSizeMenu class="dropdown dropdown-left">
+      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open')}" role="button" (click)="hideElements([lineSpacingMenu])">
+        <ng-icon name="tablerTextSize"></ng-icon>
+        <div class="text-xs text-base-100" *ngIf="fontSizeMenu.hasAttribute('open')">{{'TEXT_SIZE.' + textSize() | translate}}</div>
+      </summary>
+      <div class="dropdown-content">
+        <ul class="menu bg-secondary-content rounded-s-xl text-2xl">
+          <li>
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Increase text size" [disabled]="textSizeMax()" (click)="increaseTextSize()">
+              <ng-icon name="tablerTextIncrease"></ng-icon>
+            </button>
+          </li>
+          <li>
+          </li>
+          <li>
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Decrease text size" [disabled]="textSizeMin()" (click)="decreaseTextSize()">
+              <ng-icon name="tablerTextDecrease"></ng-icon>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </details>
+
+    <details #lineSpacingMenu class="dropdown dropdown-left">
+      <summary class="btn btn-lg btn-outline" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open')}" role="button" (click)="hideElements([fontSizeMenu])">
+        <ng-icon name="tablerLineHeight"></ng-icon>
+      </summary>
+      <div class="dropdown-content">
+        <ul class="menu bg-secondary-content rounded-s-xl text-2xl">
+          <li>
+            <a class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Increase line spacing">
+              <ng-icon name="tablerPlus"></ng-icon>
+            </a>
+          </li>
+          <li>
+            <a class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Decrease line spacing">
+              <ng-icon name="tablerMinus"></ng-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </details>
+
+</div>

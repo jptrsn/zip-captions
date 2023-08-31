@@ -18,7 +18,7 @@ body {
   }
 }
 
-button.btn.btn-circle {
+.btn.btn-circle, .btn.btn-lg {
   ng-icon {
     @apply text-2xl;
   }
@@ -38,4 +38,83 @@ button.btn.btn-circle {
 .no-height {
   height: 0;
   margin-top: 3px;
+}
+
+.recognized-text {
+  @apply break-words;
+  &.textSize-xs {
+    @apply text-xs;
+    &.live {
+      @apply text-base;
+    }
+  }
+  &.textSize-sm {
+    @apply text-xs sm:text-sm;
+    &.live {
+      @apply text-base;
+    }
+  }
+  &.textSize-base {
+    @apply text-sm sm:text-base;
+    &.live {
+      @apply text-lg;
+    }
+  }
+  &.textSize-lg {
+    @apply text-lg;
+    &.live {
+      @apply text-xl;
+    }
+  }
+  &.textSize-xl {
+    @apply text-xl;
+    &.live {
+      @apply text-2xl;
+    }
+  }
+  &.textSize-2xl {
+    @apply text-2xl;
+    &.live {
+      @apply text-3xl;
+    }
+  }
+  &.textSize-3xl {
+    @apply text-3xl;
+    &.live {
+      @apply text-4xl;
+    }
+  }
+  &.textSize-4xl {
+    @apply text-4xl;
+    &.live {
+      @apply text-5xl;
+    }
+  }
+  &.textSize-5xl {
+    @apply text-5xl;
+    &.live {
+      @apply text-6xl;
+    }
+  }
+  &.textSize-6xl {
+    @apply text-5xl sm:text-6xl;
+    &.live {
+      @apply text-6xl sm:text-7xl;
+    }
+  }
+  &.textSize-7xl {
+    @apply text-5xl sm:text-7xl;
+    &.live {
+      @apply text-6xl sm:text-8xl;
+    }
+  }
+  &.textSize-8xl {
+    @apply text-5xl sm:text-8xl;
+    &.live {
+      @apply text-9xl;
+    }
+  }
+  &.textSize-9xl {
+    @apply text-5xl sm:text-9xl;
+  }
 }

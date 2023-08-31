@@ -45,4 +45,12 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.updateWakeLockEnabledFailure({error: err.message})))
     )
   )
+
+  saveTextSize$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setTextSize),
+      map(({size}) => this.storage.update('settings', 'textSize', size)),
+      map(() => SettingsActions.setTextSizeSuccess())
+    )
+  )
 }
