@@ -60,11 +60,23 @@ export const AvailableTextSizes: TextSize[] = [
   'textSize-8xl',
   'textSize-9xl',
 ];
+
+export type LineHeight = 'lineHeight-none' | 'lineHeight-tight' | 'lineHeight-snug' | 'lineHeight-normal' | 'lineHeight-relaxed' | 'lineHeight-loose';
+
+export const AvailableLineHeights: LineHeight[] = [
+  'lineHeight-none',
+  'lineHeight-tight',
+  'lineHeight-snug',
+  'lineHeight-normal',
+  'lineHeight-relaxed',
+  'lineHeight-loose',
+]
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
   wakeLock: boolean;
   textSize: TextSize;
+  lineHeight: LineHeight;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

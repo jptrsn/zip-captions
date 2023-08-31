@@ -50,7 +50,18 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.setTextSize),
       map(({size}) => this.storage.update('settings', 'textSize', size)),
-      map(() => SettingsActions.setTextSizeSuccess())
+      map(() => SettingsActions.setTextSizeSuccess()),
+      catchError((err) => of(SettingsActions.setTextSizeFailure({error: err.message})))
     )
   )
+
+  saveLineHeight$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setLineHeight),
+      map(({height}) => this.storage.update('settings', 'lineHeight', height)),
+      map(() => SettingsActions.setLineHeightSuccess()),
+      catchError((err) => of(SettingsActions.setLineHeightFailure({error: err.message})))
+    )
+  )
+  
 }

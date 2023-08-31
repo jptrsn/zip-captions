@@ -341,7 +341,8 @@
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
     "wakelockOff": "Zip Captions will respect your system settings for sleep.",
     "rememberSetting": "Remember my response on this device.",
-    "textSize": "Text Size"
+    "textSize": "Text Size",
+    "lineHeight": "Line Spacing"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -379,5 +380,13 @@
     "textSize-7xl": "7XL",
     "textSize-8xl": "8XL",
     "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "None",
+    "lineHeight-tight": "Tight",
+    "lineHeight-snug": "Snug",
+    "lineHeight-normal": "Normal",
+    "lineHeight-relaxed": "Relaxed",
+    "lineHeight-loose": "Loose"
   }
 }

@@ -13,6 +13,7 @@ import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.
 import { TranslateModule } from '@ngx-translate/core';
 import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
 import { TextSizeComponent } from './components/text-size/text-size.component';
+import { LineHeightComponent } from './components/line-height/line-height.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { TextSizeComponent } from './components/text-size/text-size.component';
     CookiePolicyComponent,
     WakeLockEnabledComponent,
     TextSizeComponent,
+    LineHeightComponent,
   ],
   imports: [
     CommonModule,
