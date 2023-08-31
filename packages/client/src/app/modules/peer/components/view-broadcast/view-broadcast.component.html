@@ -20,7 +20,7 @@
         </ng-template>
       </div>
   
-      <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
+      <app-broadcast-render *ngIf="hostOnline()" class="flex basis-full"></app-broadcast-render>
 
       <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="!broadcastEndedTimestamp() && !hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
         <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">

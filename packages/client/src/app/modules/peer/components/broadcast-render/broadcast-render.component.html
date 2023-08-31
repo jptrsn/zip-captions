@@ -1,10 +1,22 @@
-<div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
-  <app-recognized-text 
+<div class="drawer drawer-end">
+  <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content overflow-hidden">
+    <div class="flex flex-col h-full basis-full flex-grow-0 flex-shrink overflow-hidden">
+      <app-recognized-text 
     [connected]="connected" 
     [hasLiveResults]="hasLiveResults"
     [textOutput]="textOutput"
-    [error]="recognitionError"
+    [error]="error"
     hintText="HINTS.streamConnected"
     class="flex flex-grow-0 flex-shrink basis-full overflow-y-hidden"></app-recognized-text>
   <app-recognized-live-text [text]="liveText" class="flex flex-grow flex-shrink"></app-recognized-live-text>
+    </div>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0" *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
+      <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
+    </label>
+  </div>
+  <div class="drawer-side">
+    <label for="drawer-enable" class="drawer-overlay opacity-0"></label>
+    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter @slideOutRightOnLeave></app-recognition-control-sidebar>
+  </div>
 </div>
