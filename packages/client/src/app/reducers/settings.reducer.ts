@@ -5,7 +5,7 @@ export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
   wakeLock: true,
-  textSize: 'textSize-xl'
+  textSize: 'textSize-3xl'
 }
 
 export const settingsReducers = createReducer(

@@ -340,7 +340,8 @@
     "wakelock": "Screen Wake",
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
     "wakelockOff": "Zip Captions will respect your system settings for sleep.",
-    "rememberSetting": "Remember my response on this device."
+    "rememberSetting": "Remember my response on this device.",
+    "textSize": "Text Size"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

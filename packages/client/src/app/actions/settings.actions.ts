@@ -15,4 +15,6 @@ export const updateWakeLockEnabled = createAction('[Settings] Update WakeLock En
 export const updateWakeLockEnabledSuccess = createAction('[Settings] Update WakeLock Enabled Success');
 export const updateWakeLockEnabledFailure = createAction('[Settings] Update WakeLock Enabled Failure', props<{error: string}>());
 
-export const setTextSize = createAction('[Settings] Set Text Size', props<{size: TextSize}>())
+export const setTextSize = createAction('[Settings] Set Text Size', props<{size: TextSize}>());
+export const setTextSizeSuccess = createAction('[Settings] Set Text Size Success');
+export const setTextSizeFailure = createAction('[Settings] Set Text Size Failure')
