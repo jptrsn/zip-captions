@@ -1,0 +1,9 @@
+<div class="toast toast-start toast-top" *ngIf="message() as text">
+  <div class="alert alert-info flex items-center gap-3" @expandRightOnEnter>
+    <span translate>{{'SW_VERSION.' + text}}</span>
+    <div class="loading loading-spinner" *ngIf="text === 'VERSION_DETECTED'"></div>
+    <button class="btn btn-circle" *ngIf="text === 'VERSION_READY'" (click)="reload()">
+      <ng-icon name="heroArrowPath"></ng-icon>
+    </button>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 // Base icon vector set that's in use in the app
 export {
+  heroArrowPath,
   heroBars3,
   heroMicrophone,
   heroPlayCircle,

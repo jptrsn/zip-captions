@@ -1,5 +1,6 @@
-import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, effect } from '@angular/core';
+import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SwUpdate } from '@angular/service-worker';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState } from './models/app.model';
@@ -13,10 +14,12 @@ import { languageSelector, themeSelector } from './selectors/settings.selector';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
+  public renderSwUpdateNotice: WritableSignal<boolean> = signal(false);
   public theme$: Signal<AppTheme>;
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private el: ElementRef,
+              private updates: SwUpdate,
               translate: TranslateService) {
 
     AvailableLanguages.forEach((lang) => translate.reloadLang(lang))
@@ -28,5 +31,6 @@ export class AppComponent {
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
+    this.renderSwUpdateNotice.set(this.updates.isEnabled);
   }
 }
