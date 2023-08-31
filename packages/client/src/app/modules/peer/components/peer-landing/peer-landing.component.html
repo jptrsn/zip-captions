@@ -1,4 +1,4 @@
-<div class="flex flex-col basis-full bg-base-300 text-base-content gap-3">
+<div class="flex flex-col basis-full overflow-hidden flex-grow-0 bg-base-300 text-base-content">
   <div class="flex flex-row gap-3 items-center p-3" *ngIf="acceptedPeerConnections(); else acceptPermissions">
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
@@ -26,10 +26,10 @@
     </div>
   </ng-template>
   
-  <app-broadcast-room class="flex basis-full" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
+  <app-broadcast-room class="flex basis-full overflow-y-hidden" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
 
   <ng-template #landing>
-    <div class="flex basis-full items-stretch justify-center">
+    <div class="flex basis-full items-stretch justify-center overflow-y-auto">
       <div class="flex flex-col basis-full max-w-4xl lg:gap-24 sm:gap-12 gap-6 p-3">
         <div class="form-row" *ngIf="!disableBroadcast()">
           <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" (click)="createRoom()" translate>STREAM.createBroadcast</button>

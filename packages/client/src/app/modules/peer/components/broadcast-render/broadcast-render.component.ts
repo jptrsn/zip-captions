@@ -19,7 +19,7 @@ import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOn
     slideInUpOnEnterAnimation(),
     slideOutDownOnLeaveAnimation(),
     slideOutRightOnLeaveAnimation()
-  ]
+  ],
 })
 export class BroadcastRenderComponent implements OnInit, OnDestroy {
   
@@ -66,5 +66,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+  }
+
+  updateDom(): void {
+    this.cd.detectChanges()
   }
 }

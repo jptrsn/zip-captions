@@ -1,7 +1,7 @@
-<div class="drawer drawer-end">
+<div class="drawer drawer-end overflow-y-hidden">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content overflow-hidden">
-    <div class="flex flex-col h-full basis-full flex-grow-0 flex-shrink overflow-hidden">
+    <div class="flex flex-col h-full overflow-hidden">
       <app-recognized-text 
         [connected]="connected"
         [hasLiveResults]="hasLiveResults"
@@ -16,6 +16,6 @@
   </div>
   <div class="drawer-side">
     <label for="drawer-enable" class="drawer-overlay opacity-0"></label>
-    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter @slideOutRightOnLeave></app-recognition-control-sidebar>
+    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter></app-recognition-control-sidebar>
   </div>
 </div>
