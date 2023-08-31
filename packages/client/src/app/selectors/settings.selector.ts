@@ -23,3 +23,8 @@ export const selectTextSize = createSelector(
   selectAppSettings,
   (state) => state.textSize
 )
+
+export const selectLineHeight = createSelector(
+  selectAppSettings,
+  (state) => state.lineHeight
+)

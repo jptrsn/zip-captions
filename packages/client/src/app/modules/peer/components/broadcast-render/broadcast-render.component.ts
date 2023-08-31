@@ -8,11 +8,18 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
+import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-broadcast-render',
-  templateUrl: '../../../media/components/recognition-render/recognition-render.component.html',
+  templateUrl: './broadcast-render.component.html',
   styleUrls: ['./broadcast-render.component.scss'],
+  animations: [
+    slideInRightOnEnterAnimation(),
+    slideInUpOnEnterAnimation(),
+    slideOutDownOnLeaveAnimation(),
+    slideOutRightOnLeaveAnimation()
+  ],
 })
 export class BroadcastRenderComponent implements OnInit, OnDestroy {
   
@@ -38,7 +45,6 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       if (this.liveText() == '' && this.textOutput().length === 0) {
         return false;
       }
-      
       return true;
     });
   }
@@ -60,5 +66,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+  }
+
+  updateDom(): void {
+    this.cd.detectChanges()
   }
 }

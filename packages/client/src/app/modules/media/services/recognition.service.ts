@@ -24,7 +24,7 @@ export class RecognitionService {
   private platform: Signal<AppPlatform | undefined>;
   private DEBOUNCE_TIME_MS = 150;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
-  private readonly MAX_RECOGNITION_LENGTH = 5;
+  private readonly MAX_RECOGNITION_LENGTH = 15;
   private historyWorker: Worker;
   private language: Signal<Language>;
 
@@ -224,8 +224,8 @@ export class RecognitionService {
       if (err.error === 'no-speech') {
         if (liveOutput() !== '') {
           liveOutput.set('');
-        } else if (recognizedText().length) {
-          recognizedText.update((previous) => previous.slice(0, previous.length - 1))
+        // } else if (recognizedText().length) {
+        //   recognizedText.update((previous) => previous.slice(0, previous.length - 1))
         }
         return;
       // } else if (err.error === 'aborted' && this.activeRecognitionStreams.has(streamId)) {

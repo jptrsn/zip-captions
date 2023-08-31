@@ -5,21 +5,19 @@
     </button>
 
     <details #fontSizeMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open')}" role="button" (click)="hideElements([lineSpacingMenu])">
+      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open'), 'tooltip tooltip-top': !fontSizeMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.textSize' | translate" (click)="hideElements([lineSpacingMenu])">
         <ng-icon name="tablerTextSize"></ng-icon>
         <div class="text-xs text-base-100" *ngIf="fontSizeMenu.hasAttribute('open')">{{'TEXT_SIZE.' + textSize() | translate}}</div>
       </summary>
       <div class="dropdown-content">
-        <ul class="menu bg-secondary-content rounded-s-xl text-2xl">
+        <ul class="menu bg-secondary-content rounded-s-xl text-2xl gap-3">
           <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Increase text size" [disabled]="textSizeMax()" (click)="increaseTextSize()">
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMax()" (click)="increaseTextSize()">
               <ng-icon name="tablerTextIncrease"></ng-icon>
             </button>
           </li>
           <li>
-          </li>
-          <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Decrease text size" [disabled]="textSizeMin()" (click)="decreaseTextSize()">
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMin()" (click)="decreaseTextSize()">
               <ng-icon name="tablerTextDecrease"></ng-icon>
             </button>
           </li>
@@ -28,20 +26,21 @@
     </details>
 
     <details #lineSpacingMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open')}" role="button" (click)="hideElements([fontSizeMenu])">
+      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open'), 'tooltip tooltip-top': !lineSpacingMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.lineHeight' | translate" (click)="hideElements([fontSizeMenu])">
         <ng-icon name="tablerLineHeight"></ng-icon>
+        <div class="text-xs text-base-100" *ngIf="lineSpacingMenu.hasAttribute('open')">{{'LINE_HEIGHT.' + lineHeight() | translate}}</div>
       </summary>
       <div class="dropdown-content">
-        <ul class="menu bg-secondary-content rounded-s-xl text-2xl">
+        <ul class="menu bg-secondary-content rounded-s-xl text-2xl gap-3">
           <li>
-            <a class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Increase line spacing">
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMax()" (click)="increaseLineHeight()">
               <ng-icon name="tablerPlus"></ng-icon>
-            </a>
+            </button>
           </li>
           <li>
-            <a class="btn btn-lg btn-outline tooltip tooltip-left" data-tip="Decrease line spacing">
+            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMin()" (click)="decreaseLineHeight()">
               <ng-icon name="tablerMinus"></ng-icon>
-            </a>
+            </button>
           </li>
         </ul>
       </div>

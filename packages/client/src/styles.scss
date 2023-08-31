@@ -117,4 +117,45 @@ body {
   &.textSize-9xl {
     @apply text-5xl sm:text-9xl;
   }
+  &.lineHeight-none {
+    @apply leading-none;
+    &.live {
+      @apply leading-none;
+    }
+  }
+  
+  &.lineHeight-tight {
+    @apply leading-tight;
+    &.live {
+      @apply leading-tight;
+    }
+  }
+  
+  &.lineHeight-snug {
+    @apply leading-snug;
+    &.live {
+      @apply leading-snug;
+    }
+  }
+  
+  &.lineHeight-normal {
+    @apply leading-normal;
+    &.live {
+      @apply leading-normal;
+    }
+  }
+  
+  &.lineHeight-relaxed {
+    @apply leading-relaxed;
+    &.live {
+      @apply leading-relaxed;
+    }
+  }
+  
+  &.lineHeight-loose {
+    @apply leading-loose;
+    &.live {
+      @apply leading-loose;
+    }
+  }
 }

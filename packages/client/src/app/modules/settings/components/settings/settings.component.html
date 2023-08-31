@@ -7,7 +7,7 @@
         <app-wake-lock-enabled [group]="formGroup" controlName="wakelock"></app-wake-lock-enabled>
         <div class="grid grid-cols-2 gap-3">
           <app-text-size [group]="formGroup" controlName="textSize"></app-text-size>
-          <!-- TODO: Add line spacing control here -->
+          <app-line-height [group]="formGroup" controlName="lineHeight"></app-line-height>
         </div>
       </div>
       <div class="form-control overflow-y-auto">
@@ -18,9 +18,9 @@
           <div [classList]="classList()" translate>
             SETTINGS.p1
           </div>
-          <div [classList]="classList() + ' hidden sm:flex sm:visible'" translate>
+          <!-- <div [classList]="classList() + ' hidden sm:flex sm:visible'" translate>
             SETTINGS.p2
-          </div>
+          </div> -->
           <div [classList]="classList()" translate>
             SETTINGS.p3
           </div>
