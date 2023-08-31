@@ -342,7 +342,9 @@
     "wakelockOff": "Zip Captions will respect your system settings for sleep.",
     "rememberSetting": "Remember my response on this device.",
     "textSize": "Text Size",
-    "lineHeight": "Line Spacing"
+    "lineHeight": "Line Spacing",
+    "increase": "Increase",
+    "decrease": "Decrease"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
