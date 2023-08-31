@@ -1,5 +1,5 @@
 <div class="drawer drawer-end">
-  <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (click)="updateDom()" />
+  <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content overflow-hidden">
     <div class="flex flex-col h-full overflow-hidden">
       <app-recognized-text 
