@@ -6,7 +6,7 @@ export const defaultSettingsState: SettingsState = {
   lang: 'en',
   wakeLock: true,
   textSize: 'textSize-3xl',
-  lineHeight: 'lineHeight-snug'
+  lineHeight: 'lineHeight-normal'
 }
 
 export const settingsReducers = createReducer(

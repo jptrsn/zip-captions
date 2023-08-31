@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionErrorSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionErrorSelector, recognitionIdSelector, selectRecognition } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -31,8 +31,9 @@ export class RecognitionRenderComponent {
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition));
     this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
-    this.liveText = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
-    this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state()?.id as string)() : [])
+    const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
+    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput(id() as string)() : '');
+    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText(id() as string)() : []);
     this.hasLiveResults = computed(() => {
       if (this.connected()) {
         if (this.liveText() == '' && this.textOutput().length === 0) {
@@ -40,7 +41,7 @@ export class RecognitionRenderComponent {
         }
         return true;
       }
-      return false;
+      return this.state()?.status != RecognitionStatus.uninitialized;
     });
     this.error = toSignal(this.store.select(recognitionErrorSelector));
   }

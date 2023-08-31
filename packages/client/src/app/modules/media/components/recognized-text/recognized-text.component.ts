@@ -18,7 +18,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class RecognizedTextComponent {
   @Input({ required: true}) connected!: Signal<boolean | undefined>;
-  @Input() hasLiveResults: Signal<boolean> = signal(true);
+  @Input({ required: true}) hasLiveResults!: Signal<boolean>;
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
