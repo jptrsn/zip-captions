@@ -351,6 +351,7 @@
     "streamConnected": "Text will appear once we hear something...",
     "verifyingConnection": "Verifying join code...",
     "hostConnecting": "Waiting for session host...",
+    "recognitionPaused": "Recognition has been paused...",
     "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device."
   },
   "ERRORS": {
