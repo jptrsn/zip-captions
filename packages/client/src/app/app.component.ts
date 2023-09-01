@@ -20,14 +20,14 @@ export class AppComponent {
               private renderer: Renderer2,
               private el: ElementRef,
               private updates: SwUpdate,
-              translate: TranslateService) {
+              private translate: TranslateService) {
 
-    AvailableLanguages.forEach((lang) => translate.reloadLang(lang))
-    translate.setDefaultLang('en');
+    AvailableLanguages.forEach((lang) => this.translate.reloadLang(lang))
+    this.translate.setDefaultLang('en');
 
     this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<Language>;
-    effect(() => translate.use(languageChanged()))
+    effect(() => this.translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());

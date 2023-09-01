@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit, Signal, WritableSignal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { NavigationStart, Router } from '@angular/router';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { expandRightOnEnterAnimation } from 'angular-animations';
-import { Subject, filter, map, takeUntil, tap } from 'rxjs';
+import { Subject, filter, map, takeUntil, tap, throttle, throttleTime } from 'rxjs';
 
 @Component({
   selector: 'app-service-worker-update',
@@ -14,8 +15,10 @@ import { Subject, filter, map, takeUntil, tap } from 'rxjs';
 })
 export class ServiceWorkerUpdateComponent {
   public message: Signal<VersionEvent['type'] | undefined>;
-  
-  constructor(private updates: SwUpdate) {
+  public showMessage: WritableSignal<boolean> = signal(true);
+  constructor(private updates: SwUpdate,
+              private router: Router) {
+    
     this.message = toSignal<VersionEvent['type']>(this.updates.versionUpdates.pipe(
       tap((evt: VersionEvent) => {
         switch (evt.type) {
@@ -37,12 +40,21 @@ export class ServiceWorkerUpdateComponent {
       map((evt: VersionEvent) => evt.type),
       filter((type: VersionEvent['type']) => type !== 'NO_NEW_VERSION_DETECTED')
     ));
-    if (this.updates.isEnabled) {
+
+    this.router.events.pipe(
+      takeUntilDestroyed(),
+      filter((ev) => ev instanceof NavigationStart),
+      throttleTime(300000)
+    ).subscribe(() => {
       this.updates.checkForUpdate();
-    }
+    })
   }
 
   reload(): void {
     document.location.reload();
+  }
+
+  dismiss(): void {
+    this.showMessage.set(false);
   }
 }

@@ -363,5 +363,34 @@
       "bad-grammar" : "Erreur de reconnaissance vocale : Il y a eu une erreur dans la grammaire ou les balises sémantiques de la reconnaissance vocale, ou le format de grammaire ou de balise sémantique choisi n'était pas pris en charge.",
       "language-not-supported" : "Erreur de reconnaissance vocale : L'agent utilisateur ne prend pas en charge la langue spécifiée dans la valeur de l'attribut lang de l'objet SpeechRecognition."
     }
+  },
+  "TEXT_SIZE": {
+    "textSize-xs": "XS",
+    "textSize-sm": "SM",
+    "textSize-base": "MD",
+    "textSize-lg": "LG",
+    "textSize-xl": "XL",
+    "textSize-2xl": "2XL",
+    "textSize-3xl": "3XL",
+    "textSize-4xl": "4XL",
+    "textSize-5xl": "5XL",
+    "textSize-6xl": "6XL",
+    "textSize-7xl": "7XL",
+    "textSize-8xl": "8XL",
+    "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "Aucun",
+    "lineHeight-tight": "Serré",
+    "lineHeight-snug": "Doux",
+    "lineHeight-normal": "Normal",
+    "lineHeight-relaxed": "Décontracté",
+    "lineHeight-loose": "Détendu"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Télécharger la nouvelle version de l'application",
+    "VERSION_READY": "Vous visualisez une ancienne version de l'application. Actualisez pour voir la dernière version.",
+    "VERSION_INSTALLATION_FAILED": "Échec de l'installation de la version de l'application",
+    "NO_NEW_VERSION_DETECTED": "Aucune nouvelle version n'a été détectée."
   }
 }

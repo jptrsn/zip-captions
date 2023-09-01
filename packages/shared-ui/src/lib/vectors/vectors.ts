@@ -11,11 +11,13 @@ export {
   heroMinusCircle,
   heroExclamationTriangle,
   heroCheckCircle,
+  heroCheck,
   heroArrowTopRightOnSquare,
   heroArrowLeft,
   heroArrowRight,
   heroSignalSlash,
   heroChevronLeft,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 
 export {

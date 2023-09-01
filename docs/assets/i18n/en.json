@@ -340,7 +340,11 @@
     "wakelock": "Screen Wake",
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
     "wakelockOff": "Zip Captions will respect your system settings for sleep.",
-    "rememberSetting": "Remember my response on this device."
+    "rememberSetting": "Remember my response on this device.",
+    "textSize": "Text Size",
+    "lineHeight": "Line Spacing",
+    "increase": "Increase",
+    "decrease": "Decrease"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -363,5 +367,34 @@
       "bad-grammar": "Speech recognition error: There was an error in the speech recognition grammar or semantic tags, or the chosen grammar format or semantic tag format was unsupported.",
       "language-not-supported": "Speech recognition error: The user agent does not support the language specified in the value of lang attribute of the SpeechRecognition object."
     }
+  },
+  "TEXT_SIZE": {
+    "textSize-xs": "XS",
+    "textSize-sm": "SM",
+    "textSize-base": "MD",
+    "textSize-lg": "LG",
+    "textSize-xl": "XL",
+    "textSize-2xl": "2XL",
+    "textSize-3xl": "3XL",
+    "textSize-4xl": "4XL",
+    "textSize-5xl": "5XL",
+    "textSize-6xl": "6XL",
+    "textSize-7xl": "7XL",
+    "textSize-8xl": "8XL",
+    "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "None",
+    "lineHeight-tight": "Tight",
+    "lineHeight-snug": "Snug",
+    "lineHeight-normal": "Normal",
+    "lineHeight-relaxed": "Relaxed",
+    "lineHeight-loose": "Loose"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Downloading new app version",
+    "VERSION_READY": "You are viewing an older version of the app. Refresh to see the latest.",
+    "VERSION_INSTALLATION_FAILED": "Failed to install app version",
+    "NO_NEW_VERSION_DETECTED": "No new version detected"
   }
 }

@@ -1,16 +1,16 @@
-import { Component, Input, OnDestroy, OnInit, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
+import { Component, Input, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
 import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent implements OnInit, OnDestroy {
+export class RecognitionControlSidebarComponent {
   @ViewChildren('details') subMenus!: HTMLElement[];
   @Input() showPause = false;
   public textSize: Signal<TextSize>;
@@ -67,13 +67,5 @@ export class RecognitionControlSidebarComponent implements OnInit, OnDestroy {
       const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
       this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx-1]}));
     }
-  }
-
-  ngOnInit(): void {
-    console.log('init')
-  }
-
-  ngOnDestroy(): void {
-    console.log('destroy')
   }
 }
