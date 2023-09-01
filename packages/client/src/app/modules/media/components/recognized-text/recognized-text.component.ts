@@ -5,9 +5,10 @@ import { AppState } from '../../../../models/app.model';
 import { Store, select } from '@ngrx/store';
 import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { recognitionStatusSelector } from 'packages/client/src/app/selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionPausedSelector, recognitionStatusSelector } from 'packages/client/src/app/selectors/recognition.selector';
 import { RecognitionStatus } from 'packages/client/src/app/models/recognition.model';
 import { map } from 'rxjs';
+import { selectBroadcastPaused } from 'packages/client/src/app/selectors/peer.selectors';
 
 @Component({
   selector: 'app-recognized-text',
@@ -35,9 +36,8 @@ export class RecognizedTextComponent {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()}`)
-    this.isPaused = toSignal(this.store.pipe(
-      select(recognitionStatusSelector),
-      map((status) => status === RecognitionStatus.paused)
-    ));
+    const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector))
+    const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused))
+    this.isPaused = computed(() => recognitionPaused() || broadcastPaused()) 
   }
 }

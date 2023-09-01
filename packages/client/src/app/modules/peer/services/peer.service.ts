@@ -8,6 +8,7 @@ import { CacheService } from '../../../services/cache/cache.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { AppState } from '../../../models/app.model';
+import { RecognitionStatus } from '../../../models/recognition.model';
 
 @Injectable({
   providedIn: 'root'
@@ -187,7 +188,6 @@ export class PeerService {
         }
         default: {
           console.warn('UNHANDLED MESSAGE!!!', data);
-          this.store.dispatch(PeerActions.socketServerMessageReceived(data));
           break;
         }
       }
@@ -452,6 +452,9 @@ export class PeerService {
             this.textOutput$.next(data.recognition);
             break;
         }
+      } else if (data?.type === 'status' && 'status' in data) {
+        console.log('broadcast status update', data);
+        this.store.dispatch(PeerActions.setBroadcastPausedState({paused: data.status === RecognitionStatus.paused}))
       } else {
         console.warn(`UNHANDLED DATA`, data)
       }

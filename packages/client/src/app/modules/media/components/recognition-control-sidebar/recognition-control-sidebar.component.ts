@@ -4,9 +4,9 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
-import { selectIsBroadcasting } from 'packages/client/src/app/selectors/peer.selectors';
-import { RecognitionActions } from 'packages/client/src/app/models/recognition.model';
-import { recognitionConnectedSelector } from 'packages/client/src/app/selectors/recognition.selector';
+import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
+import { RecognitionActions } from '../../../../models/recognition.model';
+import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-recognition-control-sidebar',

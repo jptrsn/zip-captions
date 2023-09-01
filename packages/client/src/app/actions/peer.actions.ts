@@ -55,4 +55,6 @@ export const PeerActions = {
 
   peerMessageReceived: createAction('[Peer] Peer Message Received', props<{data: any}>()),
   updateConnectedPeerCount: createAction('[Peer] Update Connected Peer Count', props<{count: number}>()),
+
+  setBroadcastPausedState: createAction('[Peer] Set Broadcast Paused State', props<{paused: boolean}>()),
 }
