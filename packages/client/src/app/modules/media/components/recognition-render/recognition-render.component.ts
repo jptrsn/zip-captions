@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionErrorSelector, recognitionIdSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { RecognitionService } from '../../services/recognition.service';
 
@@ -23,6 +23,7 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
 
   public state: Signal<RecognitionState | undefined>;
   public connected: Signal<boolean | undefined>;
+  public paused: Signal<boolean | undefined>;
   public liveText: Signal<string>;
   public textOutput: Signal<string[]>;
   public hasLiveResults: Signal<boolean>;
@@ -36,7 +37,8 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
               private fullScreen: FullScreenService,
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition));
-    this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
+    this.connected = toSignal(this.store.select(recognitionConnectedSelector));
+    this.paused = toSignal(this.store.select(recognitionPausedSelector));
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
     this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput(id() as string)() : '');
     this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText(id() as string)() : []);

@@ -23,3 +23,8 @@ export const recognitionConnectedSelector = createSelector(
   selectRecognition,
   (state) => state.status === RecognitionStatus.connected
 )
+
+export const recognitionPausedSelector = createSelector(
+  selectRecognition,
+  (state) => state.status === RecognitionStatus.paused
+)

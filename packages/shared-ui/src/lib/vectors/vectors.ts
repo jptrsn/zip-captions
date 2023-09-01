@@ -5,6 +5,7 @@ export {
   heroMicrophone,
   heroPlayCircle,
   heroPauseCircle,
+  heroPause,
   heroPlayPause,
   heroStopCircle,
   heroPlusCircle,

@@ -4,6 +4,9 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
+import { selectIsBroadcasting } from 'packages/client/src/app/selectors/peer.selectors';
+import { RecognitionActions } from 'packages/client/src/app/models/recognition.model';
+import { recognitionConnectedSelector } from 'packages/client/src/app/selectors/recognition.selector';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
@@ -12,7 +15,6 @@ import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, 
 })
 export class RecognitionControlSidebarComponent {
   @ViewChildren('details') subMenus!: HTMLElement[];
-  @Input() showPause = false;
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;
   public textSizeMin: Signal<boolean>;
@@ -20,6 +22,9 @@ export class RecognitionControlSidebarComponent {
   public lineHeight: Signal<LineHeight>;
   public lineHeightMin: Signal<boolean>;
   public lineHeightMax: Signal<boolean>;
+
+  public isBroadcasting: Signal<boolean | undefined>;
+  public recognitionActive: Signal<boolean | undefined>;
 
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
@@ -33,6 +38,9 @@ export class RecognitionControlSidebarComponent {
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.lineHeightMax = computed(() => this.lineHeight() === this.availableLineHeights[this.availableLineHeights.length - 1]);
     this.lineHeightMin = computed(() => this.lineHeight() === this.availableLineHeights[0]);
+
+    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
   }
 
   hideElements(elements: HTMLElement[]) {
@@ -67,5 +75,21 @@ export class RecognitionControlSidebarComponent {
       const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
       this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx-1]}));
     }
+  }
+
+  toggleRecognition(): void {
+    if (this.recognitionActive()) {
+      this._pauseRecognition();
+    } else {
+      this._resumeRecognition();
+    }
+  }
+
+  private _pauseRecognition(): void {
+    this.store.dispatch(RecognitionActions.pauseRecognition());
+  }
+
+  private _resumeRecognition(): void {
+    this.store.dispatch(RecognitionActions.resumeRecognition());
   }
 }

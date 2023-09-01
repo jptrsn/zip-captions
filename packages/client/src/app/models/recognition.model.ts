@@ -4,6 +4,7 @@ export enum RecognitionStatus {
   connected = 'CONNECTED',
   disconnected = 'DISCONNECTED',
   error = 'ERROR',
+  paused = 'PAUSED',
 }
 export interface RecognitionState {
   status: RecognitionStatus;

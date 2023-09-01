@@ -67,6 +67,20 @@ export class RecognitionService {
     }
   }
 
+  public pauseRecognition(): void {
+    this.recognitionMap.forEach((recog: SpeechRecognition, streamId: string) => {
+      this.activeRecognitionStreams.delete(streamId);
+      recog.stop();
+    })
+  }
+
+  public resumeRecognition(): void {
+    this.recognitionMap.forEach((recog: SpeechRecognition, streamId: string) => {
+      this.activeRecognitionStreams.add(streamId);
+      recog.start();
+    })
+  }
+
   public getLiveOutput(streamId: string): Signal<string> {
     const liveOutput = this.liveOutputMap.get(streamId);
     if (!liveOutput) {
