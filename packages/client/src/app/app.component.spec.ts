@@ -17,6 +17,7 @@ import { AppState } from './models/app.model';
 import { MediaModule } from './modules/media/media.module';
 import { AppTheme, AvailableLanguages, SettingsActions } from './modules/settings/models/settings.model';
 import { languageSelector } from './selectors/settings.selector';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -30,6 +31,12 @@ describe('AppComponent', () => {
           ...TestingModuleImports,
           MediaModule,
           EffectsModule.forRoot(),
+          ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: false,
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000',
+          }),
         ],
         declarations: [
           AppComponent, 
