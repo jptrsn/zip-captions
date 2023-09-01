@@ -1,6 +1,8 @@
-import { ElementRef } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SwUpdate, UnrecoverableStateEvent, VersionEvent } from '@angular/service-worker';
 import { NgIconsModule } from '@ng-icons/core';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
@@ -14,23 +16,8 @@ import * as EN_TRANSLATIONS from '../assets/i18n/en.json';
 import * as FR_TRANSLATIONS from '../assets/i18n/fr.json';
 import * as IT_TRANSLATIONS from '../assets/i18n/it.json';
 import * as SP_TRANSLATIONS from '../assets/i18n/sp.json';
-import { ReactiveFormsModule } from '@angular/forms';
-import { SwUpdate, UnrecoverableStateEvent, VersionEvent } from '@angular/service-worker';
+
 const actions$ = new Observable<Action>();
-
-class MockSwUpdate {
-  versionUpdates = new Subject<VersionEvent>().asObservable();
-  unrecoverable = new Subject<UnrecoverableStateEvent>().asObservable();
-  isEnabled = false;
-  
-  public checkForUpdate(): Promise<void> {
-    return new Promise((resolve) => resolve());
-  }
-  public activateUpdate(): Promise<void> {
-    return new Promise((resolve) => resolve());
-  }
-
-}
 
 export const TestingModuleImports = [
   NoopAnimationsModule,
@@ -50,5 +37,4 @@ export const TestingModuleImports = [
 export const TestingModuleProviders = [
   provideMockStore({ initialState: defaultAppState }),
   provideMockActions(() => actions$),
-  { provide: SwUpdate, useValue: MockSwUpdate }
 ]
