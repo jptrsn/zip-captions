@@ -17,6 +17,9 @@
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
+    <button *ngIf="!isActive()" class="btn btn-circle tooltip tooltip-bottom" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
+      <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
+    </button>
   </ng-container>
 
   <ng-container *ngIf="isBroadcasting()">

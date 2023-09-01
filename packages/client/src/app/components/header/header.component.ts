@@ -1,17 +1,16 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, WritableSignal, signal } from '@angular/core';
-import { NavigationEnd, NavigationStart, Route, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
-import { Platform } from '@angular/cdk/platform';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Subject, filter, map, switchMap, takeUntil } from 'rxjs';
+import { Subject, filter, map, takeUntil } from 'rxjs';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionStatus } from '../../models/recognition.model';
-import { recognitionStatusSelector } from '../../selectors/recognition.selector';
-import { MenuItem } from './header.model';
-import { animate, style, transition, trigger } from '@angular/animations';
 import { platformSelector } from '../../selectors/app.selector';
 import { selectIsBroadcasting } from '../../selectors/peer.selectors';
+import { recognitionStatusSelector } from '../../selectors/recognition.selector';
+import { MenuItem } from './header.model';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

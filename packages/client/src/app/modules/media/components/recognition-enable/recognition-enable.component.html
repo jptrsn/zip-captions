@@ -1,8 +1,8 @@
 <button 
-  class="btn btn-circle text-2xl"
+  class="btn btn-circle tooltip tooltip-left"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
   (click)="toggleState()"
-  [attr.aria-label]="connected() ? 'LABELS.stop' : 'LABELS.listen' | translate"
+  [attr.data-tip]="connected() ? ('LABELS.stop' | translate) : ('LABELS.listen' | translate)"
   >
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>

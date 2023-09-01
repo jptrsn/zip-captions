@@ -28,6 +28,7 @@ export {
   tablerLineHeight,
   tablerPlus,
   tablerMinus,
+  tablerBuildingBroadcastTower,
 } from '@ng-icons/tabler-icons'
 
 // Custom vectors to add
