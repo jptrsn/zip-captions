@@ -1,6 +1,6 @@
 {
   "name": "zip-captions",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -28,6 +28,7 @@
     "@angular/service-worker": "~16.0.0",
     "@ng-icons/core": "^25.0.1",
     "@ng-icons/heroicons": "^25.0.1",
+    "@ng-icons/tabler-icons": "^25.2.0",
     "@ngrx/component-store": "~16.0.0",
     "@ngrx/effects": "~16.0.0",
     "@ngrx/entity": "~16.0.0",

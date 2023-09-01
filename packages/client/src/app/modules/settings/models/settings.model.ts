@@ -43,10 +43,40 @@ export const AvailableLanguages: Language[] = [
   // 'pt' // TODO: Portuguese translation file
 ]
 
+export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';
+
+export const AvailableTextSizes: TextSize[] = [
+  'textSize-xs',
+  'textSize-sm',
+  'textSize-base',
+  'textSize-lg',
+  'textSize-xl',
+  'textSize-2xl',
+  'textSize-3xl',
+  'textSize-4xl',
+  'textSize-5xl',
+  'textSize-6xl',
+  'textSize-7xl',
+  'textSize-8xl',
+  'textSize-9xl',
+];
+
+export type LineHeight = 'lineHeight-none' | 'lineHeight-tight' | 'lineHeight-snug' | 'lineHeight-normal' | 'lineHeight-relaxed' | 'lineHeight-loose';
+
+export const AvailableLineHeights: LineHeight[] = [
+  'lineHeight-none',
+  'lineHeight-tight',
+  'lineHeight-snug',
+  'lineHeight-normal',
+  'lineHeight-relaxed',
+  'lineHeight-loose',
+]
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
   wakeLock: boolean;
+  textSize: TextSize;
+  lineHeight: LineHeight;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

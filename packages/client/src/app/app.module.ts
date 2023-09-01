@@ -29,9 +29,10 @@ import { audioStreamReducers } from './reducers/audio-stream.reducer';
 import { peerReducers } from './reducers/peer.reducer';
 import { recognitionReducers } from './reducers/recognition.reducer';
 import { settingsReducers } from './reducers/settings.reducer';
-import { TimeagoModule } from "ngx-timeago";
+import { TimeagoModule } from 'ngx-timeago';
 import { SettingsEffects } from './effects/settings.effects';
 import { RecognitionEffects } from './effects/recognition.effects';
+import { ServiceWorkerUpdateComponent } from './components/service-worker-update/service-worker-update.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -48,11 +49,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookieModalComponent,
     PrivacyComponent,
     TermsAndConditionsComponent,
+    ServiceWorkerUpdateComponent,
   ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
+    RouterModule.forRoot(appRoutes, {
+      initialNavigation: 'enabledBlocking',
+      useHash: true,
+    }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -72,11 +77,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       settings: settingsReducers,
       peer: peerReducers,
     }),
-    EffectsModule.forRoot([
-      AppEffects, 
-      SettingsEffects,
-      RecognitionEffects
-    ]),
+    EffectsModule.forRoot([AppEffects, SettingsEffects, RecognitionEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),
@@ -89,7 +90,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    TimeagoModule.forRoot()
+    TimeagoModule.forRoot(),
   ],
   bootstrap: [AppComponent],
 })

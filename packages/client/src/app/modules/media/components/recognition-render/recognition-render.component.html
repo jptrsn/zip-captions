@@ -1,9 +1,21 @@
-<div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
-  <app-recognized-text 
-    [connected]="connected" 
-    [hasLiveResults]="hasLiveResults"
-    [textOutput]="textOutput"
-    [error]="error"
-    class="flex flex-grow-0 flex-shrink basis-full overflow-y-hidden"></app-recognized-text>
-  <app-recognized-live-text [text]="liveText" class="flex flex-grow flex-shrink" *ngIf="connected()"></app-recognized-live-text>
+<div class="drawer drawer-end overflow-y-hidden">
+  <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" [value]="sidebarVisible" />
+  <div class="drawer-content overflow-hidden">
+    <div class="flex flex-col h-full overflow-hidden">
+      <app-recognized-text 
+        [connected]="connected"
+        [hasLiveResults]="hasLiveResults"
+        [textOutput]="textOutput"
+        [error]="error"
+        class="flex flex-grow-0 flex-shrink basis-full overflow-y-hidden"></app-recognized-text>
+      <app-recognized-live-text [text]="liveText" class="flex flex-grow flex-shrink" *ngIf="connected()"></app-recognized-live-text>
+    </div>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
+      <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
+    </label>
+  </div>
+  <div class="drawer-side">
+    <label for="drawer-enable" class="drawer-overlay opacity-0"></label>
+    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter></app-recognition-control-sidebar>
+  </div>
 </div>

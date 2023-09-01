@@ -363,5 +363,34 @@
       "bad-grammar": "Error de reconocimiento de voz: Se ha producido un error en la gramática o en las etiquetas semánticas de reconocimiento del habla, o el formato de gramática o de etiqueta semántica elegido no es compatible.",
       "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition."
     }
+  },
+  "TEXT_SIZE": {
+    "textSize-xs": "XS",
+    "textSize-sm": "SM",
+    "textSize-base": "MD",
+    "textSize-lg": "LG",
+    "textSize-xl": "XL",
+    "textSize-2xl": "2XL",
+    "textSize-3xl": "3XL",
+    "textSize-4xl": "4XL",
+    "textSize-5xl": "5XL",
+    "textSize-6xl": "6XL",
+    "textSize-7xl": "7XL",
+    "textSize-8xl": "8XL",
+    "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "Ninguno",
+    "lineHeight-tight": "Estrecho",
+    "lineHeight-snug": "Ajustado",
+    "lineHeight-normal": "Normal",
+    "lineHeight-relaxed": "Relajado",
+    "lineHeight-loose": "Holgado"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Descarga de la nueva versión de la aplicación",
+    "VERSION_READY": "Estás viendo una versión antigua de la aplicación. Actualiza para ver la última.",
+    "VERSION_INSTALLATION_FAILED": "Error al instalar la versión de la aplicación",
+    "NO_NEW_VERSION_DETECTED": "No se ha detectado ninguna versión nueva"
   }
 }

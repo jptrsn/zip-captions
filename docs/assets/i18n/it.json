@@ -363,5 +363,34 @@
       "bad-grammar": "Errore di riconoscimento vocale: Si è verificato un errore nella grammatica del riconoscimento vocale o nei tag semantici, oppure il formato della grammatica o del tag semantico scelto non è supportato.",
       "language-not-supported": "Errore nel riconoscimento vocale: L'interprete non supporta la lingua specificata nel valore dell'attributo lang dell'oggetto SpeechRecognition"
     }
+  },
+  "TEXT_SIZE": {
+    "textSize-xs": "XS",
+    "textSize-sm": "SM",
+    "textSize-base": "MD",
+    "textSize-lg": "LG",
+    "textSize-xl": "XL",
+    "textSize-2xl": "2XL",
+    "textSize-3xl": "3XL",
+    "textSize-4xl": "4XL",
+    "textSize-5xl": "5XL",
+    "textSize-6xl": "6XL",
+    "textSize-7xl": "7XL",
+    "textSize-8xl": "8XL",
+    "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "Nessuno",
+    "lineHeight-tight": "Stretto",
+    "lineHeight-snug": "Accogliente",
+    "lineHeight-normal": "Normale",
+    "lineHeight-relaxed": "Rilassato",
+    "lineHeight-loose": "Sciolto"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Scaricare la nuova versione dell'app",
+    "VERSION_READY": "Si sta visualizzando una versione precedente dell'applicazione. Aggiornare per vedere la versione più recente.",
+    "VERSION_INSTALLATION_FAILED": "Impossibile installare la versione dell'app",
+    "NO_NEW_VERSION_DETECTED": "Non è stata rilevata alcuna nuova versione"
   }
 }

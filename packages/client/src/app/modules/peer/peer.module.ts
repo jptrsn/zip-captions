@@ -10,7 +10,6 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { PeerEffects } from '../../effects/peer.effects';
 import { MediaModule } from '../media/media.module';
 import { AcceptPeerConnectionsModalComponent } from './components/accept-peer-connections-modal/accept-peer-connections-modal.component';
-import { BroadcastControlsSidebarComponent } from './components/broadcast-controls-sidebar/broadcast-controls-sidebar.component';
 import { BroadcastRenderComponent } from './components/broadcast-render/broadcast-render.component';
 import { BroadcastRoomComponent } from './components/broadcast-room/broadcast-room.component';
 import { ConnectedPeerCountChipComponent } from './components/connected-peer-count-chip/connected-peer-count-chip.component';
@@ -38,7 +37,6 @@ import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug
     RoomIdComponent,
     JoinCodeComponent,
     BroadcastRoomComponent,
-    BroadcastControlsSidebarComponent,
     BroadcastRenderComponent,
     AcceptPeerConnectionsModalComponent,
   ],

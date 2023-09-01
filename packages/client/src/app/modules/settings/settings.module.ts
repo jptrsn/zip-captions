@@ -12,6 +12,8 @@ import { SettingsEffects } from '../../effects/settings.effects';
 import { CookiePolicyComponent } from './components/cookie-policy/cookie-policy.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
+import { TextSizeComponent } from './components/text-size/text-size.component';
+import { LineHeightComponent } from './components/line-height/line-height.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lo
     LanguageSelectorComponent,
     CookiePolicyComponent,
     WakeLockEnabledComponent,
+    TextSizeComponent,
+    LineHeightComponent,
   ],
   imports: [
     CommonModule,
@@ -29,6 +33,5 @@ import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lo
     EffectsModule.forFeature([SettingsEffects]),
     TranslateModule.forChild({ extend: true }),
   ],
-  
 })
 export class SettingsModule {}

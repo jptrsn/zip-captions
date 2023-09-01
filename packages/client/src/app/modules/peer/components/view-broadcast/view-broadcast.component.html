@@ -1,4 +1,4 @@
-<div class="flex flex-col basis-full flex-grow-0 flex-shrink overflow-hidden">
+<div class="flex flex-col w-full h-full">
   <ng-container *ngIf="connected(); else connectingToServer">
     <ng-container *ngIf="joinCode() as code; else setJoinCode">
       <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
@@ -20,7 +20,7 @@
         </ng-template>
       </div>
   
-      <app-broadcast-render *ngIf="hostOnline()" class="flex flex-col basis-full overflow-hidden"></app-broadcast-render>
+      <app-broadcast-render *ngIf="hostOnline()" class="flex basis-full overflow-y-hidden"></app-broadcast-render>
 
       <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="!broadcastEndedTimestamp() && !hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
         <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">

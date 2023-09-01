@@ -1,10 +1,11 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
+import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
-import { recognitionErrorSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -12,25 +13,35 @@ import { RecognitionService } from '../../services/recognition.service';
   templateUrl: './recognition-render.component.html',
   styleUrls: ['./recognition-render.component.scss'],
   animations: [
+    slideInRightOnEnterAnimation(),
     slideInUpOnEnterAnimation(),
-    slideOutDownOnLeaveAnimation()
+    slideOutDownOnLeaveAnimation(),
+    slideOutRightOnLeaveAnimation()
   ]
 })
-export class RecognitionRenderComponent {
+export class RecognitionRenderComponent implements OnInit, OnDestroy {
 
   public state: Signal<RecognitionState | undefined>;
   public connected: Signal<boolean | undefined>;
+  public paused: Signal<boolean | undefined>;
   public liveText: Signal<string>;
   public textOutput: Signal<string[]>;
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
+  public sidebarVisible: boolean | undefined;
+
+  @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
   constructor(private store: Store<AppState>,
+              private el: ElementRef,
+              private fullScreen: FullScreenService,
               private recognitionService: RecognitionService) {
     this.state = toSignal(this.store.select(selectRecognition));
-    this.connected = computed(() => this.state()?.status === RecognitionStatus.connected);
-    this.liveText = computed(() => this.connected() ? this.recognitionService.getLiveOutput(this.state()?.id as string)() : '')
-    this.textOutput = computed(() => this.connected() ? this.recognitionService.getRecognizedText(this.state()?.id as string)() : [])
+    this.connected = toSignal(this.store.select(recognitionConnectedSelector));
+    this.paused = toSignal(this.store.select(recognitionPausedSelector));
+    const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
+    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput(id() as string)() : '');
+    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText(id() as string)() : []);
     this.hasLiveResults = computed(() => {
       if (this.connected()) {
         if (this.liveText() == '' && this.textOutput().length === 0) {
@@ -38,8 +49,27 @@ export class RecognitionRenderComponent {
         }
         return true;
       }
-      return false;
+      return this.state()?.status != RecognitionStatus.uninitialized;
     });
     this.error = toSignal(this.store.select(recognitionErrorSelector));
+    if (this.fullScreen.isAvailable) {
+      effect(() => {
+        if (this.fullScreen.isFullscreen()) {
+          this.sidebarCheckbox.nativeElement.checked = false;
+        }
+      })
+    }
+  }
+
+  ngOnInit(): void {
+    if (this.fullScreen.isAvailable) {
+      this.fullScreen.registerElement(this.el);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.fullScreen.isAvailable) {
+      this.fullScreen.deregisterElement();
+    }
   }
 }

@@ -363,5 +363,34 @@
       "bad-grammar": "Fehler bei der Spracherkennung: Es gab einen Fehler in der Spracherkennungsgrammatik oder den semantischen Tags, oder das gewählte Grammatikformat oder semantische Tag-Format wurde nicht unterstützt.",
       "language-not-supported": "Spracherkennungsfehler: Der User Agent unterstützt die im Wert des Attributs lang des SpeechRecognition-Objekts angegebene Sprache nicht."
     }
+  },
+  "TEXT_SIZE": {
+    "textSize-xs": "XS",
+    "textSize-sm": "SM",
+    "textSize-base": "MD",
+    "textSize-lg": "LG",
+    "textSize-xl": "XL",
+    "textSize-2xl": "2XL",
+    "textSize-3xl": "3XL",
+    "textSize-4xl": "4XL",
+    "textSize-5xl": "5XL",
+    "textSize-6xl": "6XL",
+    "textSize-7xl": "7XL",
+    "textSize-8xl": "8XL",
+    "textSize-9xl": "9XL"
+  },
+  "LINE_HEIGHT": {
+    "lineHeight-none": "Keine",
+    "lineHeight-tight": "Eng",
+    "lineHeight-snug": "Femütlich",
+    "lineHeight-normal": "Normal",
+    "lineHeight-relaxed": "Entspannt",
+    "lineHeight-loose": "Locker"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Herunterladen der neuen App-Version",
+    "VERSION_READY": "Sie sehen gerade eine ältere Version der App. Aktualisieren Sie, um die neueste Version zu sehen.",
+    "VERSION_INSTALLATION_FAILED": "Installation der App-Version fehlgeschlagen",
+    "NO_NEW_VERSION_DETECTED": "Keine neue Version gefunden"
   }
 }

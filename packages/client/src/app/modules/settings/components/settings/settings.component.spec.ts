@@ -6,6 +6,8 @@ import { LanguageSelectorComponent } from '../language-selector/language-selecto
 import { ThemeSelectorComponent } from '../theme-selector/theme-selector.component';
 import { WakeLockEnabledComponent } from '../wake-lock-enabled/wake-lock-enabled.component';
 import { SettingsComponent } from './settings.component';
+import { TextSizeComponent } from '../text-size/text-size.component';
+import { LineHeightComponent } from '../line-height/line-height.component';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -23,6 +25,8 @@ describe('SettingsComponent', () => {
         ThemeSelectorComponent,
         LanguageSelectorComponent,
         WakeLockEnabledComponent,
+        TextSizeComponent,
+        LineHeightComponent,
       ],
       providers: TestingModuleProviders
     }).compileComponents();
