@@ -453,7 +453,6 @@ export class PeerService {
             break;
         }
       } else if (data?.type === 'status' && 'status' in data) {
-        console.log('broadcast status update', data);
         this.store.dispatch(PeerActions.setBroadcastPausedState({paused: data.status === RecognitionStatus.paused}))
       } else {
         console.warn(`UNHANDLED DATA`, data)
