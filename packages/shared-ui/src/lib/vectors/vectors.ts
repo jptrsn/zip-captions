@@ -18,6 +18,8 @@ export {
   heroSignalSlash,
   heroChevronLeft,
   heroXMark,
+  heroArrowsPointingOut,
+  heroArrowsPointingIn,
 } from '@ng-icons/heroicons/outline';
 
 export {

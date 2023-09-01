@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, WritableSignal, computed, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
 
 import { Signal } from '@angular/core';
@@ -9,6 +9,7 @@ import { AppState } from '../../../../models/app.model';
 import { selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
 import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -29,8 +30,12 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
 
+  @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
+
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
+              private el: ElementRef,
+              private fullScreen: FullScreenService,
               private peerService: PeerService,
               private cd: ChangeDetectorRef) {
 
@@ -47,6 +52,14 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       }
       return true;
     });
+
+    if (this.fullScreen.isAvailable) {
+      effect(() => {
+        if (this.fullScreen.isFullscreen()) {
+          this.sidebarCheckbox.nativeElement.checked = false;
+        }
+      })
+    }
   }
 
   ngOnInit(): void {
@@ -61,10 +74,16 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     ).subscribe((results) => {
       this.textOutput.set(results);
       this.cd.detectChanges();
-    })
+    });
+    if (this.fullScreen.isAvailable) {
+      this.fullScreen.registerElement(this.el);
+    }
   }
 
   ngOnDestroy(): void {
+    if (this.fullScreen.isAvailable) {
+      this.fullScreen.deregisterElement();
+    }
     this.onDestroy$.next();
   }
 
