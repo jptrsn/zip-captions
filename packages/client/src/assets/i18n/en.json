@@ -390,5 +390,11 @@
     "lineHeight-normal": "Normal",
     "lineHeight-relaxed": "Relaxed",
     "lineHeight-loose": "Loose"
+  },
+  "SW_VERSION": {
+    "VERSION_DETECTED": "Downloading new app version",
+    "VERSION_READY": "You are viewing an older version of the app. Refresh to see the latest.",
+    "VERSION_INSTALLATION_FAILED": "Failed to install app version",
+    "NO_NEW_VERSION_DETECTED": "No new version detected"
   }
 }

@@ -76,6 +76,9 @@ MIT
 @ng-icons/heroicons
 MIT
 
+@ng-icons/tabler-icons
+MIT
+
 @ngrx/effects
 MIT
 The MIT License (MIT)

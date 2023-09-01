@@ -1,5 +1,6 @@
 // Base icon vector set that's in use in the app
 export {
+  heroArrowPath,
   heroBars3,
   heroMicrophone,
   heroPlayCircle,
@@ -10,11 +11,13 @@ export {
   heroMinusCircle,
   heroExclamationTriangle,
   heroCheckCircle,
+  heroCheck,
   heroArrowTopRightOnSquare,
   heroArrowLeft,
   heroArrowRight,
   heroSignalSlash,
   heroChevronLeft,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 
 export {

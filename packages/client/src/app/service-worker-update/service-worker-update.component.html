@@ -1,0 +1,18 @@
+<div class="toast toast-start toast-top z-30" *ngIf="showMessage() && message() as text">
+  <div class="alert alert-warning text-sm flex items-center gap-3" @expandRightOnEnter>
+    <span>{{'SW_VERSION.' + text | translate}}</span>
+    
+    <div class="loading loading-spinner" *ngIf="text === 'VERSION_DETECTED'"></div>
+
+    <ng-container *ngIf="text === 'VERSION_READY'">
+
+      <button class="btn btn-xs btn-circle btn-primary tooltip" [attr.aria-label]="'BUTTONS.accept' | translate" (click)="reload()">
+        <ng-icon name="heroArrowPath"></ng-icon>
+      </button>
+
+      <button class="btn btn-xs btn-circle btn-accent tooltip" [attr.data-tip]="'BUTTONS.decline' | translate" (click)="dismiss()">
+        <ng-icon name="heroXMark"></ng-icon>
+      </button>
+    </ng-container>
+  </div>
+</div>

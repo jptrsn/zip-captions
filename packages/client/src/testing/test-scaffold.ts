@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { TranslateTestingModule } from 'ngx-translate-testing';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Icons } from 'shared-ui';
 import { defaultAppState } from '../app/reducers/app.reducer';
 import * as DE_TRANSLATIONS from '../assets/i18n/de.json';
@@ -15,7 +15,22 @@ import * as FR_TRANSLATIONS from '../assets/i18n/fr.json';
 import * as IT_TRANSLATIONS from '../assets/i18n/it.json';
 import * as SP_TRANSLATIONS from '../assets/i18n/sp.json';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SwUpdate, UnrecoverableStateEvent, VersionEvent } from '@angular/service-worker';
 const actions$ = new Observable<Action>();
+
+class MockSwUpdate {
+  versionUpdates = new Subject<VersionEvent>().asObservable();
+  unrecoverable = new Subject<UnrecoverableStateEvent>().asObservable();
+  isEnabled = false;
+  
+  public checkForUpdate(): Promise<void> {
+    return new Promise((resolve) => resolve());
+  }
+  public activateUpdate(): Promise<void> {
+    return new Promise((resolve) => resolve());
+  }
+
+}
 
 export const TestingModuleImports = [
   NoopAnimationsModule,
@@ -35,4 +50,5 @@ export const TestingModuleImports = [
 export const TestingModuleProviders = [
   provideMockStore({ initialState: defaultAppState }),
   provideMockActions(() => actions$),
+  { provide: SwUpdate, useValue: MockSwUpdate }
 ]
