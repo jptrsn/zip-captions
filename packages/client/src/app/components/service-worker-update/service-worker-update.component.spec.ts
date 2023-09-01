@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ServiceWorkerUpdateComponent } from './service-worker-update.component';
-import { TestingModuleImports, TestingModuleProviders } from '../../testing/test-scaffold';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 describe('ServiceWorkerUpdateComponent', () => {

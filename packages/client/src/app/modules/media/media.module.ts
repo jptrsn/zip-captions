@@ -13,6 +13,7 @@ import { RecognizedLiveTextComponent } from './components/recognized-live-text/r
 import { RecognizedTextComponent } from './components/recognized-text/recognized-text.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecognitionControlSidebarComponent } from './components/recognition-control-sidebar/recognition-control-sidebar.component';
+import { FullScreenComponent } from './components/full-screen/full-screen.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { RecognitionControlSidebarComponent } from './components/recognition-con
     RecognitionEnableComponent,
     RecognitionRenderComponent,
     RecognitionControlSidebarComponent,
+    FullScreenComponent,
   ],
   imports: [
     CommonModule,

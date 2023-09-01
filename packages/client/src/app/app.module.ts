@@ -32,7 +32,7 @@ import { settingsReducers } from './reducers/settings.reducer';
 import { TimeagoModule } from 'ngx-timeago';
 import { SettingsEffects } from './effects/settings.effects';
 import { RecognitionEffects } from './effects/recognition.effects';
-import { ServiceWorkerUpdateComponent } from './service-worker-update/service-worker-update.component';
+import { ServiceWorkerUpdateComponent } from './components/service-worker-update/service-worker-update.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
