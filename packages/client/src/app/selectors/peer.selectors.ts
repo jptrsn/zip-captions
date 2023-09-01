@@ -63,3 +63,8 @@ export const selectBroadcastEndedTimestamp = createSelector(
   selectPeerState,
   (state) => state.broadcastEndedTimestamp
 )
+
+export const selectBroadcastPaused = createSelector(
+  selectPeerState,
+  (state) => state.broadcastPaused
+)
