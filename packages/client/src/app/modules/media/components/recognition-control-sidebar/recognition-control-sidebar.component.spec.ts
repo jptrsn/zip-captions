@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecognitionControlSidebarComponent } from './recognition-control-sidebar.component';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { FullScreenComponent } from '../full-screen/full-screen.component';
 
 describe('RecognitionControlSidebarComponent', () => {
   let component: RecognitionControlSidebarComponent;
@@ -9,7 +10,10 @@ describe('RecognitionControlSidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: TestingModuleImports,
-      declarations: [RecognitionControlSidebarComponent],
+      declarations: [
+        RecognitionControlSidebarComponent,
+        FullScreenComponent,
+      ],
       providers: TestingModuleProviders
     }).compileComponents();
 
