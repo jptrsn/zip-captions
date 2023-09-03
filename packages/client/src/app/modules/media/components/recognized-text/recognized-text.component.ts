@@ -1,22 +1,20 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
-import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
-import { LineHeight, TextSize } from '../../../settings/models/settings.model';
-import { AppState } from '../../../../models/app.model';
-import { Store, select } from '@ngrx/store';
-import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
+import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { recognitionConnectedSelector, recognitionPausedSelector, recognitionStatusSelector } from 'packages/client/src/app/selectors/recognition.selector';
-import { RecognitionStatus } from 'packages/client/src/app/models/recognition.model';
+import { Store, select } from '@ngrx/store';
+import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 import { map } from 'rxjs';
-import { selectBroadcastPaused } from 'packages/client/src/app/selectors/peer.selectors';
+import { AppState } from '../../../../models/app.model';
+import { selectBroadcastPaused } from '../../../../selectors/peer.selectors';
+import { recognitionPausedSelector } from '../../../../selectors/recognition.selector';
+import { selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-text',
   templateUrl: './recognized-text.component.html',
   styleUrls: ['./recognized-text.component.scss'],
   animations: [
-    fadeInUpOnEnterAnimation(),
-    fadeOutUpOnLeaveAnimation(),
+    fadeInOnEnterAnimation(),
     fadeOutOnLeaveAnimation(),
   ]
 })
@@ -29,6 +27,7 @@ export class RecognizedTextComponent {
   
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
+  public textFlowDown: Signal<boolean | undefined>;
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
@@ -39,5 +38,8 @@ export class RecognizedTextComponent {
     const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector))
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused))
     this.isPaused = computed(() => recognitionPaused() || broadcastPaused()) 
+    this.textFlowDown = toSignal(this.store.pipe(
+      select(selectTextFlow), 
+      map((flow: TextFlow) => (flow === 'top-down'))));
   }
 }
