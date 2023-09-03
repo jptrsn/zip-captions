@@ -71,12 +71,20 @@ export const AvailableLineHeights: LineHeight[] = [
   'lineHeight-relaxed',
   'lineHeight-loose',
 ]
+
+export type TextFlow = 'bottom-up' | 'top-down';
+
+export const AvailableTextFlow: TextFlow[] = [
+  'bottom-up',
+  'top-down'
+]
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
   wakeLock: boolean;
   textSize: TextSize;
   lineHeight: LineHeight;
+  textFlow: TextFlow;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

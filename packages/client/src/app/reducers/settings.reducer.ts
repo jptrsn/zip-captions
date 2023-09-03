@@ -1,12 +1,13 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, Language, LineHeight, SettingsActions, SettingsState, TextSize } from "../modules/settings/models/settings.model";
+import { AppTheme, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
   wakeLock: true,
   textSize: 'textSize-3xl',
-  lineHeight: 'lineHeight-normal'
+  lineHeight: 'lineHeight-normal',
+  textFlow: 'bottom-up'
 }
 
 export const settingsReducers = createReducer(
@@ -17,4 +18,5 @@ export const settingsReducers = createReducer(
   on(SettingsActions.updateWakeLockEnabled, (state: SettingsState, action: { enabled: boolean}) => ({...state, wakeLock: action.enabled})),
   on(SettingsActions.setTextSize, (state: SettingsState, action: { size: TextSize}) => ({...state, textSize: action.size })),
   on(SettingsActions.setLineHeight, (state: SettingsState, action: { height: LineHeight}) => ({...state, lineHeight: action.height})),
+  on(SettingsActions.setTextFlow, (state: SettingsState, action: { flow: TextFlow }) => ({...state, textFlow: action.flow})),
 )

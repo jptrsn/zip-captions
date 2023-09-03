@@ -2,11 +2,11 @@ import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild,
 import { PeerService } from '../../services/peer.service';
 
 import { Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
 import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
@@ -58,6 +58,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
         if (this.fullScreen.isFullscreen()) {
           this.sidebarCheckbox.nativeElement.checked = false;
         }
+        this.cd.detectChanges();
       })
     }
   }
@@ -83,6 +84,12 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.fullScreen.isAvailable) {
       this.fullScreen.deregisterElement();
+      this.store.select(selectBroadcastPaused).pipe(
+        takeUntil(this.onDestroy$)
+      ).subscribe(() => {
+        console.log('pause changed');
+        this.cd.detectChanges();
+      })
     }
     this.onDestroy$.next();
   }
