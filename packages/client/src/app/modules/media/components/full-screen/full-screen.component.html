@@ -1,3 +1,3 @@
-<button class="btn btn-lg btn-outline w-full" [ngClass]="{'bg-secondary-focus': isFullscreen()}" *ngIf="show" (click)="toggle()">
+<button class="btn btn-lg btn-outline w-full tooltip tooltip-left tooltip-info" [ngClass]="{'bg-secondary-focus': isFullscreen()}" [attr.data-tip]="'LABELS.fullScreen' | translate" *ngIf="show" (click)="toggle()">
   <ng-icon [name]="isFullscreen() ? 'heroArrowsPointingIn' : 'heroArrowsPointingOut'"></ng-icon>
 </button>

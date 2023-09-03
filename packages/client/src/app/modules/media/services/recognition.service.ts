@@ -86,6 +86,8 @@ export class RecognitionService {
     if (!liveOutput) {
       throw new Error(`No live output signal for recognition stream id ${streamId}`);
     } else {
+      // TODO: Remove after dev
+      // return signal<string>('This is a long sentence and should give us an idea of how to address the overflow when text size is set to maximum.') as Signal<string>
       return liveOutput;
     }
   }

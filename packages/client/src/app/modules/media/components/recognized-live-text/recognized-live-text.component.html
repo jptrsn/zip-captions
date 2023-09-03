@@ -1,4 +1,5 @@
-<div class="flex flex-col justify-end live-text-render basis-full bg-base-100 text-base-content px-6 py-2 text-xl/relaxed sm:text-2xl/relaxed md:text-5xl/relaxed max-h-full">
+<div class="flex max-h-full justify-end live-text-render flex-shrink flex-grow-0 bg-base-200 text-base-content px-6" [ngClass]="{'flex-col-reverse': textFlowDown(), 'flex-col': !textFlowDown()}">
+  <div class="divider divider-vertical"></div>
   <div *ngIf="text() as txt" @fadeOutOnLeave [classList]="classList()">{{txt | proper}}</div>
 </div>
 

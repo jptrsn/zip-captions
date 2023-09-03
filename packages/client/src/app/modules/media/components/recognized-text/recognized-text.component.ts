@@ -1,13 +1,12 @@
 import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
-import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused } from '../../../../selectors/peer.selectors';
 import { recognitionPausedSelector } from '../../../../selectors/recognition.selector';
-import { selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
-import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
+import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
+import { LineHeight, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-text',
@@ -27,7 +26,6 @@ export class RecognizedTextComponent {
   
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
-  public textFlowDown: Signal<boolean | undefined>;
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
@@ -38,8 +36,5 @@ export class RecognizedTextComponent {
     const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector))
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused))
     this.isPaused = computed(() => recognitionPaused() || broadcastPaused()) 
-    this.textFlowDown = toSignal(this.store.pipe(
-      select(selectTextFlow), 
-      map((flow: TextFlow) => (flow === 'top-down'))));
   }
 }

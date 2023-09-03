@@ -5,7 +5,7 @@
     </button>
 
     <details #fontSizeMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open'), 'tooltip tooltip-top': !fontSizeMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.textSize' | translate" (click)="hideElements([lineSpacingMenu])">
+      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !fontSizeMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.textSize' | translate" (click)="hideElements([lineSpacingMenu])">
         <ng-icon name="tablerTextSize"></ng-icon>
         <div class="text-xs text-base-100" *ngIf="fontSizeMenu.hasAttribute('open')">{{'TEXT_SIZE.' + textSize() | translate}}</div>
       </summary>
@@ -26,7 +26,7 @@
     </details>
 
     <details #lineSpacingMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open'), 'tooltip tooltip-top': !lineSpacingMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.lineHeight' | translate" (click)="hideElements([fontSizeMenu])">
+      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !lineSpacingMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.lineHeight' | translate" (click)="hideElements([fontSizeMenu])">
         <ng-icon name="tablerLineHeight"></ng-icon>
         <div class="text-xs text-base-100" *ngIf="lineSpacingMenu.hasAttribute('open')">{{'LINE_HEIGHT.' + lineHeight() | translate}}</div>
       </summary>
