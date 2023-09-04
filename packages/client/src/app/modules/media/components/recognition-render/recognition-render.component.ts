@@ -1,12 +1,15 @@
 import { Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
-import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { Store, select } from '@ngrx/store';
+import { fadeInOnEnterAnimation, slideInRightAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
 import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { RecognitionService } from '../../services/recognition.service';
+import { selectTextFlow } from '../../../../selectors/settings.selector';
+import { map } from 'rxjs';
+import { TextFlow } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognition-render',
@@ -16,7 +19,8 @@ import { RecognitionService } from '../../services/recognition.service';
     slideInRightOnEnterAnimation(),
     slideInUpOnEnterAnimation(),
     slideOutDownOnLeaveAnimation(),
-    slideOutRightOnLeaveAnimation()
+    slideOutRightOnLeaveAnimation(),
+    fadeInOnEnterAnimation(),
   ]
 })
 export class RecognitionRenderComponent implements OnInit, OnDestroy {
@@ -28,7 +32,7 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
   public textOutput: Signal<string[]>;
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
-  public sidebarVisible: boolean | undefined;
+  public textFlowDown: Signal<boolean | undefined>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
@@ -52,6 +56,11 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
       return this.state()?.status != RecognitionStatus.uninitialized;
     });
     this.error = toSignal(this.store.select(recognitionErrorSelector));
+    
+    this.textFlowDown = toSignal(this.store.pipe(
+      select(selectTextFlow), 
+      map((flow: TextFlow) => (flow === 'top-down'))));
+
     if (this.fullScreen.isAvailable) {
       effect(() => {
         if (this.fullScreen.isFullscreen()) {

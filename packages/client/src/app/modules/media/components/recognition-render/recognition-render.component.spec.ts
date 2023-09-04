@@ -3,6 +3,9 @@ import { RecognitionRenderComponent } from './recognition-render.component';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 import { RecognizedLiveTextComponent } from '../recognized-live-text/recognized-live-text.component';
 import { RecognizedTextComponent } from '../recognized-text/recognized-text.component';
+import { RecognitionControlSidebarComponent } from '../recognition-control-sidebar/recognition-control-sidebar.component';
+import { FlowDirectionComponent } from '../flow-direction/flow-direction.component';
+import { FullScreenComponent } from '../full-screen/full-screen.component';
 
 describe('RecognitionRenderComponent', () => {
   let component: RecognitionRenderComponent;
@@ -14,7 +17,10 @@ describe('RecognitionRenderComponent', () => {
       declarations: [
         RecognitionRenderComponent,
         RecognizedLiveTextComponent,
-        RecognizedTextComponent
+        RecognizedTextComponent,
+        RecognitionControlSidebarComponent,
+        FlowDirectionComponent,
+        FullScreenComponent,
       ],
       providers: TestingModuleProviders
     }).compileComponents();

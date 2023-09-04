@@ -1,13 +1,12 @@
 <div class="flex flex-col justify-end basis-full flex-grow-0 flex-shrink-0 bg-base-100 text-base-content p-6 gap-3 overflow-hidden relative">
   <div *ngIf="error() as err" class="text-error self-stretch text-center text-md sm:text-xl">{{'ERRORS.RECOGNITION.' + err | translate}}</div>
-  <div *ngIf="!hasLiveResults()" @fadeOutOnLeave class="flex flex-col flex-auto justify-center self-center">
+  <div *ngIf="!hasLiveResults()" @fadeOutOnLeave class="text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
     <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
   <ng-container *ngFor="let text of textOutput()">
-    <div @fadeInUpOnEnter @fadeOutUpOnLeave [classList]="classList()">
+    <div @fadeInOnEnter @fadeOutOnLeave [classList]="classList()">
       {{text | proper}}
     </div>
   </ng-container>
-  <div *ngIf="textOutput().length" class="flex flex-grow flex-shrink"></div>
   <div *ngIf="isPaused()" class="badge badge-warning px-6 py-3 text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" translate>HINTS.recognitionPaused</div>
 </div>

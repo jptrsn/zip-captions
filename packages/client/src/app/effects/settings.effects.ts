@@ -63,5 +63,14 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.setLineHeightFailure({error: err.message})))
     )
   )
+
+  saveTextFlow$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(SettingsActions.setTextFlow),
+      map(({flow}) => this.storage.update('settings', 'textFlow', flow)),
+      map(() => SettingsActions.setTextFlowSuccess()),
+      catchError((err) => of(SettingsActions.setTextFlowFailure({error: err.message})))
+    )
+  )
   
 }

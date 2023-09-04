@@ -39,6 +39,7 @@
         </div>
     
         <form class="flex flex-col sm:gap-12 gap-6" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
+          <div class="sm:hidden divider divider-vertical uppercase">{{'STREAM.joinSession' | translate }}</div>
           <div class="form-row">
             
             <button class="hidden sm:block w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" translate>STREAM.joinSession</button>

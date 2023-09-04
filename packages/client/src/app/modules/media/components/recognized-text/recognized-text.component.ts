@@ -1,22 +1,19 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
-import { fadeInUpOnEnterAnimation, fadeOutOnLeaveAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
-import { LineHeight, TextSize } from '../../../settings/models/settings.model';
-import { AppState } from '../../../../models/app.model';
-import { Store, select } from '@ngrx/store';
-import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
+import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { recognitionConnectedSelector, recognitionPausedSelector, recognitionStatusSelector } from 'packages/client/src/app/selectors/recognition.selector';
-import { RecognitionStatus } from 'packages/client/src/app/models/recognition.model';
-import { map } from 'rxjs';
-import { selectBroadcastPaused } from 'packages/client/src/app/selectors/peer.selectors';
+import { Store } from '@ngrx/store';
+import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
+import { AppState } from '../../../../models/app.model';
+import { selectBroadcastPaused } from '../../../../selectors/peer.selectors';
+import { recognitionPausedSelector } from '../../../../selectors/recognition.selector';
+import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
+import { LineHeight, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-text',
   templateUrl: './recognized-text.component.html',
   styleUrls: ['./recognized-text.component.scss'],
   animations: [
-    fadeInUpOnEnterAnimation(),
-    fadeOutUpOnLeaveAnimation(),
+    fadeInOnEnterAnimation(),
     fadeOutOnLeaveAnimation(),
   ]
 })

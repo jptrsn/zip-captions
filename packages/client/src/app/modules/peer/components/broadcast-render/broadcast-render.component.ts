@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
-
 import { Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { Subject, map, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
+import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
-import { slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { selectTextFlow } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { TextFlow } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -19,7 +20,8 @@ import { FullScreenService } from '../../../../services/full-screen/full-screen.
     slideInRightOnEnterAnimation(),
     slideInUpOnEnterAnimation(),
     slideOutDownOnLeaveAnimation(),
-    slideOutRightOnLeaveAnimation()
+    slideOutRightOnLeaveAnimation(),
+    fadeInOnEnterAnimation()
   ],
 })
 export class BroadcastRenderComponent implements OnInit, OnDestroy {
@@ -29,6 +31,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public textOutput: WritableSignal<string[]> = signal([]);
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
+  public textFlowDown: Signal<boolean | undefined>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
@@ -45,6 +48,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
     this.error = toSignal(this.store.select(recognitionErrorSelector));
     
+    this.textFlowDown = toSignal(this.store.pipe(
+      select(selectTextFlow), 
+      map((flow: TextFlow) => (flow === 'top-down'))));
 
     this.hasLiveResults = computed(() => {
       if (this.liveText() == '' && this.textOutput().length === 0) {
@@ -58,6 +64,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
         if (this.fullScreen.isFullscreen()) {
           this.sidebarCheckbox.nativeElement.checked = false;
         }
+        this.cd.detectChanges();
       })
     }
   }
@@ -83,6 +90,12 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.fullScreen.isAvailable) {
       this.fullScreen.deregisterElement();
+      this.store.select(selectBroadcastPaused).pipe(
+        takeUntil(this.onDestroy$)
+      ).subscribe(() => {
+        console.log('pause changed');
+        this.cd.detectChanges();
+      })
     }
     this.onDestroy$.next();
   }

@@ -14,6 +14,7 @@ import { RecognizedTextComponent } from './components/recognized-text/recognized
 import { TranslateModule } from '@ngx-translate/core';
 import { RecognitionControlSidebarComponent } from './components/recognition-control-sidebar/recognition-control-sidebar.component';
 import { FullScreenComponent } from './components/full-screen/full-screen.component';
+import { FlowDirectionComponent } from './components/flow-direction/flow-direction.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { FullScreenComponent } from './components/full-screen/full-screen.compon
     RecognitionRenderComponent,
     RecognitionControlSidebarComponent,
     FullScreenComponent,
+    FlowDirectionComponent,
   ],
   imports: [
     CommonModule,
