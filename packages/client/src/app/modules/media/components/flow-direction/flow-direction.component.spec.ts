@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlowDirectionComponent } from './flow-direction.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 
 describe('FlowDirectionComponent', () => {
   let component: FlowDirectionComponent;
@@ -7,7 +8,9 @@ describe('FlowDirectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [FlowDirectionComponent],
+      providers: TestingModuleProviders,
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlowDirectionComponent);

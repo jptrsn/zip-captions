@@ -5,6 +5,8 @@ import { RecognitionRenderComponent } from '../../../media/components/recognitio
 import { RecognizedLiveTextComponent } from '../../../media/components/recognized-live-text/recognized-live-text.component';
 import { RecognizedTextComponent } from '../../../media/components/recognized-text/recognized-text.component';
 import { RecognitionControlSidebarComponent } from '../../../media/components/recognition-control-sidebar/recognition-control-sidebar.component';
+import { FullScreenComponent } from '../../../media/components/full-screen/full-screen.component';
+import { FlowDirectionComponent } from '../../../media/components/flow-direction/flow-direction.component';
 
 describe('BroadcastRoomComponent', () => {
   let component: BroadcastRoomComponent;
@@ -19,6 +21,8 @@ describe('BroadcastRoomComponent', () => {
         RecognitionControlSidebarComponent,
         RecognizedLiveTextComponent,
         RecognizedTextComponent,
+        FullScreenComponent,
+        FlowDirectionComponent,
       ],
       providers: TestingModuleProviders
     }).compileComponents();
