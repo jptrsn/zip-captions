@@ -343,6 +343,8 @@
     "rememberSetting": "Remember my response on this device.",
     "textSize": "Text Size",
     "lineHeight": "Line Spacing",
+    "textFlow": "Text Flow",
+    "fullScreen": "Full Screen",
     "increase": "Increase",
     "decrease": "Decrease"
   },

@@ -1,4 +1,4 @@
-import { createSelector } from "@ngrx/store";
+import { createSelector, select } from "@ngrx/store";
 import { AppState } from "../models/app.model";
 import { SettingsState } from "../modules/settings/models/settings.model";
 
@@ -27,4 +27,9 @@ export const selectTextSize = createSelector(
 export const selectLineHeight = createSelector(
   selectAppSettings,
   (state) => state.lineHeight
+)
+
+export const selectTextFlow = createSelector(
+  selectAppSettings,
+  (state) => state.textFlow
 )

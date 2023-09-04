@@ -21,6 +21,8 @@ export {
   heroXMark,
   heroArrowsPointingOut,
   heroArrowsPointingIn,
+  heroArrowLongDown,
+  heroArrowLongUp,
 } from '@ng-icons/heroicons/outline';
 
 export {

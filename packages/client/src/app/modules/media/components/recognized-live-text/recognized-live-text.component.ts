@@ -1,10 +1,11 @@
 import { Component, Input, Signal, computed } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { fadeOutOnLeaveAnimation } from 'angular-animations';
-import { AppState } from '../../../../models/app.model';
-import { LineHeight, TextSize } from '../../../settings/models/settings.model';
-import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Store, select } from '@ngrx/store';
+import { fadeOutOnLeaveAnimation } from 'angular-animations';
+import { map } from 'rxjs';
+import { AppState } from '../../../../models/app.model';
+import { selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-live-text',
@@ -19,10 +20,15 @@ export class RecognizedLiveTextComponent {
   
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
+  public textFlowDown: Signal<boolean | undefined>;
   public classList: Signal<string>;
   constructor(private store: Store<AppState>) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.classList = computed(() => `recognized-text live ${this.textSize()} ${this.lineHeight()}`)
+
+    this.textFlowDown = toSignal(this.store.pipe(
+      select(selectTextFlow), 
+      map((flow: TextFlow) => (flow === 'top-down'))));
   }
 }
