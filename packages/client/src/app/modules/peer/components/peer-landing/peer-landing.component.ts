@@ -10,6 +10,7 @@ import { AppPlatform, AppState } from '../../../../models/app.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../models/recognition.model';
+import { platform } from 'os';
 
 @Component({
   selector: 'app-peer-landing',
@@ -45,7 +46,11 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
+
+    this.store.select(platformSelector);
     this.disableBroadcast = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.mobile)));
+
+
     this._injectDashIfRequired();
     effect(() => {
       if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
