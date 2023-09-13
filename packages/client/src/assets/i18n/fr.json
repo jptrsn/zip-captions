@@ -341,19 +341,28 @@
     "wakelock": "Réveil de l'écran",
     "wakelockOn": "Empêche l'écran de se mettre en veille lorsque les sous-titres sont actifs",
     "wakelockOff": "Zip Captions respectera les paramètres de votre système pour la mise en veille.",
-    "rememberSetting": "Se souvenir de ma réponse sur cet appareil."
+    "rememberSetting": "Se souvenir de ma réponse sur cet appareil.",
+    "textSize": "Taille du texte",
+    "lineHeight": "Espacement des lignes",
+    "textFlow": "Flux de Texte",
+    "fullScreen": "Plein écran",
+    "increase": "Augmenter",
+    "decrease": "Diminuer"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
     "streamConnected": "Le texte apparaîtra dès que nous aurons entendu quelque chose...",
     "verifyingConnection": "Vérification du code d'adhésion...",
     "hostConnecting": "Attente de l'hôte de la session...",
+    "recognitionPaused": "La reconnaissance a été suspendue...",
     "viewStream": "Visitez ZipCaptions.app et utilisez l'identifiant de session et le code de participation pour visualiser les sous-titres sur votre propre appareil."
   },
   "ERRORS": {
     "missingApi": "Désolé, votre navigateur n'a pas encore implémenté les API nécessaires au fonctionnement de ZipCaptions. Nous recommandons Chrome ou Safari.",
     "serviceUnavailable": "Il semble que le service ne soit pas encore disponible sur cette plateforme. Nous recommandons Chrome ou Safari",
     "liveTextMissing": "Il semble que les résultats de diffusion en direct ne soient pas encore pris en charge sur votre plateforme.",
+    "mobileBroadcast": "La diffusion n'est pas disponible à partir d'un appareil mobile",
+    "unsupportedBrowserBroadcast": "La diffusion n'est pas prise en charge par ce navigateur",
     "RECOGNITION": {
       "no-speech" : "Erreur de reconnaissance vocale : Aucune parole n'a été détectée",
       "aborted" : "Erreur de reconnaissance vocale : La saisie de la parole a été interrompue d'une manière ou d'une autre",

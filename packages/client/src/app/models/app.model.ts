@@ -5,7 +5,8 @@ import { RecognitionState } from "./recognition.model";
 
 export enum AppPlatform {
   mobile = "MOBILE",
-  desktop = "DESKTOP"
+  desktop = "DESKTOP",
+  unsupported = "UNSUPPORTED",
 }
 
 export interface AppAppearanceState {

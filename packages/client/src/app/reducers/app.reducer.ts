@@ -32,4 +32,5 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.acceptCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: true})),
   on(AppActions.declineCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: false, cookiesDeclinedTimestamp: Date.now()})),
   on(AppActions.setPeerConnectionsAccepted, (state: AppAppearanceState, action: { accepted: boolean }) => ({...state, peerConnectionsAccepted: action.accepted})),
+  on(AppActions.clearAppError, (state: AppAppearanceState) => ({...state, error: undefined})),
 )

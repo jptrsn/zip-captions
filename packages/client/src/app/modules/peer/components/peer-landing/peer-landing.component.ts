@@ -6,11 +6,10 @@ import { Store, select } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
-import { AppPlatform, AppState } from '../../../../models/app.model';
+import { AppActions, AppPlatform, AppState } from '../../../../models/app.model';
+import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
-import { RecognitionActions } from '../../../../models/recognition.model';
-import { platform } from 'os';
 
 @Component({
   selector: 'app-peer-landing',
@@ -27,7 +26,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   public roomId: Signal<string | undefined>;
   public joinCode: Signal<string | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
-  public disableBroadcast: Signal<boolean | undefined>;
+  public isMobileDevice: Signal<boolean | undefined>;
+  public isIncompatibleBrowser: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -48,8 +48,8 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
 
     this.store.select(platformSelector);
-    this.disableBroadcast = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.mobile)));
-
+    this.isMobileDevice = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.mobile)));
+    this.isIncompatibleBrowser = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.unsupported)));
 
     this._injectDashIfRequired();
     effect(() => {
