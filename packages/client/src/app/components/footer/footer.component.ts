@@ -19,6 +19,7 @@ export class FooterComponent {
   public error$: Signal<string | undefined>;
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
+  public patreonUrl = 'https://patreon.com/zipcaptions';
   constructor(private store: Store<AppState>) {
     this.hidden = toSignal(this.store.pipe(select(footerVisibleSelector)).pipe(
       map((visible) => !visible)
