@@ -341,19 +341,28 @@
     "wakelock": "Sveglia schermo",
     "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
     "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
-    "rememberSetting": "Ricordate la mia risposta su questo dispositivo."
+    "rememberSetting": "Ricordate la mia risposta su questo dispositivo.",
+    "textSize": "Tamaño del texto",
+    "lineHeight": "Interlineado",
+    "textFlow": "Flujo de texto",
+    "fullScreen": "Pantalla completa",
+    "increase": "Aumentar",
+    "decrease": "Reducir"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
     "streamConnected": "El texto aparecerá cuando sepamos algo...",
     "verifyingConnection": "Verificando código de unión...",
     "hostConnecting": "Esperando al anfitrión de la sesión...",
+    "recognitionPaused": "El reconocimiento se ha pausado...",
     "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo."
   },
   "ERRORS": {
     "missingApi": "Lo sentimos, su navegador aún no ha implementado las API necesarias para que ZipCaptions se ejecute. Recomendamos Chrome o Safari",
     "serviceUnavailable": "Parece que el servicio aún no está disponible en esta plataforma. Recomendamos Chrome o Safari",
     "liveTextMissing": "Parece que los resultados de transmisión en vivo aún no son compatibles con su plataforma",
+    "mobileBroadcast": "La emisión no está disponible desde un dispositivo móvil",
+    "unsupportedBrowserBroadcast": "La emisión no es compatible con este navegador",
     "RECOGNITION": {
       "no-speech": "Error de reconocimiento de voz: No se detectó habla",
       "aborted": "Error de reconocimiento de voz: La entrada de voz se abortó de alguna manera",

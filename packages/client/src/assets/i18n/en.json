@@ -361,6 +361,8 @@
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
     "serviceUnavailable": "It looks like the service is not yet available on this platform. We recommend Chrome or Safari",
     "liveTextMissing": "It appears that live streaming results are not yet supported on your platform.",
+    "mobileBroadcast": "Broadcasting is not available from a mobile device.",
+    "unsupportedBrowserBroadcast": "Broadcasting is not supported from this browser.",
     "RECOGNITION": {
       "no-speech": "Speech recognition error: No speech was detected.",
       "aborted": "Speech recognition error: Speech input was aborted in some manner.",

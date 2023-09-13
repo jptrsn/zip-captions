@@ -341,19 +341,28 @@
     "wakelock": "Bildschirm aufwecken",
     "wakelockOn": "Verhindern, dass der Bildschirm bei aktiven Untertiteln in den Ruhezustand versetzt wird",
     "wakelockOff": "Zip Captions respektiert Ihre Systemeinstellungen für den Ruhezustand.",
-    "rememberSetting": "Erinnern Sie sich an meine Antwort zu diesem Gerät."
+    "rememberSetting": "Erinnern Sie sich an meine Antwort zu diesem Gerät.",
+    "textSize": "Textgröße",
+    "lineHeight": "Zeilenabstand",
+    "textFlow": "Textfluss",
+    "fullScreen": "Vollbild",
+    "increase": "Erhöhen",
+    "decrease": "Verringern"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
     "streamConnected": "Text wird erscheinen, sobald wir etwas hören...",
     "verifyingConnection": "Verifizierung des Beitrittscodes...",
     "hostConnecting": "Warten auf Sitzungsleiter...",
+    "recognitionPaused": "Die Anerkennung wurde pausiert...",
     "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen."
   },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
     "serviceUnavailable": "Es sieht so aus, als ob der Dienst auf dieser Plattform noch nicht verfügbar ist. Wir empfehlen Chrome oder Safari",
     "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden",
+    "mobileBroadcast": "Die Übertragung ist von einem mobilen Gerät aus nicht verfügbar",
+    "unsupportedBrowserBroadcast": "Broadcasting wird von diesem Browser nicht unterstützt.",
     "RECOGNITION": {
       "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
       "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",
