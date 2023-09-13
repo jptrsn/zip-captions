@@ -1,8 +1,11 @@
 <div [@collapse]="hidden()">
   <footer class="footer bg-base-300 flex flex-auto items-center flex-row overflow-hidden px-6 py-2" >
-    <div class="flex flex-row gap-3">
-      <a [href]="repoUrl" target="_blank" [attr.aria-label]="'LABELS.viewGithub' | translate" class="tooltip tooltip-right" [attr.data-tip]="'LABELS.viewGithub' | translate">
+    <div class="flex flex-row gap-6">
+      <a [href]="repoUrl" target="_blank" [attr.data-tip]="'LABELS.viewGithub' | translate" class="tooltip tooltip-right">
         <ng-icon name="githubLogo" size="24"></ng-icon>
+      </a>
+      <a [href]="patreonUrl" target="_blank" [attr.data-tip]="'LABELS.patreon' | translate" class="tooltip tooltip-right">
+        <img src="./assets/icons/patreon.png" width="24" height="24">
       </a>
       <app-cookie-modal></app-cookie-modal>
     </div>
