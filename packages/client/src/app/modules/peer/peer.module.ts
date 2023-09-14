@@ -26,6 +26,9 @@ import { TimeagoModule } from 'ngx-timeago';
 import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug.component';
 import { ConnectObsComponent } from './components/connect-obs/connect-obs.component';
 import { ThirdPartyConnectionsComponent } from './components/third-party-connections/third-party-connections.component';
+import { ObsEffects } from '../../effects/obs.effects';
+import { ObsConnectionStatusChipComponent } from './components/obs-connection-status-chip/obs-connection-status-chip.component';
+import { SharedUiModule } from 'shared-ui';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,7 @@ import { ThirdPartyConnectionsComponent } from './components/third-party-connect
     AcceptPeerConnectionsModalComponent,
     ConnectObsComponent,
     ThirdPartyConnectionsComponent,
+    ObsConnectionStatusChipComponent,
   ],
   imports: [
     CommonModule,
@@ -50,8 +54,9 @@ import { ThirdPartyConnectionsComponent } from './components/third-party-connect
     RouterModule,
     ReactiveFormsModule,
     NgIconsModule,
+    SharedUiModule,
     TranslateModule.forChild({ extend: true }),
-    EffectsModule.forFeature([PeerEffects]),
+    EffectsModule.forFeature([PeerEffects, ObsEffects]),
     MediaModule,
     ClipboardModule,
     TimeagoModule,

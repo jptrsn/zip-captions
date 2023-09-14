@@ -326,7 +326,9 @@
     "decline": "No",
     "connect": "Connect",
     "disconnect": "Disconnect",
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "start": "Start",
+    "stop": "Stop"
   },
   "LABELS": {
     "menu": "Menu",
@@ -348,7 +350,9 @@
     "textFlow": "Text Flow",
     "fullScreen": "Full Screen",
     "increase": "Increase",
-    "decrease": "Decrease"
+    "decrease": "Decrease",
+    "password": "Password",
+    "optPassword": "Password (optional)"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -406,6 +410,9 @@
   },
   "CONNECTIONS": {
     "externalConnections": "Connect to Third Party Services",
-    "obsStudio": "OBS Studio Websocket URL"
+    "obsStudio": "OBS Studio",
+    "obsStudioIP": "Server IP",
+    "obsStudioPort": "Server Port",
+    "obsPassword": "Server Password"
   }
 }

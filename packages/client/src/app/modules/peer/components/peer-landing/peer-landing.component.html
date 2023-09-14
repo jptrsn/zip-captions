@@ -3,6 +3,7 @@
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
       <app-peer-server-status-chip></app-peer-server-status-chip>
+      <app-obs-connection-status-chip></app-obs-connection-status-chip>
     </ng-container>
     <ng-template #broadcastControls>
       <div class="flex flex-row flex-wrap gap-3">
@@ -18,6 +19,11 @@
         <app-end-broadcast></app-end-broadcast>
       </div>
     </ng-container>
+    <ng-container *ngIf="!isBroadcasting() && recognitionActive()">
+      <button class="btn btn-circle btn-ghost" (click)="stopRecognition()">
+        <ng-icon name="heroMicrophoneSlash"></ng-icon>
+      </button>
+    </ng-container>
   </div>
 
   <ng-template #acceptPermissions>
@@ -26,7 +32,10 @@
     </div>
   </ng-template>
   
-  <app-broadcast-room class="flex basis-full overflow-y-hidden" *ngIf="isBroadcasting(); else landing"></app-broadcast-room>
+  <ng-container *ngIf="(isBroadcasting() || recognitionActive()); else landing">
+    <app-broadcast-room class="flex basis-full overflow-y-hidden" *ngIf="isBroadcasting()"></app-broadcast-room>
+    <app-recognition-render class="flex basis-full overflow-y-hidden" *ngIf="recognitionActive()"></app-recognition-render>
+  </ng-container>
 
   <ng-template #landing>
     <div class="flex basis-full items-stretch justify-center overflow-y-auto">
@@ -51,7 +60,7 @@
             
             <button class="hidden sm:block w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" translate>STREAM.joinSession</button>
 
-            <div class="flex basis-1/2" translate>
+            <div class="flex basis-full sm:basis-1/2" translate>
               STREAM.joinSessionExplanation
             </div>
           </div>
@@ -83,8 +92,8 @@
           </div>
         </form>
 
-        <app-third-party-connections></app-third-party-connections>
-        
+        <app-third-party-connections *ngIf="!(isMobileDevice() || isIncompatibleBrowser())"></app-third-party-connections>
+
       </div>
     </div>
   </ng-template>

@@ -10,6 +10,7 @@ import { AppActions, AppPlatform, AppState } from '../../../../models/app.model'
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
+import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-peer-landing',
@@ -28,6 +29,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   public isBroadcasting: Signal<boolean | undefined>;
   public isMobileDevice: Signal<boolean | undefined>;
   public isIncompatibleBrowser: Signal<boolean | undefined>;
+  public recognitionActive: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -43,7 +45,9 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
-    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
+    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector))
+
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
 
@@ -67,6 +71,10 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
 
   ngOnDestroy(): void {
     this.store.dispatch(RecognitionActions.resetRecogntionState());
+  }
+
+  stopRecognition(): void {
+    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}))
   }
 
   canDeactivate(): boolean | Observable<boolean> {

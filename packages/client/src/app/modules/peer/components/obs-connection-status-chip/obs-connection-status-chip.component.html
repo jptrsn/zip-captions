@@ -1,0 +1,1 @@
+<div class="badge" [ngClass]="{'badge-success': connected()}" *ngIf="connectionState() as state">{{'CONNECTIONS.obsStudio' | translate}}: {{state | proper}}</div>

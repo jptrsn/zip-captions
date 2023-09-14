@@ -5,6 +5,7 @@ import { defaultAudioStreamState } from './audio-stream.reducer';
 import { defaultRecognitionState } from './recognition.reducer';
 import { defaultSettingsState } from './settings.reducer';
 import { defaultPeerState } from './peer.reducer';
+import { defaultObsState } from './obs.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
@@ -19,6 +20,7 @@ export const defaultAppState: AppState = {
   audioStream: defaultAudioStreamState,
   recognition: defaultRecognitionState,
   peer: defaultPeerState,
+  obs: defaultObsState,
 }
 
 export const appAppearanceReducers = createReducer(

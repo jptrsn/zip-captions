@@ -1,6 +1,9 @@
 <div class="collapse collapse-arrow bg-base-100">
   <input #checkbox type="checkbox" />
-  <div class="collapse-title text-xl" (click)="checkbox.checked = !checkbox.checked" translate>CONNECTIONS.externalConnections</div>
+  <div class="collapse-title flex flex-row items-center gap-3" (click)="checkbox.checked = !checkbox.checked">
+    <div class="text-xl" translate>CONNECTIONS.externalConnections</div>
+    <div class="badge badge-success" *ngIf="obsConnected() && !checkbox.checked" translate>CONNECTIONS.obsStudio</div>
+  </div>
   <div class="collapse-content">
     <app-connect-obs></app-connect-obs>
   </div>
