@@ -34,7 +34,7 @@
   
   <ng-container *ngIf="(isBroadcasting() || recognitionActive()); else landing">
     <app-broadcast-room class="flex basis-full overflow-y-hidden" *ngIf="isBroadcasting()"></app-broadcast-room>
-    <app-recognition-render class="flex basis-full overflow-y-hidden" *ngIf="recognitionActive()"></app-recognition-render>
+    <app-stream-captions class="flex basis-full overflow-y-hidden" *ngIf="recognitionActive()"></app-stream-captions>
   </ng-container>
 
   <ng-template #landing>

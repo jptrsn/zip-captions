@@ -29,6 +29,7 @@ import { ThirdPartyConnectionsComponent } from './components/third-party-connect
 import { ObsEffects } from '../../effects/obs.effects';
 import { ObsConnectionStatusChipComponent } from './components/obs-connection-status-chip/obs-connection-status-chip.component';
 import { SharedUiModule } from 'shared-ui';
+import { StreamCaptionsComponent } from './components/stream-captions/stream-captions.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { SharedUiModule } from 'shared-ui';
     ConnectObsComponent,
     ThirdPartyConnectionsComponent,
     ObsConnectionStatusChipComponent,
+    StreamCaptionsComponent,
   ],
   imports: [
     CommonModule,

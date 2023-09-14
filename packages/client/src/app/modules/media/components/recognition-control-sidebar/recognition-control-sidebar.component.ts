@@ -1,12 +1,15 @@
 import { Component, Input, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
+import { selectObsConnected } from '../../../../selectors/obs.selectors';
+import { ObsConnectionState } from '../../../../reducers/obs.reducer';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
@@ -24,6 +27,7 @@ export class RecognitionControlSidebarComponent {
   public lineHeightMax: Signal<boolean>;
 
   public isBroadcasting: Signal<boolean | undefined>;
+  public isObsStreaming: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
 
   private availableTextSizes = AvailableTextSizes;
@@ -41,6 +45,9 @@ export class RecognitionControlSidebarComponent {
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
+    
+    this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
+    
   }
 
   hideElements(elements: HTMLElement[]) {

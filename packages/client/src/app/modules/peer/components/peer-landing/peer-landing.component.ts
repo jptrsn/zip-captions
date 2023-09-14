@@ -6,11 +6,11 @@ import { Store, select } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
-import { AppActions, AppPlatform, AppState } from '../../../../models/app.model';
+import { AppPlatform, AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
-import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
+import { recognitionActiveSelector, recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-peer-landing',
@@ -46,7 +46,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.roomId = toSignal(this.store.select(selectRoomId));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
-    this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector))
+    this.recognitionActive = toSignal(this.store.select(recognitionActiveSelector))
 
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));

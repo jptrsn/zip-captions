@@ -1,6 +1,6 @@
 <div class="flex flex-col p-3 gap-3 drop-shadow bg-secondary-content rounded-s-xl">
   
-    <button class="btn btn-lg btn-outline" [ngClass]="{'bg-secondary-focus': !recognitionActive()}" *ngIf="isBroadcasting()" (click)="toggleRecognition()">
+    <button class="btn btn-lg btn-outline" [ngClass]="{'bg-secondary-focus': !recognitionActive()}" *ngIf="isBroadcasting() || isObsStreaming()" (click)="toggleRecognition()">
       <ng-icon name="heroPause"></ng-icon>
     </button>
 

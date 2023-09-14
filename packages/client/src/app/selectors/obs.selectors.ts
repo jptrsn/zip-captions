@@ -28,3 +28,8 @@ export const selectObsError = createSelector(
   selectObsState,
   (state) => state.error
 )
+
+export const selectObsStreamActive = createSelector(
+  selectObsState,
+  (state) => state.streamingActive
+)

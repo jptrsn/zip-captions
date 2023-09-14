@@ -352,7 +352,9 @@
     "increase": "Increase",
     "decrease": "Decrease",
     "password": "Password",
-    "optPassword": "Password (optional)"
+    "optPassword": "Password (optional)",
+    "streaming": "Streaming",
+    "idle": "Idle"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
