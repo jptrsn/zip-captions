@@ -1,0 +1,18 @@
+<form class="flex flex-row items-end sm:gap-6 gap-3" [formGroup]="formGroup">
+  
+  <div class="form-control flex-auto">
+    <label class="label">
+      <span class="label-text" [ngClass]="{'text-error': false}" translate>CONNECTIONS.obsStudio</span>
+    </label>
+    <input type="text" class="input input-bordered input-lg" maxlength="9" [ngClass]="{'input-error': false}" placeholder="http://localhost:7997" formControlName="websocket" />
+    <label class="label no-height">
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.hasError('invalid') && formGroup.touched">Invalid URL</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.hasError('required') && formGroup.touched">Required</span>
+    </label>
+  </div>
+
+  <div class="flex flex-col pb-6">
+    <button class="btn btn-secondary" translate>BUTTONS.save</button>
+  </div>
+
+</form>

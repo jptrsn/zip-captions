@@ -320,6 +320,7 @@
     "rejected": "Rejected",
     "viewPolicy": "View Policy",
     "saveAndClose": "Save and Close",
+    "save": "Save",
     "cancel": "Cancel",
     "confirm": "Yes, I'm sure",
     "decline": "No",
@@ -402,5 +403,9 @@
     "VERSION_READY": "You are viewing an older version of the app. Refresh to see the latest.",
     "VERSION_INSTALLATION_FAILED": "Failed to install app version",
     "NO_NEW_VERSION_DETECTED": "No new version detected"
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Connect to Third Party Services",
+    "obsStudio": "OBS Studio Websocket URL"
   }
 }

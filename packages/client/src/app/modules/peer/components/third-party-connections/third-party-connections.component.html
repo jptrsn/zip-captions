@@ -1,0 +1,7 @@
+<div class="collapse collapse-arrow bg-base-100">
+  <input #checkbox type="checkbox" />
+  <div class="collapse-title text-xl" (click)="checkbox.checked = !checkbox.checked" translate>CONNECTIONS.externalConnections</div>
+  <div class="collapse-content">
+    <app-connect-obs></app-connect-obs>
+  </div>
+</div>

@@ -24,6 +24,8 @@ import { ViewBroadcastComponent } from './components/view-broadcast/view-broadca
 import { PeerRoutingModule } from './peer-routing.module';
 import { TimeagoModule } from 'ngx-timeago';
 import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug.component';
+import { ConnectObsComponent } from './components/connect-obs/connect-obs.component';
+import { ThirdPartyConnectionsComponent } from './components/third-party-connections/third-party-connections.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug
     BroadcastRoomComponent,
     BroadcastRenderComponent,
     AcceptPeerConnectionsModalComponent,
+    ConnectObsComponent,
+    ThirdPartyConnectionsComponent,
   ],
   imports: [
     CommonModule,
