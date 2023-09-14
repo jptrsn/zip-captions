@@ -2,7 +2,7 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 import OBSWebSocket from 'obs-websocket-js';
-import { Observable, from } from 'rxjs';
+import { Observable, Subject, from } from 'rxjs';
 import { ObsActions } from '../../actions/obs.actions';
 import { AppState } from '../../models/app.model';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -17,14 +17,17 @@ export class ObsConnectionService {
   private isStreaming: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>) { 
     this.obs = new OBSWebSocket();
+    this.obs.on('Identified', () => this._addObsListeners());
+    this.obs.on('ConnectionError', (err) => console.log('connection error', err))
+    this.obs.on('Hello', () => console.log('obs hello'))
     this.isStreaming = toSignal(this.store.select(selectObsStreamActive));
   }
 
   connect({ip, port, password}: {ip: string, port: number, password: string | null}): Observable<any> {
+    console.log('connect', this.obs);
     const url = `ws://${ip}:${port}`;
     const pass: string | undefined = password ? password : undefined;
-    this.obs.on('Identified', () => this._addObsListeners())
-    return from(this.obs.connect(url, pass, { rpcVersion: 1}))
+    return from(this.obs.connect(url, pass));
   }
 
   disconnect(): Observable<void> {
@@ -43,7 +46,7 @@ export class ObsConnectionService {
       this.store.dispatch(ObsActions.setStreamingActive({active: status.outputActive}));
     });
     this.obs.on<"StreamStateChanged">('StreamStateChanged', (status) => {
-      this.store.dispatch(ObsActions.setStreamingActive({active: status.outputActive}))
+      this.store.dispatch(ObsActions.setStreamingActive({active: status.outputActive}));
     })
   }
   

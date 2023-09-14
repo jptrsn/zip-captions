@@ -1,12 +1,13 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { AppState } from '../../../../models/app.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
-import { selectObsConnected } from '../../../../selectors/obs.selectors';
+import { selectObsConnected, selectObsError } from '../../../../selectors/obs.selectors';
 import { RecognitionActions } from '../../../../models/recognition.model';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-connect-obs',
@@ -19,11 +20,14 @@ export class ConnectObsComponent {
   public isConnecting: Signal<boolean>;
   public isConnected: Signal<boolean>;
   public formGroup: FormGroup;
+  public error: Signal<string | undefined>;
   
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) {
 
     this.connectionState = toSignal(this.store.select(selectObsConnected));
+    this.error = toSignal(this.store.select(selectObsError));
+    
     this.isConnected = computed(() => this.connectionState() === ObsConnectionState.connected);
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
 
@@ -38,6 +42,7 @@ export class ConnectObsComponent {
     this.formGroup.updateValueAndValidity();
     if (this.formGroup.valid) {
       const {ip, port, password}: {ip: string, port: number, password: string | null} = this.formGroup.value;
+      console.log('form valid, dispatching');
       this.store.dispatch(ObsActions.connect({ ip, port, password }));
     } else {
       this.formGroup.markAsTouched();
