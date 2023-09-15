@@ -17,6 +17,8 @@ import { map } from 'rxjs';
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
 export class RecognitionControlSidebarComponent {
+  @Input() showFullscreen = true;
+  @Input() showTextFlow = true;
   @ViewChildren('details') subMenus!: HTMLElement[];
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;

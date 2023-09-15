@@ -45,8 +45,7 @@ export class RecognitionService {
 
     // OBS Studio Integration - set segmentation debounce to longer interval
     if (streamId === 'stream') {
-      this.DEBOUNCE_TIME_MS = 1250;
-      this.SEGMENTATION_DEBOUNCE_MS = 3500;
+      this.DEBOUNCE_TIME_MS = 750;
     }
     // console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();

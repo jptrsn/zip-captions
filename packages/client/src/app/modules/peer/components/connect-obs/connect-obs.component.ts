@@ -23,8 +23,6 @@ export class ConnectObsComponent {
   public obsIsStreaming: Signal<boolean | undefined>;
   public formGroup: FormGroup;
   public error: Signal<string | undefined>;
-
-  private recognitionActive: Signal<boolean | undefined>;
   
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) {
@@ -32,10 +30,13 @@ export class ConnectObsComponent {
     this.connectionState = toSignal(this.store.select(selectObsConnected));
     this.error = toSignal(this.store.select(selectObsError));
     this.obsIsStreaming = toSignal(this.store.select(selectObsStreamActive));
-    this.recognitionActive = toSignal(this.store.select(recognitionActiveSelector))
     
     this.isConnected = computed(() => this.connectionState() === ObsConnectionState.connected);
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
+
+    if (this.isConnected()) {
+      this.startRecognition();
+    }
 
     this.formGroup = this.fb.group({
       ip: this.fb.control<string | null>(null),

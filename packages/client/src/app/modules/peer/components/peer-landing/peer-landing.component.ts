@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map, take } from 'rxjs';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
@@ -12,6 +12,8 @@ import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
+import { selectObsConnected } from '../../../../selectors/obs.selectors';
+import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 
 @Component({
   selector: 'app-peer-landing',
@@ -75,8 +77,11 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   }
 
   stopWebsocketRecognition(): void {
-    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}));
     this.store.dispatch(ObsActions.disconnect());
+    this.store.select(selectObsConnected).pipe(
+      filter((state) => state === ObsConnectionState.disconnected),
+      take(1)
+    ).subscribe(() => this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'})))
   }
 
   canDeactivate(): boolean | Observable<boolean> {

@@ -46,7 +46,7 @@
       </div>
     </details>
     
-    <app-flow-direction></app-flow-direction>
+    <app-flow-direction *ngIf="showTextFlow"></app-flow-direction>
     
-    <app-full-screen></app-full-screen>
+    <app-full-screen *ngIf="showFullscreen"></app-full-screen>
 </div>
