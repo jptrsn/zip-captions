@@ -44,8 +44,9 @@ export class ServiceWorkerUpdateComponent {
     this.router.events.pipe(
       takeUntilDestroyed(),
       filter((ev) => ev instanceof NavigationStart),
-      throttleTime(300000)
+      throttleTime(30000)
     ).subscribe(() => {
+      console.log('checking for updates')
       this.updates.checkForUpdate();
     })
   }
