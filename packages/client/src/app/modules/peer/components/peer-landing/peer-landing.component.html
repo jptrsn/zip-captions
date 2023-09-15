@@ -38,8 +38,8 @@
   </ng-container>
 
   <ng-template #landing>
-    <div class="flex basis-full items-stretch justify-center overflow-y-hidden">
-      <div class="max-w-4xl p-3 overflow-y-auto">
+    <div class="flex basis-full items-stretch justify-center overflow-y-auto">
+      <div class="max-w-4xl p-3">
         
         <div class="collapse collapse-arrow bg-base-100 mb-6 sm:mb-12">
           <input #broadcastOpen type="checkbox" checked />
@@ -47,8 +47,8 @@
             <div class="text-xl" translate>Peer Broadcasting</div>
           </div>
 
-          <div class="collapse-content flex-col lg:gap-24 sm:gap-12 gap-6 ">
-            <div class="form-row" *ngIf="!(isMobileDevice() || isIncompatibleBrowser()); else broadcastingNotAvailable">
+          <div class="collapse-content">
+            <div class="form-row mb-6 sm:mb-12" *ngIf="!(isMobileDevice() || isIncompatibleBrowser()); else broadcastingNotAvailable">
               <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" (click)="createRoom()" translate>STREAM.createBroadcast</button>
               <div class="flex basis-1/2" translate>
                 STREAM.broadcastExplanantion
