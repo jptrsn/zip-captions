@@ -4,13 +4,14 @@ import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
+import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppPlatform, AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
-import { recognitionActiveSelector, recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
+import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-peer-landing',
@@ -73,8 +74,9 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.store.dispatch(RecognitionActions.resetRecogntionState());
   }
 
-  stopRecognition(): void {
-    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}))
+  stopWebsocketRecognition(): void {
+    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}));
+    this.store.dispatch(ObsActions.disconnect());
   }
 
   canDeactivate(): boolean | Observable<boolean> {

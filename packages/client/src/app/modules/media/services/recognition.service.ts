@@ -1,7 +1,7 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { Subject, auditTime, debounceTime, takeUntil, throttleTime } from 'rxjs';
+import { Subject, auditTime, debounceTime, takeUntil, tap, throttleTime } from 'rxjs';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
@@ -41,6 +41,12 @@ export class RecognitionService {
     if (this.platform() === AppPlatform.mobile) {
       this.DEBOUNCE_TIME_MS = 750;
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
+    }
+
+    // OBS Studio Integration - set segmentation debounce to longer interval
+    if (streamId === 'stream') {
+      this.DEBOUNCE_TIME_MS = 1250;
+      this.SEGMENTATION_DEBOUNCE_MS = 3500;
     }
     // console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
@@ -113,6 +119,10 @@ export class RecognitionService {
     let mostRecentResults: SpeechRecognitionResult[] | undefined;
     const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
+    // DEBUG event listeners
+    recognition.addEventListener('start', () => console.log('start'));
+    recognition.addEventListener('stop', () => console.log('stop'));
+
     // Debounce is to provide a timeout after the last-recognized full text, 
     // in order to better handle chunking in related tasks for the media stream
     // TODO: Allow adjustment of debounce
@@ -120,16 +130,17 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     // Live results logic
     debounce$.pipe(
+      tap(() => console.log('bounce')),
       takeUntil(disconnect$),
       debounceTime(this.DEBOUNCE_TIME_MS),
       throttleTime(this.DEBOUNCE_TIME_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.DEBOUNCE_TIME_MS),
     ).subscribe(() => {
-      // console.log('debounce ended', Date.now());
+      console.log('debounce ended', Date.now());
       if (mostRecentResults) {
         const partialTranscript: string = mostRecentResults
         .filter((result) => {
-          if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
+          if (result[0].transcript !== '' && !transcriptSegments.has(result)) {
             if (platform === AppPlatform.mobile) {
               // console.log('mobile!!!', result[0].confidence)
             } else {
@@ -171,7 +182,8 @@ export class RecognitionService {
       debounceTime(this.SEGMENTATION_DEBOUNCE_MS),
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
-    ).subscribe(() =>{ 
+    ).subscribe(() =>{
+      console.log('segment')
       if (liveOutput() !== '') {
         // console.log('live output is not blank - stopping', liveOutput())
         recognition.stop();

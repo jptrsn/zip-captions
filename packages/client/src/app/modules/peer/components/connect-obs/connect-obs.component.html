@@ -3,7 +3,9 @@
   <div class="badge" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
   <div class="badge badge-error" *ngIf="error() as err">{{err}}</div>
   <div class="flex flex-grow"></div>
-  <button class="btn btn-primary" *ngIf="isConnected()" type="button" (click)="startRecognition()" translate>BUTTONS.start</button>
+  <div class="flex" *ngIf="isConnected()">
+    <div class="badge badge-secondary" *ngIf="!obsIsStreaming()" translate>CONNECTIONS.obsStreamInactive</div>
+  </div>
 </div>
 
 <form class="flex flex-row flex-wrap flex-grow-0 sm:flex-nowrap gap-3" [formGroup]="formGroup" (submit)="saveObsWebsocket()">

@@ -42,7 +42,7 @@ export class ObsConnectionService {
   }
 
   private _addObsListeners(): void {
-    console.log('addListeners', this.obs.identified)
+    console.log('addListeners', this.obs.identified);
     this.obs.call<"GetStreamStatus">('GetStreamStatus').then((status) => {
       this.store.dispatch(ObsActions.setStreamingActive({active: status.outputActive}));
     });

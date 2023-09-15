@@ -20,7 +20,7 @@
       </div>
     </ng-container>
     <ng-container *ngIf="!isBroadcasting() && recognitionActive()">
-      <button class="btn btn-circle btn-ghost" (click)="stopRecognition()">
+      <button class="btn btn-circle btn-ghost" (click)="stopWebsocketRecognition()">
         <ng-icon name="heroMicrophoneSlash"></ng-icon>
       </button>
     </ng-container>

@@ -416,6 +416,7 @@
     "obsStudio": "OBS Studio",
     "obsStudioIP": "Server IP",
     "obsStudioPort": "Server Port",
-    "obsPassword": "Server Password"
+    "obsPassword": "Server Password",
+    "obsStreamInactive": "Waiting for OBS stream to begin"
   }
 }

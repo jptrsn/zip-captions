@@ -1,12 +1,14 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
-import { selectObsConnected, selectObsError } from '../../../../selectors/obs.selectors';
+import { selectObsConnected, selectObsError, selectObsStreamActive } from '../../../../selectors/obs.selectors';
+import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
+import { filter, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-connect-obs',
@@ -18,14 +20,19 @@ export class ConnectObsComponent {
   public connectionState: Signal<ObsConnectionState | undefined>;
   public isConnecting: Signal<boolean>;
   public isConnected: Signal<boolean>;
+  public obsIsStreaming: Signal<boolean | undefined>;
   public formGroup: FormGroup;
   public error: Signal<string | undefined>;
+
+  private recognitionActive: Signal<boolean | undefined>;
   
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) {
 
     this.connectionState = toSignal(this.store.select(selectObsConnected));
     this.error = toSignal(this.store.select(selectObsError));
+    this.obsIsStreaming = toSignal(this.store.select(selectObsStreamActive));
+    this.recognitionActive = toSignal(this.store.select(recognitionActiveSelector))
     
     this.isConnected = computed(() => this.connectionState() === ObsConnectionState.connected);
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
@@ -34,7 +41,7 @@ export class ConnectObsComponent {
       ip: this.fb.control<string | null>(null),
       port: this.fb.control<number | null>(null),
       password: this.fb.control<string | null>(null)
-    })
+    });
   }
 
   public saveObsWebsocket(): void {
@@ -43,6 +50,11 @@ export class ConnectObsComponent {
     this.formGroup.updateValueAndValidity();
     if (this.formGroup.valid) {
       const {ip, port, password}: {ip: string, port: number, password: string | null} = this.formGroup.value;
+      this.store.select(selectObsConnected).pipe(
+        filter((conn) => conn === ObsConnectionState.connected),
+        take(1),
+        tap(() => console.log('starting'))
+      ).subscribe(() => this.startRecognition());
       this.store.dispatch(ObsActions.connect({ ip, port, password }));
     } else {
       this.formGroup.markAsTouched();

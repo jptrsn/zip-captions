@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit, Signal, computed, effect } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionActions } from '../../../../models/recognition.model';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
-import { RecognitionService } from '../../../media/services/recognition.service';
 import { ObsConnectionService } from '../../../../services/obs-connection/obs-connection.service';
+import { RecognitionService } from '../../../media/services/recognition.service';
 
 @Component({
   selector: 'app-stream-captions',
@@ -19,28 +19,27 @@ import { ObsConnectionService } from '../../../../services/obs-connection/obs-co
   ]
 })
 export class StreamCaptionsComponent implements OnInit, OnDestroy {
-  public recognitionConnected: Signal<boolean | undefined>;
   
-  private recognitionPaused: Signal<boolean | undefined>;
-  private liveText: Observable<string>;
-  // private recognizedText: Observable<string[]>;
+  public recognitionConnected: Signal<boolean | undefined>;
+  public recognitionPaused: Signal<boolean | undefined>;
+  public liveText: Signal<string>;
+  
+  private liveText$: Observable<string>;
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService,
               private obs: ObsConnectionService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
-    this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput('stream')() : ''))
-    // this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText('stream')() : []));
+    this.liveText = computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput('stream')() : '')
+    this.liveText$ = toObservable(this.liveText);
   }
 
   ngOnInit(): void {
-    this.liveText.pipe(
+    this.liveText$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((live) => {
-      if (live !== '') {
-        this.obs.sendCaption(live);
-      }
+      this.obs.sendCaption(live);
     });
   }
 
