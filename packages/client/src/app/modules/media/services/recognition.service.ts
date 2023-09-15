@@ -125,13 +125,12 @@ export class RecognitionService {
     const disconnect$: Subject<void> = new Subject<void>();
     // Live results logic
     debounce$.pipe(
-      tap(() => console.log('bounce')),
       takeUntil(disconnect$),
       debounceTime(this.DEBOUNCE_TIME_MS),
       throttleTime(this.DEBOUNCE_TIME_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.DEBOUNCE_TIME_MS),
     ).subscribe(() => {
-      console.log('debounce ended', Date.now());
+      // console.log('debounce ended', Date.now());
       if (mostRecentResults) {
         const partialTranscript: string = mostRecentResults
         .filter((result) => {
@@ -178,7 +177,7 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      console.log('segment')
+      // console.log('segment')
       if (liveOutput() !== '') {
         // console.log('live output is not blank - stopping', liveOutput())
         recognition.stop();

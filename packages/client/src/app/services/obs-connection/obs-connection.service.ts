@@ -1,11 +1,11 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import OBSWebSocket from 'obs-websocket-js';
-import { Observable, Subject, from, timeout } from 'rxjs';
+import { Observable, from, timeout } from 'rxjs';
 import { ObsActions } from '../../actions/obs.actions';
 import { AppState } from '../../models/app.model';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { selectObsStreamActive } from '../../selectors/obs.selectors';
 
 @Injectable({
@@ -42,7 +42,6 @@ export class ObsConnectionService {
   }
 
   private _addObsListeners(): void {
-    console.log('addListeners', this.obs.identified);
     this.obs.call<"GetStreamStatus">('GetStreamStatus').then((status) => {
       this.store.dispatch(ObsActions.setStreamingActive({active: status.outputActive}));
     });
