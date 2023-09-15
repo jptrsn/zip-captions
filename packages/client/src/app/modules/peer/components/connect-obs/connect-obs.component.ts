@@ -43,7 +43,6 @@ export class ConnectObsComponent {
     this.formGroup.updateValueAndValidity();
     if (this.formGroup.valid) {
       const {ip, port, password}: {ip: string, port: number, password: string | null} = this.formGroup.value;
-      console.log('form valid, dispatching');
       this.store.dispatch(ObsActions.connect({ ip, port, password }));
     } else {
       this.formGroup.markAsTouched();
@@ -63,7 +62,6 @@ export class ConnectObsComponent {
   }
 
   private _autofillDefaultValue(control: AbstractControl, value: string | number): ValidationErrors | null {
-    console.log('autofill localhost', control);
     if (control.value === null) {
       control.patchValue(value);
     }
