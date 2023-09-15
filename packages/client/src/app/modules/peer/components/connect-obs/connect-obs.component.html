@@ -1,10 +1,10 @@
 <div class="flex flex-row items-center gap-3">
   <div class="text-lg text-primary py-3" translate>CONNECTIONS.obsStudio</div>
-  <div class="badge" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
-  <div class="badge badge-error" *ngIf="error() as err">{{err}}</div>
+  <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
+  <div class="badge h-auto badge-error" *ngIf="error() as err">{{err}}</div>
   <div class="flex flex-grow"></div>
   <div class="flex" *ngIf="isConnected()">
-    <div class="badge badge-secondary" *ngIf="!obsIsStreaming()" translate>CONNECTIONS.obsStreamInactive</div>
+    <div class="badge h-auto badge-secondary" *ngIf="!obsIsStreaming()" translate>CONNECTIONS.obsStreamInactive</div>
   </div>
 </div>
 
