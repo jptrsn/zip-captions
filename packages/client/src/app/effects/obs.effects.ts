@@ -12,11 +12,10 @@ export class ObsEffects {
   connectServer$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ObsActions.connect),
-      tap(() => console.log('obs connect event')),
-      switchMap((props) => this.obsService.connect(props)),
-      tap((result: any) => console.log('obs connect result', result)),
-      map((result: any) => ObsActions.connectSuccess()),
-      catchError((err:any) => of(ObsActions.connectFailure({error: err.message}))),
+      switchMap((props) => this.obsService.connect(props).pipe(
+        map(() => ObsActions.connectSuccess()),
+        catchError((err:any) => of(ObsActions.connectFailure({error: err.message || 'Connection Failed for unknown reason'}))))
+      ),
       tap((result) => console.log('connect flow finished', result))
     )
   )
@@ -24,9 +23,10 @@ export class ObsEffects {
   disconnectServer$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ObsActions.disconnect),
-      switchMap(() => this.obsService.disconnect()),
-      map(() => ObsActions.disconnectSuccess()),
-      catchError((err: any) => of(ObsActions.disconnectFailure({error: err.message}))),
+      switchMap(() => this.obsService.disconnect().pipe(
+        map(() => ObsActions.disconnectSuccess()),
+        catchError((err: any) => of(ObsActions.disconnectFailure({error: err.message || 'Disconnect Failed for unknown reason'}))),
+      )),
     )
   )
 }

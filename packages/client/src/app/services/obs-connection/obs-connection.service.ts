@@ -24,7 +24,6 @@ export class ObsConnectionService {
   }
 
   connect({ip, port, password}: {ip: string, port: number, password: string | null}): Observable<any> {
-    console.log('connect', this.obs);
     const url = `ws://${ip}:${port}`;
     const pass: string | undefined = password ? password : undefined;
     return from(this.obs.connect(url, pass));

@@ -1,13 +1,12 @@
-import { Component, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { AppState } from '../../../../models/app.model';
+import { RecognitionActions } from '../../../../models/recognition.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { selectObsConnected, selectObsError } from '../../../../selectors/obs.selectors';
-import { RecognitionActions } from '../../../../models/recognition.model';
-import { take } from 'rxjs';
 
 @Component({
   selector: 'app-connect-obs',
@@ -32,13 +31,15 @@ export class ConnectObsComponent {
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
 
     this.formGroup = this.fb.group({
-      ip: this.fb.control<string | null>('192.168.1.139', [Validators.required]),
-      port: this.fb.control<number | null>(4455, [Validators.required]),
-      password: this.fb.control<string | null>('tooties')
+      ip: this.fb.control<string | null>(null),
+      port: this.fb.control<number | null>(null),
+      password: this.fb.control<string | null>(null)
     })
   }
 
   public saveObsWebsocket(): void {
+    this._autofillDefaultValue(this.formGroup.controls['ip'], '127.0.0.1');
+    this._autofillDefaultValue(this.formGroup.controls['port'], 4455);
     this.formGroup.updateValueAndValidity();
     if (this.formGroup.valid) {
       const {ip, port, password}: {ip: string, port: number, password: string | null} = this.formGroup.value;
@@ -59,5 +60,13 @@ export class ConnectObsComponent {
 
   public stopRecognition(): void {
     this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}));
+  }
+
+  private _autofillDefaultValue(control: AbstractControl, value: string | number): ValidationErrors | null {
+    console.log('autofill localhost', control);
+    if (control.value === null) {
+      control.patchValue(value);
+    }
+    return null;
   }
 }
