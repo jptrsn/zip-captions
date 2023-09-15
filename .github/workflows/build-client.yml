@@ -2,6 +2,8 @@ name: Docker Image CI/CD Staging Client
 
 on:
   workflow_dispatch:
+    paths:
+      - 'packages/client/*'
   push:
     paths:
       - 'packages/client/*'

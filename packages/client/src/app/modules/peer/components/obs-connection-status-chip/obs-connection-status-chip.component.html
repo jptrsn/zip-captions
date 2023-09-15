@@ -1,6 +1,6 @@
-<div class="badge badge-success" *ngIf="streamingActive(); else connectionBadge">{{'CONNECTIONS.obsStudio' | translate}}: {{'LABELS.streaming' | translate}}</div>
+<div class="badge badge-success h-auto" *ngIf="streamingActive(); else connectionBadge">{{'CONNECTIONS.obsStudio' | translate}}: {{'LABELS.streaming' | translate}}</div>
 <ng-template #connectionBadge>
-  <div class="badge gap-1" [ngClass]="{'badge-success': connected()}" *ngIf="connectionState() as state">
+  <div class="badge gap-1 h-auto" [ngClass]="{'badge-success': connected()}" *ngIf="connectionState() as state">
     <span>
       {{'CONNECTIONS.obsStudio' | translate}}: {{state | proper}}
     </span>

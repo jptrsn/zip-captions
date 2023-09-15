@@ -52,8 +52,7 @@ export class ConnectObsComponent {
       const {ip, port, password}: {ip: string, port: number, password: string | null} = this.formGroup.value;
       this.store.select(selectObsConnected).pipe(
         filter((conn) => conn === ObsConnectionState.connected),
-        take(1),
-        tap(() => console.log('starting'))
+        take(1)
       ).subscribe(() => this.startRecognition());
       this.store.dispatch(ObsActions.connect({ ip, port, password }));
     } else {

@@ -119,10 +119,6 @@ export class RecognitionService {
     let mostRecentResults: SpeechRecognitionResult[] | undefined;
     const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
-    // DEBUG event listeners
-    recognition.addEventListener('start', () => console.log('start'));
-    recognition.addEventListener('stop', () => console.log('stop'));
-
     // Debounce is to provide a timeout after the last-recognized full text, 
     // in order to better handle chunking in related tasks for the media stream
     // TODO: Allow adjustment of debounce

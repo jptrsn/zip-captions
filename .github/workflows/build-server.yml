@@ -2,6 +2,8 @@ name: Docker Image CI/CD Staging Server
 
 on:
   workflow_dispatch:
+    paths:
+      - 'packages/signal/*'
   push:
     branches: 
       - 'develop'
