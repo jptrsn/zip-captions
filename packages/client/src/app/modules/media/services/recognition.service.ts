@@ -134,10 +134,10 @@ export class RecognitionService {
       if (mostRecentResults) {
         const partialTranscript: string = mostRecentResults
         .filter((result) => {
-          if (result[0].transcript !== '' && !transcriptSegments.has(result)) {
-            if (platform === AppPlatform.mobile) {
-              // console.log('mobile!!!', result[0].confidence)
-            } else {
+          if (streamId === 'stream') {
+            return result[0].transcript !== '';
+          } else if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
+            if (platform !== AppPlatform.mobile) {
               transcriptSegments.add(result);
             }
             return true;

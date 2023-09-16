@@ -36,23 +36,6 @@ export class AppComponent {
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
     this.renderSwUpdateNotice.set(this.updates.isEnabled);
-
-    this._watchConnectivityState();
-    this._setPwaWindowSize();
   }
 
-  private _watchConnectivityState(): void {
-    this.store.dispatch(AppActions.updateConnectivityState({connectivity: window.navigator.onLine ? Connectivity.online : Connectivity.offline}));
-    window.addEventListener('online', () => this.store.dispatch(AppActions.updateConnectivityState({connectivity: Connectivity.online})));
-    window.addEventListener('offline', () => this.store.dispatch(AppActions.updateConnectivityState({connectivity: Connectivity.offline})));
-  }
-
-  private _setPwaWindowSize(): void {
-    document.addEventListener('DOMContentLoaded', () => {
-      const isBrowser: MediaQueryList | undefined = matchMedia('(display-mode: browser)');
-      if (!isBrowser) {
-        window.resizeTo(420, 800);
-      }
-    })
-  }
 }
