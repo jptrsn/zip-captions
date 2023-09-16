@@ -8,6 +8,9 @@
   "display_override": ["window-controls-overlay"],
   "scope": "./",
   "start_url": "./",
+  "url_handlers": [
+    { "origin": "https://zipcaptions.app" }
+  ],
   "icons": [
     {
       "src": "assets/icons/maskable_icon_x48.png",
