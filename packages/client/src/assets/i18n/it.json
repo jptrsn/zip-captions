@@ -320,12 +320,15 @@
     "rejected": "Rifiutato",
     "viewPolicy": "View Policy",
     "saveAndClose": "Salva e chiudi",
+    "save": "Salva",
     "cancel": "Annulla",
     "confirm": "Sì, sono sicuro",
     "decline": "No",
     "connect": "Collegare",
     "disconnect": "Disconnettersi",
-    "goBack": "Torna indietro"
+    "goBack": "Torna indietro",
+    "start": "Avvio",
+    "stop": "Stop"
   },
   "LABELS": {
     "menu": "Menu",
@@ -347,7 +350,12 @@
     "textFlow": "Flusso del testo",
     "fullScreen": "Schermo intero",
     "increase": "Aumenta",
-    "decrease": "Diminuisci"
+    "decrease": "Diminuisci",
+    "password": "Password",
+    "optPassword": "Password (opzionale)",
+    "stream": "Stream",
+    "streaming": "Streaming",
+    "idle": "Inattivo"
   },
   "HINTS": {
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
@@ -402,5 +410,13 @@
     "VERSION_READY": "Si sta visualizzando una versione precedente dell'applicazione. Aggiornare per vedere la versione più recente.",
     "VERSION_INSTALLATION_FAILED": "Impossibile installare la versione dell'app",
     "NO_NEW_VERSION_DETECTED": "Non è stata rilevata alcuna nuova versione"
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Connetti a servizi di terze parti",
+    "obsStudio": "OBS Studio",
+    "obsStudioIP": "IP del server",
+    "obsStudioPort": "Porta del server",
+    "obsPassword": "Password del server",
+    "obsStreamInactive": "In attesa dell'inizio del flusso OBS"
   }
 }
