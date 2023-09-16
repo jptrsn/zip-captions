@@ -303,7 +303,7 @@
     "cookies": "Cookie-Richtlinie",
     "policies": "Politiken",
     "support": "Unterstützung",
-    "helpdesk": "Hilfe-Schreibtisch",
+    "help": "Hilfe",
     "github": "GitHub Issue Tracker",
     "discord": "Diskord-Server",
     "donate": "Spende",
@@ -320,12 +320,15 @@
     "rejected": "Abgelehnt",
     "viewPolicy": "Ansichtsrichtlinie",
     "saveAndClose": "Speichern und schließen",
+    "save": "Speichern",
     "cancel": "Stornieren",
     "confirm": "Ja, ich bin mir sicher",
     "decline": "Nein",
     "connect": "Verbinden",
     "disconnect": "Trennen Sie die Verbindung",
-    "goBack": "Zurückgehen"
+    "goBack": "Zurückgehen",
+    "start": "Start",
+    "stop": "Stopp"
   },
   "LABELS": {
     "menu": "Menü",
@@ -333,26 +336,41 @@
     "closeCookieModal": "Cookie-Pop-up schließen",
     "viewGithub": "Das Github-Repository anzeigen",
     "joinDiscord": "Dem Discord beitreten",
-    "stop": "Stop",
-    "listen": "Listen",
+    "patreon": "Unterstützen Sie uns auf Patreon",
+    "stop": "Stoppen Sie",
+    "listen": "Hören Sie",
     "lang": "Sprache",
     "theme": "Thema",
     "wakelock": "Bildschirm aufwecken",
     "wakelockOn": "Verhindern, dass der Bildschirm bei aktiven Untertiteln in den Ruhezustand versetzt wird",
     "wakelockOff": "Zip Captions respektiert Ihre Systemeinstellungen für den Ruhezustand.",
-    "rememberSetting": "Erinnern Sie sich an meine Antwort zu diesem Gerät."
+    "rememberSetting": "Erinnern Sie sich an meine Antwort zu diesem Gerät.",
+    "textSize": "Textgröße",
+    "lineHeight": "Zeilenabstand",
+    "textFlow": "Textfluss",
+    "fullScreen": "Vollbild",
+    "increase": "Erhöhen",
+    "decrease": "Verringern",
+    "password": "Kennwort",
+    "optPassword": "Kennwort (optional)",
+    "stream": "Stream",
+    "streaming": "Streaming",
+    "idle": "Leerlauf"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
     "streamConnected": "Text wird erscheinen, sobald wir etwas hören...",
     "verifyingConnection": "Verifizierung des Beitrittscodes...",
     "hostConnecting": "Warten auf Sitzungsleiter...",
+    "recognitionPaused": "Die Anerkennung wurde pausiert...",
     "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen."
   },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
     "serviceUnavailable": "Es sieht so aus, als ob der Dienst auf dieser Plattform noch nicht verfügbar ist. Wir empfehlen Chrome oder Safari",
     "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden",
+    "mobileBroadcast": "Die Übertragung ist von einem mobilen Gerät aus nicht verfügbar",
+    "unsupportedBrowserBroadcast": "Broadcasting wird von diesem Browser nicht unterstützt.",
     "RECOGNITION": {
       "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
       "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",
@@ -392,5 +410,13 @@
     "VERSION_READY": "Sie sehen gerade eine ältere Version der App. Aktualisieren Sie, um die neueste Version zu sehen.",
     "VERSION_INSTALLATION_FAILED": "Installation der App-Version fehlgeschlagen",
     "NO_NEW_VERSION_DETECTED": "Keine neue Version gefunden"
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Verbindung zu Diensten Dritter",
+    "obsStudio": "OBS Studio",
+    "obsStudioIP": "Server-IP",
+    "obsStudioPort": "Server-Anschluss",
+    "obsPassword": "Server-Kennwort",
+    "obsStreamInactive": "Warten auf den Beginn des OBS-Streams"
   }
 }
