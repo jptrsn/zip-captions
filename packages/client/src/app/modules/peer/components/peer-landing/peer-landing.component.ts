@@ -3,13 +3,17 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map, take } from 'rxjs';
+import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
-import { AppActions, AppPlatform, AppState } from '../../../../models/app.model';
+import { AppPlatform, AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../models/recognition.model';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
+import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
+import { selectObsConnected } from '../../../../selectors/obs.selectors';
+import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 
 @Component({
   selector: 'app-peer-landing',
@@ -28,6 +32,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   public isBroadcasting: Signal<boolean | undefined>;
   public isMobileDevice: Signal<boolean | undefined>;
   public isIncompatibleBrowser: Signal<boolean | undefined>;
+  public recognitionActive: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -43,7 +48,9 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.roomId = toSignal(this.store.select(selectRoomId));
     this.joinCode = toSignal(this.store.select(selectJoinCode));
-    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting))
+    this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.recognitionActive = toSignal(this.store.select(recognitionActiveSelector))
+
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
 
@@ -67,6 +74,14 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
 
   ngOnDestroy(): void {
     this.store.dispatch(RecognitionActions.resetRecogntionState());
+  }
+
+  stopWebsocketRecognition(): void {
+    this.store.dispatch(ObsActions.disconnect());
+    this.store.select(selectObsConnected).pipe(
+      filter((state) => state === ObsConnectionState.disconnected),
+      take(1)
+    ).subscribe(() => this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'})))
   }
 
   canDeactivate(): boolean | Observable<boolean> {

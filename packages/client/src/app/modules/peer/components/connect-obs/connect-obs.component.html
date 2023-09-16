@@ -1,0 +1,48 @@
+<div class="flex flex-row items-center gap-3">
+  <div class="text-lg text-primary py-3" translate>CONNECTIONS.obsStudio</div>
+  <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
+  <div class="badge h-auto badge-error" *ngIf="error() as err">{{err}}</div>
+  <div class="flex flex-grow"></div>
+  <div class="flex" *ngIf="isConnected()">
+    <div class="badge h-auto badge-secondary" *ngIf="!obsIsStreaming()" translate>CONNECTIONS.obsStreamInactive</div>
+  </div>
+</div>
+
+<form class="flex flex-row flex-wrap flex-grow-0 gap-3" [formGroup]="formGroup" (submit)="saveObsWebsocket()">
+  
+  <div class="form-control basis-1/5">
+    <label class="label">
+      <span class="label-text" [ngClass]="{'text-error': formGroup.invalid && formGroup.touched}" translate>CONNECTIONS.obsStudioIP</span>
+    </label>
+    <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
+    <label class="label no-height">
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('invalid') && formGroup.touched">Invalid URL</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('required') && formGroup.touched">Required</span>
+    </label>
+  </div>
+
+  <div class="form-control basis-1/5">
+    <label class="label">
+      <span class="label-text" [ngClass]="{'text-error': formGroup.invalid && formGroup.touched}" translate>CONNECTIONS.obsStudioPort</span>
+    </label>
+    <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="4455" formControlName="port" />
+    <label class="label no-height">
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('invalid') && formGroup.touched">Invalid URL</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('required') && formGroup.touched">Required</span>
+    </label>
+  </div>
+
+  <div class="form-control basis-1/5">
+    <label class="label">
+      <span class="label-text" translate>LABELS.password</span>
+    </label>
+    <input type="text" class="input input-bordered input-lg" [placeholder]="'LABELS.optPassword' | translate" formControlName="password" />
+    <label class="label no-height"></label>
+  </div>
+
+  <div class="flex flex-col basis-1/5 self-end pb-5 gap-3">
+    <button class="btn btn-secondary" [ngClass]="{'btn-error': formGroup.invalid && formGroup.touched}" [disabled]="isConnecting()" *ngIf="!isConnected()" translate>BUTTONS.connect</button>
+    <button class="btn btn-secondary" [disabled]="isConnecting()" *ngIf="isConnected()" type="button" (click)="disconnect()" translate>BUTTONS.disconnect</button>
+  </div>
+
+</form>

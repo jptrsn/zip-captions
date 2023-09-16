@@ -317,15 +317,18 @@
     "acceptAll" : "Accepter tout",
     "accepted" : "Accepté",
     "reject" : "Rejeter",
-    "rejeté" : "Rejected",
+    "rejected" : "Rejecté",
     "viewPolicy" : "Voir détails",
     "saveAndClose": "Sauver et Fermer",
+    "save": "Suaver",
     "cancel": "Annuler",
     "confirm": "Oui, je suis sûr",
     "decline": "Non",
     "connect": "Connecter",
     "disconnect": "Déconnecter",
-    "goBack": "Revenir en arrière"
+    "goBack": "Revenir en arrière",
+    "start": "Démarrer",
+    "stop": "Arrêt"
   },
   "LABELS" : {
     "menu" : "Menu",
@@ -347,7 +350,12 @@
     "textFlow": "Flux de Texte",
     "fullScreen": "Plein écran",
     "increase": "Augmenter",
-    "decrease": "Diminuer"
+    "decrease": "Diminuer",
+    "password": "Mot de passe",
+    "optPassword": "Mot de passe (facultatif)",
+    "stream": "Stream",
+    "streaming": "Streaming",
+    "idle": "inactif"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
@@ -402,5 +410,13 @@
     "VERSION_READY": "Vous visualisez une ancienne version de l'application. Actualisez pour voir la dernière version.",
     "VERSION_INSTALLATION_FAILED": "Échec de l'installation de la version de l'application",
     "NO_NEW_VERSION_DETECTED": "Aucune nouvelle version n'a été détectée."
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Se connecter à des services tiers",
+    "obsStudio": "OBS Studio",
+    "obsStudioIP": "IP du serveur",
+    "obsStudioPort": "Port du serveur",
+    "obsPassword": "Mot de passe du serveur",
+    "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS"
   }
 }

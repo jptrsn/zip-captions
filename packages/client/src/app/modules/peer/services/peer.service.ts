@@ -81,8 +81,8 @@ export class PeerService {
     if (cached?.id) {
       this.myId = cached.id;
     }
-    console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
-    console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
+    // console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
+    // console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
   }
 
@@ -94,7 +94,7 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('socket connected');
+      // console.log('socket connected');
       this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
@@ -112,7 +112,7 @@ export class PeerService {
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
-      console.log('message', data);
+      // console.log('message', data);
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
@@ -123,7 +123,7 @@ export class PeerService {
           break;
         }
         case 'set user id': {
-          console.log('set user id', data.id, this.myId)
+          // console.log('set user id', data.id, this.myId)
           if (this.myId) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
@@ -242,7 +242,7 @@ export class PeerService {
       throw new Error('Must obtain ID from socket server');
     }
     if (this.peer?.id === this.myId && !this.peer.disconnected) {
-      console.log('peer server connection already exists and appears to be connected!!!');
+      // console.log('peer server connection already exists and appears to be connected!!!');
       return of(this.myId);
     }
     const sub: ReplaySubject<string> = new ReplaySubject<string>();
@@ -311,7 +311,7 @@ export class PeerService {
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
-      console.log('endbroadcast response recieved');
+      // console.log('endbroadcast response recieved');
       sub.next();
       sub.complete();
     });
@@ -320,7 +320,7 @@ export class PeerService {
   }
 
   leaveSession(): void {
-    console.log('leaveSession', this.peerMap.size);
+    // console.log('leaveSession', this.peerMap.size);
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.peerMap.forEach((connection: DataConnection) => {
