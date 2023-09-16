@@ -303,7 +303,7 @@
     "cookies": "Política de Cookies",
     "policies": "Políticas",
     "support": "Soporte",
-    "helpdesk": "Servicio de Asistencia",
+    "help": "Ayuda",
     "github": "GitHub Issue Tracker",
     "discord": "Servidor de Discordia",
     "donate": "Donar",
@@ -320,12 +320,15 @@
     "rejected": "Rechazado",
     "viewPolicy": "Ver Política",
     "saveAndClose": "Guardar y Cerrar",
+    "save": "Guardar",
     "cancel": "Cancelar",
     "confirm": "Sí, estoy seguro",
     "decline": "No",
     "connect": "Conectar",
     "disconnect": "Desconectar",
-    "goBack": "Volver atrás"
+    "goBack": "Volver atrás",
+    "start": "Start",
+    "stop": "Parar"
   },
   "LABELS": {
     "menu": "Menu",
@@ -333,6 +336,7 @@
     "closeCookieModal": "Cerrar ventana emergente de cookies",
     "viewGithub": "Ver el repositorio de github",
     "joinDiscord": "Unirse a la Discordia",
+    "patreon": "Apóyenos en Patreon",
     "stop": "Stop",
     "listen": "Escuchar",
     "lang": "Idioma",
@@ -340,19 +344,33 @@
     "wakelock": "Sveglia schermo",
     "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
     "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
-    "rememberSetting": "Ricordate la mia risposta su questo dispositivo."
+    "rememberSetting": "Ricordate la mia risposta su questo dispositivo.",
+    "textSize": "Tamaño del texto",
+    "lineHeight": "Interlineado",
+    "textFlow": "Flujo de texto",
+    "fullScreen": "Pantalla completa",
+    "increase": "Aumentar",
+    "decrease": "Reducir",
+    "password": "Contraseña",
+    "optPassword": "Contraseña (opcional)",
+    "stream": "Stream",
+    "streaming": "Streaming",
+    "idle": "Ralentí"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
     "streamConnected": "El texto aparecerá cuando sepamos algo...",
     "verifyingConnection": "Verificando código de unión...",
     "hostConnecting": "Esperando al anfitrión de la sesión...",
+    "recognitionPaused": "El reconocimiento se ha pausado...",
     "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo."
   },
   "ERRORS": {
     "missingApi": "Lo sentimos, su navegador aún no ha implementado las API necesarias para que ZipCaptions se ejecute. Recomendamos Chrome o Safari",
     "serviceUnavailable": "Parece que el servicio aún no está disponible en esta plataforma. Recomendamos Chrome o Safari",
     "liveTextMissing": "Parece que los resultados de transmisión en vivo aún no son compatibles con su plataforma",
+    "mobileBroadcast": "La emisión no está disponible desde un dispositivo móvil",
+    "unsupportedBrowserBroadcast": "La emisión no es compatible con este navegador",
     "RECOGNITION": {
       "no-speech": "Error de reconocimiento de voz: No se detectó habla",
       "aborted": "Error de reconocimiento de voz: La entrada de voz se abortó de alguna manera",
@@ -392,5 +410,13 @@
     "VERSION_READY": "Estás viendo una versión antigua de la aplicación. Actualiza para ver la última.",
     "VERSION_INSTALLATION_FAILED": "Error al instalar la versión de la aplicación",
     "NO_NEW_VERSION_DETECTED": "No se ha detectado ninguna versión nueva"
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Conectar con servicios de terceros",
+    "obsStudio": "Estudio OBS",
+    "obsStudioIP": "IP del servidor",
+    "obsStudioPort": "Puerto del servidor",
+    "obsPassword": "Contraseña del servidor",
+    "obsStreamInactive": "Esperando a que comience el flujo de OBS"
   }
 }
