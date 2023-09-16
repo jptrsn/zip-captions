@@ -1,14 +1,12 @@
-import { Injectable } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SwUpdate, UnrecoverableStateEvent, VersionEvent } from '@angular/service-worker';
 import { NgIconsModule } from '@ng-icons/core';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { TranslateTestingModule } from 'ngx-translate-testing';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Icons } from 'shared-ui';
 import { defaultAppState } from '../app/reducers/app.reducer';
 import * as DE_TRANSLATIONS from '../assets/i18n/de.json';

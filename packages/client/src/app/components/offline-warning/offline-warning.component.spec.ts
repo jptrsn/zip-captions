@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OfflineWarningComponent } from './offline-warning.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 
 describe('OfflineWarningComponent', () => {
   let component: OfflineWarningComponent;
@@ -7,7 +8,9 @@ describe('OfflineWarningComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [OfflineWarningComponent],
+      providers: TestingModuleProviders,
     }).compileComponents();
 
     fixture = TestBed.createComponent(OfflineWarningComponent);

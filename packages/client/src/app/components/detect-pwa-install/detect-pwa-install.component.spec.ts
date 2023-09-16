@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DetectPwaInstallComponent } from './detect-pwa-install.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
+import '../../../testing/matchMedia.mock';
 
 describe('DetectPwaInstallComponent', () => {
   let component: DetectPwaInstallComponent;
@@ -7,7 +9,9 @@ describe('DetectPwaInstallComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: TestingModuleImports,
       declarations: [DetectPwaInstallComponent],
+      providers: TestingModuleProviders,
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetectPwaInstallComponent);

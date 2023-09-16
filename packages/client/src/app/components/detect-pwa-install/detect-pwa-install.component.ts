@@ -39,7 +39,7 @@ export class DetectPwaInstallComponent {
     document.addEventListener('DOMContentLoaded', () => {
       // @ts-expect-error Property standalone only exists on navigator in iOS
       const navStandalone = window.navigator.standalone;
-      const isPwa: boolean = matchMedia('(display-mode: standalone)').matches || navStandalone;
+      const isPwa: boolean = window.matchMedia('(display-mode: standalone)').matches || navStandalone;
       if (isPwa && !this.isInstalled()) {
         this._markInstalled();
       }
