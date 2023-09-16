@@ -3,17 +3,17 @@ name: Docker Image CI/CD Staging Server
 on:
   workflow_dispatch:
     paths:
-      - 'packages/signal/*'
+      - 'packages/signal/**/*'
   push:
     branches: 
       - 'develop'
     paths:
-      - 'packages/signal/*'
+      - 'packages/signal/**/*'
   pull_request:
     branches:
       - 'develop'
     paths:
-      - 'packages/signal/*'
+      - 'packages/signal/**/*'
   
 jobs:
   push_to_registry:
