@@ -6,10 +6,6 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "fullscreen"
-  ],
   "scope": "./",
   "start_url": "./",
   "dir": "ltr",
@@ -22,7 +18,7 @@
   },
   "handle_links": "preferred",
   "scope_extensions": [
-    { "origin": "*.zipcaptions.app" }
+    { "origin": "https://*.zipcaptions.app" }
   ],
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
