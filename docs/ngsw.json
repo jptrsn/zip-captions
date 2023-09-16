@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1694890633800,
+  "timestamp": 1694899227150,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,25 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
+        "/415.8c3ed896a579fb83.js",
+        "/454.1820f2f4a09896c3.js",
+        "/57.13299231aa8e1cc9.js",
         "/favicon.ico",
         "/index.html",
-        "/main.js",
-        "/main.js.map",
+        "/main.072d5b7e4a8e804a.js",
         "/manifest.webmanifest",
-        "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js",
-        "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js.map",
-        "/packages_client_src_app_modules_peer_peer_module_ts.js",
-        "/packages_client_src_app_modules_peer_peer_module_ts.js.map",
-        "/packages_client_src_app_modules_settings_settings_module_ts.js",
-        "/packages_client_src_app_modules_settings_settings_module_ts.js.map",
-        "/polyfills.js",
-        "/polyfills.js.map",
-        "/runtime.js",
-        "/runtime.js.map",
-        "/styles.css",
-        "/styles.css.map",
-        "/vendor.js",
-        "/vendor.js.map"
+        "/polyfills.5dd5880891494581.js",
+        "/runtime.9fdc4114903b555f.js",
+        "/styles.8cb6a27c3edb7aef.css"
       ],
       "patterns": []
     },
@@ -178,6 +169,9 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "/415.8c3ed896a579fb83.js": "efefc1d208b53cf38cade8ab6e4880e7a845529f",
+    "/454.1820f2f4a09896c3.js": "6e58d15d6459ba450f37e90f2e3ee68e4fe398a6",
+    "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
     "/assets/i18n/de.json": "7aaedb4f08a9edc30ce21e0db84747fbd15566e7",
     "/assets/i18n/en.json": "fc952efb789efe271795bfcbd970254b5f630d42",
     "/assets/i18n/fr.json": "20b21e2b03cb2cc41a40b695ecdfc02ca7e17d38",
@@ -310,24 +304,12 @@
     "/assets/platforms/windows11/Wide310x150Logo.scale-200.png": "0072632f59649e915c122e2f083a67281b1e89f8",
     "/assets/platforms/windows11/Wide310x150Logo.scale-400.png": "3ab848365b1ef8b3d2829604d8a56e33bafdbeda",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "c8bf984416f89007f4c6e4ee3646b2dab72f3b1f",
-    "/main.js": "0bb943c611ef1c1c944354434cd12596c78c6608",
-    "/main.js.map": "6997f2e778e04a866881adfe4ce31740bc358c6c",
-    "/manifest.webmanifest": "ee0d4389c88b4b1bb2e94c88e3d36aa76d758b5d",
-    "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js": "c8ad988cd3436694c554cd33774661845abe5196",
-    "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js.map": "0aa42816dddafbb15401c19f3324a55485fc5c1b",
-    "/packages_client_src_app_modules_peer_peer_module_ts.js": "5956e508114bdf0f086a658c7b9c325a2c22693c",
-    "/packages_client_src_app_modules_peer_peer_module_ts.js.map": "6a48321205131c90b0580c199bc4f7b32ef92cfa",
-    "/packages_client_src_app_modules_settings_settings_module_ts.js": "5d943fc662ff2844607f240cb103a9760ec20f8e",
-    "/packages_client_src_app_modules_settings_settings_module_ts.js.map": "9904ee735a185055558a9653d5e3c9e70eca69a2",
-    "/polyfills.js": "cf1f8e3f3c57dfd5ff3d44112b62d139051605a9",
-    "/polyfills.js.map": "93cf9e1ecc9f805cb0c187f77b49a28d73a75988",
-    "/runtime.js": "c9c4bcc74fe0a3e79aaef6e323ece85c155f3c48",
-    "/runtime.js.map": "e7bffb5e56f3239f06cf4a95a1fcd72535fae820",
-    "/styles.css": "c1e917e1c5ab34fe7c1c20da0731939d2d69b338",
-    "/styles.css.map": "160e0956fd219dbb0fe9bf5be24fed72f5aa0d8b",
-    "/vendor.js": "e729f9660ee2602fbdb997ac7c4d650201c3fcd0",
-    "/vendor.js.map": "61e939e6eab1ffe39f36e44a9b824122c771c3ea"
+    "/index.html": "2bad1953e55b0ad07b0e8cf08f6abf6b6aaa576e",
+    "/main.072d5b7e4a8e804a.js": "b9ce09dbc64e312ef3b6e35db3365845d9b4c725",
+    "/manifest.webmanifest": "a4a96077f98db884b4986c2b872d2e5ae605efbb",
+    "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
+    "/runtime.9fdc4114903b555f.js": "a06846adb666ff8836ed59b0c2c462a796e90206",
+    "/styles.8cb6a27c3edb7aef.css": "dc9a05428478559544ceee82d24ee26511a7efc1"
   },
   "navigationUrls": [
     {
