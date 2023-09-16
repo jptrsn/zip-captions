@@ -34,6 +34,7 @@ import { SettingsEffects } from './effects/settings.effects';
 import { RecognitionEffects } from './effects/recognition.effects';
 import { ServiceWorkerUpdateComponent } from './components/service-worker-update/service-worker-update.component';
 import { obsReducers } from './reducers/obs.reducer';
+import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -51,6 +52,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PrivacyComponent,
     TermsAndConditionsComponent,
     ServiceWorkerUpdateComponent,
+    OfflineWarningComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -77,7 +79,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       recognition: recognitionReducers,
       settings: settingsReducers,
       peer: peerReducers,
-      obs: obsReducers
+      obs: obsReducers,
     }),
     EffectsModule.forRoot([AppEffects, SettingsEffects, RecognitionEffects]),
     StoreDevtoolsModule.instrument({
