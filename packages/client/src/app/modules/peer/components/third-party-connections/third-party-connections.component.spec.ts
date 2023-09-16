@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThirdPartyConnectionsComponent } from './third-party-connections.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { ConnectObsComponent } from '../connect-obs/connect-obs.component';
 
 describe('ThirdPartyConnectionsComponent', () => {
   let component: ThirdPartyConnectionsComponent;
@@ -7,7 +9,12 @@ describe('ThirdPartyConnectionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ThirdPartyConnectionsComponent],
+      imports: TestingModuleImports,
+      declarations: [
+        ThirdPartyConnectionsComponent,
+        ConnectObsComponent,
+      ],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(ThirdPartyConnectionsComponent);

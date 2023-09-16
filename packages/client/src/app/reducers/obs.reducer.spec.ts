@@ -1,13 +1,13 @@
-import { reducer, initialState } from './obs.reducer';
+import { obsReducers, defaultObsState } from './obs.reducer';
 
 describe('Obs Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
       const action = {} as any;
 
-      const result = reducer(initialState, action);
+      const result = obsReducers(defaultObsState, action);
 
-      expect(result).toBe(initialState);
+      expect(result).toBe(defaultObsState);
     });
   });
 });

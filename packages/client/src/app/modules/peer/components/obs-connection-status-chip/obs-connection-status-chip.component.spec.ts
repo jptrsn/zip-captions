@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ObsConnectionStatusChipComponent } from './obs-connection-status-chip.component';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
+import { ProperPipe } from 'packages/shared-ui/src/lib/pipes/proper.pipe';
 
 describe('ObsConnectionStatusChipComponent', () => {
   let component: ObsConnectionStatusChipComponent;
@@ -7,7 +9,12 @@ describe('ObsConnectionStatusChipComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ObsConnectionStatusChipComponent],
+      imports: TestingModuleImports,
+      declarations: [
+        ObsConnectionStatusChipComponent,
+        ProperPipe,
+      ],
+      providers: TestingModuleProviders
     }).compileComponents();
 
     fixture = TestBed.createComponent(ObsConnectionStatusChipComponent);
