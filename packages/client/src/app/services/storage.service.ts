@@ -27,4 +27,8 @@ export class StorageService {
     fromStorage[property] = value;
     this.set(key, fromStorage);
   }
+
+  remove(key: string): void {
+    localStorage.removeItem(key);
+  }
 }

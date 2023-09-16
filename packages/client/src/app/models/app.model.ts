@@ -10,10 +10,16 @@ export enum AppPlatform {
   unsupported = "UNSUPPORTED",
 }
 
+export enum Connectivity {
+  online = "ONLINE",
+  offline = "OFFLINE"
+}
+
 export interface AppAppearanceState {
   loading: boolean;
   cookiesAccepted: boolean;
   peerConnectionsAccepted: boolean;
+  connectivity: Connectivity;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   platform?: AppPlatform;

@@ -1,15 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { EffectsModule } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
-import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
+import '../testing/matchMedia.mock';
 import { TestingModuleImports, TestingModuleProviders } from '../testing/test-scaffold';
 import { AppComponent } from './app.component';
 import { AboutComponent } from './components/about/about.component';
 import { CookieModalComponent } from './components/cookie-modal/cookie-modal.component';
+import { DetectPwaInstallComponent } from './components/detect-pwa-install/detect-pwa-install.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
+import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
@@ -17,7 +21,6 @@ import { AppState } from './models/app.model';
 import { MediaModule } from './modules/media/media.module';
 import { AppTheme, AvailableLanguages, SettingsActions } from './modules/settings/models/settings.model';
 import { languageSelector } from './selectors/settings.selector';
-import { ServiceWorkerModule } from '@angular/service-worker';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -48,6 +51,8 @@ describe('AppComponent', () => {
           CookieModalComponent,
           PrivacyComponent,
           TermsAndConditionsComponent,
+          OfflineWarningComponent,
+          DetectPwaInstallComponent,
         ],
         providers: [
           ...TestingModuleProviders

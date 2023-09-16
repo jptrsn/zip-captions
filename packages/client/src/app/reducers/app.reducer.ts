@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AppActions from '../actions/app.actions';
-import { AppAppearanceState, AppPlatform, AppState } from '../models/app.model';
+import { AppAppearanceState, AppPlatform, AppState, Connectivity } from '../models/app.model';
 import { defaultAudioStreamState } from './audio-stream.reducer';
 import { defaultRecognitionState } from './recognition.reducer';
 import { defaultSettingsState } from './settings.reducer';
@@ -12,6 +12,7 @@ export const defaultAppAppearance: AppAppearanceState = {
   cookiesAccepted: false,
   peerConnectionsAccepted: false,
   footerVisible: true,
+  connectivity: Connectivity.online
 }
 
 export const defaultAppState: AppState = {
@@ -35,4 +36,5 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.declineCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: false, cookiesDeclinedTimestamp: Date.now()})),
   on(AppActions.setPeerConnectionsAccepted, (state: AppAppearanceState, action: { accepted: boolean }) => ({...state, peerConnectionsAccepted: action.accepted})),
   on(AppActions.clearAppError, (state: AppAppearanceState) => ({...state, error: undefined})),
+  on(AppActions.updateConnectivityState, (state: AppAppearanceState, action: { connectivity: Connectivity}) => ({...state, connectivity: action.connectivity })),
 )
