@@ -31,7 +31,7 @@ export class DetectPwaInstallComponent {
           console.log('not installed - prompt?')
         }
       });
-      window.addEventListener('onappinstalled', () => {
+      window.addEventListener('appinstalled', () => {
         this._markInstalled();
       })
     }
