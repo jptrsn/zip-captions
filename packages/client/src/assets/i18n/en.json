@@ -303,7 +303,7 @@
     "cookies": "Cookie Policy",
     "policies": "Policies",
     "support": "Support",
-    "helpdesk": "Help Desk",
+    "help": "Help",
     "github": "GitHub Issue Tracker",
     "discord": "Discord Server",
     "donate": "Donate",
@@ -320,12 +320,15 @@
     "rejected": "Rejected",
     "viewPolicy": "View Policy",
     "saveAndClose": "Save and Close",
+    "save": "Save",
     "cancel": "Cancel",
     "confirm": "Yes, I'm sure",
     "decline": "No",
     "connect": "Connect",
     "disconnect": "Disconnect",
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "start": "Start",
+    "stop": "Stop"
   },
   "LABELS": {
     "menu": "Menu",
@@ -333,6 +336,7 @@
     "closeCookieModal": "Close cookie pop-up",
     "viewGithub": "View the github repository",
     "joinDiscord": "Join the Discord",
+    "patreon": "Support us on Patreon",
     "stop": "Stop",
     "listen": "Listen",
     "lang": "Language",
@@ -346,7 +350,12 @@
     "textFlow": "Text Flow",
     "fullScreen": "Full Screen",
     "increase": "Increase",
-    "decrease": "Decrease"
+    "decrease": "Decrease",
+    "password": "Password",
+    "optPassword": "Password (optional)",
+    "stream": "Stream",
+    "streaming": "Streaming",
+    "idle": "Idle"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -360,6 +369,8 @@
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
     "serviceUnavailable": "It looks like the service is not yet available on this platform. We recommend Chrome or Safari",
     "liveTextMissing": "It appears that live streaming results are not yet supported on your platform.",
+    "mobileBroadcast": "Broadcasting is not available from a mobile device.",
+    "unsupportedBrowserBroadcast": "Broadcasting is not supported from this browser.",
     "RECOGNITION": {
       "no-speech": "Speech recognition error: No speech was detected.",
       "aborted": "Speech recognition error: Speech input was aborted in some manner.",
@@ -399,5 +410,13 @@
     "VERSION_READY": "You are viewing an older version of the app. Refresh to see the latest.",
     "VERSION_INSTALLATION_FAILED": "Failed to install app version",
     "NO_NEW_VERSION_DETECTED": "No new version detected"
+  },
+  "CONNECTIONS": {
+    "externalConnections": "Connect to Third Party Services",
+    "obsStudio": "OBS Studio",
+    "obsStudioIP": "Server IP",
+    "obsStudioPort": "Server Port",
+    "obsPassword": "Server Password",
+    "obsStreamInactive": "Waiting for OBS stream to begin"
   }
 }

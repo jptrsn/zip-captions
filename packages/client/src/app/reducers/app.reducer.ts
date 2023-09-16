@@ -5,6 +5,7 @@ import { defaultAudioStreamState } from './audio-stream.reducer';
 import { defaultRecognitionState } from './recognition.reducer';
 import { defaultSettingsState } from './settings.reducer';
 import { defaultPeerState } from './peer.reducer';
+import { defaultObsState } from './obs.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
@@ -19,6 +20,7 @@ export const defaultAppState: AppState = {
   audioStream: defaultAudioStreamState,
   recognition: defaultRecognitionState,
   peer: defaultPeerState,
+  obs: defaultObsState,
 }
 
 export const appAppearanceReducers = createReducer(
@@ -32,4 +34,5 @@ export const appAppearanceReducers = createReducer(
   on(AppActions.acceptCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: true})),
   on(AppActions.declineCookies, (state: AppAppearanceState) => ({...state, cookiesAccepted: false, cookiesDeclinedTimestamp: Date.now()})),
   on(AppActions.setPeerConnectionsAccepted, (state: AppAppearanceState, action: { accepted: boolean }) => ({...state, peerConnectionsAccepted: action.accepted})),
+  on(AppActions.clearAppError, (state: AppAppearanceState) => ({...state, error: undefined})),
 )

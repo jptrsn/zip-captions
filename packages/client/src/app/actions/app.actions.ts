@@ -23,5 +23,6 @@ export const releaseWakeLockSuccess = createAction('[App] Release WakeLock Succe
 export const releaseWakeLockFailure = createAction('[App] Release WakeLock Failure', props<{error: string}>());
 
 export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{platform: AppPlatform, error?: string, warning?: string}>());
+export const clearAppError = createAction('[App] Clear Error')
 
 export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());

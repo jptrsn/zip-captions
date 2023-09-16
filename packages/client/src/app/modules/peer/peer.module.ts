@@ -24,6 +24,12 @@ import { ViewBroadcastComponent } from './components/view-broadcast/view-broadca
 import { PeerRoutingModule } from './peer-routing.module';
 import { TimeagoModule } from 'ngx-timeago';
 import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug.component';
+import { ConnectObsComponent } from './components/connect-obs/connect-obs.component';
+import { ThirdPartyConnectionsComponent } from './components/third-party-connections/third-party-connections.component';
+import { ObsEffects } from '../../effects/obs.effects';
+import { ObsConnectionStatusChipComponent } from './components/obs-connection-status-chip/obs-connection-status-chip.component';
+import { SharedUiModule } from 'shared-ui';
+import { StreamCaptionsComponent } from './components/stream-captions/stream-captions.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +45,10 @@ import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug
     BroadcastRoomComponent,
     BroadcastRenderComponent,
     AcceptPeerConnectionsModalComponent,
+    ConnectObsComponent,
+    ThirdPartyConnectionsComponent,
+    ObsConnectionStatusChipComponent,
+    StreamCaptionsComponent,
   ],
   imports: [
     CommonModule,
@@ -46,8 +56,9 @@ import { SocketDebugComponent } from '../../standalone/socket-debug/socket-debug
     RouterModule,
     ReactiveFormsModule,
     NgIconsModule,
+    SharedUiModule,
     TranslateModule.forChild({ extend: true }),
-    EffectsModule.forFeature([PeerEffects]),
+    EffectsModule.forFeature([PeerEffects, ObsEffects]),
     MediaModule,
     ClipboardModule,
     TimeagoModule,

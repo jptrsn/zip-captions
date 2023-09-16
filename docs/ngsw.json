@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1693837631446,
+  "timestamp": 1694876869009,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,16 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
-        "/390.f49b84588ba5b26b.js",
+        "/415.4953a1573f0d9fde.js",
         "/454.0b3d8c41fde2ec60.js",
         "/57.13299231aa8e1cc9.js",
         "/favicon.ico",
         "/index.html",
-        "/main.7e8ae729d54516f2.js",
+        "/main.daeef5f7af0a6bb5.js",
         "/manifest.webmanifest",
         "/polyfills.5dd5880891494581.js",
-        "/runtime.03c0f174ca07f0ad.js",
-        "/styles.68b809c1fc82b41e.css"
+        "/runtime.d8d0742841f4779b.js",
+        "/styles.e9a0b02baf952a15.css"
       ],
       "patterns": []
     },
@@ -37,6 +37,7 @@
         "/assets/i18n/fr.json",
         "/assets/i18n/it.json",
         "/assets/i18n/sp.json",
+        "/assets/icons/Digital-Patreon-Logo_White.svg",
         "/assets/icons/basic_icon_white.svg",
         "/assets/icons/discord-mark-white.svg",
         "/assets/icons/github-mark-white.svg",
@@ -48,21 +49,23 @@
         "/assets/icons/logo_white_384.png",
         "/assets/icons/logo_white_512.png",
         "/assets/icons/logo_white_72.png",
-        "/assets/icons/logo_white_96.png"
+        "/assets/icons/logo_white_96.png",
+        "/assets/icons/patreon.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/390.f49b84588ba5b26b.js": "e30ba940f65a2b2ab0a05f8f7eb05c224c55cd88",
+    "/415.4953a1573f0d9fde.js": "ce5759af15fd896b3eb3e2a2af326fe75f0c01fb",
     "/454.0b3d8c41fde2ec60.js": "45feb499f580bd8c0dc4bae5d99902dee6068806",
     "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
-    "/assets/i18n/de.json": "fea25fdf9b9e8f1dccfbdb2fb5651a35ab05c698",
-    "/assets/i18n/en.json": "4936e9d79ee7016a42f307f5f93cdb585bf02a5a",
-    "/assets/i18n/fr.json": "80cd284239e895c297e455c3ca1f68e546ce5008",
-    "/assets/i18n/it.json": "adc87f82f47dfa46c9460b42c014f42b03886e9c",
-    "/assets/i18n/sp.json": "b9832ce209301dc9f148f68d7ade0fc2f45b9c0e",
+    "/assets/i18n/de.json": "7aaedb4f08a9edc30ce21e0db84747fbd15566e7",
+    "/assets/i18n/en.json": "e6c70015e650c30bcf1448c42e3d7d8c3f009304",
+    "/assets/i18n/fr.json": "20b21e2b03cb2cc41a40b695ecdfc02ca7e17d38",
+    "/assets/i18n/it.json": "8bf2164ce065842587f44e300db6395315b57f92",
+    "/assets/i18n/sp.json": "af07de249e9db06772adb069cc8ae8ebae0bfbb4",
+    "/assets/icons/Digital-Patreon-Logo_White.svg": "69ae530de0d938883d2b31c53ebed546b4c5de60",
     "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
     "/assets/icons/discord-mark-white.svg": "6068e50249899fe9d308132e89c1a0114b992ecb",
     "/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
@@ -75,13 +78,14 @@
     "/assets/icons/logo_white_512.png": "5f89a1a6726fa827eba3feabb8ee7b66e5845607",
     "/assets/icons/logo_white_72.png": "cb191a9aaf3bee2a7f5da5d6c1ceb4f55cb92408",
     "/assets/icons/logo_white_96.png": "b49768ee2e013e1652f36eab43b45b1997bc00d0",
+    "/assets/icons/patreon.png": "8856f91149ce6512988177a7056f30acc819fbe6",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "b36554d0f8e4985e9219f93b084c8100753c62cd",
-    "/main.7e8ae729d54516f2.js": "f81b94551ddd7ad10ae56352c09297e9e3062fd6",
+    "/index.html": "2a049a578600cc4bfbda3b5855d8b90a016de520",
+    "/main.daeef5f7af0a6bb5.js": "f74f8d480d4624d27bfe4c63fd3087880f43c1d7",
     "/manifest.webmanifest": "6f75a3bc936930c47cb3fbcd2f83e874b32ebd8f",
     "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
-    "/runtime.03c0f174ca07f0ad.js": "45c7b2f37f57dd7d9cbb2b6c36c0fb25f44c50c7",
-    "/styles.68b809c1fc82b41e.css": "d16b79d2e28c48de4e5c606326bc92148e2dd982"
+    "/runtime.d8d0742841f4779b.js": "04f29a84eeaf878f8494479ddcae22ab68d9484a",
+    "/styles.e9a0b02baf952a15.css": "45fc4d887f56506be2ea9abbe519910826a9f39b"
   },
   "navigationUrls": [
     {

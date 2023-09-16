@@ -1,0 +1,20 @@
+<div class="drawer drawer-end overflow-y-hidden relative">
+  <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
+      <app-recognized-live-text
+        [text]="liveText" 
+        *ngIf="liveText()"
+      ></app-recognized-live-text>
+      <div *ngIf="recognitionPaused()" class="badge badge-warning px-6 py-3 text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" translate>HINTS.recognitionPaused</div>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0" *ngIf="recognitionConnected() || recognitionPaused()" @slideInRightOnEnter @slideOutRightOnLeave>
+      <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
+    </label>
+  </div>
+  <div class="drawer-side" @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-overlay opacity-0"></label>
+    <app-recognition-control-sidebar
+      [showFullscreen]="false"
+      [showTextFlow]="false"
+    ></app-recognition-control-sidebar>
+  </div>
+</div>

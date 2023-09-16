@@ -1,8 +1,9 @@
 import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, UrlSegment } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { collapseAnimation } from 'angular-animations';
-import { map } from 'rxjs';
+import { filter, map, tap } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { errorSelector, footerVisibleSelector } from '../../selectors/app.selector';
 
@@ -17,12 +18,19 @@ import { errorSelector, footerVisibleSelector } from '../../selectors/app.select
 export class FooterComponent {
   public hidden: Signal<boolean | undefined>;
   public error$: Signal<string | undefined>;
+  public activeRoute$: Signal<string | undefined>;
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
-  constructor(private store: Store<AppState>) {
+  public patreonUrl = 'https://patreon.com/zipcaptions';
+  constructor(private store: Store<AppState>,
+              private router: Router) {
     this.hidden = toSignal(this.store.pipe(select(footerVisibleSelector)).pipe(
       map((visible) => !visible)
     ));
     this.error$ = toSignal(this.store.select(errorSelector));
+    this.activeRoute$ = toSignal(this.router.events.pipe(
+      filter((ev: any) => ev instanceof NavigationEnd),
+      map((ev) => ev.url),
+    ))
   }
 }

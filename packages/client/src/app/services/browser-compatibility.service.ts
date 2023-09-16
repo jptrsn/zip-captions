@@ -20,6 +20,7 @@ export class BrowserCompatibilityService {
       platform: AppPlatform.desktop
     };
     if (this.platform.FIREFOX || this.platform.EDGE) {
+      rtn.platform = AppPlatform.unsupported;
       rtn.error = 'ERRORS.missingApi';
     } else {
       try {

@@ -8,6 +8,8 @@ import { SocketServerStatusChipComponent } from '../socket-server-status-chip/so
 import { PeerServerStatusChipComponent } from '../peer-server-status-chip/peer-server-status-chip.component';
 import { ConnectedPeerCountChipComponent } from '../connected-peer-count-chip/connected-peer-count-chip.component';
 import { AcceptPeerConnectionsModalComponent } from '../accept-peer-connections-modal/accept-peer-connections-modal.component';
+import { ThirdPartyConnectionsComponent } from '../third-party-connections/third-party-connections.component';
+import { ConnectObsComponent } from '../connect-obs/connect-obs.component';
 
 describe('PeerLandingComponent', () => {
   let component: PeerLandingComponent;
@@ -23,6 +25,8 @@ describe('PeerLandingComponent', () => {
         PeerServerStatusChipComponent,
         ConnectedPeerCountChipComponent,
         AcceptPeerConnectionsModalComponent,
+        ThirdPartyConnectionsComponent,
+        ConnectObsComponent,
       ],
       providers: TestingModuleProviders
     }).compileComponents();

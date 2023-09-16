@@ -1,11 +1,13 @@
 import { SettingsState } from "../modules/settings/models/settings.model";
+import { ObsState } from "../reducers/obs.reducer";
 import { PeerState } from "../reducers/peer.reducer";
 import { AudioStreamState } from "./audio-stream.model";
 import { RecognitionState } from "./recognition.model";
 
 export enum AppPlatform {
   mobile = "MOBILE",
-  desktop = "DESKTOP"
+  desktop = "DESKTOP",
+  unsupported = "UNSUPPORTED",
 }
 
 export interface AppAppearanceState {
@@ -24,6 +26,7 @@ export interface AppState {
   audioStream: AudioStreamState;
   recognition: RecognitionState;
   peer: PeerState;
+  obs: ObsState;
 }
 
 interface SubSection {
