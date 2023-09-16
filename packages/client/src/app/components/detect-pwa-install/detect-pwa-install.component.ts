@@ -19,37 +19,41 @@ export class DetectPwaInstallComponent {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       console.log('matches standalone');
       if (!this.isInstalled()) {
-        this.storage.set('pwaInstalled', '1');
-        this.isInstalled.set(true);
+        this._markInstalled();
       }
       this.isUsingPwa.set(true);
     } else {
       window.addEventListener('beforeinstallprompt', (e: any) => {
-        e.preventDefault();
+        console.log('beforeinstallprompt', e);
         if (this.isInstalled()) {
-          console.log('app uninstalled')
-          this.storage.remove('pwaInstalled');
-          this.isInstalled.set(false);
+          this._removeInstallMark();
         } else {
           console.log('not installed - prompt?')
         }
       });
       window.addEventListener('onappinstalled', () => {
-        console.log('app installed');
-        this.storage.set('pwaInstalled', '1');
-        this.isInstalled.set(true);
+        this._markInstalled();
       })
     }
-    /*
+    
     document.addEventListener('DOMContentLoaded', () => {
       // @ts-expect-error Property standalone only exists on navigator in iOS
       const navStandalone = window.navigator.standalone;
       const isPwa: boolean = matchMedia('(display-mode: standalone)').matches || navStandalone;
-      console.log('DOMContent loaded. isPwa', isPwa)
-      if (isPwa) {
-        window.resizeTo(420, 800);
+      if (isPwa && !this.isInstalled()) {
+        this._markInstalled();
       }
     })
-    */
+  }
+
+  private _markInstalled(): void {
+    this.storage.set('pwaInstalled', '1');
+    this.isInstalled.set(true);
+    window.resizeTo(420, 800);
+  }
+
+  private _removeInstallMark(): void {
+    this.storage.remove('pwaInstalled');
+    this.isInstalled.set(false);
   }
 }
