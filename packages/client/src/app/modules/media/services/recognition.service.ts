@@ -45,7 +45,7 @@ export class RecognitionService {
 
     // OBS Studio Integration - set segmentation debounce to longer interval
     if (streamId === 'stream') {
-      this.DEBOUNCE_TIME_MS = 750;
+      this.DEBOUNCE_TIME_MS = 1750;
     }
     // console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
@@ -134,10 +134,10 @@ export class RecognitionService {
       if (mostRecentResults) {
         const partialTranscript: string = mostRecentResults
         .filter((result) => {
-          if (result[0].transcript !== '' && !transcriptSegments.has(result)) {
-            if (platform === AppPlatform.mobile) {
-              // console.log('mobile!!!', result[0].confidence)
-            } else {
+          if (streamId === 'stream') {
+            return result[0].transcript !== '';
+          } else if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
+            if (platform !== AppPlatform.mobile) {
               transcriptSegments.add(result);
             }
             return true;
@@ -147,7 +147,6 @@ export class RecognitionService {
         .map((result: SpeechRecognitionResult) => result[0])
         .reduce((acc, alternative: SpeechRecognitionAlternative, idx) => {
           if (platform === AppPlatform.mobile) {
-            // console.log('mobile platform!', alternative)
             acc.push(alternative);
           } else if (alternative.confidence > 0) {
             acc.push(alternative)

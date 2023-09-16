@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { lastValueFrom } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
+import '../../../testing/matchMedia.mock';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionActions } from '../../models/recognition.model';
 import { RecognitionEnableComponent } from '../../modules/media/components/recognition-enable/recognition-enable.component';
@@ -12,6 +13,7 @@ import { defaultAppState } from '../../reducers/app.reducer';
 import { platformSelector } from '../../selectors/app.selector';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { HeaderComponent } from './header.component';
+import { DetectPwaInstallComponent } from '../detect-pwa-install/detect-pwa-install.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -25,6 +27,7 @@ describe('HeaderComponent', () => {
         HeaderComponent,
         RecognitionEnableComponent,
         RecognitionRenderComponent,
+        DetectPwaInstallComponent,
       ],
       providers: TestingModuleProviders
     }).compileComponents();

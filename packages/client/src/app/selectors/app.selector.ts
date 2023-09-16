@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store";
-import { AppAppearanceState, AppState } from "../models/app.model";
+import { AppAppearanceState, AppState, Connectivity } from "../models/app.model";
 
 export const selectAppAppearance = (state: AppState): AppAppearanceState => state.appearance;
 
@@ -31,4 +31,9 @@ export const platformSelector = createSelector(
 export const peerConnectionsAcceptedSelector = createSelector(
   selectAppAppearance,
   (state) => state.peerConnectionsAccepted
+)
+
+export const isOfflineSelector = createSelector(
+  selectAppAppearance,
+  (state) => state.connectivity === Connectivity.offline
 )

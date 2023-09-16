@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppAppearanceState, AppPlatform } from "../models/app.model";
+import { AppAppearanceState, AppPlatform, Connectivity } from "../models/app.model";
 
 
 export const showFooter = createAction('[App] Show Footer');
@@ -26,3 +26,5 @@ export const checkUserAgentComplete = createAction('[App] Check UserAgent Comple
 export const clearAppError = createAction('[App] Clear Error')
 
 export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());
+
+export const updateConnectivityState = createAction('[App] Update Connectivity State', props<{connectivity: Connectivity }>());
