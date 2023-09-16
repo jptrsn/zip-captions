@@ -6,9 +6,17 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
-  "display_override": ["window-controls-overlay"],
+  "display_override": [
+    "window-controls-overlay",
+    "fullscreen"
+  ],
   "scope": "./",
   "start_url": "./",
+  "dir": "ltr",
+  "lang": "en",
+  "categories": [
+    "utilities"
+  ],
   "edge_side_panel": {
     "preferred_width": 420
   },
