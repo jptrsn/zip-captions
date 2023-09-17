@@ -1,0 +1,6 @@
+{
+  "web_apps": [
+    { "web_app_identity": "https://zipcaptions.app" },
+    { "web_app_identity": "https://next.zipcaptions.app" }
+  ]
+}

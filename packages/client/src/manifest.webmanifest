@@ -18,7 +18,7 @@
   },
   "handle_links": "preferred",
   "scope_extensions": [
-    { "origin": "https://*.zipcaptions.app" }
+    { "origin": "*.zipcaptions.app" }
   ],
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
