@@ -17,8 +17,12 @@
     "preferred_width": 420
   },
   "handle_links": "preferred",
+  "url_handlers": [
+    { "origin": "https://next.zipcaptions.app" },
+    { "origin": "https://zipcaptions.app" }
+  ],
   "scope_extensions": [
-    { "origin": "*.zipcaptions.app" }
+    { "origin": "https://*.zipcaptions.app" }
   ],
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
@@ -30,6 +34,9 @@
       "authorize": ["interecept-links"]
     }
   },
+  "display_override": [
+    "standalone"
+  ],
   "icons": [
     {
       "src": "assets/icons/maskable_icon_x48.png",

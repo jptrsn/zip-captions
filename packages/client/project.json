@@ -25,7 +25,8 @@
           "packages/client/src/assets",
           "packages/client/src/manifest.webmanifest",
           "packages/client/src/CNAME",
-          "packages/client/src/.well-known/web-app-origin-association"
+          "packages/client/src/.well-known/web-app-origin-association",
+          { "glob": "web-app-origin-association", "input": "packages/client/src/.well-known/", "output": "/.well-known/" }
         ],
         "styles": ["packages/client/src/styles.scss"],
         "scripts": [],

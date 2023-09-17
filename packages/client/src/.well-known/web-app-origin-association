@@ -1,6 +1,20 @@
 {
   "web_apps": [
-    { "web_app_identity": "https://zipcaptions.app" },
-    { "web_app_identity": "https://next.zipcaptions.app" }
+    { 
+      "web_app_identity": "https://zipcaptions.app",
+      "manifest": "https://zipcaptions.app/manifest.webmanifest",
+      "details": {
+        "paths": ["/*"],
+        "exclude_paths": []
+      }
+    },
+    {
+      "web_app_identity": "https://next.zipcaptions.app",
+      "manifest": "https://next.zipcaptions.app/manifest.webmanifest",
+      "details": {
+        "paths": ["/*"],
+        "exclude_paths": []
+      }
+    }
   ]
 }
