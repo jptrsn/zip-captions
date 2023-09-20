@@ -22,6 +22,9 @@ export class FooterComponent {
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
   public patreonUrl = 'https://patreon.com/zipcaptions';
+  public copyrightYear = process.env['BUILD_YEAR'] || 2023;
+  public buildHash = process.env['COMMIT_HASH'] || 'unknown';
+
   constructor(private store: Store<AppState>,
               private router: Router) {
     this.hidden = toSignal(this.store.pipe(select(footerVisibleSelector)).pipe(
