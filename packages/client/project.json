@@ -40,9 +40,6 @@
       "configurations": {
         "production": {
           "optimization": true,
-          "customWebpackConfig": {
-            "path": "packages/client/webpack.config.prod.js"
-          },
           "budgets": [
             {
               "type": "initial",

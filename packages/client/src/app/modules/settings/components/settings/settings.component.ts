@@ -62,9 +62,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.acceptedCookies()) {
-      this.store.dispatch(AppActions.hideFooter())
-    }
     this.formGroup.get('theme')?.valueChanges.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((theme) => {
@@ -97,7 +94,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.formGroup.dirty) {
       this.translate.use(this.language());
     }
-    this.store.dispatch(AppActions.showFooter())
     this.onDestroy$.next();
   }
 

@@ -355,7 +355,8 @@
     "optPassword": "Password (optional)",
     "stream": "Stream",
     "streaming": "Streaming",
-    "idle": "Idle"
+    "idle": "Idle",
+    "build": "Build"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

@@ -353,9 +353,10 @@
     "decrease": "Reducir",
     "password": "Contraseña",
     "optPassword": "Contraseña (opcional)",
-    "stream": "Stream",
-    "streaming": "Streaming",
-    "idle": "Ralentí"
+    "stream": "Arroyo",
+    "streaming": "Transmisión",
+    "idle": "Ralentí",
+    "build": "Construya"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",

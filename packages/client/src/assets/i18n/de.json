@@ -355,7 +355,8 @@
     "optPassword": "Kennwort (optional)",
     "stream": "Stream",
     "streaming": "Streaming",
-    "idle": "Leerlauf"
+    "idle": "Leerlauf",
+    "build": "Bauen Sie"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
