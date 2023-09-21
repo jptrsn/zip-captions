@@ -13,7 +13,7 @@
       <span *ngIf="activeRoute$() === '/' && error$() as err" translate class="text-center">{{err}}</span>
     </div>
     <div class="flex-initial flex-row">
-      <a [href]="licenseUrl" target="_blank" class="text-sm mx-4 my-2 text-base-content tooltip tooltip-left tooltip-info" [attr.data-tip]="('LABELS.build' | translate) + ': ' + buildHash">
+      <a [href]="licenseUrl" target="_blank" class="text-sm mx-4 my-2 text-base-content">
         <span>{{ 'FOOTER.copyright' | translate}} {{copyrightYear}}</span> - Zip Captions
       </a>
     </div>
