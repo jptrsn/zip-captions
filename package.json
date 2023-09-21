@@ -11,7 +11,7 @@
     "build:all": "nx run-many -t build -p client,signal --parallel",
     "build:client": "nx build --project=client --configuration=production",
     "build:signal": "nx build --project=signal",
-    "act": "act --secret-file .secret.env"
+    "act": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml"
   },
   "private": true,
   "dependencies": {

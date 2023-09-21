@@ -2,18 +2,12 @@ name: Docker Image CI/CD Staging Client
 
 on:
   workflow_dispatch:
-    paths:
-      - 'packages/client/**/*'
   push:
     paths:
       - 'packages/client/**/*'
     branches: 
       - 'develop'
-  # pull_request:
-  #   branches:
-  #     - 'develop'
-  #   paths:
-  #     - 'packages/client/**/*'
+  
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -34,12 +28,18 @@ jobs:
         with:
           images: educoder/zip-captions
 
+      - name: Get Hash
+        id: hash
+        run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+
       - name: Build and push client Docker image
         uses: docker/build-push-action@v4
         with:
           target: staging_client
           context: .
           file: ./Dockerfile
+          build-args: |
+            BUILD_HASH=${{ env.git_hash }}
           push: ${{ github.event_name != 'pull_request'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

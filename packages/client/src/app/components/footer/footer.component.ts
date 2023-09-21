@@ -23,7 +23,7 @@ export class FooterComponent {
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
   public patreonUrl = 'https://patreon.com/zipcaptions';
   public copyrightYear = process.env['BUILD_YEAR'] || 2023;
-  public buildHash = process.env['COMMIT_HASH'] || 'unknown';
+  public buildHash = process.env['ZIP_BUILD_HASH'] || 'unknown';
 
   constructor(private store: Store<AppState>,
               private router: Router) {
