@@ -1,6 +1,8 @@
 ARG IMAGE=node:lts-alpine
 
 FROM $IMAGE as base_image
+ARG BUILD_HASH=unknown
+ENV ZIP_BUILD_HASH=$BUILD_HASH
 WORKDIR /usr/src/app
 COPY package*.json .
 ARG NX_NON_NATIVE_HASHER=true
@@ -8,19 +10,16 @@ RUN npm ci
 
 # DEVELOPMENT
 FROM base_image as dev
+RUN echo ${ZIP_BUILD_HASH}
 COPY . .
 CMD [""]
 
 # STAGING
 FROM dev as staging_build_client
-ARG BUILD_HASH=staging_client
 ENV ZIP_SOCKET_SERVER=https://socket.fartyparts.work
 ENV ZIP_SOCKET_PORT=443
 ENV ZIP_PEER_SERVER=peer.fartyparts.work
 ENV ZIP_PEER_PORT=443
-ENV ZIP_STUN_SERVER=stun.fartyparts.work
-ENV ZIP_TURN_SERVER=turn.fartyparts.work
-ENV ZIP_BUILD_HASH=$BUILD_HASH
 RUN npm run build:client
 
 FROM dev as staging_build_server
@@ -37,14 +36,10 @@ CMD ["node", "./dist/packages/signal/main.js"]
 EXPOSE 3000 9000
 
 FROM dev as prod_build_client
-ARG BUILD_HASH=production_client
 ENV ZIP_SOCKET_SERVER=https://socket.zipcaptions.app
 ENV ZIP_SOCKET_PORT=443
 ENV ZIP_PEER_SERVER=peer.zipcaptions.app
 ENV ZIP_PEER_PORT=443
-ENV ZIP_STUN_SERVER=stun.zipcaptions.app
-ENV ZIP_TURN_SERVER=turn.zipcaptions.app
-ENV ZIP_BUILD_HASH=$BUILD_HASH
 RUN npm run build:client
 
 FROM nginx:alpine as prod_client
