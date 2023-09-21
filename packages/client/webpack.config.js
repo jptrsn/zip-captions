@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
+const gitRevisionPlugin = new GitRevisionPlugin();
 const dotenv = require('dotenv').config({ path: __dirname + '/prod.env'});
 
 function getClientEnvironment(mode) {
@@ -18,6 +20,7 @@ function getClientEnvironment(mode) {
     }, {});
 
   raw.BUILD_YEAR = new Date().getFullYear();
+  raw.ZIP_BUILD_HASH = gitRevisionPlugin.commithash();
 
   console.log('raw', raw);
 

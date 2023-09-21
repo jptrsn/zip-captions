@@ -1,8 +1,6 @@
 ARG IMAGE=node:lts-alpine
 
 FROM $IMAGE as base_image
-ARG BUILD_HASH=unknown
-ENV ZIP_BUILD_HASH=$BUILD_HASH
 WORKDIR /usr/src/app
 COPY package*.json .
 ARG NX_NON_NATIVE_HASHER=true
@@ -10,7 +8,6 @@ RUN npm ci
 
 # DEVELOPMENT
 FROM base_image as dev
-RUN echo ${ZIP_BUILD_HASH}
 COPY . .
 CMD [""]
 
