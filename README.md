@@ -1,10 +1,12 @@
 # ZipCaptions
 
 ## Free Speech-To-Text In Your Browser
-Zip Captions is a platform that allows users to generate text from a given audio source, using only your web browser.
+Zip Captions is a platform that allows users to generate text from a given audio source, using only your web browser. Zip Captions has never been and never will be pay-to-play: we believe that accessibility needs to be freely available.
 
-## Donations
-Donations are not expected, but are more than welcome! We accept monetary support through [buymeacoffee](https://www.buymeacoffee.com/zipcaptions). Any contributions are put toward offsetting the operating costs (such as they are), or implementing new features. We operate without any formal financial backers or sponsorhips, and have no corporate backers in any form. This is an entirely community-supported endeavour.
+## Support
+We accept monetary support through [Patreon](https://patreon.com/zipcaptions). Any contributions are put toward offsetting the operating costs (such as they are), or implementing new features. We operate without any formal financial backers or sponsorhips, and have no corporate backers in any form. This is an entirely community-supported endeavour.
+
+We also welcome bug reports, feature requests, and conversation in our discord server - the more feedback we get, the better the tool will be for everyone.
 
 ## Language Support
 We currently support multiple languages, by navigating to the `Settings` page. 
