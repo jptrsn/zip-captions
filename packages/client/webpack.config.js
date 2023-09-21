@@ -17,17 +17,8 @@ function getClientEnvironment(mode) {
       return env;
     }, {});
 
-  const commitHash = require('child_process')
-    .execSync('git rev-parse --short HEAD')
-    .toString()
-    .trim();
-
-  raw.COMMIT_HASH = commitHash;
-
-  const buildDate = new Date();
-  raw.BUILD_DATE = buildDate.toDateString();
-  raw.BUILD_YEAR = buildDate.getFullYear();
-
+  raw.BUILD_YEAR = new Date().getFullYear();
+  raw.BUILD_TS = Date.now();
   console.log('raw', raw);
 
   // Stringify all values so we can feed into webpack DefinePlugin

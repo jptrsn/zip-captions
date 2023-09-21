@@ -3,7 +3,7 @@
     <ng-container *ngIf="!isBroadcasting(); else broadcastControls">
       <app-socket-server-status-chip></app-socket-server-status-chip>
       <app-peer-server-status-chip></app-peer-server-status-chip>
-      <app-obs-connection-status-chip></app-obs-connection-status-chip>
+      <app-obs-connection-status-chip *ngIf="showObsStatus()"></app-obs-connection-status-chip>
     </ng-container>
     <ng-template #broadcastControls>
       <div class="flex flex-row flex-wrap gap-3">
@@ -103,7 +103,7 @@
 
         </div>
 
-        <app-third-party-connections *ngIf="!(isMobileDevice() || isIncompatibleBrowser())"></app-third-party-connections>
+        <app-third-party-connections *ngIf="!(isMobileDevice() || isIncompatibleBrowser())" (openStateChanged)="broadcastOpen.checked = !$event"></app-third-party-connections>
 
       </div>
     </div>

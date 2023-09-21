@@ -41,14 +41,15 @@ export class ServiceWorkerUpdateComponent {
       filter((type: VersionEvent['type']) => type !== 'NO_NEW_VERSION_DETECTED')
     ));
 
+    this.updates.checkForUpdate();
+
     this.router.events.pipe(
       takeUntilDestroyed(),
       filter((ev) => ev instanceof NavigationStart),
       throttleTime(30000)
     ).subscribe(() => {
-      console.log('checking for updates')
       this.updates.checkForUpdate();
-    })
+    });
   }
 
   reload(): void {

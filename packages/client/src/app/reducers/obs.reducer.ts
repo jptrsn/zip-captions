@@ -4,6 +4,7 @@ import { ObsActions } from '../actions/obs.actions';
 export const obsFeatureKey = 'obs';
 
 export enum ObsConnectionState {
+uninitialized = 'UNINITIALIZED',
   disconnected = 'DISCONNECTED',
   connecting = 'CONNECTING',
   connected = 'CONNECTED',
@@ -20,7 +21,7 @@ export interface ObsState {
 }
 
 export const defaultObsState: ObsState = {
-  connected: ObsConnectionState.disconnected
+  connected: ObsConnectionState.uninitialized
 };
 
 export const obsReducers = createReducer(

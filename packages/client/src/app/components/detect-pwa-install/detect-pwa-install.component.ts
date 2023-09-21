@@ -27,8 +27,6 @@ export class DetectPwaInstallComponent {
         console.log('beforeinstallprompt', e);
         if (this.isInstalled()) {
           this._removeInstallMark();
-        } else {
-          console.log('not installed - prompt?')
         }
       });
       window.addEventListener('appinstalled', () => {

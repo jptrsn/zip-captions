@@ -1,9 +1,9 @@
 import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, UrlSegment } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { collapseAnimation } from 'angular-animations';
-import { filter, map, tap } from 'rxjs';
+import { filter, map } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { errorSelector, footerVisibleSelector } from '../../selectors/app.selector';
 
@@ -23,7 +23,7 @@ export class FooterComponent {
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
   public patreonUrl = 'https://patreon.com/zipcaptions';
   public copyrightYear = process.env['BUILD_YEAR'] || 2023;
-  public buildHash = process.env['COMMIT_HASH'] || 'unknown';
+  public buildTimestamp = process.env['BUILD_TS'] || 'unknown';
 
   constructor(private store: Store<AppState>,
               private router: Router) {

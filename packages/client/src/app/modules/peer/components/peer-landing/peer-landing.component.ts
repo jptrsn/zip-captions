@@ -33,6 +33,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
   public isMobileDevice: Signal<boolean | undefined>;
   public isIncompatibleBrowser: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
+  public showObsStatus: Signal<boolean | undefined>;
 
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
@@ -50,6 +51,7 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
     this.joinCode = toSignal(this.store.select(selectJoinCode));
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.recognitionActive = toSignal(this.store.select(recognitionActiveSelector))
+    this.showObsStatus = toSignal(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)))
 
     this.serverError = toSignal(this.store.select(selectPeerError));
     this.serverOffline = toSignal(this.store.select(selectServerOffline));
