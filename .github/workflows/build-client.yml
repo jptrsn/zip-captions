@@ -2,18 +2,12 @@ name: Docker Image CI/CD Staging Client
 
 on:
   workflow_dispatch:
-    paths:
-      - 'packages/client/**/*'
   push:
     paths:
       - 'packages/client/**/*'
     branches: 
       - 'develop'
-  # pull_request:
-  #   branches:
-  #     - 'develop'
-  #   paths:
-  #     - 'packages/client/**/*'
+  
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub

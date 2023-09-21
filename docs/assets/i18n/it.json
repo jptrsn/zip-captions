@@ -355,7 +355,8 @@
     "optPassword": "Password (opzionale)",
     "stream": "Stream",
     "streaming": "Streaming",
-    "idle": "Inattivo"
+    "idle": "Inattivo",
+    "build": "Costruire"
   },
   "HINTS": {
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",

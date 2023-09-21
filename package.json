@@ -1,6 +1,6 @@
 {
   "name": "zip-captions",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -11,7 +11,7 @@
     "build:all": "nx run-many -t build -p client,signal --parallel",
     "build:client": "nx build --project=client --configuration=production",
     "build:signal": "nx build --project=signal",
-    "act": "act --secret-file .secret.env"
+    "act": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml"
   },
   "private": true,
   "dependencies": {
@@ -92,6 +92,7 @@
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
+    "git-revision-webpack-plugin": "^5.0.0",
     "jasmine-marbles": "~0.9.1",
     "jest": "^29.4.1",
     "jest-environment-jsdom": "^29.4.1",

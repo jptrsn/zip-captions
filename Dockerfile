@@ -17,8 +17,6 @@ ENV ZIP_SOCKET_SERVER=https://socket.fartyparts.work
 ENV ZIP_SOCKET_PORT=443
 ENV ZIP_PEER_SERVER=peer.fartyparts.work
 ENV ZIP_PEER_PORT=443
-ENV ZIP_STUN_SERVER=stun.fartyparts.work
-ENV ZIP_TURN_SERVER=turn.fartyparts.work
 RUN npm run build:client
 
 FROM dev as staging_build_server
@@ -39,8 +37,6 @@ ENV ZIP_SOCKET_SERVER=https://socket.zipcaptions.app
 ENV ZIP_SOCKET_PORT=443
 ENV ZIP_PEER_SERVER=peer.zipcaptions.app
 ENV ZIP_PEER_PORT=443
-ENV ZIP_STUN_SERVER=stun.zipcaptions.app
-ENV ZIP_TURN_SERVER=turn.zipcaptions.app
 RUN npm run build:client
 
 FROM nginx:alpine as prod_client
