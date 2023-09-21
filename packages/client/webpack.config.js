@@ -18,6 +18,7 @@ function getClientEnvironment(mode) {
     }, {});
 
   raw.BUILD_YEAR = new Date().getFullYear();
+  raw.BUILD_TS = Date.now();
   console.log('raw', raw);
 
   // Stringify all values so we can feed into webpack DefinePlugin
