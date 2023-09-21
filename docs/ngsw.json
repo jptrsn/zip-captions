@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1695265212155,
+  "timestamp": 1695325886720,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,25 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
+        "/415.5a449bb8c10c4f74.js",
+        "/454.4023a370652c8045.js",
+        "/57.13299231aa8e1cc9.js",
         "/favicon.ico",
         "/index.html",
-        "/main.js",
-        "/main.js.map",
+        "/main.6e33bce5c8a39c35.js",
         "/manifest.webmanifest",
-        "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js",
-        "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js.map",
-        "/packages_client_src_app_modules_peer_peer_module_ts.js",
-        "/packages_client_src_app_modules_peer_peer_module_ts.js.map",
-        "/packages_client_src_app_modules_settings_settings_module_ts.js",
-        "/packages_client_src_app_modules_settings_settings_module_ts.js.map",
-        "/polyfills.js",
-        "/polyfills.js.map",
-        "/runtime.js",
-        "/runtime.js.map",
-        "/styles.css",
-        "/styles.css.map",
-        "/vendor.js",
-        "/vendor.js.map"
+        "/polyfills.5dd5880891494581.js",
+        "/runtime.247c80c168ab8f83.js",
+        "/styles.cd81054ed4a30bd1.css"
       ],
       "patterns": []
     },
@@ -178,6 +169,9 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "/415.5a449bb8c10c4f74.js": "cfaaad64adea4108da81f704ab4e84a5bdfb21bf",
+    "/454.4023a370652c8045.js": "b66262a15a2e15d001aeb3aeef8970f2a77f8fbe",
+    "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
     "/assets/i18n/de.json": "4f5ff7dd8e6ecc2c407dbe2a8c85e6abe3d2ba43",
     "/assets/i18n/en.json": "6b1671b91acda0b9d3c5376b3478104ac95a30c6",
     "/assets/i18n/fr.json": "2573439d996f2ca14120219b7c39c79b914a9d5e",
@@ -310,24 +304,12 @@
     "/assets/platforms/windows11/Wide310x150Logo.scale-200.png": "0072632f59649e915c122e2f083a67281b1e89f8",
     "/assets/platforms/windows11/Wide310x150Logo.scale-400.png": "3ab848365b1ef8b3d2829604d8a56e33bafdbeda",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "c8bf984416f89007f4c6e4ee3646b2dab72f3b1f",
-    "/main.js": "d466dcee8f459d5669ddb8db29dbcde701a09d43",
-    "/main.js.map": "02f09061f760e132629fb0a0d907516b4bb56bc2",
+    "/index.html": "accd5c4eecf72252d8090ae5c7ba0d759d754018",
+    "/main.6e33bce5c8a39c35.js": "c37856f3de302091b6ca6710b98425327d172596",
     "/manifest.webmanifest": "00ef5572f3a618f28f4163f582e5fd1277595c1a",
-    "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js": "c8ad988cd3436694c554cd33774661845abe5196",
-    "/packages_client_src_app_modules_media_workers_recognition-history_worker_ts.js.map": "0aa42816dddafbb15401c19f3324a55485fc5c1b",
-    "/packages_client_src_app_modules_peer_peer_module_ts.js": "17dd603efffaa5d132a2db059d06e6fe22724be6",
-    "/packages_client_src_app_modules_peer_peer_module_ts.js.map": "5b6540bef0f33455eb23baf697eecb8e1da7465b",
-    "/packages_client_src_app_modules_settings_settings_module_ts.js": "2181af02038dac41dabf47424fb2b6d421b10fc7",
-    "/packages_client_src_app_modules_settings_settings_module_ts.js.map": "3c8817519af3ebcf457f32b721ec018fa3164a44",
-    "/polyfills.js": "cf1f8e3f3c57dfd5ff3d44112b62d139051605a9",
-    "/polyfills.js.map": "93cf9e1ecc9f805cb0c187f77b49a28d73a75988",
-    "/runtime.js": "c9c4bcc74fe0a3e79aaef6e323ece85c155f3c48",
-    "/runtime.js.map": "e7bffb5e56f3239f06cf4a95a1fcd72535fae820",
-    "/styles.css": "eab947ed23615c2de03a74584de1ff713fc64ee7",
-    "/styles.css.map": "362e0ad6aa17391d32f95164e5def802f48c1d32",
-    "/vendor.js": "e729f9660ee2602fbdb997ac7c4d650201c3fcd0",
-    "/vendor.js.map": "61e939e6eab1ffe39f36e44a9b824122c771c3ea"
+    "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
+    "/runtime.247c80c168ab8f83.js": "7f8006d9616e07ab26d053e9ce2bac174715d875",
+    "/styles.cd81054ed4a30bd1.css": "fc946c52bbdedefcbeea45521932d608d339069f"
   },
   "navigationUrls": [
     {
