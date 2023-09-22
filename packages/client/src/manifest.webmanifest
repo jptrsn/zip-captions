@@ -25,8 +25,7 @@
   ],
   "handle_links": "preferred",
   "url_handlers": [
-    { "origin": "https://next.zipcaptions.app" },
-    { "origin": "https://zipcaptions.app" }
+    { "origin": "*.zipcaptions.app" }
   ],
   "scope_extensions": [
     { "origin": "https://*.zipcaptions.app" }
@@ -35,12 +34,10 @@
     "client_mode": ["focus-existing", "auto"]
   },
   "orientation": "any",
-  "web_apps": {
-    "https://zipcaptions.app": {
-      "scope": "/",
-      "authorize": ["interecept-links"]
-    }
-  },
+  "web_apps": [
+    { "web_app_identity": "https://zipcaptions.app" },
+    { "web_app_identity": "https://next.zipcaptions.app" }
+  ],
   "display_override": [
     "window-controls-overlay",
     "standalone"
