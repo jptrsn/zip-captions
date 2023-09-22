@@ -25,7 +25,7 @@
   <!-- Broadcast Banner -->
   <ng-container *ngIf="isBroadcasting()">
     <div class="flex flex-auto flex-row justify-center">
-      <span class="sm:text-xl md:text-2xl text-center" translate>HINTS.viewStream</span>
+      <span class="text-center" [ngClass]="{'text-xs': windowControlsOverlay(), 'sm:text-xl md:text-2xl': !windowControlsOverlay()}" translate>HINTS.viewStream</span>
     </div>
   </ng-container>
 

@@ -1,6 +1,6 @@
 <div class="drawer drawer-end overflow-y-hidden relative">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content absolute bottom-0 left-0 right-0 top-10">
+    <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
       <div class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
         <app-recognized-text 
           [connected]="connected"
