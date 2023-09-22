@@ -10,6 +10,7 @@ import { RecognitionService } from '../../services/recognition.service';
 import { selectTextFlow } from '../../../../selectors/settings.selector';
 import { map } from 'rxjs';
 import { TextFlow } from '../../../settings/models/settings.model';
+import { windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 
 @Component({
   selector: 'app-recognition-render',
@@ -33,6 +34,7 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
   public textFlowDown: Signal<boolean | undefined>;
+  public windowControlsOverlay: Signal<boolean | undefined>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
@@ -68,6 +70,8 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
         }
       })
     }
+
+    this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector))
   }
 
   ngOnInit(): void {

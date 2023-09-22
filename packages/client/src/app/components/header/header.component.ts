@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -7,7 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { Subject, filter, map, takeUntil } from 'rxjs';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionStatus } from '../../models/recognition.model';
-import { platformSelector } from '../../selectors/app.selector';
+import { platformSelector, windowControlsOverlaySelector } from '../../selectors/app.selector';
 import { selectIsBroadcasting } from '../../selectors/peer.selectors';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { MenuItem } from './header.model';
@@ -24,7 +24,8 @@ import { MenuItem } from './header.model';
         params: { startHeight: 72 }
       })
     ])
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {read: ElementRef}) menuElement!: ElementRef;
@@ -33,6 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showRecordButton: Signal<boolean | undefined>;
   public isActive: Signal<boolean | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
+  public windowControlsOverlay: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -73,7 +75,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
       ]}
     ]
-    this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)))
+    this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
+
+    this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector))
   }
 
   ngOnInit(): void {
