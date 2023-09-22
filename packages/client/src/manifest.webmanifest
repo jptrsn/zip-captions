@@ -1,7 +1,7 @@
 {
   "name": "Zip Captions",
   "short_name": "ZipCaptions",
-  "id": "zipcaptions",
+  "id": "/",
   "description": "Zip Captions provides a free, easy to use live captions experience which lives right inside your browser. No ads, just accessibility.",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
@@ -16,6 +16,13 @@
   "edge_side_panel": {
     "preferred_width": 420
   },
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://zipcaptions.app/manifest.webmanifest"
+    }
+  ],
   "handle_links": "preferred",
   "url_handlers": [
     { "origin": "https://next.zipcaptions.app" },

@@ -49,8 +49,12 @@ export class AppComponent {
         console.log('geometry change event', event);
         this.store.dispatch(AppActions.updateWindowsOverlayState({visible: event.visible}));
       })
-
     }
+
+    // @ts-expect-error PWA specific method
+    navigator.getInstalledRelatedApps().then((relatedApps) => {
+      console.log('relatedApps', relatedApps);
+    }) 
   }
 
 }
