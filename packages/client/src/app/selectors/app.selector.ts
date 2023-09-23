@@ -37,3 +37,8 @@ export const isOfflineSelector = createSelector(
   selectAppAppearance,
   (state) => state.connectivity === Connectivity.offline
 )
+
+export const windowControlsOverlaySelector = createSelector(
+  selectAppAppearance,
+  (state) => state.windowControlsOverlay
+)

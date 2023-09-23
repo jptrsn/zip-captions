@@ -1,12 +1,12 @@
-<div class="bg-base-300 gap-3 flex flex-row items-center p-2" [@growshrink]="isActive()">
+<div class="bg-base-300 gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
   
   <!-- App Icon with return-to-home route -->
   <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
-    <ng-icon name="zipCaptionsLogo" [size]="isActive() && !isBroadcasting() ? '24' : '48'"></ng-icon>
+    <ng-icon name="zipCaptionsLogo" [size]="windowControlsOverlay() || (isActive() && !isBroadcasting()) ? '24' : '48'"></ng-icon>
   </button>
   
   <!-- App Title -->
-  <div class="flex-1" *ngIf="!isBroadcasting()">
+  <div class="flex-1 draggable" *ngIf="!isBroadcasting()">
     <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
       <div class="normal-case text-sm">ZipCaptions.app</div>
@@ -17,24 +17,21 @@
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
-    <button *ngIf="!isActive()" class="btn btn-circle tooltip tooltip-bottom" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
+    <button *ngIf="!isActive()" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
       <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
     </button>
   </ng-container>
 
-  <ng-container *ngIf="isBroadcasting(); else checkForInstall">
+  <!-- Broadcast Banner -->
+  <ng-container *ngIf="isBroadcasting()">
     <div class="flex flex-auto flex-row justify-center">
-      <span class="sm:text-xl md:text-2xl text-center" translate>HINTS.viewStream</span>
+      <span class="text-center" [ngClass]="{'text-xs': windowControlsOverlay(), 'sm:text-xl md:text-2xl': !windowControlsOverlay()}" translate>HINTS.viewStream</span>
     </div>
   </ng-container>
 
-  <ng-template #checkForInstall>
-    <app-detect-pwa-install></app-detect-pwa-install>
-  </ng-template>
-
   <!-- Nav menu -->
-  <details #menu class="dropdown dropdown-end z-10" *ngIf="!isActive()">
-    <summary class="m-1 btn btn-circle btn-ghost text-2xl" role="button" [attr.aria-label]="'LABELS.menu' | translate">
+  <details #menu class="dropdown dropdown-end flex" *ngIf="!isActive()">
+    <summary class="btn btn-circle btn-ghost text-2xl" role="button" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.aria-label]="'LABELS.menu' | translate">
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <div class="dropdown-content w-64">

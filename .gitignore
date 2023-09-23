@@ -41,3 +41,6 @@ Thumbs.db
 .angular
 .env
 .secret.env
+
+# Android Build
+.gradle/*

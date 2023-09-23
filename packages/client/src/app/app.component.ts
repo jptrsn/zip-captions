@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState, Connectivity } from './models/app.model';
 import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
 import { languageSelector, themeSelector } from './selectors/settings.selector';
-import { isOfflineSelector } from './selectors/app.selector';
+import { isOfflineSelector, windowControlsOverlaySelector } from './selectors/app.selector';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +17,7 @@ import { isOfflineSelector } from './selectors/app.selector';
 export class AppComponent {
   public renderSwUpdateNotice: WritableSignal<boolean> = signal(false);
   public theme$: Signal<AppTheme>;
+  public windowControlsOverlay: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
@@ -36,6 +37,24 @@ export class AppComponent {
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
     this.renderSwUpdateNotice.set(this.updates.isEnabled);
+
+    this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector));
+    if ('windowControlsOverlay' in navigator) {
+      console.log(navigator.windowControlsOverlay)
+      // @ts-expect-error navigator.windowControlsOverlay is of type unknown
+      this.store.dispatch(AppActions.updateWindowsOverlayState({visible: navigator.windowControlsOverlay.visible}));
+      
+      // @ts-expect-error navigator.windowControlsOverlay is of type unknown
+      navigator.windowControlsOverlay.addEventListener('geometrychange', (event: { isTrusted: boolean; type: 'geometrychange', visible: boolean}) => {
+        console.log('geometry change event', event);
+        this.store.dispatch(AppActions.updateWindowsOverlayState({visible: event.visible}));
+      })
+    }
+
+    // @ts-expect-error PWA specific method
+    navigator.getInstalledRelatedApps().then((relatedApps) => {
+      console.log('relatedApps', relatedApps);
+    }) 
   }
 
 }

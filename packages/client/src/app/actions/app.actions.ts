@@ -28,3 +28,5 @@ export const clearAppError = createAction('[App] Clear Error')
 export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());
 
 export const updateConnectivityState = createAction('[App] Update Connectivity State', props<{connectivity: Connectivity }>());
+
+export const updateWindowsOverlayState = createAction('[App] Update Windows Overlay', props<{visible: boolean}>())

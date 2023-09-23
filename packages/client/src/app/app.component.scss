@@ -3,3 +3,7 @@
 router-outlet + * {
   @include fill-main;
 }
+
+.header-min-height {
+  min-height: env(titlebar-area-height, 56px);
+}
