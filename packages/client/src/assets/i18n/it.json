@@ -292,7 +292,9 @@
     "accessModalTitle": "Avviso sulla privacy",
     "accessP1": "Lo streaming o la visualizzazione di un flusso possono potenzialmente esporre informazioni private sul vostro dispositivo ad altri su Internet",
     "accessP2": "ZipCaptions anonimizza il più possibile le informazioni, ma alcuni dettagli immutabili (ad esempio l'indirizzo IP) possono essere esposti quando ci si connette ai peer online.",
-    "accessP3": "Vuoi abilitare questa funzione?"
+    "accessP3": "Vuoi abilitare questa funzione?",
+    "unsavedChangesTitle": "Modifiche non salvate!",
+    "unsavedChangesParagraph": "Ci sono modifiche non salvate, sei sicuro di volerle scartare?"
   },
   "ROUTES": {
     "home": "Home",

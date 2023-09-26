@@ -292,7 +292,9 @@
     "accessModalTitle": "Warnung zum Datenschutz",
     "accessP1": "Das Streamen oder Betrachten eines Streams kann dazu führen, dass private Informationen über Ihr Gerät anderen im Internet zugänglich gemacht werden.",
     "accessP2": "ZipCaptions anonymisiert Ihre Informationen so weit wie möglich, aber bestimmte unveränderliche Details (z. B. die IP-Adresse) können offengelegt werden, wenn Sie eine Verbindung zu Online-Kollegen herstellen.",
-    "accessP3": "Möchten Sie diese Funktion aktivieren?"
+    "accessP3": "Möchten Sie diese Funktion aktivieren?",
+    "unsavedChangesTitle": "Nicht gespeicherte Änderungen!",
+    "unsavedChangesParagraph": "Sie haben ungespeicherte Änderungen, wollen Sie diese wirklich verwerfen?"
   },
   "ROUTES": {
     "home": "Hauptsächlich",

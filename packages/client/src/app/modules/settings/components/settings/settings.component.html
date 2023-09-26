@@ -10,35 +10,37 @@
           <app-line-height [group]="formGroup" controlName="lineHeight"></app-line-height>
         </div>
       </div>
-      <div class="form-control overflow-y-auto">
-        <div class="label">
-          <label class="text-accent" translate>SETTINGS.t1</label>
+      <div>
+        <div class="flex w-full justify-end items-center gap-1 sm:gap-3">
+          <div *ngIf="!acceptedCookies()" class="text-error text-sm">You must accept cookies in order to save settings.</div>
+          <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
+            BUTTONS.cancel
+          </button>
+      
+          <button class="btn btn-primary rounded-xl" [disabled]="acceptedCookies() === false || formGroup.pristine" type="submit" translate>
+            BUTTONS.saveAndClose
+          </button>
         </div>
-        <div class="bg-base-100 text-base-content p-6 gap-3 overflow-hidden rounded-lg">
-          <div [classList]="classList()" translate>
-            SETTINGS.p1
+        <div class="form-control overflow-y-auto">
+          <div class="label">
+            <label class="text-accent" translate>SETTINGS.t1</label>
           </div>
-          <!-- <div [classList]="classList() + ' hidden sm:flex sm:visible'" translate>
-            SETTINGS.p2
-          </div> -->
-          <div [classList]="classList()" translate>
-            SETTINGS.p3
-          </div>
-          <div [classList]="classList() + ' live pt-3'" translate>
-            SETTINGS.p4
+          <div class="bg-base-100 text-base-content p-6 gap-3 overflow-hidden rounded-lg">
+            <div [classList]="classList()" translate>
+              SETTINGS.p1
+            </div>
+            <div [classList]="classList()" translate>
+              SETTINGS.p3
+            </div>
+            <div [classList]="classList() + ' live pt-3'" translate>
+              SETTINGS.p4
+            </div>
           </div>
         </div>
       </div>
+      
     </div>
-    <footer class="flex w-full justify-end items-center gap-1 sm:gap-3">
-      <div *ngIf="!acceptedCookies()" class="text-error text-sm">You must accept cookies in order to save settings.</div>
-      <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
-        BUTTONS.cancel
-      </button>
-  
-      <button class="btn btn-primary rounded-xl" [disabled]="acceptedCookies() === false || formGroup.pristine" type="submit" translate>
-        BUTTONS.saveAndClose
-      </button>
-    </footer>
   </form>
 </div>
+
+<app-unsaved-changes-dialog [openModal]="showUnsavedChangesModal" (afterClosed)="modalClosed($event)"></app-unsaved-changes-dialog>
