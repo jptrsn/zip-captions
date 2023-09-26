@@ -11,6 +11,8 @@ import { platformSelector, windowControlsOverlaySelector } from '../../selectors
 import { selectIsBroadcasting } from '../../selectors/peer.selectors';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { MenuItem } from './header.model';
+import { ObsConnectionState } from '../../reducers/obs.reducer';
+import { selectObsConnected } from '../../selectors/obs.selectors';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -35,6 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public isActive: Signal<boolean | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
   public windowControlsOverlay: Signal<boolean | undefined>;
+  public showObsConnectionState: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -48,6 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ));
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)))
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(

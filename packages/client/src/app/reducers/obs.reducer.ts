@@ -15,7 +15,6 @@ export interface ObsState {
   connected: ObsConnectionState;
   socketIp?: string;
   socketPort?: number;
-  socketPassword?: string | null;
   streamingActive?: boolean;
   error?: string;
 }
@@ -26,7 +25,7 @@ export const defaultObsState: ObsState = {
 
 export const obsReducers = createReducer(
   defaultObsState,
-  on(ObsActions.connect, (state: ObsState) => ({...state, connected: ObsConnectionState.connecting, error: undefined})),
+  on(ObsActions.connect, (state: ObsState, action: { ip: string, port: number }) => ({...state, connected: ObsConnectionState.connecting, socketIp: action.ip, socketPort: action.port, error: undefined})),
   on(ObsActions.connectSuccess, (state: ObsState) => ({...state, connected: ObsConnectionState.connected})),
   on(ObsActions.connectFailure, (state: ObsState, action: { error: string}) => ({...state, connected: ObsConnectionState.disconnected, error: action.error})),
   on(ObsActions.disconnectSuccess, (state: ObsState) => ({...state, connected: ObsConnectionState.disconnected})),
