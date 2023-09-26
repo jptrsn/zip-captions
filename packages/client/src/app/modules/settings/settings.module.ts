@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
 import { TextSizeComponent } from './components/text-size/text-size.component';
 import { LineHeightComponent } from './components/line-height/line-height.component';
+import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDialog/unsaved-changes-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { LineHeightComponent } from './components/line-height/line-height.compon
     RouterModule.forChild(routes),
     EffectsModule.forFeature([SettingsEffects]),
     TranslateModule.forChild({ extend: true }),
+    UnsavedChangesDialogComponent,
   ],
 })
 export class SettingsModule {}

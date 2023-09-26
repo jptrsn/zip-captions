@@ -292,7 +292,9 @@
     "accessModalTitle": "Privacy Warning",
     "accessP1": "Streaming or viewing a stream can potentially expose private information about your device to others on the internet.",
     "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
-    "accessP3": "Would you like to enable this feature?"
+    "accessP3": "Would you like to enable this feature?",
+    "unsavedChangesTitle": "Unsaved Changes!",
+    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?"
   },
   "ROUTES": {
     "home": "Home",

@@ -292,7 +292,9 @@
     "accessModalTitle": "Avertissement sur la confidentialité",
     "accessP1": "La diffusion ou la visualisation d'un flux peut potentiellement exposer des informations privées sur votre appareil à d'autres personnes sur Internet.",
     "accessP2": "ZipCaptions anonymise vos informations autant que possible, mais certains détails immuables (par exemple l'adresse IP) peuvent être exposés lors de la connexion avec des pairs en ligne.",
-    "accessP3": "Souhaitez-vous activer cette fonctionnalité?"
+    "accessP3": "Souhaitez-vous activer cette fonctionnalité?",
+    "unsavedChangesTitle": "Changements non enregistrés!",
+    "unsavedChangesParagraph": "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir les supprimer ?"
   },
   "ROUTES" : {
     "home" : "Principal",

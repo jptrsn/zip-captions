@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Subject, combineLatest, map, startWith, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, map, startWith, take, takeUntil } from 'rxjs';
 import { AppActions, AppAppearanceState, AppState } from '../../../../models/app.model';
 import { languageSelector, selectLineHeight, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, LineHeight, SettingsActions, TextSize } from '../../models/settings.model';
@@ -25,6 +25,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }>;
   public acceptedCookies: Signal<boolean | undefined>;
   public classList: WritableSignal<string>;
+  public showUnsavedChangesModal?: boolean;
+  public modalClosed$: Subject<boolean> = new Subject<boolean>();
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
@@ -97,6 +99,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
+  canDeactivate(): boolean | Observable<boolean> {
+    if (this.formGroup.dirty) {
+      this.showUnsavedChangesModal = true;
+      return this.modalClosed$.asObservable().pipe(take(1));
+    }
+    return true;
+  }
+
+  modalClosed(value: boolean): void {
+    this.showUnsavedChangesModal = false;
+    this.modalClosed$.next(value);
+  }
+
   saveSettings(): boolean {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
@@ -109,12 +124,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setTextSize({size}));
     const height: LineHeight = this.formGroup.get('lineHeight')!.value as LineHeight;
     this.store.dispatch(SettingsActions.setLineHeight({height}));
+    this.formGroup.markAsPristine();
     this.router.navigate([''])
     return false;
   }
 
   private _updateClassList(size: TextSize, height: LineHeight): void {
-    console.log('updateClassList', size, height)
     this.classList.set(`recognized-text ${size} ${height}`);
   }
 }
