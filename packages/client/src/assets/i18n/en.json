@@ -359,7 +359,7 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "Previously Results"
+    "renderHistory": "Previous Results"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
