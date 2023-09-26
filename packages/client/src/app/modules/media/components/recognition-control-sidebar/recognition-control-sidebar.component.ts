@@ -96,7 +96,6 @@ export class RecognitionControlSidebarComponent {
   increaseRenderHistory(): void {
     if (!this.renderHistoryMax()) {
       const count = (this.renderHistoryLength() || 0) + 1;
-      console.log('count', count);
       this.store.dispatch(SettingsActions.setRenderHistory({count}))
     }
   }
@@ -104,7 +103,6 @@ export class RecognitionControlSidebarComponent {
   decreaseRenderHistory(): void {
     if (!this.renderHistoryMin()) {
       const count = this.renderHistoryLength() - 1;
-      console.log('count', count);
       this.store.dispatch(SettingsActions.setRenderHistory({count}))
     }
   }
