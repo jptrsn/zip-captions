@@ -28,7 +28,7 @@ export class AudioInputEnableComponent {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
     this.disconnected = computed(() => this.streamState().status === AudioStreamStatus.disconnected);
-    
+    console.log('constructor', this.streamState());
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
       filter((err) => err !== 'ERRORS.liveTextMissing'),
@@ -41,10 +41,6 @@ export class AudioInputEnableComponent {
   }
 
   toggleState(): void {
-    // if (this.error()) {
-    //   this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}));
-    //   return;
-    // }
     if (this.connected() || this.error()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {

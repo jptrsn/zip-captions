@@ -29,6 +29,8 @@
     </div>
   </ng-container>
 
+  <app-obs-connection-status *ngIf="showObsConnectionState()" [small]="isActive()"></app-obs-connection-status>
+
   <!-- Nav menu -->
   <details #menu class="dropdown dropdown-end flex z-10" *ngIf="!isActive()">
     <summary class="btn btn-circle btn-ghost text-2xl" role="button" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.aria-label]="'LABELS.menu' | translate">
