@@ -3,10 +3,10 @@
   <div *ngIf="!hasLiveResults()" @fadeOutOnLeave class="text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
     <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
-  <ng-container *ngFor="let text of textOutput()">
-    <div @fadeInOnEnter @fadeOutOnLeave [classList]="classList()">
+  
+    <div *ngFor="let text of renderedResults()" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()">
       {{text | proper}}
     </div>
-  </ng-container>
+  
   <div *ngIf="isPaused()" class="badge badge-warning px-6 py-3 text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" translate>HINTS.recognitionPaused</div>
 </div>

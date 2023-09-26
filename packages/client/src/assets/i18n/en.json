@@ -359,7 +359,7 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "Previously Captured Speech Count"
+    "renderHistory": "Previously Results"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

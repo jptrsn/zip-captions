@@ -21,7 +21,6 @@ export class AppComponent {
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
-              private el: ElementRef,
               private updates: SwUpdate,
               private translate: TranslateService) {
 
@@ -32,7 +31,7 @@ export class AppComponent {
     const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<Language>;
     
     effect(() => this.translate.use(languageChanged()))
-    effect(() => this.renderer.setAttribute(this.el.nativeElement, 'data-theme', this.theme$()));
+    effect(() => this.renderer.setAttribute(document.documentElement, 'data-theme', this.theme$()));
     
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());

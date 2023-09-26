@@ -34,6 +34,7 @@ export {
   tablerPlus,
   tablerMinus,
   tablerBuildingBroadcastTower,
+  tablerHistory,
 } from '@ng-icons/tabler-icons'
 
 // Custom vectors to add
