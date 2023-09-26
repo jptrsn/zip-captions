@@ -15,6 +15,7 @@ import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lo
 import { TextSizeComponent } from './components/text-size/text-size.component';
 import { LineHeightComponent } from './components/line-height/line-height.component';
 import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDialog/unsaved-changes-dialog.component';
+import { RenderHistoryComponent } from './components/render-history/render-history.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDi
     WakeLockEnabledComponent,
     TextSizeComponent,
     LineHeightComponent,
+    RenderHistoryComponent,
   ],
   imports: [
     CommonModule,

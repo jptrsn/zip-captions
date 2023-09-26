@@ -24,7 +24,7 @@ export class RecognitionService {
   private platform: Signal<AppPlatform | undefined>;
   private DEBOUNCE_TIME_MS = 150;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
-  private readonly MAX_RECOGNITION_LENGTH = 15;
+  private readonly MAX_RECOGNITION_LENGTH = 25;
   private historyWorker: Worker;
   private language: Signal<Language>;
 

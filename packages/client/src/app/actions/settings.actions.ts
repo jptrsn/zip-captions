@@ -26,3 +26,7 @@ export const setLineHeightFailure = createAction('[Settings] Set Line Height Fai
 export const setTextFlow = createAction('[Settings] Set Text Flow', props<{flow: TextFlow}>());
 export const setTextFlowSuccess = createAction('[Settings] Set Text Flow Success');
 export const setTextFlowFailure = createAction('[Settings] Set Text Flow Failure', props<{error: string}>());
+
+export const setRenderHistory = createAction('[Settings] Set Render History', props<{count: number}>());
+export const setRenderHistorySuccess = createAction('[Settings] Set Render History Success');
+export const setRenderHistoryFailure = createAction('[Settings] Set Render History Failure', props<{error: string}>());

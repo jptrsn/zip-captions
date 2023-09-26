@@ -22,10 +22,12 @@ export class RecognizedTextComponent {
   @Input({ required: true}) hasLiveResults!: Signal<boolean>;
   @Input({ required: true}) textOutput!: Signal<string[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
+  @Input({ required: true}) renderHistory!: Signal<number | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
   
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
+  public renderedResults: Signal<string[]>;
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
@@ -36,5 +38,6 @@ export class RecognizedTextComponent {
     const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector))
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused))
     this.isPaused = computed(() => recognitionPaused() || broadcastPaused()) 
+    this.renderedResults = computed(() => this.textOutput().slice(0, this.renderHistory()))
   }
 }
