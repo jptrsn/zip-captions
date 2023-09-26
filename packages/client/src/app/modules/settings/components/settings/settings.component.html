@@ -27,10 +27,13 @@
             <label class="text-accent" translate>SETTINGS.t1</label>
           </div>
           <div class="bg-base-100 text-base-content p-6 gap-3 overflow-hidden rounded-lg">
-            <div [classList]="classList()" translate>
+            <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 0" @fadeOutOnLeave @fadeInOnEnter translate>
               SETTINGS.p1
             </div>
-            <div [classList]="classList()" translate>
+            <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 1" @fadeOutOnLeave @fadeInOnEnter translate>
+              SETTINGS.p2
+            </div>
+            <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 2" @fadeOutOnLeave @fadeInOnEnter translate>
               SETTINGS.p3
             </div>
             <div [classList]="classList() + ' live pt-3'" translate>

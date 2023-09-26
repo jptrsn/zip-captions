@@ -4,16 +4,21 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subject, combineLatest, map, startWith, take, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, filter, map, startWith, take, takeUntil } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
 import { languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { AppTheme, Language, LineHeight, SettingsActions, TextSize } from '../../models/settings.model';
+import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
+  animations: [
+    fadeOutOnLeaveAnimation(),
+    fadeInOnEnterAnimation()
+  ]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
@@ -28,6 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public classList: WritableSignal<string>;
   public showUnsavedChangesModal?: boolean;
   public modalClosed$: Subject<boolean> = new Subject<boolean>();
+  public renderHistory: Signal<number>;
+  public renderHistoryFormValue: Signal<number>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
@@ -35,7 +42,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private wakeLockEnabled: Signal<boolean | undefined>;
   private currentTextSize: Signal<TextSize>;
   private currentLineHeight: Signal<LineHeight>;
-  private renderHistory: Signal<number>;
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
@@ -58,6 +64,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
       textSize: this.fb.control(this.currentTextSize()),
       lineHeight: this.fb.control(this.currentLineHeight()),
     });
+
+    this.renderHistoryFormValue = toSignal(this.formGroup.controls['renderHistory'].valueChanges.pipe(
+      startWith(this.renderHistory()),
+      filter((count) => (count !== null && !isNaN(count)))
+    )) as Signal<number>;
 
     this.acceptedCookies = toSignal(this.store.pipe(
       select(selectAppAppearance),
