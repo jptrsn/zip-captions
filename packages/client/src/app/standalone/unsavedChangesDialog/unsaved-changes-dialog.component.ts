@@ -15,7 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
 export class UnsavedChangesDialogComponent {
   @ViewChild('unsavedChangesModal', {read: ElementRef}) modal!: ElementRef<HTMLElement>;
   @Input() set openModal(value: boolean | undefined) {
-    console.log('setOpenModal', value);
     if (value && !this.modalOpen()) {
       this.modalOpen.set(true);
     } else if (value === false && this.modalOpen()) {
@@ -28,13 +27,10 @@ export class UnsavedChangesDialogComponent {
     this.modalOpen = signal(false);
 
     effect(() => {
-      console.log('effect', this.modal, this.modalOpen())
       if (!this.modal) return;
       if (this.modalOpen()) {
-        console.log('open modal');
         this.renderer.addClass(this.modal.nativeElement, 'modal-open')
       } else {
-        console.log('close modal');
         this.renderer.removeClass(this.modal.nativeElement, 'modal-open')
       }
     })

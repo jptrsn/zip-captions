@@ -100,7 +100,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(): boolean | Observable<boolean> {
-    console.log('canDeactivate', this.formGroup.dirty)
     if (this.formGroup.dirty) {
       this.showUnsavedChangesModal = true;
       return this.modalClosed$.asObservable().pipe(take(1));
@@ -131,7 +130,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   private _updateClassList(size: TextSize, height: LineHeight): void {
-    console.log('updateClassList', size, height)
     this.classList.set(`recognized-text ${size} ${height}`);
   }
 }
