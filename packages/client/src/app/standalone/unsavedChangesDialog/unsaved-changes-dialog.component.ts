@@ -23,17 +23,8 @@ export class UnsavedChangesDialogComponent {
   }
   @Output() afterClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
   public modalOpen: WritableSignal<boolean>;
-  constructor(private renderer: Renderer2) {
+  constructor() {
     this.modalOpen = signal(false);
-
-    effect(() => {
-      if (!this.modal) return;
-      if (this.modalOpen()) {
-        this.renderer.addClass(this.modal.nativeElement, 'modal-open')
-      } else {
-        this.renderer.removeClass(this.modal.nativeElement, 'modal-open')
-      }
-    })
   }
 
   accept(): void {
