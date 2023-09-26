@@ -8,7 +8,7 @@ import { Subject, map, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
-import { selectTextFlow } from '../../../../selectors/settings.selector';
+import { selectRenderHistoryLength, selectTextFlow } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { TextFlow } from '../../../settings/models/settings.model';
 
@@ -32,6 +32,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
   public textFlowDown: Signal<boolean | undefined>;
+  public renderHistory: Signal<number | undefined>
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
@@ -67,6 +68,8 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
         this.cd.detectChanges();
       })
     }
+
+    this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength))
   }
 
   ngOnInit(): void {

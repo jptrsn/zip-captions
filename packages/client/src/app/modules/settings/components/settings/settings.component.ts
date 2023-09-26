@@ -1,25 +1,31 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, WritableSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subject, combineLatest, map, startWith, take, takeUntil } from 'rxjs';
-import { AppActions, AppAppearanceState, AppState } from '../../../../models/app.model';
-import { languageSelector, selectLineHeight, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
-import { AppTheme, Language, LineHeight, SettingsActions, TextSize } from '../../models/settings.model';
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subject, combineLatest, filter, map, startWith, take, takeUntil } from 'rxjs';
+import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
+import { languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
+import { AppTheme, Language, LineHeight, SettingsActions, TextSize } from '../../models/settings.model';
+import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
+  animations: [
+    fadeOutOnLeaveAnimation(),
+    fadeInOnEnterAnimation()
+  ]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
     lang: FormControl<Language | null>,
     wakelock: FormControl<boolean | undefined | null>,
+    renderHistory: FormControl<number | null>,
     textSize: FormControl<TextSize | null>,
     lineHeight: FormControl<LineHeight | null>,
   }>;
@@ -27,6 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public classList: WritableSignal<string>;
   public showUnsavedChangesModal?: boolean;
   public modalClosed$: Subject<boolean> = new Subject<boolean>();
+  public renderHistory: Signal<number>;
+  public renderHistoryFormValue: Signal<number>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
@@ -46,14 +54,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.wakeLockEnabled = toSignal(this.store.select(wakeLockEnabledSelector));
     this.currentTextSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
+    this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language()),
       wakelock: this.fb.control(this.wakeLockEnabled()),
+      renderHistory: this.fb.control(this.renderHistory()),
       textSize: this.fb.control(this.currentTextSize()),
       lineHeight: this.fb.control(this.currentLineHeight()),
     });
+
+    this.renderHistoryFormValue = toSignal(this.formGroup.controls['renderHistory'].valueChanges.pipe(
+      startWith(this.renderHistory()),
+      filter((count) => (count !== null && !isNaN(count)))
+    )) as Signal<number>;
 
     this.acceptedCookies = toSignal(this.store.pipe(
       select(selectAppAppearance),
@@ -124,6 +139,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setTextSize({size}));
     const height: LineHeight = this.formGroup.get('lineHeight')!.value as LineHeight;
     this.store.dispatch(SettingsActions.setLineHeight({height}));
+    const count: number = this.formGroup.get('renderHistory')!.value as number;
+    this.store.dispatch(SettingsActions.setRenderHistory({count}));
+
     this.formGroup.markAsPristine();
     this.router.navigate([''])
     return false;

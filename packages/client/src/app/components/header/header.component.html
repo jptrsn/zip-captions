@@ -45,7 +45,7 @@
 
 <!-- Menu template with recursion for sub-menus -->
 <ng-template #routeList let-entries="items" let-largeText="largeText">
-  <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-neutral text-neutral-content rounded-box">
+  <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-secondary text-neutral-content rounded-box">
     <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of entries">
       
       <ng-container *ngIf="item.children; else routeButton">

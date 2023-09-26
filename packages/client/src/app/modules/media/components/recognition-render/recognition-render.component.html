@@ -3,6 +3,8 @@
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
       <div class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
         <app-recognized-text 
+          *ngIf="renderHistory()"
+          [renderHistory]="renderHistory"
           [connected]="connected"
           [hasLiveResults]="hasLiveResults"
           [textOutput]="textOutput"
