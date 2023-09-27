@@ -30,4 +30,12 @@ export class ObsEffects {
       )),
     )
   )
+
+  sendCaption$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ObsActions.sendCaption),
+      map(({text}) => this.obsService.sendCaption(text)),
+      map(() => ObsActions.sendCaptionSuccess())
+    )
+  )
 }

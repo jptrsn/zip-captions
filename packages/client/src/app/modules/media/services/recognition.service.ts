@@ -1,7 +1,7 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
-import { Subject, auditTime, debounceTime, takeUntil, tap, throttleTime } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Subject, auditTime, debounceTime, map, takeUntil, tap, throttleTime } from 'rxjs';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
@@ -9,6 +9,9 @@ import { platformSelector } from '../../../selectors/app.selector';
 import { languageSelector } from '../../../selectors/settings.selector';
 import { Language } from '../../settings/models/settings.model';
 import { getWorker } from '../../../services/worker.util';
+import { selectObsConnected } from '../../../selectors/obs.selectors';
+import { ObsConnectionState } from '../../../reducers/obs.reducer';
+import { ObsActions } from '../../../actions/obs.actions';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -27,6 +30,7 @@ export class RecognitionService {
   private readonly MAX_RECOGNITION_LENGTH = 25;
   private historyWorker: Worker;
   private language: Signal<Language>;
+  private obsConnected: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>) {
     this.historyWorker = getWorker();
@@ -35,6 +39,7 @@ export class RecognitionService {
     })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
+    this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
   }
 
   public connectToStream(streamId: string): void {
@@ -43,10 +48,6 @@ export class RecognitionService {
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
     }
 
-    // OBS Studio Integration - set segmentation debounce to longer interval
-    if (streamId === 'stream') {
-      this.DEBOUNCE_TIME_MS = 1750;
-    }
     // console.log('recognize stream', streamId);
     const recog: SpeechRecognition = new webkitSpeechRecognition();
     recog.interimResults = true;
@@ -113,7 +114,7 @@ export class RecognitionService {
     
     const liveOutput = signal('');
     this.liveOutputMap.set(streamId, liveOutput);
-
+    
     let transcript: string;
     let mostRecentResults: SpeechRecognitionResult[] | undefined;
     const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
@@ -212,6 +213,9 @@ export class RecognitionService {
         }
       }
       liveOutput.set(transcript);
+      if (this.obsConnected()) {
+        this.store.dispatch(ObsActions.sendCaption({text: transcript}));
+      }
     });
 
     recognition.addEventListener('end', (e) => {
