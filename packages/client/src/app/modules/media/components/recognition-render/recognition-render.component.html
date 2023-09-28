@@ -12,9 +12,7 @@
           class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
         ></app-recognized-text>
         <app-recognized-live-text
-          [ngClass]="{'mb-4': !textFlowDown(), 'mt-4': textFlowDown()}"
           [text]="liveText" 
-          *ngIf="liveText()"
         ></app-recognized-live-text>
       </div>
     <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>

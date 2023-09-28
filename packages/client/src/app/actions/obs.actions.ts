@@ -11,5 +11,7 @@ export const ObsActions = createActionGroup({
     'Disconnect Failure': props<{error: string}>(),
     'Set Streaming Active': props<{active: boolean}>(),
     'Error Received': props<{error: string}>(),
+    'Send Caption': props<{text: string}>(),
+    'Send Caption Success': emptyProps()
   }
 });

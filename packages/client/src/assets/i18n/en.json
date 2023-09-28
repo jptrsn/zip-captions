@@ -328,6 +328,7 @@
     "decline": "No",
     "connect": "Connect",
     "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
     "goBack": "Go Back",
     "start": "Start",
     "stop": "Stop"
