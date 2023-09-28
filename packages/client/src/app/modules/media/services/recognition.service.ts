@@ -1,17 +1,17 @@
-import { Injectable, Signal, WritableSignal, effect, signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Subject, auditTime, debounceTime, map, takeUntil, tap, throttleTime } from 'rxjs';
+import { Subject, auditTime, debounceTime, map, takeUntil, throttleTime } from 'rxjs';
+import { ObsActions } from '../../../actions/obs.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
-import { platformSelector } from '../../../selectors/app.selector';
-import { languageSelector } from '../../../selectors/settings.selector';
-import { Language } from '../../settings/models/settings.model';
-import { getWorker } from '../../../services/worker.util';
-import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
-import { ObsActions } from '../../../actions/obs.actions';
+import { platformSelector } from '../../../selectors/app.selector';
+import { selectObsConnected } from '../../../selectors/obs.selectors';
+import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
+import { getWorker } from '../../../services/worker.util';
+import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -25,12 +25,13 @@ export class RecognitionService {
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
   private platform: Signal<AppPlatform | undefined>;
-  private DEBOUNCE_TIME_MS = 150;
+  private DEBOUNCE_TIME_MS = 250;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 25;
   private historyWorker: Worker;
   private language: Signal<Language>;
   private obsConnected: Signal<boolean | undefined>;
+  private resultCount: Signal<number | undefined>;
 
   constructor(private store: Store<AppState>) {
     this.historyWorker = getWorker();
@@ -40,12 +41,20 @@ export class RecognitionService {
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
+    this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
+
   }
 
   public connectToStream(streamId: string): void {
     if (this.platform() === AppPlatform.mobile) {
       this.DEBOUNCE_TIME_MS = 750;
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
+    }
+
+    console.log('resultCount', this.resultCount())
+    if (this.resultCount() === 0) {
+      this.DEBOUNCE_TIME_MS = 1000;
+      this.SEGMENTATION_DEBOUNCE_MS = 1000;
     }
 
     // console.log('recognize stream', streamId);
@@ -165,7 +174,7 @@ export class RecognitionService {
           });
           transcript = '';
           liveOutput.set('');
-          debounce$.next();
+                    debounce$.next();
         }
       }
     });
@@ -177,15 +186,15 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      // console.log('segment')
+      console.log('segment')
       if (liveOutput() !== '') {
-        // console.log('live output is not blank - stopping', liveOutput())
-        recognition.stop();
+        console.log('live output has data')
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
         recognition.stop();
       } else {
-        // console.log('not ending - liveoutput blank')
+        console.log('liveoutput blank')
+        recognition.stop();
       }
     })
 
@@ -235,7 +244,7 @@ export class RecognitionService {
         transcript = '';
       }
       if (this.activeRecognitionStreams.has(streamId)) {
-        // console.log('recognition still active, restarting')
+        console.log('recognition still active, restarting')
         recognition.start();
       } else {
         // console.log('recognition inactive, disconnecting')

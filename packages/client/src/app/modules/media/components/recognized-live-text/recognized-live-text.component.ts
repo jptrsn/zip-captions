@@ -1,10 +1,10 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
+import { Component, Input, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeOutOnLeaveAnimation } from 'angular-animations';
 import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
 import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({

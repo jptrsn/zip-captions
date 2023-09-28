@@ -34,10 +34,17 @@ export class RecognizedTextComponent {
   constructor(private store: Store<AppState>) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
-    this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()}`);
+    this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()}`)
     const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused));
     this.isPaused = computed(() => recognitionPaused() || broadcastPaused());
-    this.renderedResults = computed(() => this.textOutput().slice(0, this.renderHistory()));
+    this.renderedResults = computed(() => {
+      const textArray = this.textOutput();
+      const count = this.renderHistory();
+      if (!count || textArray.length <= count) {
+        return textArray;
+      }
+      return textArray.slice(count * -1);
+    });
   }
 }
