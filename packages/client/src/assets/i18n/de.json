@@ -328,6 +328,7 @@
     "decline": "Nein",
     "connect": "Verbinden",
     "disconnect": "Trennen Sie die Verbindung",
+    "reconnect": "Neu verbinden",
     "goBack": "Zurückgehen",
     "start": "Start",
     "stop": "Stopp"
@@ -358,7 +359,8 @@
     "stream": "Stream",
     "streaming": "Streaming",
     "idle": "Leerlauf",
-    "build": "Bauen Sie"
+    "build": "Bauen Sie",
+    "renderHistory": "Ergebnisse auf dem Bildschirm"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
@@ -366,7 +368,9 @@
     "verifyingConnection": "Verifizierung des Beitrittscodes...",
     "hostConnecting": "Warten auf Sitzungsleiter...",
     "recognitionPaused": "Die Anerkennung wurde pausiert...",
-    "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen."
+    "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen.",
+    "offlineWarning": "Sie scheinen offline zu sein - ZipCaptions benötigt eine Internetverbindung, um zu funktionieren",
+    "advancedWarning": "Ändern Sie nichts, wenn Sie nicht sicher sind, dass Sie wissen, was Sie tun"
   },
   "ERRORS": {
     "missingApi": "Leider hat Ihr Browser die für die Ausführung von ZipCaptions erforderlichen APIs noch nicht implementiert. Wir empfehlen Chrome oder Safari.",
@@ -420,6 +424,8 @@
     "obsStudioIP": "Server-IP",
     "obsStudioPort": "Server-Anschluss",
     "obsPassword": "Server-Kennwort",
-    "obsStreamInactive": "Warten auf den Beginn des OBS-Streams"
+    "obsStreamInactive": "Warten auf den Beginn des OBS-Streams",
+    "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
+    "disconnected": "Getrennt"
   }
 }

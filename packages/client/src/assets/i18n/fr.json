@@ -328,6 +328,7 @@
     "decline": "Non",
     "connect": "Connecter",
     "disconnect": "Déconnecter",
+    "reconnect": "Se reconnecter",
     "goBack": "Revenir en arrière",
     "start": "Démarrer",
     "stop": "Arrêt"
@@ -358,7 +359,8 @@
     "stream": "Stream",
     "streaming": "Streaming",
     "idle": "Inactif",
-    "build": "Création"
+    "build": "Création",
+    "renderHistory": "Résultats à l'écran"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
@@ -366,7 +368,9 @@
     "verifyingConnection": "Vérification du code d'adhésion...",
     "hostConnecting": "Attente de l'hôte de la session...",
     "recognitionPaused": "La reconnaissance a été suspendue...",
-    "viewStream": "Visitez ZipCaptions.app et utilisez l'identifiant de session et le code de participation pour visualiser les sous-titres sur votre propre appareil."
+    "viewStream": "Visitez ZipCaptions.app et utilisez l'identifiant de session et le code de participation pour visualiser les sous-titres sur votre propre appareil.",
+    "offlineWarning": "Vous semblez être hors ligne - ZipCaptions nécessite une connexion à Internet pour fonctionner",
+    "advancedWarning": "Ne changez rien si vous n'êtes pas sûr de savoir ce que vous faites."
   },
   "ERRORS": {
     "missingApi": "Désolé, votre navigateur n'a pas encore implémenté les API nécessaires au fonctionnement de ZipCaptions. Nous recommandons Chrome ou Safari.",
@@ -420,6 +424,8 @@
     "obsStudioIP": "IP du serveur",
     "obsStudioPort": "Port du serveur",
     "obsPassword": "Mot de passe du serveur",
-    "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS"
+    "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS",
+    "connectionEstablished": "Connecté - vous pouvez commencer la session de légende",
+    "disconnected": "Déconnecté"
   }
 }

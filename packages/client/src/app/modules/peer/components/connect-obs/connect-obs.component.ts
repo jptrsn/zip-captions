@@ -32,7 +32,7 @@ export class ConnectObsComponent {
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
 
     this.formGroup = this.fb.group({
-      ip: this.fb.control<string | null>(null),
+      ip: this.fb.control<string | null>('127.0.0.1'),
       port: this.fb.control<number | null>(null),
       password: this.fb.control<string | null>(null)
     });
