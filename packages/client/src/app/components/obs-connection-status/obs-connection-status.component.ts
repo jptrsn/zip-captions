@@ -67,6 +67,11 @@ export class ObsConnectionStatusComponent {
     this._closeMenu();
   }
 
+  navToObs(): void {
+    this._closeMenu();
+    this.router.navigate(['stream'])
+  }
+
   private _closeMenu(): void {
     if (this.menuElement?.nativeElement) {
       this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
