@@ -1,6 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, WritableSignal, signal } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { Subject, startWith, takeUntil } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-render-history',
