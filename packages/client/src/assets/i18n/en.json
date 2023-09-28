@@ -360,7 +360,7 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "Previous Results"
+    "renderHistory": "On-screen Results"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -369,7 +369,8 @@
     "hostConnecting": "Waiting for session host...",
     "recognitionPaused": "Recognition has been paused...",
     "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device.",
-    "offlineWarning": "You appear to be offline - ZipCaptions requires a connection to the internet to operate."
+    "offlineWarning": "You appear to be offline - ZipCaptions requires a connection to the internet to operate.",
+    "advancedWarning": "Do not change unless you are confident you know what you are doing"
   },
   "ERRORS": {
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
@@ -424,6 +425,7 @@
     "obsStudioPort": "Server Port",
     "obsPassword": "Server Password",
     "obsStreamInactive": "Waiting for OBS stream to begin",
+    "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
   }
 }

@@ -33,7 +33,6 @@ export class ObsConnectionStatusComponent {
   private isDesktop: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
               private router: Router,
-              private route: ActivatedRoute,
               private renderer: Renderer2) {
     this.state = toSignal(this.store.select(selectObsConnected));
     this.streamingActive = toSignal(this.store.select(selectObsStreamActive));

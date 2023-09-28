@@ -113,6 +113,7 @@ export class RecognitionControlSidebarComponent {
     } else {
       this._resumeRecognition();
     }
+    
   }
 
   private _pauseRecognition(): void {
