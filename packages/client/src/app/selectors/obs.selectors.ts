@@ -19,11 +19,6 @@ export const selectObsWebsocketPort = createSelector(
   (state) => state.socketPort
 )
 
-export const selectObsWebsocketPassword = createSelector(
-  selectObsState,
-  (state) => state.socketPassword
-)
-
 export const selectObsError = createSelector(
   selectObsState,
   (state) => state.error

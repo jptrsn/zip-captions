@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1695325886720,
+  "timestamp": 1695949237148,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,16 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
-        "/415.5a449bb8c10c4f74.js",
-        "/454.4023a370652c8045.js",
+        "/328.24a45707d72c78d0.js",
+        "/415.d304f17edf081c4a.js",
         "/57.13299231aa8e1cc9.js",
         "/favicon.ico",
         "/index.html",
-        "/main.6e33bce5c8a39c35.js",
+        "/main.340779d97ffb5242.js",
         "/manifest.webmanifest",
         "/polyfills.5dd5880891494581.js",
-        "/runtime.247c80c168ab8f83.js",
-        "/styles.cd81054ed4a30bd1.css"
+        "/runtime.38f773519376088e.js",
+        "/styles.295a3b0dd41a14e1.css"
       ],
       "patterns": []
     },
@@ -37,6 +37,7 @@
         "/assets/i18n/fr.json",
         "/assets/i18n/it.json",
         "/assets/i18n/sp.json",
+        "/assets/icons/OBS_Studio_Logo.svg",
         "/assets/icons/android-launchericon-512-512.png",
         "/assets/icons/basic_icon_white.svg",
         "/assets/icons/bolt_icon_white.svg",
@@ -162,21 +163,26 @@
         "/assets/platforms/windows11/Wide310x150Logo.scale-125.png",
         "/assets/platforms/windows11/Wide310x150Logo.scale-150.png",
         "/assets/platforms/windows11/Wide310x150Logo.scale-200.png",
-        "/assets/platforms/windows11/Wide310x150Logo.scale-400.png"
+        "/assets/platforms/windows11/Wide310x150Logo.scale-400.png",
+        "/assets/screenshots/screenshot-landing_411x730.png",
+        "/assets/screenshots/screenshot-peer_411x730.png",
+        "/assets/screenshots/screenshot-render_411x730.png",
+        "/assets/screenshots/screenshot-settings_411x730.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/415.5a449bb8c10c4f74.js": "cfaaad64adea4108da81f704ab4e84a5bdfb21bf",
-    "/454.4023a370652c8045.js": "b66262a15a2e15d001aeb3aeef8970f2a77f8fbe",
+    "/328.24a45707d72c78d0.js": "2d11573366552dba47f653e84b5df936c77933a7",
+    "/415.d304f17edf081c4a.js": "2ea552785751c77b3692cdc641f79b1c0b952313",
     "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
-    "/assets/i18n/de.json": "4f5ff7dd8e6ecc2c407dbe2a8c85e6abe3d2ba43",
-    "/assets/i18n/en.json": "6b1671b91acda0b9d3c5376b3478104ac95a30c6",
-    "/assets/i18n/fr.json": "2573439d996f2ca14120219b7c39c79b914a9d5e",
-    "/assets/i18n/it.json": "75358360cb0dbc7a6c56aea5c5a20db7913a371b",
-    "/assets/i18n/sp.json": "1a0d52c0217847bd4a2113f2f982dc720ba7794e",
+    "/assets/i18n/de.json": "fc43ccb193900a6288b35e20d229bca806fb40da",
+    "/assets/i18n/en.json": "efca7fdba9b7b6335f1da0299b000a146dfcf52d",
+    "/assets/i18n/fr.json": "a226ff769b5f0f74e1659c8f142f3fdcfd46c7d1",
+    "/assets/i18n/it.json": "184230470f202ffc926338293f98a06d82cc3a7c",
+    "/assets/i18n/sp.json": "35540fc098d5257ac915c87584b13dac400dbb0e",
+    "/assets/icons/OBS_Studio_Logo.svg": "bb371e8ab6708c864fd5955a01fc1e5b475fff0e",
     "/assets/icons/android-launchericon-512-512.png": "b49b245996fa3daa987d4f278fb2b14efa5a5569",
     "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
     "/assets/icons/bolt_icon_white.svg": "f022dcfd322eba6c1fa942a402fdea1df70dd1ea",
@@ -303,13 +309,17 @@
     "/assets/platforms/windows11/Wide310x150Logo.scale-150.png": "4d4970ab0a7e1736548c36691c5fc855338d3c3a",
     "/assets/platforms/windows11/Wide310x150Logo.scale-200.png": "0072632f59649e915c122e2f083a67281b1e89f8",
     "/assets/platforms/windows11/Wide310x150Logo.scale-400.png": "3ab848365b1ef8b3d2829604d8a56e33bafdbeda",
+    "/assets/screenshots/screenshot-landing_411x730.png": "4811c9d816f1186d0e8fe6e87f53f07d103efa52",
+    "/assets/screenshots/screenshot-peer_411x730.png": "502e80768da89d4562ca7816a0b8e61cdb0d2cc5",
+    "/assets/screenshots/screenshot-render_411x730.png": "3caae33a327bd970175386356be3ea93d299e760",
+    "/assets/screenshots/screenshot-settings_411x730.png": "3f5a2a06f7f146f6af0a19eab499011403038cde",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "accd5c4eecf72252d8090ae5c7ba0d759d754018",
-    "/main.6e33bce5c8a39c35.js": "c37856f3de302091b6ca6710b98425327d172596",
-    "/manifest.webmanifest": "00ef5572f3a618f28f4163f582e5fd1277595c1a",
+    "/index.html": "5728fb148469c6d01366f79e892f741d43381e28",
+    "/main.340779d97ffb5242.js": "62b01931fb048e31c52d87bfb9caf418363652d1",
+    "/manifest.webmanifest": "89d96851589599cade3d9797827161390a8bfe10",
     "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
-    "/runtime.247c80c168ab8f83.js": "7f8006d9616e07ab26d053e9ce2bac174715d875",
-    "/styles.cd81054ed4a30bd1.css": "fc946c52bbdedefcbeea45521932d608d339069f"
+    "/runtime.38f773519376088e.js": "ddb32795d5da1ab268e3c67fb7f966caf16cff2f",
+    "/styles.295a3b0dd41a14e1.css": "80b68e6cd723f5d8278de23d3de349303b65e6e9"
   },
   "navigationUrls": [
     {

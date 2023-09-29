@@ -36,6 +36,7 @@ import { ServiceWorkerUpdateComponent } from './components/service-worker-update
 import { obsReducers } from './reducers/obs.reducer';
 import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 import { DetectPwaInstallComponent } from './components/detect-pwa-install/detect-pwa-install.component';
+import { ObsConnectionStatusComponent } from './components/obs-connection-status/obs-connection-status.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -55,6 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerUpdateComponent,
     OfflineWarningComponent,
     DetectPwaInstallComponent,
+    ObsConnectionStatusComponent,
   ],
   imports: [
     BrowserAnimationsModule,

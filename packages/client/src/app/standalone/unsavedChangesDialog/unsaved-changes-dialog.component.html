@@ -1,0 +1,12 @@
+<dialog #unsavedChangesModal class="modal modal-bottom sm:modal-middle" [open]="modalOpen()">
+  <div class="modal-box">
+    <h1 class="font-bold text-lg" translate>MODAL.unsavedChangesTitle</h1>
+    <p class="text-sm my-3" translate>
+      MODAL.unsavedChangesParagraph
+    </p>
+    <div class="modal-action gap-3">
+      <button class="btn btn-primary" (click)="accept()" translate>BUTTONS.confirm</button>
+      <button class="btn" (click)="decline()" translate>BUTTONS.goBack</button>
+    </div>
+  </div>
+</dialog>

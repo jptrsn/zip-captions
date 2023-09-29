@@ -1,23 +1,23 @@
-<div class="flex flex-col p-3 gap-3 drop-shadow bg-secondary-content rounded-s-xl">
+<div class="flex flex-col p-3 gap-3 drop-shadow bg-secondary rounded-s-xl">
   
-    <button class="btn btn-lg btn-outline" [ngClass]="{'bg-secondary-focus': !recognitionActive()}" *ngIf="isBroadcasting() || isObsStreaming()" (click)="toggleRecognition()">
+    <button class="btn btn-md btn-outline" [ngClass]="{'bg-secondary': !recognitionActive()}" *ngIf="isBroadcasting() || isObsStreaming()" (click)="toggleRecognition()">
       <ng-icon name="heroPause"></ng-icon>
     </button>
 
     <details #fontSizeMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': fontSizeMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !fontSizeMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.textSize' | translate" (click)="hideElements([lineSpacingMenu])">
+      <summary class="btn btn-md btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary': fontSizeMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !fontSizeMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.textSize' | translate" (click)="hideElements([lineSpacingMenu, renderHistoryMenu])">
         <ng-icon name="tablerTextSize"></ng-icon>
         <div class="text-xs text-base-100" *ngIf="fontSizeMenu.hasAttribute('open')">{{'TEXT_SIZE.' + textSize() | translate}}</div>
       </summary>
       <div class="dropdown-content">
-        <ul class="menu bg-secondary-content rounded-s-xl text-2xl gap-3">
+        <ul class="menu bg-secondary rounded-s-xl text-2xl gap-3">
           <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMax()" (click)="increaseTextSize()">
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMax()" (click)="increaseTextSize()">
               <ng-icon name="tablerTextIncrease"></ng-icon>
             </button>
           </li>
           <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMin()" (click)="decreaseTextSize()">
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.textSize' | translate)" [disabled]="textSizeMin()" (click)="decreaseTextSize()">
               <ng-icon name="tablerTextDecrease"></ng-icon>
             </button>
           </li>
@@ -26,19 +26,40 @@
     </details>
 
     <details #lineSpacingMenu class="dropdown dropdown-left">
-      <summary class="btn btn-lg btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary-focus': lineSpacingMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !lineSpacingMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.lineHeight' | translate" (click)="hideElements([fontSizeMenu])">
+      <summary class="btn btn-md btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary': lineSpacingMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !lineSpacingMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.lineHeight' | translate" (click)="hideElements([fontSizeMenu, renderHistoryMenu])">
         <ng-icon name="tablerLineHeight"></ng-icon>
         <div class="text-xs text-base-100" *ngIf="lineSpacingMenu.hasAttribute('open')">{{'LINE_HEIGHT.' + lineHeight() | translate}}</div>
       </summary>
       <div class="dropdown-content">
-        <ul class="menu bg-secondary-content rounded-s-xl text-2xl gap-3">
+        <ul class="menu bg-secondary rounded-s-xl text-2xl gap-3">
           <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMax()" (click)="increaseLineHeight()">
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMax()" (click)="increaseLineHeight()">
               <ng-icon name="tablerPlus"></ng-icon>
             </button>
           </li>
           <li>
-            <button class="btn btn-lg btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMin()" (click)="decreaseLineHeight()">
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.lineHeight' | translate)" [disabled]="lineHeightMin()" (click)="decreaseLineHeight()">
+              <ng-icon name="tablerMinus"></ng-icon>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </details>
+
+    <details #renderHistoryMenu class="dropdown dropdown-left">
+      <summary class="btn btn-md btn-outline flex flex-col items-center" [ngClass]="{'bg-secondary': renderHistoryMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !renderHistoryMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'LABELS.renderHistory' | translate" (click)="hideElements([fontSizeMenu, lineSpacingMenu])">
+        <ng-icon name="tablerHistory"></ng-icon>
+        <div class="text-xs text-base-100" *ngIf="renderHistoryMenu.hasAttribute('open')">{{renderHistoryLength()}}</div>
+      </summary>
+      <div class="dropdown-content">
+        <ul class="menu bg-secondary rounded-s-xl text-2xl gap-3">
+          <li>
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.increase' | translate) + ' ' + ('LABELS.renderHistory' | translate)" [disabled]="renderHistoryMax()" (click)="increaseRenderHistory()">
+              <ng-icon name="tablerPlus"></ng-icon>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-sm btn-outline tooltip tooltip-left" [attr.data-tip]="('LABELS.decrease' | translate) + ' ' + ('LABELS.renderHistory' | translate)" [disabled]="renderHistoryMin()" (click)="decreaseRenderHistory()">
               <ng-icon name="tablerMinus"></ng-icon>
             </button>
           </li>

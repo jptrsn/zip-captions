@@ -20,6 +20,7 @@ export interface AppAppearanceState {
   cookiesAccepted: boolean;
   peerConnectionsAccepted: boolean;
   connectivity: Connectivity;
+  windowControlsOverlay: boolean;
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   platform?: AppPlatform;

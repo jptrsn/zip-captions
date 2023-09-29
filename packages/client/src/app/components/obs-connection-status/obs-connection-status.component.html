@@ -1,0 +1,23 @@
+<details #menu class="dropdown dropdown-end flex z-10">
+  <summary class="btn btn-circle btn-ghost text-2xl" role="button" [ngClass]="{'btn-sm': smallIcon()}" aria-label="OBS Studio">
+    <div class="indicator">
+      <ng-container [ngSwitch]="state()">
+        <span *ngSwitchCase="ConnectionStates.connected" class="indicator-item badge" [ngClass]="{'badge-success': streamingActive(), 'badge-primary': !streamingActive(), 'indicator-item-small': smallIcon()}"></span>
+        <span *ngSwitchCase="ConnectionStates.error" class="indicator-item badge badge-error" [ngClass]="{'indicator-item-small': smallIcon()}"></span>
+        <span *ngSwitchCase="ConnectionStates.disconnected" class="indicator-item badge badge-accent" [ngClass]="{'indicator-item-small': smallIcon()}"></span>
+      </ng-container>
+      <ng-icon name="obsStudioLogo" [size]="smallIcon() ? '20' : '28'"></ng-icon>
+    </div>
+  </summary>
+  <div class="dropdown-content shadow menu rounded-box bg-neutral">
+    <ng-container [ngSwitch]="state()">
+      <div *ngSwitchCase="ConnectionStates.connected" class="menu-title">{{socketIp()}} {{'STREAM.connected' | translate}}</div>
+      <div *ngSwitchCase="ConnectionStates.disconnected" class="menu-title">{{'CONNECTIONS.disconnected' | translate}}</div>
+    </ng-container>
+    <ul>
+      <li *ngIf="!recognitionActive() && state() === ConnectionStates.connected && currentUrl() !== '/'"><a (click)="startRecognition()">{{'LABELS.listen' | translate}}</a></li>
+      <li *ngIf="state() === ConnectionStates.connected && !recognitionActive()"><a (click)="disconnect()">{{'BUTTONS.disconnect' | translate}}</a></li>
+      <li *ngIf="state() === ConnectionStates.disconnected && currentUrl() !== '/stream'"><a (click)="navToObs()">{{'BUTTONS.reconnect' | translate}}</a></li>
+    </ul>
+  </div>
+</details>

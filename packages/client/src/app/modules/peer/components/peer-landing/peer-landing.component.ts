@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, Signal, effect } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, Signal, ViewChild, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,11 +9,11 @@ import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppPlatform, AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../models/recognition.model';
+import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
+import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
-import { selectObsConnected } from '../../../../selectors/obs.selectors';
-import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 
 @Component({
   selector: 'app-peer-landing',
@@ -22,6 +22,7 @@ import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 })
 export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
+  @ViewChild('broadcastOpen') broadcastCheckbox!: ElementRef<HTMLInputElement>;
   public acceptedPeerConnections: Signal<boolean | undefined>;
   public socketServerConnected: Signal<boolean | undefined>;
   public peerServerConnected: Signal<boolean | undefined>;

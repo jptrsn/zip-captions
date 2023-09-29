@@ -82,6 +82,7 @@ export interface SettingsState {
   theme: AppTheme;
   lang: Language;
   wakeLock: boolean;
+  renderHistory: number;
   textSize: TextSize;
   lineHeight: LineHeight;
   textFlow: TextFlow;

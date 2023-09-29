@@ -1,6 +1,6 @@
 <button 
-  class="btn btn-circle tooltip tooltip-left"
-  [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error()}"
+  class="btn btn-ghost btn-circle tooltip tooltip-left"
+  [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error(), 'btn-sm': small()}"
   (click)="toggleState()"
   [attr.data-tip]="connected() ? ('LABELS.stop' | translate) : ('LABELS.listen' | translate)"
   >

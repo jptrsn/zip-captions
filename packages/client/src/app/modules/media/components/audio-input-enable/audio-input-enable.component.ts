@@ -1,11 +1,11 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, Input, Signal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, of, switchMap, tap } from 'rxjs';
+import { filter, of, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
-import { errorSelector } from '../../../../selectors/app.selector';
+import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
 
@@ -20,6 +20,7 @@ export class AudioInputEnableComponent {
   public connected: Signal<boolean | undefined>;
   public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
+  public small: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>,
               private mediaService: MediaService,
@@ -35,13 +36,11 @@ export class AudioInputEnableComponent {
     ));
     this.error = computed(() => this.streamState().error || appError());
     this.vol = computed(() => this.connected() ? this.mediaService.getVolumeForStream(this.streamState().id)() : 0);
+
+    this.small = toSignal(this.store.select(windowControlsOverlaySelector));
   }
 
   toggleState(): void {
-    // if (this.error()) {
-    //   this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}));
-    //   return;
-    // }
     if (this.connected() || this.error()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {

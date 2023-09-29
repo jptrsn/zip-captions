@@ -1,10 +1,10 @@
-import { Component, Input, Signal, computed } from '@angular/core';
+import { Component, Input, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeOutOnLeaveAnimation } from 'angular-animations';
 import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
 import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
@@ -17,11 +17,12 @@ import { LineHeight, TextFlow, TextSize } from '../../../settings/models/setting
 })
 export class RecognizedLiveTextComponent {
   @Input({ required: true}) text!: Signal<string>;
-  
-  private textSize: Signal<TextSize>;
-  private lineHeight: Signal<LineHeight>;
   public textFlowDown: Signal<boolean | undefined>;
   public classList: Signal<string>;
+
+  private textSize: Signal<TextSize>;
+  private lineHeight: Signal<LineHeight>;
+  
   constructor(private store: Store<AppState>) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;

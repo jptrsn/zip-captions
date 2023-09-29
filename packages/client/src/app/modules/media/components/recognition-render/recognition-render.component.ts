@@ -1,15 +1,16 @@
 import { Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { fadeInOnEnterAnimation, slideInRightAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
+import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
+import { windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { selectRenderHistoryLength, selectTextFlow } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
-import { RecognitionService } from '../../services/recognition.service';
-import { selectTextFlow } from '../../../../selectors/settings.selector';
-import { map } from 'rxjs';
 import { TextFlow } from '../../../settings/models/settings.model';
+import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
   selector: 'app-recognition-render',
@@ -33,6 +34,8 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
   public textFlowDown: Signal<boolean | undefined>;
+  public windowControlsOverlay: Signal<boolean | undefined>;
+  public renderHistory: Signal<number | undefined>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
@@ -68,6 +71,9 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
         }
       })
     }
+
+    this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector))
+    this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength))
   }
 
   ngOnInit(): void {

@@ -1,7 +1,7 @@
-import { Component, Signal, computed } from '@angular/core';
+import { Component, Input, Signal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { errorSelector } from '../../../../selectors/app.selector';
+import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { filter, map, of, switchMap, tap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
@@ -17,6 +17,8 @@ export class RecognitionEnableComponent {
   public connected: Signal<boolean | undefined>;
   public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
+  public small: Signal<boolean | undefined>;
+
   constructor(private store: Store<AppState>,
               private translate: TranslateService) {
     this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
@@ -34,6 +36,7 @@ export class RecognitionEnableComponent {
       switchMap((error: string | undefined) => error ? this.translate.get(error) : of(undefined))
     ));
     this.error = computed(() => recogError() || appError())
+    this.small = toSignal(this.store.select(windowControlsOverlaySelector));
   }
 
   toggleState(): void {

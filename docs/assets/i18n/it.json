@@ -292,7 +292,9 @@
     "accessModalTitle": "Avviso sulla privacy",
     "accessP1": "Lo streaming o la visualizzazione di un flusso possono potenzialmente esporre informazioni private sul vostro dispositivo ad altri su Internet",
     "accessP2": "ZipCaptions anonimizza il più possibile le informazioni, ma alcuni dettagli immutabili (ad esempio l'indirizzo IP) possono essere esposti quando ci si connette ai peer online.",
-    "accessP3": "Vuoi abilitare questa funzione?"
+    "accessP3": "Vuoi abilitare questa funzione?",
+    "unsavedChangesTitle": "Modifiche non salvate!",
+    "unsavedChangesParagraph": "Ci sono modifiche non salvate, sei sicuro di volerle scartare?"
   },
   "ROUTES": {
     "home": "Home",
@@ -326,6 +328,7 @@
     "decline": "No",
     "connect": "Collegare",
     "disconnect": "Disconnettersi",
+    "reconnect": "Ricollegarsi",
     "goBack": "Torna indietro",
     "start": "Avvio",
     "stop": "Stop"
@@ -356,7 +359,8 @@
     "stream": "Stream",
     "streaming": "Streaming",
     "idle": "Inattivo",
-    "build": "Costruire"
+    "build": "Costruire",
+    "renderHistory": "Risultati su schermo"
   },
   "HINTS": {
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
@@ -364,7 +368,9 @@
     "verifyingConnection": "Verifica del codice di adesione...",
     "hostConnecting": "In attesa dell'host di sessione...",
     "recognitionPaused": "Il riconoscimento è stato messo in pausa...",
-    "viewStream": "Visitare ZipCaptions.app e utilizzare l'ID di sessione e il codice di adesione per visualizzare le didascalie sul proprio dispositivo."
+    "viewStream": "Visitare ZipCaptions.app e utilizzare l'ID di sessione e il codice di adesione per visualizzare le didascalie sul proprio dispositivo.",
+    "offlineWarning": "Sembra che tu sia offline - ZipCaptions richiede una connessione a Internet per funzionare",
+    "advancedWarning": "Non modificate se non siete sicuri di sapere cosa state facendo"
   },
   "ERRORS": {
     "missingApi": "Spiacenti, il tuo browser non ha ancora implementato le API necessarie per l'esecuzione di ZipCaptions. Consigliamo Chrome o Safari.",
@@ -418,6 +424,8 @@
     "obsStudioIP": "IP del server",
     "obsStudioPort": "Porta del server",
     "obsPassword": "Password del server",
-    "obsStreamInactive": "In attesa dell'inizio del flusso OBS"
+    "obsStreamInactive": "In attesa dell'inizio del flusso OBS",
+    "connectionEstablished": "Connesso - può iniziare la sessione di didascalia",
+    "disconnected": "Disconnesso"
   }
 }

@@ -1,10 +1,11 @@
 import { Component, ElementRef, EventEmitter, Output, Renderer2, Signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-third-party-connections',
@@ -20,6 +21,7 @@ export class ThirdPartyConnectionsComponent {
   constructor(private store: Store<AppState>,
               private renderer: Renderer2) {
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((conn) => conn === ObsConnectionState.connected)));
+    
   }
 
   toggle(): void {

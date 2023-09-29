@@ -71,5 +71,14 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.setTextFlowFailure({error: err.message})))
     )
   )
+
+  saveRenderHistory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setRenderHistory),
+      map(({count}) => this.storage.update('settings', 'renderHistory', count)),
+      map(() => SettingsActions.setRenderHistorySuccess()),
+      catchError((err) => of(SettingsActions.setRenderHistoryFailure({error: err.message})))
+    )
+  )
   
 }
