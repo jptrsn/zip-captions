@@ -32,3 +32,5 @@ export const setRenderHistorySuccess = createAction('[Settings] Set Render Histo
 export const setRenderHistoryFailure = createAction('[Settings] Set Render History Failure', props<{error: string}>());
 
 export const setFontFamily = createAction('[Settings] Set Font Family', props<{ font: FontFamily }>())
+export const setFontFamilySuccess = createAction('[Settings] Set Font Family Success');
+export const setFontFamilyFailure = createAction('[Settings] Set Font Family Failure', props<{error: string}>());

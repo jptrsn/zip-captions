@@ -9,7 +9,7 @@ export const defaultSettingsState: SettingsState = {
   textSize: 'textSize-3xl',
   lineHeight: 'lineHeight-normal',
   textFlow: 'bottom-up',
-  fontFamily: FontFamily.atkinson,
+  fontFamily: FontFamily.sans,
 }
 
 export const settingsReducers = createReducer(

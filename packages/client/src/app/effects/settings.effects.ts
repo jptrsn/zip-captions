@@ -80,5 +80,14 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.setRenderHistoryFailure({error: err.message})))
     )
   )
+
+  saveFontFamily$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setFontFamily),
+      map(({font}) => this.storage.update('settings', 'fontFamily', font)),
+      map(() => SettingsActions.setFontFamilySuccess()),
+      catchError((err) => of(SettingsActions.setFontFamilyFailure({error: err.message})))
+    )
+  )
   
 }

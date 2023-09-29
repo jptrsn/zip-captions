@@ -80,7 +80,7 @@ export const AvailableTextFlow: TextFlow[] = [
 ]
 
 export enum FontFamily {
-  atkinson = 'Atkinson Hyperlegible',
+  sans = 'Atkinson Hyperlegible',
   poppins = 'Poppins',
   lexend = 'Lexend',
   raleway = 'Raleway',
@@ -90,16 +90,18 @@ export enum FontFamily {
   consolas = 'Consolas'
 }
 
-export const AvailableFontFamilies: FontFamily[] = [
-  FontFamily.atkinson,
-  FontFamily.poppins,
-  FontFamily.lexend,
-  FontFamily.raleway,
-  FontFamily.comicNeue,
-  FontFamily.notoSans,
-  FontFamily.cousine,
-  FontFamily.consolas
-]
+export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
+  [FontFamily.sans, 'font-sans'],
+  [FontFamily.poppins, 'font-poppins'],
+  [FontFamily.lexend, 'font-lexend'],
+  [FontFamily.raleway, 'font-raleway'],
+  [FontFamily.comicNeue, 'font-comic-neue'],
+  [FontFamily.notoSans, 'font-noto-sans'],
+  [FontFamily.cousine, 'font-cousine'],
+  [FontFamily.consolas, 'font-consolas'],
+])
+
+export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
