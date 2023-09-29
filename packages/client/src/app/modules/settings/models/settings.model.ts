@@ -78,6 +78,28 @@ export const AvailableTextFlow: TextFlow[] = [
   'bottom-up',
   'top-down'
 ]
+
+export enum FontFamily {
+  atkinson = 'Atkinson Hyperlegible',
+  poppins = 'Poppins',
+  lexend = 'Lexend',
+  raleway = 'Raleway',
+  comicNeue = 'Comic Neue',
+  notoSans = 'Noto Sans',
+  cousine = 'Cousine',
+  consolas = 'Consolas'
+}
+
+export const AvailableFontFamilies: FontFamily[] = [
+  FontFamily.atkinson,
+  FontFamily.poppins,
+  FontFamily.lexend,
+  FontFamily.raleway,
+  FontFamily.comicNeue,
+  FontFamily.notoSans,
+  FontFamily.cousine,
+  FontFamily.consolas
+]
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
@@ -86,6 +108,7 @@ export interface SettingsState {
   textSize: TextSize;
   lineHeight: LineHeight;
   textFlow: TextFlow;
+  fontFamily: FontFamily;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

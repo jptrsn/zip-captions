@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, Language, LineHeight, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, Language, LineHeight, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -30,3 +30,5 @@ export const setTextFlowFailure = createAction('[Settings] Set Text Flow Failure
 export const setRenderHistory = createAction('[Settings] Set Render History', props<{count: number}>());
 export const setRenderHistorySuccess = createAction('[Settings] Set Render History Success');
 export const setRenderHistoryFailure = createAction('[Settings] Set Render History Failure', props<{error: string}>());
+
+export const setFontFamily = createAction('[Settings] Set Font Family', props<{ font: FontFamily }>())
