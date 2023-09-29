@@ -1,12 +1,13 @@
 import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused } from '../../../../selectors/peer.selectors';
 import { recognitionPausedSelector } from '../../../../selectors/recognition.selector';
-import { selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
-import { LineHeight, TextSize } from '../../../settings/models/settings.model';
+import { selectFontFamily, selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
+import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/models/settings.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-recognized-text',
@@ -31,10 +32,13 @@ export class RecognizedTextComponent {
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
+  private fontClass: Signal<string>;
+
   constructor(private store: Store<AppState>) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
-    this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()}`)
+    this.fontClass = toSignal(this.store.pipe(select(selectFontFamily), map((font) => FontFamilyClassMap.get(font)))) as Signal<string>;
+    this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()} ${this.fontClass()}`)
     const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused));
     this.isPaused = computed(() => recognitionPaused() || broadcastPaused());

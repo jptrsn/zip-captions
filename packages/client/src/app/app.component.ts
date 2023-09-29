@@ -1,12 +1,12 @@
-import { Component, ElementRef, Renderer2, Signal, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
+import { Component, Renderer2, Signal, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SwUpdate } from '@angular/service-worker';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { AppActions, AppState, Connectivity } from './models/app.model';
+import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
+import { windowControlsOverlaySelector } from './selectors/app.selector';
 import { languageSelector, themeSelector } from './selectors/settings.selector';
-import { isOfflineSelector, windowControlsOverlaySelector } from './selectors/app.selector';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ export class AppComponent {
   public renderSwUpdateNotice: WritableSignal<boolean> = signal(false);
   public theme$: Signal<AppTheme>;
   public windowControlsOverlay: Signal<boolean | undefined>;
-
+  
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private updates: SwUpdate,
@@ -29,7 +29,6 @@ export class AppComponent {
 
     this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<Language>;
-    
     effect(() => this.translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(document.documentElement, 'data-theme', this.theme$()));
     

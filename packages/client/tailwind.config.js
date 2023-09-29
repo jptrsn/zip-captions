@@ -10,7 +10,15 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      'sans': ['Atkinson Hyperlegible', ...defaultTheme.fontFamily.sans]
+      'sans': ['Atkinson Hyperlegible', ...defaultTheme.fontFamily.sans],
+      'atkinson': '"Atkinson Hyperlegibile"',
+      'poppins': 'Poppins',
+      'lexend': 'Lexend',
+      'raleway': 'Raleway',
+      'comic-neue': '"Comic Neue"',
+      'noto-sans': '"Noto Sans"',
+      'cousine': 'Cousine',
+      'consolas': 'Consolas',
     },
     extend: {},
   },
