@@ -5,6 +5,7 @@
   width: env(titlebar-area-width, 100%);
   height: env(titlebar-area-height, 56px);
   display: flex;
+  z-index: 10;
 }
 
 .draggable {

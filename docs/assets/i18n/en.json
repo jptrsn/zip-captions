@@ -292,7 +292,9 @@
     "accessModalTitle": "Privacy Warning",
     "accessP1": "Streaming or viewing a stream can potentially expose private information about your device to others on the internet.",
     "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
-    "accessP3": "Would you like to enable this feature?"
+    "accessP3": "Would you like to enable this feature?",
+    "unsavedChangesTitle": "Unsaved Changes!",
+    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?"
   },
   "ROUTES": {
     "home": "Home",
@@ -326,6 +328,7 @@
     "decline": "No",
     "connect": "Connect",
     "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
     "goBack": "Go Back",
     "start": "Start",
     "stop": "Stop"
@@ -356,7 +359,8 @@
     "stream": "Stream",
     "streaming": "Streaming",
     "idle": "Idle",
-    "build": "Build"
+    "build": "Build",
+    "renderHistory": "On-screen Results"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -365,7 +369,8 @@
     "hostConnecting": "Waiting for session host...",
     "recognitionPaused": "Recognition has been paused...",
     "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device.",
-    "offlineWarning": "You appear to be offline - ZipCaptions requires a connection to the internet to operate."
+    "offlineWarning": "You appear to be offline - ZipCaptions requires a connection to the internet to operate.",
+    "advancedWarning": "Do not change unless you are confident you know what you are doing"
   },
   "ERRORS": {
     "missingApi": "Sorry, your browser has not yet implemented the APIs necessary for ZipCaptions to run. We recommend Chrome or Safari on desktop.",
@@ -419,6 +424,8 @@
     "obsStudioIP": "Server IP",
     "obsStudioPort": "Server Port",
     "obsPassword": "Server Password",
-    "obsStreamInactive": "Waiting for OBS stream to begin"
+    "obsStreamInactive": "Waiting for OBS stream to begin",
+    "connectionEstablished": "Connected - you may begin caption session",
+    "disconnected": "Disconnected"
   }
 }

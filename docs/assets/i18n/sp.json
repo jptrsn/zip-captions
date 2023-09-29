@@ -292,7 +292,9 @@
     "accessModalTitle": "Advertencia de privacidad",
     "accessP1": "Transmitir o ver un stream puede potencialmente exponer información privada sobre tu dispositivo a otros en Internet",
     "accessP2": "ZipCaptions anonimiza tu información en la medida de lo posible, pero ciertos detalles inmutables (por ejemplo, la dirección IP) pueden quedar expuestos cuando te conectas a compañeros en línea",
-    "accessP3": "¿Desea activar esta función?"
+    "accessP3": "¿Desea activar esta función?",
+    "unsavedChangesTitle": "¡Cambios no guardados!",
+    "unsavedChangesParagraph": "Tienes cambios sin guardar, ¿estás seguro de que quieres descartarlos?"
   },
   "ROUTES": {
     "home": "Casa",
@@ -326,6 +328,7 @@
     "decline": "No",
     "connect": "Conectar",
     "disconnect": "Desconectar",
+    "reconnect": "Vuelva a conectar",
     "goBack": "Volver atrás",
     "start": "Start",
     "stop": "Parar"
@@ -356,7 +359,8 @@
     "stream": "Arroyo",
     "streaming": "Transmisión",
     "idle": "Ralentí",
-    "build": "Construya"
+    "build": "Construya",
+    "renderHistory": "Resultados en pantalla"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
@@ -364,7 +368,9 @@
     "verifyingConnection": "Verificando código de unión...",
     "hostConnecting": "Esperando al anfitrión de la sesión...",
     "recognitionPaused": "El reconocimiento se ha pausado...",
-    "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo."
+    "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo.",
+    "offlineWarning": "Parece estar desconectado - ZipCaptions requiere una conexión a Internet para funcionar",
+    "advancedWarning": "No cambie a menos que esté seguro de que sabe lo que está haciendo"
   },
   "ERRORS": {
     "missingApi": "Lo sentimos, su navegador aún no ha implementado las API necesarias para que ZipCaptions se ejecute. Recomendamos Chrome o Safari",
@@ -418,6 +424,8 @@
     "obsStudioIP": "IP del servidor",
     "obsStudioPort": "Puerto del servidor",
     "obsPassword": "Contraseña del servidor",
-    "obsStreamInactive": "Esperando a que comience el flujo de OBS"
+    "obsStreamInactive": "Esperando a que comience el flujo de OBS",
+    "connectionEstablished": "Conectado - puede iniciar la sesión de redacción",
+    "disconnected": "Desconectado"
   }
 }
