@@ -4,8 +4,8 @@ import { Store, select } from '@ngrx/store';
 import { fadeOutOnLeaveAnimation } from 'angular-animations';
 import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
-import { LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
+import { selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { FontFamily, FontFamilyClassMap, LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-live-text',
@@ -22,11 +22,13 @@ export class RecognizedLiveTextComponent {
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
+  private fontClass: Signal<string>;
   
   constructor(private store: Store<AppState>) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
-    this.classList = computed(() => `recognized-text live ${this.textSize()} ${this.lineHeight()}`)
+    this.fontClass = toSignal(this.store.pipe(select(selectFontFamily), map((font) => FontFamilyClassMap.get(font)))) as Signal<string>;
+    this.classList = computed(() => `recognized-text live ${this.textSize()} ${this.lineHeight()} ${this.fontClass()}`)
 
     this.textFlowDown = toSignal(this.store.pipe(
       select(selectTextFlow), 
