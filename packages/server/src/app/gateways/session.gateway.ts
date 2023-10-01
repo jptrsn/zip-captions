@@ -35,15 +35,14 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('setId')
   handleSetUserId(client: any, payload: any): WsResponse<any> {
-    console.log('setId', payload);
     let userId: string;
     if (payload.id) {
       userId = payload.id;
     } else {
       userId = v4();
+      client.send({message: 'set user id', id: userId})
     }
     this.socketIdClientIdMap.set(client.id, userId);
-    client.send({message: 'set user id', id: userId})
     return {event: 'setUserId', data: { message: 'set user id', id: client.id }}
   }
 

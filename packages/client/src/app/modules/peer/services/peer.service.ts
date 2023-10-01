@@ -116,7 +116,7 @@ export class PeerService {
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
-      console.log('message', data);
+      console.log('socket message', data);
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
@@ -128,7 +128,7 @@ export class PeerService {
         }
         case 'set user id': {
           console.log('set user id', data.id, this.myId)
-          if (this.myId) {
+          if (this.myId && this.myId !== data.id) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
               sub.next(this.myId);
@@ -254,16 +254,18 @@ export class PeerService {
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
+      console.log('peer server connection opened')
       this.store.dispatch(PeerActions.peerServerConnected());
       sub.next(this.myId as string);
     });
     this.peer.addListener('disconnected', () => {
+      console.log('peer server disconnected')
       if (this.peerServerConnected()) {
         this.store.dispatch(PeerActions.peerServerDisconnected());
       }
     });
     this.peer.once('error', (err: any) => {
-      console.log(err.message);
+      console.log('peer server error', err.message);
       this.store.dispatch(PeerActions.peerServerError({error: err.message}));
       this._reconnectPeerServer();
     })
