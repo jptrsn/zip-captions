@@ -7,11 +7,15 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
+import { PeerServerService } from './app/services/peer-server/peer-server.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const globalPrefix = 'v1';
   app.setGlobalPrefix(globalPrefix);
+  const peerServerService = app.get(PeerServerService);
+  peerServerService.enablePeerServer(app);
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(
