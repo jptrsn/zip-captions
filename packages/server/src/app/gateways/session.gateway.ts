@@ -27,7 +27,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   }
 
   @SubscribeMessage('join')
-  handleJoin(client: any, payload: any): WsResponse<any> {
+  handleJoin(client: any, payload?: { room?: string, myBroadcast?: boolean}): WsResponse<{user: string, message: string, room: string}> {
     this.logger.log(`client ${client.id} join payload:`)
     this.logger.log(payload);
     return {event: 'join', data: { user: client.id, message: 'room joined', room: payload.room}}
