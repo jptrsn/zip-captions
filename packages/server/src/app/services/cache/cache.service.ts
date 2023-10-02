@@ -7,7 +7,7 @@ export class CacheService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) { }
 
   public async set(key: string, value: unknown, ttl?: Milliseconds): Promise<void> {
-    return this.cacheManager.set(key, value, ttl)
+    return this.cacheManager.set(key, value, ttl);
   }
 
   public async get<T>(key: string): Promise<T | undefined> {

@@ -20,5 +20,6 @@ import { CacheService } from './services/cache/cache.service';
     PeerServerService, 
     CacheService,
   ],
+  exports: []
 })
 export class AppModule {}

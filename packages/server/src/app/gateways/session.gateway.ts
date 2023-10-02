@@ -1,49 +1,118 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { v4 } from 'uuid';
+import { CacheService } from '../services/cache/cache.service';
 
 @WebSocketGateway({ cors: true })
 export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SessionGateway.name);
-  private socketIdClientIdMap: Map<string, string> = new Map();
-
+  private clientToUserIdMap: Map<string, string> = new Map();
   @WebSocketServer() server: Server;
+
+  constructor(private cache: CacheService) { }
   
   // Gateway connection handler
-  handleConnection(client: any, ...args: any[]): void {
+  handleConnection(client: Socket, ...args: any[]): void {
     this.logger.log(`client ${client.id} connected`);
   }
   
   // Gateway disconnect handler
-  handleDisconnect(client: any) {
+  async handleDisconnect(client: Socket) {
     this.logger.log(`client ${client.id} disconnected`);
+    const clientBroadcastRoom = await this.cache.get<string>(${})
   }
   
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): WsResponse<string> {
+  handleMessage(client: Socket, payload: any): WsResponse<string> {
     this.logger.log('message payload', payload);
+    if (payload.user && payload.message && payload.room) {
+      this.server.in(payload.room).emit('message', { user: payload.user, message: payload.message, room: payload.room })
+    } else {
+      this.logger.warn('Unhandled message payload with keys: ', Object.keys(payload).toString())
+    }
     return { event: 'message', data: 'Hello World' };
   }
 
   @SubscribeMessage('join')
-  handleJoin(client: any, payload?: { room?: string, myBroadcast?: boolean}): WsResponse<{user: string, message: string, room: string}> {
-    this.logger.log(`client ${client.id} join payload:`)
-    this.logger.log(payload);
+  async handleJoin(client: Socket, payload?: { room?: string, myBroadcast?: boolean}): Promise<WsResponse<{user: string, message: string, room: string}>> {
+    const clientUserId: string | undefined = this.clientToUserIdMap.get(client.id);
+    if (!clientUserId) {
+      this.logger.error(`client ${client.id} attempted to join without generated user ID`);
+    }
+
+    // Check if joining a room
+    if (payload?.room) {
+      const expiredAt: number | null = await this.cache.get<number>(`${payload.room}_broadcast_ended`);
+      if (expiredAt) {
+        this.logger.log(`room ${payload.room} expired at ${new Date(expiredAt).toISOString()}`);
+        client.send({message: 'broadcast expired', expiredAt});
+        return;
+      } else {
+        const hostId: string | null = await this.cache.get<string>(`${payload.room}_host_client_id`);
+        if (!hostId && !payload.myBroadcast) {
+          this.logger.log(`room ${payload.room} has no expiration and no host`);
+          client.send({message: 'broadcast expired', expiredAt: 1});
+          return;
+        }
+      }
+    }
+    
+    // Add client to room
+    const room: string = payload?.room || this._generateRandomRoomId();
+    this.logger.log(`client ${client.id} joined room ${room} as ${payload?.myBroadcast ? 'owner' : 'viewer'}`);
+    client.join(room);
+
+    // Is this client starting or resuming their own broadcast?
+    if (payload?.myBroadcast) {
+      // Mark room owner
+      await this.cache.set(`${room}_host_client_id`, client.id);
+
+      // Check for room members, tell owner to reconnect if any are already connected
+      const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room));
+      const clients: string[] = clientIds.filter((id) => id !== client.id).map((id) => this.server.sockets.sockets.get(id)).map((socket) => this.clientToUserIdMap.get(socket.id))
+      if (clients.length) {
+        client.send({message: 'connect clients', clients });
+      }
+    } else {
+      const ownerClientId = await this.cache.get<string>(`${room}_host_client_id`);
+      if (ownerClientId) {
+        this.server.to(ownerClientId).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false });
+      } else {
+        this.logger.warn(`Failed to determine owner for room ${room}. Falling back to room broadcast about member join`);
+        client.broadcast.to(room).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false})
+      }
+    }
+    client.send({user: clientUserId, message: 'room joined', room });
     return {event: 'join', data: { user: client.id, message: 'room joined', room: payload.room}}
   }
 
   @SubscribeMessage('setId')
-  handleSetUserId(client: any, payload: any): WsResponse<any> {
+  async handleSetUserId(client: Socket, payload: { id?: string }): Promise<WsResponse<{message: string, id: string}>> {
     let userId: string;
     if (payload.id) {
       userId = payload.id;
     } else {
-      userId = v4();
+      userId = await this.cache.wrap(`client_id_${client.id}`, async () => v4());
       client.send({message: 'set user id', id: userId})
     }
-    this.socketIdClientIdMap.set(client.id, userId);
+    this.clientToUserIdMap.set(client.id, userId);
     return {event: 'setUserId', data: { message: 'set user id', id: client.id }}
+  }
+
+  private _generateRandomRoomId(): string {
+    let outString = '';
+  const outParts: string[] = [];
+  const inOptions = 'acdefghjkmnpqrstuvwxyz2345679';
+
+  for (let i = 0; i < 2; i++) {
+    outString = '';
+    for (let j = 0; j < 4; j++) {
+      outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+    }
+    outParts.push(outString);
+  }
+  return outParts.join('-');
   }
 
 }
