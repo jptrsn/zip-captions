@@ -49,10 +49,12 @@ export class AppComponent {
       })
     }
 
-    // @ts-expect-error PWA specific method
-    navigator.getInstalledRelatedApps().then((relatedApps) => {
-      console.log('relatedApps', relatedApps);
-    }) 
+    if ('getInstalledRelatedApps' in navigator) {
+      // @ts-expect-error PWA specific method
+      navigator.getInstalledRelatedApps().then((relatedApps) => {
+        console.log('relatedApps', relatedApps);
+      }) 
+    }
   }
 
 }
