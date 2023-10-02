@@ -8,6 +8,7 @@ import { CacheService } from '../services/cache/cache.service';
 export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SessionGateway.name);
   private clientToUserIdMap: Map<string, string> = new Map();
+  private clientBroadcastIdMap: Map<string, string> = new Map();
   @WebSocketServer() server: Server;
 
   constructor(private cache: CacheService) { }
@@ -19,8 +20,12 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   
   // Gateway disconnect handler
   async handleDisconnect(client: Socket) {
+    const clientBroadcastRoom: string | undefined = this.clientBroadcastIdMap.get(client.id);
+    if (clientBroadcastRoom) {
+      const clientUserId = this.clientToUserIdMap.get(client.id);
+      client.broadcast.to(clientBroadcastRoom).emit('message', { user: clientUserId, message: 'user left room', room: clientBroadcastRoom });
+    }
     this.logger.log(`client ${client.id} disconnected`);
-    const clientBroadcastRoom = await this.cache.get<string>(${})
   }
   
   @SubscribeMessage('message')
@@ -35,7 +40,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   }
 
   @SubscribeMessage('join')
-  async handleJoin(client: Socket, payload?: { room?: string, myBroadcast?: boolean}): Promise<WsResponse<{user: string, message: string, room: string}>> {
+  async handleJoin(client: Socket, payload?: { room?: string, myBroadcast?: boolean}): Promise<void> {
     const clientUserId: string | undefined = this.clientToUserIdMap.get(client.id);
     if (!clientUserId) {
       this.logger.error(`client ${client.id} attempted to join without generated user ID`);
@@ -67,6 +72,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     if (payload?.myBroadcast) {
       // Mark room owner
       await this.cache.set(`${room}_host_client_id`, client.id);
+      this.clientBroadcastIdMap.set(client.id, room);
 
       // Check for room members, tell owner to reconnect if any are already connected
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room));
@@ -84,7 +90,6 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
       }
     }
     client.send({user: clientUserId, message: 'room joined', room });
-    return {event: 'join', data: { user: client.id, message: 'room joined', room: payload.room}}
   }
 
   @SubscribeMessage('setId')
@@ -98,6 +103,21 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
     this.clientToUserIdMap.set(client.id, userId);
     return {event: 'setUserId', data: { message: 'set user id', id: client.id }}
+  }
+
+  @SubscribeMessage('endBroadcast')
+  async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
+    this.logger.log(`end ${payload.room} broadcast`)
+    this.server.in(payload.room).emit('endBroadcast');
+    const hostId: string | null = await this.cache.get<string>(`${payload.room}_host_client_id`);
+    if (hostId === client.id) {
+      const expiredAt = Date.now();
+      await this.cache.set(`${payload.room}_broadcast_ended`, expiredAt);
+      this.clientBroadcastIdMap.delete(client.id);
+      client.broadcast.to(payload.room).emit('message', { message: 'broadcast ended', expiredAt});
+    } else {
+      this.logger.warn(`endBroadcastr from non-owner client id ${client.id}`);
+    }
   }
 
   private _generateRandomRoomId(): string {
