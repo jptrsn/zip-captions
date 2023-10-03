@@ -18,6 +18,7 @@ export class User {
   })
   hash: string;
 
+  timestamps: true;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

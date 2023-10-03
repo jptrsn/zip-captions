@@ -15,8 +15,10 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
+    AuthModule,
     CacheModule.register({ttl: (60 * 60 * 1000)}),
     MongooseModule.forRoot('mongodb://127.0.0.1/nest'),
+    UserModule,
   ],
   controllers: [
     AppController,

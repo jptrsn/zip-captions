@@ -1,6 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
+import { SignInDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -8,19 +9,18 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async signIn(@Body() signInDto: Record<string, any>) {
+  async signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signup(@Body() signUpDto: Record<string, any>) {
+  async signup(@Body() signUpDto: SignInDto) {
     const hashedPassword = await bcrypt.hash(signUpDto.password, 10)
-    const { id, email } = await this.authService.signUp(signUpDto.email, hashedPassword);
+    const token = await this.authService.signUp(signUpDto.email, hashedPassword);
     return {
       msg: 'user successfully registered',
-      id,
-      email
+      token
     }
 
   }
