@@ -17,7 +17,11 @@ import { UserModule } from '../user/user.module';
   imports: [
     AuthModule,
     CacheModule.register({ttl: (60 * 60 * 1000)}),
-    MongooseModule.forRoot('mongodb://127.0.0.1/nest'),
+    MongooseModule.forRoot('mongodb://127.0.0.1', {
+      dbName: 'zipcaptions',
+      user: 'db_user',
+      pass: 'changeme'
+    }),
     UserModule,
   ],
   controllers: [
