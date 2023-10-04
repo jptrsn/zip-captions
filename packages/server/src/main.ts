@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
@@ -12,6 +12,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  app.useGlobalPipes(new ValidationPipe());
   const globalPrefix = 'v1';
   app.setGlobalPrefix(globalPrefix);
   const peerServerService = app.get(PeerServerService);
