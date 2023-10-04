@@ -26,7 +26,11 @@
           "packages/client/src/manifest.webmanifest",
           "packages/client/src/CNAME",
           "packages/client/src/.well-known/web-app-origin-association",
-          { "glob": "web-app-origin-association", "input": "packages/client/src/.well-known/", "output": "/.well-known/" }
+          {
+            "glob": "web-app-origin-association",
+            "input": "packages/client/src/.well-known/",
+            "output": "/.well-known/"
+          }
         ],
         "styles": ["packages/client/src/styles.scss"],
         "scripts": [],
@@ -66,7 +70,6 @@
       "defaultConfiguration": "development"
     },
     "serve": {
-      
       "executor": "@nx/angular:webpack-dev-server",
       "configurations": {
         "production": {
@@ -76,7 +79,10 @@
           "browserTarget": "client:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "options": {
+        "proxyConfig": "packages/client/proxy.conf.json"
+      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
