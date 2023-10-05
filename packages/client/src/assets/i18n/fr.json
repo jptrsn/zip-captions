@@ -309,7 +309,8 @@
     "github": "GitHub Issue Tracker",
     "discord": "Serveur Discord",
     "donate": "Faire un Don",
-    "stream": "Diffusion"
+    "stream": "Diffusion",
+    "forum": "Forum"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
