@@ -11,8 +11,11 @@ import { PeerServerService } from './app/services/peer-server/peer-server.servic
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors({
+    origin: 'https://*.zipcaptions.app'
+  })
   const globalPrefix = 'v1';
   app.setGlobalPrefix(globalPrefix);
   const peerServerService = app.get(PeerServerService);
