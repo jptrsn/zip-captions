@@ -1,8 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Request, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
 import { SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { AuthenticatedGuard } from '../guards/authenticated.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +10,6 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  @UseInterceptors(CacheInterceptor)
   @Post('login')
   async signIn(@Body() body: { username: string, password: string}) {
     return await this.authService.signIn(body.username, body.password);
@@ -26,10 +25,17 @@ export class AuthController {
     }
   }
 
-  @UseInterceptors(CacheInterceptor)
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthenticatedGuard)
   @Post('validate')
   async validate(@Body() signUpDto: SignInDto) {
     return this.authService.validateUser(signUpDto.username, signUpDto.password);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('logout')
+  logout(@Request() req): any {
+    req.session.destroy();
+    return { message: 'The user session has ended' };
   }
 }

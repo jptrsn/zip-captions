@@ -1,10 +1,7 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import session from 'express-session';
+import passport from 'passport';
 
 import { AppModule } from './app/app.module';
 import { PeerServerService } from './app/services/peer-server/peer-server.service';
@@ -15,7 +12,16 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     origin: 'https://*.zipcaptions.app'
-  })
+  });
+  app.use(
+    session({
+      secret: 'hello world',
+      resave: false,
+      saveUninitialized: false,
+    })
+  )
+  app.use(passport.initialize());
+  app.use(passport.session());
   const globalPrefix = 'v1';
   app.setGlobalPrefix(globalPrefix);
   const peerServerService = app.get(PeerServerService);
