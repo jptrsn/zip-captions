@@ -78,6 +78,30 @@ export const AvailableTextFlow: TextFlow[] = [
   'bottom-up',
   'top-down'
 ]
+
+export enum FontFamily {
+  sans = 'Atkinson Hyperlegible',
+  poppins = 'Poppins',
+  lexend = 'Lexend',
+  raleway = 'Raleway',
+  comicNeue = 'Comic Neue',
+  notoSans = 'Noto Sans',
+  cousine = 'Cousine',
+  consolas = 'Consolas'
+}
+
+export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
+  [FontFamily.sans, 'font-sans'],
+  [FontFamily.poppins, 'font-poppins'],
+  [FontFamily.lexend, 'font-lexend'],
+  [FontFamily.raleway, 'font-raleway'],
+  [FontFamily.comicNeue, 'font-comic-neue'],
+  [FontFamily.notoSans, 'font-noto-sans'],
+  [FontFamily.cousine, 'font-cousine'],
+  [FontFamily.consolas, 'font-consolas'],
+])
+
+export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
@@ -86,6 +110,7 @@ export interface SettingsState {
   textSize: TextSize;
   lineHeight: LineHeight;
   textFlow: TextFlow;
+  fontFamily: FontFamily;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

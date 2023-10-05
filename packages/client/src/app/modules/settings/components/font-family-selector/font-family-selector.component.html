@@ -1,0 +1,7 @@
+<label class="form-control" [formGroup]="group">
+  <span class="text-accent label">Font</span>
+  
+  <select [class]="'select select-lg mt-1 w-full ' + fontFamilies.get(group.controls[controlName]!.value)" [formControlName]="controlName">
+    <option *ngFor="let font of fontFamilies | keyvalue" [value]="font.key">{{font.key}}</option>
+  </select>
+</label>

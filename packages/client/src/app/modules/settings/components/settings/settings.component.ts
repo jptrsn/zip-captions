@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,8 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, combineLatest, filter, map, startWith, take, takeUntil } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
-import { languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
-import { AppTheme, Language, LineHeight, SettingsActions, TextSize } from '../../models/settings.model';
+import { languageSelector, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
+import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, TextSize, FontFamilyClassMap } from '../../models/settings.model';
 import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 
 @Component({
@@ -24,6 +24,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
     lang: FormControl<Language | null>,
+    font: FormControl<FontFamily | null>,
     wakelock: FormControl<boolean | undefined | null>,
     renderHistory: FormControl<number | null>,
     textSize: FormControl<TextSize | null>,
@@ -35,6 +36,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public modalClosed$: Subject<boolean> = new Subject<boolean>();
   public renderHistory: Signal<number>;
   public renderHistoryFormValue: Signal<number>;
+  public fontFamily: Signal<FontFamily>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
@@ -55,10 +57,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.currentTextSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
+    this.fontFamily = toSignal(this.store.select(selectFontFamily)) as Signal<FontFamily>;
     
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language()),
+      font: this.fb.control(this.fontFamily()),
       wakelock: this.fb.control(this.wakeLockEnabled()),
       renderHistory: this.fb.control(this.renderHistory()),
       textSize: this.fb.control(this.currentTextSize()),
@@ -75,7 +79,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       map((appearance: AppAppearanceState) => appearance.cookiesAccepted)
     ));
 
-    this.classList = signal(`recognized-text ${this.currentTextSize()} ${this.currentLineHeight()}`)
+    this.classList = signal(`recognized-text ${this.currentTextSize()} ${this.currentLineHeight()} ${FontFamilyClassMap.get(this.fontFamily())}`)
   }
 
   ngOnInit(): void {
@@ -97,12 +101,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
     const size$ = this.formGroup.get('textSize')!.valueChanges.pipe(startWith(this.currentTextSize()));
     const lineHeight$ = this.formGroup.get('lineHeight')!.valueChanges.pipe(startWith(this.currentLineHeight()));
-    combineLatest([size$, lineHeight$])
+    const fontFamily$ = this.formGroup.get('font')!.valueChanges.pipe(startWith(this.fontFamily()))
+    combineLatest([size$, lineHeight$, fontFamily$])
     .pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe(([size, height]:[size: TextSize | null, height: LineHeight | null]) => {
+    ).subscribe(([size, height, font]:[size: TextSize | null, height: LineHeight | null, font: FontFamily | null]) => {
       if (size && height) {
-        this._updateClassList(size, height);
+        this._updateClassList(size, height, font);
       }
     });
   }
@@ -131,23 +136,35 @@ export class SettingsComponent implements OnInit, OnDestroy {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
     this.store.dispatch(SettingsActions.setTheme({theme}));
+    
     const language: Language = this.formGroup.get('lang')!.value as Language;
     this.store.dispatch(SettingsActions.setLanguage({language}))
+    
     const wakelockEnabled: boolean = this.formGroup.get('wakelock')!.value as boolean;
     this.store.dispatch(SettingsActions.updateWakeLockEnabled({enabled: wakelockEnabled}));
+    
     const size: TextSize = this.formGroup.get('textSize')!.value as TextSize;
     this.store.dispatch(SettingsActions.setTextSize({size}));
+    
     const height: LineHeight = this.formGroup.get('lineHeight')!.value as LineHeight;
     this.store.dispatch(SettingsActions.setLineHeight({height}));
+    
     const count: number = this.formGroup.get('renderHistory')!.value as number;
     this.store.dispatch(SettingsActions.setRenderHistory({count}));
-
+    
+    const font: FontFamily = this.formGroup.get('font')!.value as FontFamily;
+    this.store.dispatch(SettingsActions.setFontFamily({font}))
+    
     this.formGroup.markAsPristine();
     this.router.navigate([''])
     return false;
   }
 
-  private _updateClassList(size: TextSize, height: LineHeight): void {
-    this.classList.set(`recognized-text ${size} ${height}`);
+  private _updateClassList(size: TextSize, height: LineHeight, font: FontFamily | null): void {
+    let className = `recognized-text ${size} ${height}`;
+    if (font) {
+      className += ` ${FontFamilyClassMap.get(font)}`
+    }
+    this.classList.set(className);
   }
 }

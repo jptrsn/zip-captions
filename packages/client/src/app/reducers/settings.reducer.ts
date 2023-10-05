@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -8,7 +8,8 @@ export const defaultSettingsState: SettingsState = {
   renderHistory: 15,
   textSize: 'textSize-3xl',
   lineHeight: 'lineHeight-normal',
-  textFlow: 'bottom-up'
+  textFlow: 'bottom-up',
+  fontFamily: FontFamily.sans,
 }
 
 export const settingsReducers = createReducer(
@@ -21,4 +22,5 @@ export const settingsReducers = createReducer(
   on(SettingsActions.setLineHeight, (state: SettingsState, action: { height: LineHeight}) => ({...state, lineHeight: action.height})),
   on(SettingsActions.setTextFlow, (state: SettingsState, action: { flow: TextFlow }) => ({...state, textFlow: action.flow})),
   on(SettingsActions.setRenderHistory, (state: SettingsState, action: { count: number }) => ({...state, renderHistory: action.count})),
+  on(SettingsActions.setFontFamily, (state: SettingsState, action: { font: FontFamily }) => ({...state, fontFamily: action.font })),
 )

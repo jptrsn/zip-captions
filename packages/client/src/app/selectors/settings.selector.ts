@@ -38,3 +38,8 @@ export const selectRenderHistoryLength = createSelector(
   selectAppSettings,
   (state) => state.renderHistory
 )
+
+export const selectFontFamily = createSelector(
+  selectAppSettings,
+  (state) => state.fontFamily
+)

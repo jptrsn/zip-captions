@@ -16,6 +16,7 @@ import { TextSizeComponent } from './components/text-size/text-size.component';
 import { LineHeightComponent } from './components/line-height/line-height.component';
 import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDialog/unsaved-changes-dialog.component';
 import { RenderHistoryComponent } from './components/render-history/render-history.component';
+import { FontFamilySelectorComponent } from './components/font-family-selector/font-family-selector.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { RenderHistoryComponent } from './components/render-history/render-histo
     TextSizeComponent,
     LineHeightComponent,
     RenderHistoryComponent,
+    FontFamilySelectorComponent,
   ],
   imports: [
     CommonModule,
