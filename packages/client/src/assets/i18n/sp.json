@@ -309,7 +309,8 @@
     "github": "GitHub Issue Tracker",
     "discord": "Servidor de Discordia",
     "donate": "Donar",
-    "stream": "Difusión"
+    "stream": "Difusión",
+    "forum": "Foro"
   },
   "FOOTER": {
     "copyright": "Copyright"
