@@ -15,7 +15,7 @@ async function bootstrap() {
   });
   app.use(
     session({
-      secret: 'hello world',
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
     })
