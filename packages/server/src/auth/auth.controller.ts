@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Request, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Request, HttpCode, HttpStatus, Post, UseGuards, BadRequestException } from '@nestjs/common';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
 import { SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
@@ -28,12 +28,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthenticatedGuard)
   @Post('validate')
-  async validate(@Body() signUpDto: SignInDto) {
+  async validate(@Request() req: any, @Body() signUpDto: SignInDto) {
+    console.log('validate', req.session);
+    if (req.session.passport.user.username !== signUpDto.username) {
+      throw new BadRequestException('Invalid');
+    }
     return this.authService.validateUser(signUpDto.username, signUpDto.password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('logout')
+  @UseGuards(AuthenticatedGuard)
   logout(@Request() req): any {
     req.session.destroy();
     return { message: 'The user session has ended' };

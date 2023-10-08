@@ -12,13 +12,13 @@ export class AuthService {
     private cache: CacheService,
   ) {}
 
-  async signIn(username: string, password: string): Promise<{uuid: string; username: string; access_token: string; expiry: number;}> {
+  async signIn(username: string, password: string): Promise<{uuid: string; username: string; access_token: string;}> {
     const user = await this.validateUser(username, password);
     const accessToken = await this._getAccessToken(user);
     return { ...user, ...accessToken };
   }
 
-  async getUser(username: string): Promise<{uuid: string, username: string, access_token: string; expiry: number}> {
+  async getUser(username: string): Promise<{uuid: string, username: string, access_token: string;}> {
     const userDoc = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
     const rtn = {uuid: userDoc.uuid, username: userDoc.username};
     const token = await this._getAccessToken(rtn);
@@ -41,7 +41,7 @@ export class AuthService {
     return null;
   }
 
-  async signUp(username: string, password: string): Promise<{ access_token: string; expiry: number }> {
+  async signUp(username: string, password: string): Promise<{ access_token: string; }> {
     const existingUser = await this.userService.findOne({username});
     if (existingUser) {
       throw new BadRequestException('Bad request');
@@ -52,9 +52,8 @@ export class AuthService {
     return this._getAccessToken(payload);
   }
 
-  private async _getAccessToken(payload: any): Promise<{access_token: string; expiry: number}> {
-    const accessToken = await this.jwtService.signAsync(payload, { expiresIn: `${jwtConstants.expires}` });
-    const expiry = Date.now() + jwtConstants.expires;
-    return { access_token: accessToken, expiry }
+  private async _getAccessToken(payload: any): Promise<{access_token: string;}> {
+    const accessToken = await this.jwtService.signAsync(payload, { expiresIn: `${jwtConstants.expires * 1000}` });
+    return { access_token: accessToken }
   }
 }
