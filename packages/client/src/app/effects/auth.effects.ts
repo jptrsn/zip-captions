@@ -24,4 +24,15 @@ export class AuthEffects {
       )
     )
   )
+
+  validate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.validate),
+      switchMap(({email, password}) => this.authService.validate(email, password)
+        .pipe(
+          map((data) => AuthActions.validateResponse({data}))
+        )
+      )
+    )
+  )
 }

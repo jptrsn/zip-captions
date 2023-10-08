@@ -33,4 +33,15 @@ export class LoginComponent {
       this.formGroup.markAllAsTouched();
     }
   }
+
+  validate(): void {
+    this.formGroup.updateValueAndValidity();
+    if (this.formGroup.valid) {
+      console.log('validate', this.formGroup.value);
+      const {email, password} = this.formGroup.value as {email: string, password: string};
+      this.store.dispatch(AuthActions.validate({email, password}));
+    } else {
+      this.formGroup.markAllAsTouched();
+    }
+  }
 }

@@ -15,7 +15,7 @@ import { SessionSerializer } from '../app/serializer/session.serializer';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: jwtConstants.expires }
+      signOptions: { expiresIn: `${jwtConstants.expires}s` }
     }),
     PassportModule.register({ session: true }),
   ],

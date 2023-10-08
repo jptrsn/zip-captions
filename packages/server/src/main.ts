@@ -15,7 +15,8 @@ async function bootstrap() {
 
   // Set CORS policy
   app.enableCors({
-    origin: 'http://localhost:4200'
+    origin: 'http://localhost:4200',
+    credentials: true
   });
 
   // Use auth sessions

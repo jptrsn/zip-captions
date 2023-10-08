@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   private async _getAccessToken(payload: any): Promise<{access_token: string; expiry: number}> {
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync(payload, { expiresIn: `${jwtConstants.expires}` });
     const expiry = Date.now() + jwtConstants.expires;
     return { access_token: accessToken, expiry }
   }

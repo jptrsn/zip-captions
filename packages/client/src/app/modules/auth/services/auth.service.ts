@@ -18,8 +18,14 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.authEndpoint}/login`, { username: email, password }).pipe(
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/login`, { username: email, password }, { withCredentials: true }).pipe(
       tap((response) => console.log('login response', response))
+    )
+  }
+
+  validate(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/validate`, { username: email, password }, { withCredentials: true }).pipe(
+      tap((response) => console.log('validate response', response))
     )
   }
 }
