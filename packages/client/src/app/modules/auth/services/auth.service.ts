@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 
@@ -7,6 +7,8 @@ import { LoginResponse } from '../../../reducers/auth.reducer';
   providedIn: 'root'
 })
 export class AuthService {
+
+  public userIsAuthenticated: WritableSignal<boolean> = signal(false);
 
   private authEndpoint: string;
   constructor(private http: HttpClient) {
@@ -19,13 +21,27 @@ export class AuthService {
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.authEndpoint}/login`, { username: email, password }, { withCredentials: true }).pipe(
-      tap((response) => console.log('login response', response))
+      tap((response) => {
+        console.log('login response', response)
+        if (response.uuid) {
+          this.userIsAuthenticated.set(true);
+        }
+      })
     )
   }
 
   validate(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.authEndpoint}/validate`, { username: email, password }, { withCredentials: true }).pipe(
       tap((response) => console.log('validate response', response))
+    )
+  }
+
+  logout(): Observable<{message: string}> {
+    return this.http.get<{message: string}>(`${this.authEndpoint}/logout`, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('logout response', response)
+        this.userIsAuthenticated.set(false);
+      })
     )
   }
 }

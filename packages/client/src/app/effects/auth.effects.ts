@@ -35,4 +35,16 @@ export class AuthEffects {
       )
     )
   )
+
+  logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.logout),
+      switchMap(() => this.authService.logout()
+        .pipe(
+          map(() => AuthActions.logoutSuccess()),
+          catchError((err) => of(AuthActions.logoutFailure({error: err.message})))
+        )
+      )
+    )
+  )
 }

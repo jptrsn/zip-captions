@@ -6,6 +6,7 @@ import { CacheService } from '../app/services/cache/cache.service';
 import { jwtConstants } from './constants';
 @Injectable()
 export class AuthService {
+  
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -17,11 +18,9 @@ export class AuthService {
     return { uuid: user.uuid, username: user.username };
   }
 
-  async getUser(username: string): Promise<{uuid: string, username: string, access_token: string;}> {
+  async getUser(username: string): Promise<{uuid: string, username: string}> {
     const userDoc = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
-    const rtn = {uuid: userDoc.uuid, username: userDoc.username};
-    const token = await this._getAccessToken(rtn);
-    return { ...rtn, ...token };
+    return {uuid: userDoc.uuid, username: userDoc.username};
   }
 
 

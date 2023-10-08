@@ -10,15 +10,16 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '../../effects/auth.effects';
 import { StoreModule } from '@ngrx/store';
 import { authReducer } from '../../reducers/auth.reducer';
+import { UserHomeComponent } from './components/user-home/user-home.component';
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, UserHomeComponent],
   imports: [
-    CommonModule, 
+    CommonModule,
     AuthRoutingModule,
     SharedUiModule,
     ReactiveFormsModule,
-    TranslateModule.forChild({extend: true}),
+    TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([AuthEffects]),
     StoreModule.forFeature('auth', authReducer),
   ],
