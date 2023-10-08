@@ -15,7 +15,7 @@ async function bootstrap() {
 
   // Set CORS policy
   app.enableCors({
-    origin: 'https://*.zipcaptions.app'
+    origin: 'http://localhost:4200'
   });
 
   // Use auth sessions
