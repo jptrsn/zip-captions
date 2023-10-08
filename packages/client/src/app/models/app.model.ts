@@ -1,4 +1,5 @@
 import { SettingsState } from "../modules/settings/models/settings.model";
+import { AuthState } from "../reducers/auth.reducer";
 import { ObsState } from "../reducers/obs.reducer";
 import { PeerState } from "../reducers/peer.reducer";
 import { AudioStreamState } from "./audio-stream.model";
@@ -34,6 +35,7 @@ export interface AppState {
   recognition: RecognitionState;
   peer: PeerState;
   obs: ObsState;
+  auth: AuthState;
 }
 
 interface SubSection {

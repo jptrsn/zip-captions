@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { AuthActions } from '../../../../actions/auth.actions';
+import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { selectUserLoggedIn } from 'packages/client/src/app/selectors/auth.selectors';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +19,18 @@ export class LoginComponent {
   }>;
   
   constructor(private fb: FormBuilder,
-              private store: Store<AppState>) {
+              private store: Store<AppState>,
+              private router: Router) {
     this.formGroup = this.fb.group({
       email: this.fb.control<string>('', [Validators.required, Validators.email]),
       password: this.fb.control<string>('', [Validators.required])
+    });
+    
+    const userLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
+    effect(() => {
+      if (userLoggedIn()) {
+        this.router.navigate(['auth', 'user']);
+      }
     })
   }
 
