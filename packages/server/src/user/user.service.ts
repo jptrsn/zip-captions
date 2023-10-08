@@ -10,10 +10,11 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async createUser(username: string, hash: string): Promise<HydratedDocument<User>> {
+    const uuid = v4();
     const newUser: HydratedDocument<User> = new this.userModel({
       username: username.toLowerCase(),
       hash,
-      uuid: v4()
+      uuid
     });
     await newUser.save();
     return newUser;

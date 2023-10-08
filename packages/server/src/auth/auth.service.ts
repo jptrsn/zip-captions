@@ -12,10 +12,9 @@ export class AuthService {
     private cache: CacheService,
   ) {}
 
-  async signIn(username: string, password: string): Promise<{uuid: string; username: string; access_token: string;}> {
+  async signIn(username: string, password: string): Promise<{uuid: string; username: string;}> {
     const user = await this.validateUser(username, password);
-    const accessToken = await this._getAccessToken(user);
-    return { ...user, ...accessToken };
+    return { uuid: user.uuid, username: user.username };
   }
 
   async getUser(username: string): Promise<{uuid: string, username: string, access_token: string;}> {
@@ -26,7 +25,7 @@ export class AuthService {
   }
 
 
-  async validateUser(username: string, password: string): Promise<{uuid: string, username: string}> {
+  async validateUser(username: string, password: string): Promise<{uuid: string, username: string, id: string}> {
     const user = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
     if (!user) {
       throw new NotFoundException('User not found');
@@ -34,6 +33,7 @@ export class AuthService {
     const passwordValid = await bcrypt.compare(password, user.hash);
     if (passwordValid) {
       return {
+        id: user._id.toString(),
         uuid: user.uuid,
         username: user.username,
       }
