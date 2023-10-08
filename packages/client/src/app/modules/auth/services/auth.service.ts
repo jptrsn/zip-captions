@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
+import { Md5 } from 'ts-md5';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class AuthService {
     this.authEndpoint = `${baseUrl}:${apiPort}/${apiVersion}/${authRoute}`;
   }
 
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(email: string, pw: string): Observable<LoginResponse> {
+    const password = this._hashString(pw);
     return this.http.post<LoginResponse>(`${this.authEndpoint}/login`, { username: email, password }, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('login response', response)
@@ -30,7 +32,8 @@ export class AuthService {
     )
   }
 
-  validate(email: string, password: string): Observable<LoginResponse> {
+  validate(email: string, pw: string): Observable<LoginResponse> {
+    const password = this._hashString(pw);
     return this.http.post<LoginResponse>(`${this.authEndpoint}/validate`, { username: email, password }, { withCredentials: true }).pipe(
       tap((response) => console.log('validate response', response))
     )
@@ -45,12 +48,19 @@ export class AuthService {
     )
   }
 
-  signUp(email: string, password: string): Observable<LoginResponse> {
+  signUp(email: string, pw: string): Observable<LoginResponse> {
+    const password = this._hashString(pw);
     return this.http.post<LoginResponse>(`${this.authEndpoint}/signup`, {username: email, password}, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('signUp response', response);
-        this.userIsAuthenticated.set(!!response.uuid);
+        if (response.uuid) {
+          this.userIsAuthenticated.set(true);
+        }
       })
     )
+  }
+
+  private _hashString(input: string): string {
+    return Md5.hashStr(input)
   }
 }

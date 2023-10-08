@@ -32,11 +32,19 @@ export class LoginComponent {
     const authError = toSignal(this.store.select(selectAuthError));
     this.error = computed(() => {
       const errMessage = authError();
-      const loginErrExp = new RegExp(/[(404)(401)]/i)
+      const loginErrExp = new RegExp(/(404)|(401)/)
+      const badRequestExp = new RegExp(/(400)/);
       if (errMessage) {
         if (loginErrExp.test(errMessage)) {
-          return 'User not found or incorrect password'
+          return 'User not found or incorrect password';
         }
+        if (badRequestExp.test(errMessage)) {
+          if (this.isSignUp()) {
+            return 'Failed to create user, do you already have an account?';
+          }
+          return 'Bad request';
+        }
+        return errMessage;
       }
       return undefined;
     })
@@ -89,5 +97,6 @@ export class LoginComponent {
 
   toggleSignup(): void {
     this.isSignUp.set(!this.isSignUp())
+    this.store.dispatch(AuthActions.clearError());
   }
 }

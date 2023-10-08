@@ -3,7 +3,7 @@
     <span *ngIf="isSignUp()">Create an Account</span>
     <span *ngIf="!isSignUp()">Login to your Account</span>
   </div>
-  <form class="flex flex-col max-w-md bg-secondary-content p-6 gap-3 rounded-md shadow-lg" [formGroup]="formGroup" (submit)="submit()">
+  <form class="flex sm:w-1/2 flex-col max-w-md bg-secondary-content p-6 gap-3 rounded-md shadow-lg" [formGroup]="formGroup" (submit)="submit()">
     <div class="form-control">
       <label class="label">
         <span class="label-text">Email</span>

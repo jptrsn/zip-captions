@@ -40,15 +40,14 @@ export class AuthService {
     return null;
   }
 
-  async signUp(username: string, password: string): Promise<{ access_token: string; }> {
+  async signUp(username: string, password: string): Promise<{ uuid: string, username: string, id: string }> {
     const existingUser = await this.userService.findOne({username});
     if (existingUser) {
       throw new BadRequestException('Bad request');
     }
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await this.userService.createUser(username, hashedPassword);
-    const payload = { uuid: newUser.uuid, username: newUser.username};
-    return this._getAccessToken(payload);
+    return {uuid: newUser.uuid, username: newUser.username, id: newUser._id.toString() }
   }
 
   private async _getAccessToken(payload: any): Promise<{access_token: string;}> {

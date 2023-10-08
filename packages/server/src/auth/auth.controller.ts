@@ -18,11 +18,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('signup')
   async signup(@Body() signUpDto: SignInDto) {
-    const token = await this.authService.signUp(signUpDto.username.toLowerCase(), signUpDto.password);
-    return {
-      msg: 'user successfully registered',
-      token
-    }
+    return await this.authService.signUp(signUpDto.username.toLowerCase(), signUpDto.password);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -31,5 +31,6 @@ export const authReducer = createReducer(
   on(AuthActions.signUp, (state: AuthState) => ({...state, loading: true, error: undefined})),
   on(AuthActions.signUpSuccess, (state: AuthState, action: { data: LoginResponse }) => ({...state, loading: false, loggedIn: true, email: action.data.username, uuid: action.data.uuid })),
   on(AuthActions.signUpFailure, (state: AuthState, action: { error: string}) => ({...state, error: action.error, loading: false, loggedIn: false, email: undefined, uuid: undefined})),
+  on(AuthActions.clearError, (state: AuthState) => ({...state, error: undefined})),
 );
 

@@ -18,5 +18,7 @@ export const AuthActions = createActionGroup({
 
     'Validate': props<{email: string, password: string}>(),
     'Validate Response': props<{data: any}>(),
+
+    'Clear Error': emptyProps(),
   }
 });
