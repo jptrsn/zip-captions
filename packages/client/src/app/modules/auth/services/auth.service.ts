@@ -44,4 +44,13 @@ export class AuthService {
       })
     )
   }
+
+  signUp(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/signup`, {username: email, password}, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('signUp response', response);
+        this.userIsAuthenticated.set(!!response.uuid);
+      })
+    )
+  }
 }

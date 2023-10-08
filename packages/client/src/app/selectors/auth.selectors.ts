@@ -23,3 +23,8 @@ export const selectUserUuid = createSelector(
   selectAuthState,
   (state) => state.uuid
 )
+
+export const selectAuthError = createSelector(
+  selectAuthState,
+  (state) => state.error
+)
