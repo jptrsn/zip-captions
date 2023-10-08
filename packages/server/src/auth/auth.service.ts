@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { CacheService } from '../app/services/cache/cache.service';
+import { jwtConstants } from './constants';
 @Injectable()
 export class AuthService {
   constructor(
@@ -11,17 +12,17 @@ export class AuthService {
     private cache: CacheService,
   ) {}
 
-  async signIn(username: string, password: string): Promise<{uuid: string, username: string, access_token: string}> {
+  async signIn(username: string, password: string): Promise<{uuid: string; username: string; access_token: string; expiry: number;}> {
     const user = await this.validateUser(username, password);
-    const accessToken = await this.jwtService.signAsync(user);
-    return { ...user, access_token: accessToken };
+    const accessToken = await this._getAccessToken(user);
+    return { ...user, ...accessToken };
   }
 
-  async getUser(username: string): Promise<{uuid: string, username: string, access_token: string}> {
+  async getUser(username: string): Promise<{uuid: string, username: string, access_token: string; expiry: number}> {
     const userDoc = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
     const rtn = {uuid: userDoc.uuid, username: userDoc.username};
-    const accessToken = await this.jwtService.signAsync(rtn);
-    return { ...rtn, access_token: accessToken };
+    const token = await this._getAccessToken(rtn);
+    return { ...rtn, ...token };
   }
 
 
@@ -40,7 +41,7 @@ export class AuthService {
     return null;
   }
 
-  async signUp(username: string, password: string): Promise<{ access_token: string }> {
+  async signUp(username: string, password: string): Promise<{ access_token: string; expiry: number }> {
     const existingUser = await this.userService.findOne({username});
     if (existingUser) {
       throw new BadRequestException('Bad request');
@@ -48,7 +49,12 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await this.userService.createUser(username, hashedPassword);
     const payload = { uuid: newUser.uuid, username: newUser.username};
+    return this._getAccessToken(payload);
+  }
+
+  private async _getAccessToken(payload: any): Promise<{access_token: string; expiry: number}> {
     const accessToken = await this.jwtService.signAsync(payload);
-    return { access_token: accessToken }
+    const expiry = Date.now() + jwtConstants.expires;
+    return { access_token: accessToken, expiry }
   }
 }
