@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 
 @Injectable({
@@ -8,12 +8,18 @@ import { LoginResponse } from '../../../reducers/auth.reducer';
 })
 export class AuthService {
 
-  private apiUrl: string;
-  constructor(private http: HttpClient) { 
-    this.apiUrl = process.env['ZIP_AUTH_URL'] || 'http://localhost:3000/v1/auth';
+  private authEndpoint: string;
+  constructor(private http: HttpClient) {
+    const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost'
+    const apiPort = process.env['ZIP_AUTH_API_PORT'] || '3000';
+    const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
+    const authRoute = process.env['ZIP_AUTH_API_ROUTE'] || 'auth';
+    this.authEndpoint = `${baseUrl}:${apiPort}/${apiVersion}/${authRoute}`;
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { username: email, password })
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/login`, { username: email, password }).pipe(
+      tap((response) => console.log('login response', response))
+    )
   }
 }
