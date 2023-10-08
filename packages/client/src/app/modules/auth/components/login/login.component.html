@@ -1,0 +1,28 @@
+<div class="flex flex-col basis-full items-center justify-center">
+  <form class="flex flex-col max-w-md bg-secondary-content p-8 gap-6 rounded-md shadow-lg" [formGroup]="formGroup" (submit)="login()">
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Email</span>
+      </label>
+      <input type="text" class="input input-bordered input-lg" formControlName="email">
+      <label class="label">
+        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched">Required</span>
+        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('email') && formGroup.touched">Invalid Email</span>
+      </label>
+    </div>
+  
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Password</span>
+      </label>
+      <input type="password" class="input input-bordered input-lg" formControlName="password">
+      <label class="label">
+        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['password'].hasError('required') && formGroup.touched">Required</span>
+      </label>
+    </div>
+  
+    <div class="items-end">
+      <button class="btn btn-primary" type="submit">Login</button>
+    </div>
+  </form>
+</div>
