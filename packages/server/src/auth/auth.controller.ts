@@ -32,6 +32,13 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthenticatedGuard)
+  @Get('session')
+  async checkSession(@Request() req) {
+    return req.session.passport.user;
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('logout')
   @UseGuards(AuthenticatedGuard)
   logout(@Request() req): { message: string } {

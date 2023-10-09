@@ -23,6 +23,10 @@ export class AuthService {
     return {uuid: userDoc.uuid, username: userDoc.username};
   }
 
+  async getUserById(id: string, username?: string): Promise<{uuid: string, username: string}> {
+    const userDoc = await this.cache.wrap(`${username}_user`, () => this.userService.findById(id))
+    return {uuid: userDoc.uuid, username: userDoc.username};
+  }
 
   async validateUser(username: string, password: string): Promise<{uuid: string, username: string, id: string}> {
     const user = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
@@ -50,8 +54,8 @@ export class AuthService {
     return {uuid: newUser.uuid, username: newUser.username, id: newUser._id.toString() }
   }
 
-  private async _getAccessToken(payload: any): Promise<{access_token: string;}> {
-    const accessToken = await this.jwtService.signAsync(payload, { expiresIn: `${jwtConstants.expires * 1000}` });
+  private async _getAccessToken(uuid: string, email: string): Promise<{access_token: string;}> {
+    const accessToken = await this.jwtService.signAsync({ sub: uuid, email }, { expiresIn: `${jwtConstants.expires * 1000}` });
     return { access_token: accessToken }
   }
 }
