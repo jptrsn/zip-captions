@@ -1,41 +1,6 @@
-<div class="flex flex-col basis-full items-center justify-center gap-3">
+<div class="flex flex-col basis-full items-center justify-center gap-6">
   <div class="text-xl">
-    <span *ngIf="isSignUp()">Create an Account</span>
-    <span *ngIf="!isSignUp()">Login to your Account</span>
+    Login to Zip Captions
   </div>
-  <form class="flex sm:w-1/2 flex-col max-w-md bg-secondary-content p-6 gap-3 rounded-md shadow-lg" [formGroup]="formGroup" (submit)="submit()">
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text">Email</span>
-      </label>
-      <input type="text" class="input input-bordered input-lg" formControlName="email">
-      <label class="label no-height">
-        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched">Required</span>
-        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('email') && formGroup.touched">Invalid Email</span>
-      </label>
-    </div>
-  
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text">Password</span>
-      </label>
-      <input type="password" class="input input-bordered input-lg" formControlName="password">
-      <label class="label no-height">
-        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['password'].hasError('required') && formGroup.touched">Required</span>
-        <div class="label-alt-text text-error text-xs" *ngIf="error() as msg">{{msg}}</div>
-      </label>
-    </div>
-  
-    <div class="flex flex-row basis-full items-end justify-end gap-3">
-      <button class="btn btn-primary" type="submit">
-        <span *ngIf="isSignUp()">Sign Up</span>
-        <span *ngIf="!isSignUp()">Login</span>
-      </button>
-      <!-- <button class="btn btn-secondary" type="button" (click)="validate()">Validate</button> -->
-    </div>
-  </form>
-  <div class="text-xs italic text-center cursor-pointer" (click)="toggleSignup()">
-    <a *ngIf="!isSignUp()">Don't have an account? Click here to create one.</a>
-    <a *ngIf="isSignUp()">Already have an account? Click here to log in.</a>
-  </div>
+  <app-email-login></app-email-login>
 </div>

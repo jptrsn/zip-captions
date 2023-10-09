@@ -11,13 +11,16 @@ import { AuthEffects } from '../../effects/auth.effects';
 import { StoreModule } from '@ngrx/store';
 import { authReducer } from '../../reducers/auth.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
+import { EmailLoginComponent } from './components/email-login/email-login.component';
+import { NgIconsModule } from '@ng-icons/core';
 
 @NgModule({
-  declarations: [LoginComponent, UserHomeComponent],
+  declarations: [LoginComponent, UserHomeComponent, EmailLoginComponent],
   imports: [
     CommonModule,
     AuthRoutingModule,
     SharedUiModule,
+    NgIconsModule,
     ReactiveFormsModule,
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([AuthEffects]),
