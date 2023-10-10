@@ -1,5 +1,17 @@
 # Releases Notes
 
+## v0.0.12
+_(2023/10/04)_
+
+### Features
+* Recognized text font setting
+  * Available in settings, selected font will be used to render results
+  * Fonts include `Atkinson Hyperlegible (default)`, `Poppins`, `Lexend`, `Raleway`, `Comic Neue`, `Noto Sans`, `Cousine` and `Consolas`
+
+### Improvements
+* Changed support link from Discord to new discussion forum
+
+---
 ## v0.0.11
 _(2023/09/28)_
 
