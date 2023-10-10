@@ -4,14 +4,6 @@
     <div class="loading loading-spinner"></div>
   </button>
 </ng-template>
-<!-- <button class="btn btn-lg btn-secondary w-64" [disabled]="!loaded() || error() || disabled()" (click)="prompt()">
-  <span *ngIf="loaded(); else spinner">
-      Sign in With Google
-  </span>
-  <ng-template #spinner>
-    <div class="loading loading-spinner loading-lg"></div>
-  </ng-template>
-</button> -->
 
 <div class="toast toast-end bottom-12" *ngIf="error() as err">
   <div class="alert alert-error h-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden flex flex-row basis-full items-start justify-between">

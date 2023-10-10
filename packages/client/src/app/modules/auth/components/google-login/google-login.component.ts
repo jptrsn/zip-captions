@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, NgZone, OnInit, Renderer2, Signal, ViewChild, WritableSignal, effect, signal } from '@angular/core';
-import { SignInTokenResponse } from '../../models/google-auth.model';
+import { SignInTokenResponse } from 'shared-ui';
 import { AppState } from '../../../../models/app.model';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../actions/auth.actions';
@@ -28,6 +28,7 @@ export class GoogleLoginComponent implements OnInit {
       effect(() => {
         if (authError()) {
           this.error.set(authError())
+          this.disabled.set(false);
         }
       }, { allowSignalWrites: true })
   }
@@ -40,6 +41,7 @@ export class GoogleLoginComponent implements OnInit {
     google.accounts.id.initialize({
       client_id: '374403697962-n3m6fa49ojjub0urrid4ojotff4hhdf2.apps.googleusercontent.com',
       callback: (resp: SignInTokenResponse) => this.onSignIn(resp),
+      click_listener: () => this.zone.run(() => this.disabled.set(true)),
       context: 'use',
       cancel_on_tap_outside: false,
       ux_mode: 'popup',
@@ -52,7 +54,6 @@ export class GoogleLoginComponent implements OnInit {
 
   prompt(): void {
     google.accounts.id.prompt((notification: any) => {
-      console.log('prompt notification', notification);
       this.disabled.set((notification.g === 'display'));
       console.log('isNotDisplayed', notification.isNotDisplayed());
       console.log('isSkippedMoment', notification.isSkippedMoment());

@@ -3,6 +3,8 @@ import { LocalAuthGuard } from '../guards/local.auth.guard';
 import { SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
+import { SignInTokenResponse } from 'shared-ui';
+import { GoogleTokenGuard } from '../guards/google-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -47,8 +49,13 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('redirect')
-  redirect(@Request() req: any) {
-    console.log('redirect!', req);
+  @Post('loginWithGoogle')
+  @UseGuards(GoogleTokenGuard)
+  loginWithGoogle(@Request() req: any, @Body() body: { creds: SignInTokenResponse }) {
+    console.log('loginWithGoogle', body.creds);
+    if (req.session.user) {
+      console.log('loginWithGoogle with a session cookie!', req.session.user);
+    }
+    return this.authService.connectGoogle(body.creds);
   }
 }

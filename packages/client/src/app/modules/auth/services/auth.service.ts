@@ -3,7 +3,7 @@ import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 import { Md5 } from 'ts-md5';
-import { SignInTokenResponse } from '../models/google-auth.model';
+import { SignInTokenResponse } from 'shared-ui';
 
 @Injectable({
   providedIn: 'root'

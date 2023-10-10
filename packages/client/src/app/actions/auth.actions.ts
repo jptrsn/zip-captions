@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { LoginResponse } from '../reducers/auth.reducer';
-import { SignInTokenResponse } from '../modules/auth/models/google-auth.model';
+import { SignInTokenResponse } from 'shared-ui';
 
 export const AuthActions = createActionGroup({
   source: 'Auth',

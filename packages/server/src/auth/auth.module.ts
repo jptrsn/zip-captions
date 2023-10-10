@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { SessionSerializer } from '../app/serializer/session.serializer';
+import { GoogleTokenStrategy } from '../strategies/google-token.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SessionSerializer } from '../app/serializer/session.serializer';
   providers: [
     AuthService,
     LocalStrategy,
+    GoogleTokenStrategy,
     CacheService,
     SessionSerializer,
   ],
