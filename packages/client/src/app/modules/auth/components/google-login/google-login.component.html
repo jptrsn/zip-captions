@@ -1,29 +1,18 @@
-<!-- <button class="btn btn-lg btn-secondary" (click)="consentModal.showModal()">Sign in with Google</button>
-<dialog #consentModal class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box bg-secondary-content relative">
-    <button class="btn btn-circle absolute top-3 right-3" (click)="consentModal.close()">
+<div id="g_signin" style="color-scheme: light;"></div>
+<!-- <button class="btn btn-lg btn-secondary w-64" [disabled]="!loaded() || error() || disabled()" (click)="prompt()">
+  <span *ngIf="loaded(); else spinner">
+      Sign in With Google
+  </span>
+  <ng-template #spinner>
+    <div class="loading loading-spinner loading-lg"></div>
+  </ng-template>
+</button> -->
+
+<div class="toast toast-end bottom-12" *ngIf="error() as err">
+  <div class="alert alert-error h-auto max-w-full">
+    Google Sign-in failed: {{err}}
+    <button class="btn btn-circle btn-sm" (click)="clearError()">
       <ng-icon name="heroXMark"></ng-icon>
     </button>
-    <div class="flex flex-col p-6 gap-3">
-      <div class="text-xl">
-        By signing in with Google, ZipCaptions can
-      </div>
-      <ul>
-        <li>View your username</li>
-        <li>View your full name</li>
-      </ul>
-      <div>
-        <a class="text-xs link" href="https://policies.google.com/" target="_blank">View Google Privacy Policy</a>
-      </div>
-      <div class="flex flex-row basis-full items-end justify-end gap-3">
-        <button class="btn btn-secondary" (click)="consentModal.close()">Cancel</button>
-        <button class="btn btn-primary" type="submit">
-          Link
-        </button>
-      </div>
-    </div>
   </div>
-</dialog> -->
-<!-- <button *ngIf="loaded()" id="g_signin" class="btn btn-lg btn-secondary" (click)="prompt()">Sign in With Google</button> -->
-
-<div #signInButton></div>
+</div>
