@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, Renderer2, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild, WritableSignal, signal } from '@angular/core';
 
 declare let google: any;
 
@@ -9,7 +9,7 @@ declare let google: any;
   styleUrls: ['./google-login.component.scss'],
 })
 export class GoogleLoginComponent implements OnInit {
-
+  @ViewChild('signInButton', {read: ElementRef}) button!: ElementRef<HTMLDivElement>;
   loaded: WritableSignal<boolean> = signal(false);
   private script!: HTMLScriptElement;
   constructor(
@@ -25,11 +25,16 @@ export class GoogleLoginComponent implements OnInit {
     console.log('on lib load', google)
     google.accounts.id.initialize({
       client_id: '374403697962-n3m6fa49ojjub0urrid4ojotff4hhdf2.apps.googleusercontent.com',
-      callback: this.onSignIn,
-      auto_select: true,
+      native_callback: this.onSignIn,
+      context: 'use',
       cancel_on_tap_outside: true,
-      prompt_parent_id: 'g_signin',
       ux_mode: 'popup',
+      allowed_parent_origin: ['https://*.zipcaptions.app', 'http://localhost:4200'],
+      itp_support: true,
+      use_fedcm_for_prompt: true
+    })
+    google.accounts.id.renderButton(this.button.nativeElement, {
+      theme: 'filled_blue', size: 'large', width: '250', type: 'standard'
     })
     this.loaded.set(true);
   }
@@ -41,8 +46,7 @@ export class GoogleLoginComponent implements OnInit {
   }
 
   onSignIn(googleUser:any): void {
-    const profile = googleUser.getBasicProfile();
-    console.log('onSignIn', profile);
+    console.log('onSignIn', googleUser);
   }
 
   private _loadClientLib(): HTMLScriptElement {
