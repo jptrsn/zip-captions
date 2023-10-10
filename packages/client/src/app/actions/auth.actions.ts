@@ -1,5 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { LoginResponse } from '../reducers/auth.reducer';
+import { SignInTokenResponse } from '../modules/auth/models/google-auth.model';
 
 export const AuthActions = createActionGroup({
   source: 'Auth',
@@ -11,6 +12,10 @@ export const AuthActions = createActionGroup({
     'Logout': emptyProps(),
     'Logout Success': emptyProps(),
     'Logout Failure': props<{ error: string }>(),
+
+    'Login with Google': props<{token: SignInTokenResponse}>(),
+    'Login with Google Success': props<{ data: LoginResponse }>(),
+    'Login with Google Failure': props<{ error: string }>(),
 
     'Sign Up': props<{email: string, password: string}>(),
     'Sign Up Success': props<{ data: LoginResponse}>(),

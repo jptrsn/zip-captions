@@ -3,13 +3,14 @@ import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 import { Md5 } from 'ts-md5';
+import { SignInTokenResponse } from '../models/google-auth.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private userSessionSet: WritableSignal<boolean> = signal(false);
+  private userSessionExists: WritableSignal<boolean> = signal(false);
 
   private authEndpoint: string;
   constructor(private http: HttpClient) {
@@ -26,7 +27,7 @@ export class AuthService {
       tap((response) => {
         console.log('login response', response)
         if (response.uuid) {
-          this.userSessionSet.set(true);
+          this.userSessionExists.set(true);
         }
       })
     )
@@ -41,17 +42,17 @@ export class AuthService {
 
   // TODO: Refactor to proper - user has session, not auth
   userIsAuthenticated(): boolean | Observable<boolean> {
-    if (this.userSessionSet()) {
+    if (this.userSessionExists()) {
       return true;
     }
-    return this._checkSession().pipe(tap((hasSession) => this.userSessionSet.set(hasSession)));
+    return this._checkSession().pipe(tap((hasSession) => this.userSessionExists.set(hasSession)));
   }
 
   logout(): Observable<{message: string}> {
     return this.http.get<{message: string}>(`${this.authEndpoint}/logout`, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('logout response', response)
-        this.userSessionSet.set(false);
+        this.userSessionExists.set(false);
       })
     )
   }
@@ -62,7 +63,18 @@ export class AuthService {
       tap((response) => {
         console.log('signUp response', response);
         if (response.uuid) {
-          this.userSessionSet.set(true);
+          this.userSessionExists.set(true);
+        }
+      })
+    )
+  }
+
+  loginWithGoogle(creds: SignInTokenResponse): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }).pipe(
+      tap((response) => {
+        console.log('loginWithGoogle response', response);
+        if (response.uuid) {
+          this.userSessionExists.set(true);
         }
       })
     )

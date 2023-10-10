@@ -1,5 +1,9 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, Inject, NgZone, OnInit, Renderer2, ViewChild, WritableSignal, signal } from '@angular/core';
+import { SignInTokenResponse } from '../../models/google-auth.model';
+import { AppState } from '../../../../models/app.model';
+import { Store } from '@ngrx/store';
+import { AuthActions } from 'packages/client/src/app/actions/auth.actions';
 
 declare let google: any;
 
@@ -14,7 +18,9 @@ export class GoogleLoginComponent implements OnInit {
   error: WritableSignal<string | undefined> = signal(undefined);
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2) {
+    private renderer: Renderer2,
+    private zone: NgZone,
+    private store: Store<AppState>) {
   }
 
   ngOnInit(): void {
@@ -22,10 +28,9 @@ export class GoogleLoginComponent implements OnInit {
   }
 
   onLibLoad(): void {
-    console.log('onLibLoad', google);
     google.accounts.id.initialize({
       client_id: '374403697962-n3m6fa49ojjub0urrid4ojotff4hhdf2.apps.googleusercontent.com',
-      callback: this.onSignIn,
+      callback: (resp: SignInTokenResponse) => this.onSignIn(resp),
       context: 'use',
       cancel_on_tap_outside: false,
       ux_mode: 'popup',
@@ -37,7 +42,6 @@ export class GoogleLoginComponent implements OnInit {
   }
 
   prompt(): void {
-    this.disabled.set(true);
     google.accounts.id.prompt((notification: any) => {
       console.log('prompt notification', notification);
       this.disabled.set((notification.g === 'display'));
@@ -61,8 +65,10 @@ export class GoogleLoginComponent implements OnInit {
     })
   }
 
-  onSignIn(googleUser:any): void {
-    console.log('onSignIn', googleUser);
+  onSignIn(token: SignInTokenResponse): void {
+    this.zone.run(() => this.disabled.set(true));
+    console.log('onSignIn', token);
+    this.store.dispatch(AuthActions.loginWithGoogle({ token }))
   }
 
   clearError(): void {
