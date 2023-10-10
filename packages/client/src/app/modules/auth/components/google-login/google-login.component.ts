@@ -1,9 +1,11 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, Inject, NgZone, OnInit, Renderer2, ViewChild, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, Inject, NgZone, OnInit, Renderer2, Signal, ViewChild, WritableSignal, effect, signal } from '@angular/core';
 import { SignInTokenResponse } from '../../models/google-auth.model';
 import { AppState } from '../../../../models/app.model';
 import { Store } from '@ngrx/store';
-import { AuthActions } from 'packages/client/src/app/actions/auth.actions';
+import { AuthActions } from '../../../../actions/auth.actions';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { selectAuthError } from '../../../../selectors/auth.selectors';
 
 declare let google: any;
 
@@ -21,6 +23,13 @@ export class GoogleLoginComponent implements OnInit {
     private renderer: Renderer2,
     private zone: NgZone,
     private store: Store<AppState>) {
+
+      const authError: Signal<string | undefined> = toSignal(this.store.select(selectAuthError));
+      effect(() => {
+        if (authError()) {
+          this.error.set(authError())
+        }
+      }, { allowSignalWrites: true })
   }
 
   ngOnInit(): void {

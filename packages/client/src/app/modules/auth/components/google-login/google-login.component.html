@@ -14,8 +14,8 @@
 </button> -->
 
 <div class="toast toast-end bottom-12" *ngIf="error() as err">
-  <div class="alert alert-error h-auto max-w-full">
-    Google Sign-in failed: {{err}}
+  <div class="alert alert-error h-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden flex flex-row basis-full items-start justify-between">
+    <div class="text-sm line-clamp-4 whitespace-pre-wrap">Google Sign-in failed: {{err}}</div>
     <button class="btn btn-circle btn-sm" (click)="clearError()">
       <ng-icon name="heroXMark"></ng-icon>
     </button>
