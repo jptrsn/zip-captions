@@ -41,7 +41,8 @@ export class GoogleLoginComponent implements OnInit {
   }
 
   onSignIn(googleUser:any): void {
-    console.log('onSignIn', googleUser);
+    const profile = googleUser.getBasicProfile();
+    console.log('onSignIn', profile);
   }
 
   private _loadClientLib(): HTMLScriptElement {
