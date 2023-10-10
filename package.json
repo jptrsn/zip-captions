@@ -50,6 +50,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/express-session": "^1.17.8",
+    "@types/google.accounts": "^0.0.12",
     "angular-animations": "^0.11.0",
     "axios": "^1.0.0",
     "bcrypt": "^5.1.1",

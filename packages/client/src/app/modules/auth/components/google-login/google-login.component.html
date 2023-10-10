@@ -1,4 +1,4 @@
-<button class="btn btn-lg btn-secondary" (click)="consentModal.showModal()">Sign in with Google</button>
+<!-- <button class="btn btn-lg btn-secondary" (click)="consentModal.showModal()">Sign in with Google</button>
 <dialog #consentModal class="modal modal-bottom sm:modal-middle">
   <div class="modal-box bg-secondary-content relative">
     <button class="btn btn-circle absolute top-3 right-3" (click)="consentModal.close()">
@@ -23,4 +23,5 @@
       </div>
     </div>
   </div>
-</dialog>
+</dialog> -->
+<button *ngIf="loaded()" id="g_signin" class="btn btn-lg btn-secondary" (click)="prompt()">Sign in With Google</button>

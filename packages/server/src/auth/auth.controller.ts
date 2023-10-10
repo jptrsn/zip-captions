@@ -45,4 +45,10 @@ export class AuthController {
     req.session.destroy();
     return { message: 'The user session has ended' };
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('redirect')
+  redirect(@Request() req: any) {
+    console.log('redirect!', req);
+  }
 }
