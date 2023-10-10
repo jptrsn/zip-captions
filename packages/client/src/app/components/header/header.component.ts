@@ -78,7 +78,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'forum', href: 'https://discuss.zipcaptions.app' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
-      ]}
+      ]},
+      {label: 'auth', routerOutlet: '/auth' }
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 
