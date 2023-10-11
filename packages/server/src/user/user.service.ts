@@ -37,9 +37,10 @@ export class UserService {
         uuid: v4(),
         googleId: token.sub
       });
+    } else if (user.googleId === token.sub) {
+      return user;
     } else {
-      user.googleId = token.sub;
-      
+      user.googleId = token.sub;  
     }
     await user.save();
     return user;

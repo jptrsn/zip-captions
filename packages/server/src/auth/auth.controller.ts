@@ -51,11 +51,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('loginWithGoogle')
   @UseGuards(GoogleTokenGuard)
-  loginWithGoogle(@Request() req: any, @Body() body: { creds: SignInTokenResponse }) {
-    console.log('loginWithGoogle', body.creds);
-    if (req.session.user) {
-      console.log('loginWithGoogle with a session cookie!', req.session.user);
-    }
+  loginWithGoogle(@Body() body: { creds: SignInTokenResponse }) {
     return this.authService.connectGoogle(body.creds);
   }
 }

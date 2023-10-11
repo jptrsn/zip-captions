@@ -70,7 +70,7 @@ export class AuthService {
   }
 
   loginWithGoogle(creds: SignInTokenResponse): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }).pipe(
+    return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('loginWithGoogle response', response);
         if (response.uuid) {

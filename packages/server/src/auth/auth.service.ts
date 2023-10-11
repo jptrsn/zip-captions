@@ -15,6 +15,7 @@ export class AuthService {
   ) {}
 
   async signIn(username: string, password: string): Promise<{uuid: string; username: string;}> {
+    console.log('signin', username)
     const user = await this.validateUser(username, password);
     return { uuid: user.uuid, username: user.username };
   }
@@ -64,7 +65,11 @@ export class AuthService {
     if (!decoded) {
       throw new BadRequestException('Invalid Token')
     }
-    const user = await this.userService.addGoogleUser(decoded);
+    console.log('addGoogleUser', decoded)
+    const user = await this.cache.wrap(
+      `google_token_${decoded.sub}`,
+      () => this.userService.addGoogleUser(decoded)
+    )
     return { uuid: user.uuid, username: user.username };
   }
 
