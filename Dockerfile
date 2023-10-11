@@ -19,17 +19,25 @@ ENV ZIP_PEER_SERVER=peer.fartyparts.work
 ENV ZIP_PEER_PORT=443
 RUN npm run build:client
 
-FROM dev as staging_build_server
+FROM dev as staging_build_signal
 ENV ALLOWED_ORIGINS=https://fartyparts.work
 RUN npm run build:signal
+
+FROM dev as staging_build_server
+ENV ALLOW_ORIGINS=https://next.zipcaptions.app
+RUN npm run build:server
 
 FROM nginx:alpine as staging_client
 COPY --from=staging_build_client /usr/src/app/docs /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80 443
 
-FROM staging_build_server as staging_server
+FROM staging_build_signal as staging_signal
 CMD ["node", "./dist/packages/signal/main.js"]
+EXPOSE 3000 9000
+
+FROM staging_build_server as staging_server
+CMD ["node", "./dist/packages/server/main.js"]
 EXPOSE 3000 9000
 
 FROM dev as prod_build_client
@@ -44,10 +52,18 @@ COPY --from=staging_build_client /usr/src/app/docs /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
-FROM dev as prod_build_server
+FROM dev as prod_build_signal
 ENV ALLOWED_ORIGINS=https://zipcaptions.app
 RUN npm run build:signal
 
-FROM staging_build_server as prod_server
+FROM staging_build_signal as prod_signal
 CMD ["node", "./dist/packages/signal/main.js"]
+EXPOSE 3000 9000
+
+FROM dev as prod_build_server
+ENV ALLOWED_ORIGINS=https://zipcaptions.app
+RUN npm run build:server
+
+FROM prod_build_server as prod_server
+CMD ["node", "./dist/packages/server/main.js"]
 EXPOSE 3000 9000
