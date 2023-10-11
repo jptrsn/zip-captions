@@ -15,7 +15,6 @@ export class AuthService {
   ) {}
 
   async signIn(username: string, password: string): Promise<{uuid: string; username: string;}> {
-    console.log('signin', username)
     const user = await this.validateUser(username, password);
     return { uuid: user.uuid, username: user.username };
   }
@@ -34,11 +33,6 @@ export class AuthService {
     const user = await this.cache.wrap(`${username}_user`, () => this.userService.findOne({username}))
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-    if (user.googleId) {
-      console.log('Google user')
-      console.log(user);
-      throw new Error('GOOGLE USER!')
     }
     const passwordValid = await bcrypt.compare(password, user.hash);
     if (passwordValid) {

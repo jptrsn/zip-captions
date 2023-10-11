@@ -85,8 +85,8 @@ export class AuthService {
   }
 
   private _checkSession(): Observable<boolean> {
-    return this.http.get<LoginResponse>(`${this.authEndpoint}/session`, { withCredentials: true }).pipe(
-      map((response) => {
+    return this.http.get<LoginResponse>(`${this.authEndpoint}/session`, { withCredentials: true, headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }).pipe(
+      map(() => {
         // TODO: dispatch state if not set already
         return true;
       }),

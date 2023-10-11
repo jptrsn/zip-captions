@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { SignInTokenResponse } from 'shared-ui';
 import { GoogleTokenGuard } from '../guards/google-token.guard';
+import { CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('auth')
 export class AuthController {
@@ -36,7 +37,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthenticatedGuard)
   @Get('session')
+  @CacheTTL(1)
   async checkSession(@Request() req) {
+    console.log('check session', req.session)
     return req.session.passport.user;
   }
 
@@ -44,6 +47,7 @@ export class AuthController {
   @Get('logout')
   @UseGuards(AuthenticatedGuard)
   logout(@Request() req): { message: string } {
+    console.log('logout')
     req.session.destroy();
     return { message: 'The user session has ended' };
   }
