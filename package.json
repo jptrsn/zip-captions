@@ -12,7 +12,9 @@
     "build:client": "nx build --project=client --configuration=production",
     "build:signal": "nx build --project=signal",
     "build:server": "nx build --project=server",
-    "act": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml"
+    "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
+    "act:signal": "act --secret-file .secret.env --workflows .github/workflows/build-signal.yml",
+    "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml"
   },
   "private": true,
   "dependencies": {
