@@ -1,0 +1,21 @@
+name: Push to GitLab Mirror
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  push_to_mirror:
+    name: Push to GitLab Mirror
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Push to GitLab
+        uses: yesolutions/mirror-action@master
+        with:
+          REMOTE: 'https://gitlab.com/educoder/zip-captions.git'
+          GIT_USERNAME: ${{ secrets.GITLAB_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}

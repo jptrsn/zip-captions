@@ -14,7 +14,8 @@
     "build:server": "nx build --project=server",
     "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
     "act:signal": "act --secret-file .secret.env --workflows .github/workflows/build-signal.yml",
-    "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml"
+    "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml",
+    "act:mirror": "act --secret-file .secret.env --workflows .github/workflows/push-mirror.yml"
   },
   "private": true,
   "dependencies": {
