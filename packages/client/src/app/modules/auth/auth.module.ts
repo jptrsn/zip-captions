@@ -13,9 +13,17 @@ import { authReducer } from '../../reducers/auth.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
 import { EmailLoginComponent } from './components/email-login/email-login.component';
 import { NgIconsModule } from '@ng-icons/core';
+import { GoogleLoginComponent } from './components/google-login/google-login.component';
+import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-login.component';
 
 @NgModule({
-  declarations: [LoginComponent, UserHomeComponent, EmailLoginComponent],
+  declarations: [
+    LoginComponent,
+    UserHomeComponent,
+    EmailLoginComponent,
+    GoogleLoginComponent,
+    MicrosoftLoginComponent,
+  ],
   imports: [
     CommonModule,
     AuthRoutingModule,

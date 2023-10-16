@@ -59,4 +59,16 @@ export class AuthEffects {
       )
     )
   )
+
+  loginWithGoogle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginWithGoogle),
+      switchMap(({ token }) => this.authService.loginWithGoogle(token)
+        .pipe(
+          map((data) => AuthActions.loginWithGoogleSuccess({ data })),
+          catchError((err: any) => of(AuthActions.loginWithGoogleFailure({error: err.message})))
+        )
+      )
+    )
+  )
 }

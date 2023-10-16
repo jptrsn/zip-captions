@@ -1,4 +1,4 @@
-name: Docker Image CI/CD Staging Server
+name: Docker Image CI/CD Signal Server
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     branches: 
       - 'develop'
     paths:
-      - 'packages/server/**/*'
+      - 'packages/signal/**/*'
   
 jobs:
   push_to_registry:
@@ -26,12 +26,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: educoder/zip-captions-server
+          images: educoder/zip-captions-signal
 
       - name: Build and push client Docker image
         uses: docker/build-push-action@v4
         with:
-          target: staging_server
+          target: staging_signal
           context: .
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request'}}

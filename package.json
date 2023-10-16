@@ -11,7 +11,11 @@
     "build:all": "nx run-many -t build -p client,signal --parallel",
     "build:client": "nx build --project=client --configuration=production",
     "build:signal": "nx build --project=signal",
-    "act": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml"
+    "build:server": "nx build --project=server",
+    "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
+    "act:signal": "act --secret-file .secret.env --workflows .github/workflows/build-signal.yml",
+    "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml",
+    "act:mirror": "act --secret-file .secret.env --workflows .github/workflows/push-mirror.yml"
   },
   "private": true,
   "dependencies": {
@@ -50,6 +54,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/express-session": "^1.17.8",
+    "@types/google.accounts": "^0.0.12",
     "angular-animations": "^0.11.0",
     "axios": "^1.0.0",
     "bcrypt": "^5.1.1",

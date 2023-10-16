@@ -21,11 +21,15 @@ export class User {
   username: string;
 
   @Prop({
-    type: String,
-    required: true
+    type: String
   })
   hash: string;
-  
+
+  @Prop({
+    type: String
+  })
+  googleId: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
