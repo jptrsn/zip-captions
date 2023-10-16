@@ -1,4 +1,4 @@
-name: Docker Image CI/CD Staging Server
+name: Docker Image CI/CD Signal Server
 
 on:
   workflow_dispatch:
