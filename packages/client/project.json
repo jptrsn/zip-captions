@@ -59,20 +59,12 @@
           "outputHashing": "all"
         },
         "staging": {
-          "optimization": true,
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "750kb",
-              "maximumError": "1.5mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
-            }
-          ],
-          "outputHashing": "all"
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
         },
         "development": {
           "buildOptimizer": false,
