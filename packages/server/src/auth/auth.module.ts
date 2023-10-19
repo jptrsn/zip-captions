@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { SessionSerializer } from '../app/serializer/session.serializer';
 import { CacheService } from '../app/services/cache/cache.service';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
-import { SessionSerializer } from '../app/serializer/session.serializer';
-import { GoogleTokenStrategy } from '../strategies/google-token.strategy';
 
 @Module({
   imports: [
@@ -24,7 +23,6 @@ import { GoogleTokenStrategy } from '../strategies/google-token.strategy';
   providers: [
     AuthService,
     LocalStrategy,
-    GoogleTokenStrategy,
     CacheService,
     SessionSerializer,
   ],

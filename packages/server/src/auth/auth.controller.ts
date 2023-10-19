@@ -39,7 +39,6 @@ export class AuthController {
   @Get('session')
   @CacheTTL(1)
   async checkSession(@Request() req) {
-    console.log('check session', req.session)
     return req.session.passport.user;
   }
 
@@ -47,7 +46,6 @@ export class AuthController {
   @Get('logout')
   @UseGuards(AuthenticatedGuard)
   logout(@Request() req): { message: string } {
-    console.log('logout')
     req.session.destroy();
     return { message: 'The user session has ended' };
   }

@@ -1,6 +1,6 @@
 import { Component, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../actions/auth.actions';
@@ -15,7 +15,8 @@ import { selectAuthError, selectUserLoggedIn } from '../../../../selectors/auth.
 export class EmailLoginComponent {
   public formGroup: FormGroup<{
     email: FormControl<string | null>, 
-    password: FormControl<string | null>
+    password: FormControl<string | null>,
+    verify: FormControl<string | null>
   }>;
 
   public isSignUp: WritableSignal<boolean> = signal(false);
@@ -26,7 +27,8 @@ export class EmailLoginComponent {
               private router: Router) {
     this.formGroup = this.fb.group({
       email: this.fb.control<string>('', [Validators.required, Validators.email]),
-      password: this.fb.control<string>('', [Validators.required])
+      password: this.fb.control<string>('', [Validators.required]),
+      verify: this.fb.control<string>('', [(ctrl) => this._validatePasswordsMatch(ctrl)])
     });
 
     const authError = toSignal(this.store.select(selectAuthError));
@@ -55,6 +57,18 @@ export class EmailLoginComponent {
         this.router.navigate(['auth', 'user']);
       }
     });
+
+    effect(() => {
+      if (this.isSignUp()) {
+        if (this.formGroup.controls['verify'].disabled) {
+          this.formGroup.controls['verify'].enable();
+        }
+      } else {
+        if (this.formGroup.controls['verify'].enabled) {
+          this.formGroup.controls['verify'].disable();
+        }
+      }
+    })
   }
 
   submit(): void {
@@ -98,5 +112,12 @@ export class EmailLoginComponent {
   toggleSignup(): void {
     this.isSignUp.set(!this.isSignUp())
     this.store.dispatch(AuthActions.clearError());
+  }
+
+  private _validatePasswordsMatch(control: AbstractControl): ValidationErrors | null {
+    if (control.value && control.value !== this.formGroup.controls['password'].value) {
+      return { invalid: true };
+    }
+    return null;
   }
 }

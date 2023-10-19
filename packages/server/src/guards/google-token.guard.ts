@@ -11,7 +11,6 @@ export class GoogleTokenGuard extends AuthGuard('google-token') implements CanAc
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
-    console.log('calling login function')
     const token = await this.authService.decodeToken(request.body.creds);
     if (!token) {
        return false;

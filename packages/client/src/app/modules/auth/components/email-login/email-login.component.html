@@ -26,6 +26,18 @@
           <div class="label-alt-text text-error text-xs" *ngIf="error() as msg">{{msg}}</div>
         </label>
       </div>
+
+      <div class="form-control" *ngIf="isSignUp()">
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input type="password" class="input input-bordered input-lg" formControlName="verify">
+        <label class="label no-height">
+          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['verify'].hasError('required') && formGroup.touched">Required</span>
+          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['verify'].hasError('invalid') && formGroup.touched">Passwords must match</span>
+          <div class="label-alt-text text-error text-xs" *ngIf="error() as msg">{{msg}}</div>
+        </label>
+      </div>
     
       <div class="flex flex-row basis-full items-end justify-end gap-3">
         <button class="btn btn-primary" type="submit">

@@ -59,7 +59,6 @@ export class AuthService {
     if (!decoded) {
       throw new BadRequestException('Invalid Token')
     }
-    console.log('addGoogleUser', decoded)
     const user = await this.cache.wrap(
       `google_token_${decoded.sub}`,
       () => this.userService.addGoogleUser(decoded)

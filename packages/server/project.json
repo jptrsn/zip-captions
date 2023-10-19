@@ -20,6 +20,7 @@
       },
       "configurations": {
         "development": {},
+        "staging": {},
         "production": {}
       }
     },
@@ -33,10 +34,13 @@
         "development": {
           "buildTarget": "server:build:development"
         },
+        "staging": {
+          "buildTarget": "server:build:staging"
+        },
         "production": {
           "buildTarget": "server:build:production"
         }
-      }
+      },
     },
     "lint": {
       "executor": "@nx/linter:eslint",
