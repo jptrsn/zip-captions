@@ -1,10 +1,11 @@
 const webpack = require('webpack');
-const dotenv = require('dotenv').config({ path: __dirname + '/prod.env'});
 
 function getClientEnvironment(mode) {
 
-  console.log('webpack mode', mode);
-  let processEnv = (mode === 'production') ? dotenv.parsed : process.env;
+  const env = process.env.NX_TASK_TARGET_CONFIGURATION || mode;
+  console.log('webpack env', env);
+  const environment = require('dotenv').config({ path: __dirname + '/' + env + '.env' })
+  let processEnv = environment?.parsed || process.env;
   
   // Grab ZIP_* environment variables and prepare them to be injected
   // into the application via DefinePlugin in webpack configuration.
@@ -32,7 +33,7 @@ function getClientEnvironment(mode) {
 
 module.exports = (config, options, context) => {
   // Overwrite the mode set by Angular if the NODE_ENV is set
-  config.mode = process.env.NODE_ENV || config.mode;
+  // config.mode = process.env.NODE_ENV || config.mode;
   config.plugins.push(new webpack.DefinePlugin(getClientEnvironment(config.mode)));
   return config;
 };

@@ -58,6 +58,22 @@
           ],
           "outputHashing": "all"
         },
+        "staging": {
+          "optimization": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "750kb",
+              "maximumError": "1.5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
@@ -74,6 +90,10 @@
       "configurations": {
         "production": {
           "browserTarget": "client:build:production"
+        },
+
+        "staging": {
+          "browserTarget": "client:build:staging"
         },
         "development": {
           "browserTarget": "client:build:development"

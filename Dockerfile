@@ -13,10 +13,13 @@ CMD [""]
 
 # STAGING
 FROM dev as staging_build_client
-ENV ZIP_SOCKET_SERVER=https://socket.fartyparts.work
-ENV ZIP_SOCKET_PORT=443
-ENV ZIP_PEER_SERVER=peer.fartyparts.work
-ENV ZIP_PEER_PORT=443
+ENV ZIP_SOCKET_SERVER=wss://api.zipcaptions.app
+ENV ZIP_SOCKET_PORT=3000
+ENV ZIP_PEER_SERVER=https://api.zipcaptions.app
+ENV ZIP_PEER_PORT=9000
+ENV ZIP_AUTH_API_URL=https://api.zipcaptions.app
+ENV ZIP_AUTH_API_PORT=3000
+ENV ZIP_AUTH_API_VERSION=v1
 RUN npm run build:client
 
 FROM dev as staging_build_signal
