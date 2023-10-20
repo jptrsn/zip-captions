@@ -14,11 +14,10 @@ export class AuthService {
 
   private authEndpoint: string;
   constructor(private http: HttpClient) {
-    const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost'
-    const apiPort = process.env['ZIP_AUTH_API_PORT'] || '3000';
+    const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const authRoute = process.env['ZIP_AUTH_API_ROUTE'] || 'auth';
-    this.authEndpoint = `${baseUrl}:${apiPort}/${apiVersion}/${authRoute}`;
+    this.authEndpoint = `${baseUrl}/${apiVersion}/${authRoute}`;
   }
 
   login(email: string, pw: string): Observable<LoginResponse> {

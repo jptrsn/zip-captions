@@ -21,9 +21,8 @@ export class PeerService {
   private readonly CACHE_PERSIST_MINS = 60;
 
   private readonly SOCKET_URL: string;
-  private readonly SOCKET_PORT: number;
-  private readonly PEER_URL: string;
   private readonly PEER_PORT: number;
+  private readonly PEER_URL: string;
   private readonly STUN_SERVER: string;
   private readonly TURN_SERVER: string;
   private readonly TURN_PASS: string;
@@ -42,24 +41,23 @@ export class PeerService {
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
-    this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost';
-    this.SOCKET_PORT = process.env['ZIP_SOCKET_PORT'] ? Number(process.env['ZIP_SOCKET_PORT']) : 3000;
+    this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost:3000';
+    this.PEER_PORT = process.env['ZIP_PEER_PORT'] ? Number(process.env['ZIP_PEER_PORT']) : 3000;
     this.SOCKET_CONFIG = {
-      url: `${this.SOCKET_URL}:${this.SOCKET_PORT}`,
+      url: `${this.SOCKET_URL}`,
       options: {
         reconnectionAttempts: 10,
         reconnection: true,
       }
     }
     this.PEER_URL = process.env['ZIP_PEER_SERVER'] || 'localhost';
-    this.PEER_PORT = process.env['ZIP_PEER_PORT'] ? Number(process.env['ZIP_PEER_PORT']) : 9000;
     this.STUN_SERVER = process.env['ZIP_STUN_SERVER'] || 'localhost:19302';
     this.TURN_SERVER = process.env['ZIP_TURN_SERVER'] || 'localhost:3478';
     this.TURN_PASS = process.env['ZIP_TURN_PASSWORD'] || 'coturn';
     this.CONNECT_OPTS = {
       debug: 0,
       host: this.PEER_URL,
-      port: this.SOCKET_PORT,
+      port: this.PEER_PORT,
       path: 'peer-server',
       secure: (this.PEER_URL !== 'localhost'),
       config: {
@@ -84,7 +82,6 @@ export class PeerService {
       this.myId = cached.id;
     }
     console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
-    console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
   }
 

@@ -14,20 +14,16 @@ CMD [""]
 # STAGING
 FROM dev as staging_build_client
 ENV ZIP_SOCKET_SERVER=wss://api.zipcaptions.app
-ENV ZIP_SOCKET_PORT=3000
 ENV ZIP_PEER_SERVER=https://api.zipcaptions.app
-ENV ZIP_PEER_PORT=9000
+ENV ZIP_PEER_PORT=3000
 ENV ZIP_AUTH_API_URL=https://api.zipcaptions.app
-ENV ZIP_AUTH_API_PORT=3000
 ENV ZIP_AUTH_API_VERSION=v1
-RUN npm run build:client
+RUN npm run build:client:staging
 
 FROM dev as staging_build_signal
-ENV ALLOWED_ORIGINS=https://fartyparts.work
 RUN npm run build:signal
 
 FROM dev as staging_build_server
-ENV ALLOW_ORIGINS=https://next.zipcaptions.app
 RUN npm run build:server
 
 FROM nginx:alpine as staging_client

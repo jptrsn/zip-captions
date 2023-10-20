@@ -10,6 +10,7 @@
     "build": "nx build",
     "build:all": "nx run-many -t build -p client,signal --parallel",
     "build:client": "nx build --project=client --configuration=production",
+    "build:client:staging": "nx build --project=client --configuration=staging",
     "build:signal": "nx build --project=signal",
     "build:server": "nx build --project=server",
     "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
