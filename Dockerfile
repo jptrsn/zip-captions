@@ -52,7 +52,6 @@ COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 FROM dev as prod_build_signal
-ENV ALLOWED_ORIGINS=https://zipcaptions.app
 RUN npm run build:signal
 
 FROM staging_build_signal as prod_signal
@@ -60,7 +59,6 @@ CMD ["node", "./dist/packages/signal/main.js"]
 EXPOSE 3000 9000
 
 FROM dev as prod_build_server
-ENV ALLOWED_ORIGINS=https://zipcaptions.app
 RUN npm run build:server
 
 FROM prod_build_server as prod_server
