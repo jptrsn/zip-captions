@@ -92,6 +92,7 @@
     "@angular/compiler-cli": "~16.0.0",
     "@angular/language-service": "~16.0.0",
     "@angular/pwa": "^16.0.3",
+    "@nestjs/azure-func-http": "^0.10.0",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@ngrx/schematics": "~16.0.0",
