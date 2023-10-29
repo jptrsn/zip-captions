@@ -4,9 +4,9 @@
 name: Build and deploy Node.js app to Azure Web App - zip-captions-staging
 
 on:
-  # push:
-  #   branches:
-  #     - feature/APP-104
+  push:
+    branches:
+      - feature/APP-104
   workflow_dispatch:
 
 jobs:
