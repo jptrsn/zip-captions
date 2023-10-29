@@ -13,6 +13,7 @@
     "build:client:staging": "nx build --project=client --configuration=staging",
     "build:signal": "nx build --project=signal",
     "build:server": "nx build --project=server",
+    "build:server:staging": "nx build --project=server --configuration=staging",
     "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
     "act:signal": "act --secret-file .secret.env --workflows .github/workflows/build-signal.yml",
     "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml",
