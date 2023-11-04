@@ -32,7 +32,7 @@ export enum AppTheme {
   ZipLight = 'Zip-Light',
 }
 
-export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt';
+export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt' | 'id';
 
 export const AvailableLanguages: Language[] = [
   'en',
@@ -40,6 +40,7 @@ export const AvailableLanguages: Language[] = [
   'sp',
   'de',
   'it',
+  'id'
   // 'pt' // TODO: Portuguese translation file
 ]
 
