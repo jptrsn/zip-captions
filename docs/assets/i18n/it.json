@@ -5,7 +5,8 @@
     "sp": "Spagnolo (Espagnol)",
     "de": "Tedesco (Deutsch)",
     "it": "Italiano",
-    "pt": "Portoghese (Português)"
+    "pt": "Portoghese (Português)",
+    "id": "Bahasa Indonesia"
   },
   "THEMES": {
     "dark": "buio",
@@ -309,7 +310,8 @@
     "github": "Tracciamento dei problemi su Github",
     "discord": "Discord Server",
     "donate": "Donare",
-    "stream": "Trasmissione"
+    "stream": "Trasmissione",
+    "forum": "Forum"
   },
   "FOOTER": {
     "copyright": "Copyright"
