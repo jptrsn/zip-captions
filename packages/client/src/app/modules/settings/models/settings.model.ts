@@ -88,7 +88,7 @@ export enum FontFamily {
   comicNeue = 'Comic Neue',
   notoSans = 'Noto Sans',
   cousine = 'Cousine',
-  consolas = 'Consolas'
+  inconsolata = 'Inconsolata'
 }
 
 export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
@@ -99,7 +99,7 @@ export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
   [FontFamily.comicNeue, 'font-comic-neue'],
   [FontFamily.notoSans, 'font-noto-sans'],
   [FontFamily.cousine, 'font-cousine'],
-  [FontFamily.consolas, 'font-consolas'],
+  [FontFamily.inconsolata, 'font-inconsolata'],
 ])
 
 export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
