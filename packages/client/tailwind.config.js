@@ -18,7 +18,7 @@ module.exports = {
       'comic-neue': '"Comic Neue"',
       'noto-sans': '"Noto Sans"',
       'cousine': 'Cousine',
-      'consolas': 'Consolas',
+      'inconsolata': 'Inconsolata',
     },
     extend: {},
   },
