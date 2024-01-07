@@ -79,6 +79,10 @@ export class AuthService {
     )
   }
 
+  getGoogleLoginUrl(): string {
+    return `${this.authEndpoint}/google-login`;
+  }
+
   private _hashString(input: string): string {
     return Md5.hashStr(input)
   }

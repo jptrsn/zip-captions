@@ -1,11 +1,13 @@
-import { Request, Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, BadRequestException } from '@nestjs/common';
+import { CacheTTL } from '@nestjs/cache-manager';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, Req, Response, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
+import { SignInTokenResponse } from 'shared-ui';
+import { AuthenticatedGuard } from '../guards/authenticated.guard';
+import { GoogleTokenGuard } from '../guards/google-token.guard';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
 import { SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { AuthenticatedGuard } from '../guards/authenticated.guard';
-import { SignInTokenResponse } from 'shared-ui';
-import { GoogleTokenGuard } from '../guards/google-token.guard';
-import { CacheTTL } from '@nestjs/cache-manager';
+
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +29,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthenticatedGuard)
   @Post('validate')
-  async validate(@Request() req, @Body() signUpDto: SignInDto) {
+  async validate(@Req() req, @Body() signUpDto: SignInDto) {
     if (req.session.passport.user.username !== signUpDto.username) {
       throw new BadRequestException('Invalid');
     }
@@ -38,14 +40,14 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Get('session')
   @CacheTTL(1)
-  async checkSession(@Request() req) {
+  async checkSession(@Req() req) {
     return req.session.passport.user;
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('logout')
   @UseGuards(AuthenticatedGuard)
-  logout(@Request() req): { message: string } {
+  logout(@Req() req): { message: string } {
     req.session.destroy();
     return { message: 'The user session has ended' };
   }
@@ -55,5 +57,16 @@ export class AuthController {
   @UseGuards(GoogleTokenGuard)
   loginWithGoogle(@Body() body: { creds: SignInTokenResponse }) {
     return this.authService.connectGoogle(body.creds);
+  }
+
+  @Get('google-login')
+  googleLogin(@Req() req, @Response() res) {
+    try {
+      const redirectAddress = this.authService.getGoogleOauthRedirect();
+      console.log(redirectAddress)
+      res.status(HttpStatus.TEMPORARY_REDIRECT).redirect(redirectAddress);
+    } catch(e) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(e.message)
+    }
   }
 }

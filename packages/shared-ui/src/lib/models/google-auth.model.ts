@@ -20,3 +20,9 @@ export interface DecodedToken {
   "exp": number; // 1596477600, // Unix timestamp of the assertion's expiration time
   "jti": string; // "abc161803398874def"
 }
+
+export const GoogleLoginScopes: string[] = [
+  './auth/userinfo.email',
+  './auth/userinfo.profile',
+  'openid'
+]

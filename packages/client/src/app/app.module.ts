@@ -63,7 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     RouterModule.forRoot(appRoutes, {
       initialNavigation: 'enabledBlocking',
-      useHash: true,
+      useHash: false,
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),

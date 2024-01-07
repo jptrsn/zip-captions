@@ -5,6 +5,8 @@ import { UserService } from '../user/user.service';
 import { CacheService } from '../app/services/cache/cache.service';
 import { jwtConstants } from './constants';
 import { DecodedToken, SignInTokenResponse } from 'shared-ui';
+import { URLSearchParams } from 'url';
+import { v4 } from 'uuid';
 @Injectable()
 export class AuthService {
   
@@ -55,6 +57,7 @@ export class AuthService {
   }
 
   async connectGoogle(token: SignInTokenResponse): Promise<{uuid: string, username: string}> {
+    
     const decoded: DecodedToken | null = await this.jwtService.decode(token.credential) as DecodedToken | null;
     if (!decoded) {
       throw new BadRequestException('Invalid Token')
@@ -64,6 +67,33 @@ export class AuthService {
       () => this.userService.addGoogleUser(decoded)
     )
     return { uuid: user.uuid, username: user.username };
+  }
+
+  getGoogleOauthRedirect(): string {
+    const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
+    const state = v4()
+    const clientId: string = process.env.GOOGLE_CLIENT_ID;
+    const redirectUri: string = process.env.GOOGLE_REDIRECT_URI;
+    const scopes: string[] = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'openid'
+    ];
+    const args: {[key: string] : string} = {
+      "client_id": clientId,
+      "redirect_uri": redirectUri,
+      "response_type": 'token',
+      "scope": scopes.join(' '),
+      "include_granted_scopes": 'true',
+      "state": state.toString()
+    }
+    
+    const search = new URLSearchParams(args).toString()
+    return `${oauth2Endpoint}?${search}`;
+  }
+
+  googleOauthRedirectHandler(params: any): void {
+    console.log('google oauth redirect handler', params);
   }
 
   async decodeToken(token: SignInTokenResponse): Promise<DecodedToken | null> {

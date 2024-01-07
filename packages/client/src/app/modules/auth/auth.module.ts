@@ -15,6 +15,7 @@ import { EmailLoginComponent } from './components/email-login/email-login.compon
 import { NgIconsModule } from '@ng-icons/core';
 import { GoogleLoginComponent } from './components/google-login/google-login.component';
 import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-login.component';
+import { GoogleOauthLoginComponent } from './components/google-oauth-login/google-oauth-login.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-
     EmailLoginComponent,
     GoogleLoginComponent,
     MicrosoftLoginComponent,
+    GoogleOauthLoginComponent,
   ],
   imports: [
     CommonModule,

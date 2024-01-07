@@ -430,5 +430,10 @@
     "obsStreamInactive": "Waiting for OBS stream to begin",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
+  },
+  "AUTH": {
+    "genericLogin": "Login to Zip Captions",
+    "loginWithGoogle": "Connect your Google Account",
+    "loginWithAzure": "Connect your Microsoft Account"
   }
 }
