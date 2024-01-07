@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { CacheService } from '../app/services/cache/cache.service';
 import { jwtConstants } from './constants';
-import { DecodedToken, SignInTokenResponse } from 'shared-ui';
+import { DecodedToken, GoogleOauthCallbackFragrment } from 'shared-ui';
 import { URLSearchParams } from 'url';
 import { v4 } from 'uuid';
 @Injectable()
@@ -56,17 +56,18 @@ export class AuthService {
     return {uuid: newUser.uuid, username: newUser.username }
   }
 
-  async connectGoogle(token: SignInTokenResponse): Promise<{uuid: string, username: string}> {
-    
-    const decoded: DecodedToken | null = await this.jwtService.decode(token.credential) as DecodedToken | null;
+  async connectGoogle(params: GoogleOauthCallbackFragrment): Promise<{uuid: string, username: string}> {
+    const decoded: DecodedToken | null = await this.jwtService.decode(params.access_token) as DecodedToken | null;
     if (!decoded) {
       throw new BadRequestException('Invalid Token')
     }
-    const user = await this.cache.wrap(
-      `google_token_${decoded.sub}`,
-      () => this.userService.addGoogleUser(decoded)
-    )
-    return { uuid: user.uuid, username: user.username };
+    console.log('decoded', decoded)
+    throw new Error(JSON.stringify(decoded))
+    // const user = await this.cache.wrap(
+    //   `google_token_${decoded.sub}`,
+    //   () => this.userService.addGoogleUser(decoded)
+    // )
+    // return { uuid: user.uuid, username: user.username };
   }
 
   getGoogleOauthRedirect(): string {
@@ -96,8 +97,8 @@ export class AuthService {
     console.log('google oauth redirect handler', params);
   }
 
-  async decodeToken(token: SignInTokenResponse): Promise<DecodedToken | null> {
-    return await this.jwtService.decode(token.credential) as DecodedToken | null;
+  async decodeToken(token: GoogleOauthCallbackFragrment): Promise<DecodedToken | null> {
+    return await this.jwtService.decode(token.access_token) as DecodedToken | null;
   }
 
   private async _getAccessToken(uuid: string, email: string): Promise<{access_token: string;}> {

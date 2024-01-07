@@ -13,7 +13,6 @@ import { authReducer } from '../../reducers/auth.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
 import { EmailLoginComponent } from './components/email-login/email-login.component';
 import { NgIconsModule } from '@ng-icons/core';
-import { GoogleLoginComponent } from './components/google-login/google-login.component';
 import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-login.component';
 import { GoogleOauthLoginComponent } from './components/google-oauth-login/google-oauth-login.component';
 
@@ -22,7 +21,6 @@ import { GoogleOauthLoginComponent } from './components/google-oauth-login/googl
     LoginComponent,
     UserHomeComponent,
     EmailLoginComponent,
-    GoogleLoginComponent,
     MicrosoftLoginComponent,
     GoogleOauthLoginComponent,
   ],

@@ -3,7 +3,7 @@ import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 import { Md5 } from 'ts-md5';
-import { SignInTokenResponse } from 'shared-ui';
+import { GoogleOauthCallbackFragrment } from 'shared-ui';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +68,9 @@ export class AuthService {
     )
   }
 
-  loginWithGoogle(creds: SignInTokenResponse): Observable<LoginResponse> {
+  loginWithGoogle(fragment: string): Observable<LoginResponse> {
+    console.log('parse fragment', fragment);
+    const creds: GoogleOauthCallbackFragrment = { access_token: '', state: ''}
     return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('loginWithGoogle response', response);

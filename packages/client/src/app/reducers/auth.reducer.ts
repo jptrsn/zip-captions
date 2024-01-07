@@ -31,7 +31,7 @@ export const authReducer = createReducer(
   on(AuthActions.signUpSuccess, (state: AuthState, action: { data: LoginResponse }) => ({...state, loading: false, loggedIn: true, email: action.data.username, uuid: action.data.uuid })),
   on(AuthActions.signUpFailure, (state: AuthState, action: { error: string}) => ({...state, error: action.error, loading: false, loggedIn: false, email: undefined, uuid: undefined})),
   
-  on(AuthActions.loginWithGoogle, (state: AuthState) => ({...state, loading: true, error: undefined})),
+  on(AuthActions.loginWithGoogleToken, (state: AuthState) => ({...state, loading: true, error: undefined})),
   on(AuthActions.loginWithGoogleSuccess, (state: AuthState, action: { data: LoginResponse }) => ({...state, loading: false, loggedIn: true, email: action.data.username, uuid: action.data.uuid })),
   on(AuthActions.loginWithGoogleFailure, (state: AuthState, action: { error: string }) => ({...state, error: action.error })),
   

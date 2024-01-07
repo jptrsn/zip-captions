@@ -1,12 +1,11 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { LoginResponse } from '../reducers/auth.reducer';
-import { SignInTokenResponse } from 'shared-ui';
+import { GoogleOauthCallbackFragrment } from 'shared-ui';
 
 export const AuthActions = createActionGroup({
   source: 'Auth',
   events: {
     'Login': props<{email: string, password: string}>(),
-    'Login with Access Token': props<{token: string}>(),
     'Login Success': props<{ data: LoginResponse }>(),
     'Login Failure': props<{ error: string }>(),
 
@@ -14,7 +13,7 @@ export const AuthActions = createActionGroup({
     'Logout Success': emptyProps(),
     'Logout Failure': props<{ error: string }>(),
 
-    'Login with Google': props<{token: SignInTokenResponse}>(),
+    'Login with Google Token': props<{ fragment: string }>(),
     'Login with Google Success': props<{ data: LoginResponse }>(),
     'Login with Google Failure': props<{ error: string }>(),
 

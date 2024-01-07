@@ -1,6 +1,9 @@
-export interface SignInTokenResponse {
-  credential: string;
-  select_by: 'auto' | 'user' | 'user_1tap' | 'user_2tap' | 'btn' | 'btn_confirm' | 'btn_add_sesion' | 'btn_confirm_add_session' | 'fedcm';
+export interface GoogleOauthCallbackFragrment {
+  state: string;
+  access_token?: string;
+  token_type?: string;
+  expires_in?: string | number;
+  error?: string;
 }
 
 export interface DecodedToken {

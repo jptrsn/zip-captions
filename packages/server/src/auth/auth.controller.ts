@@ -1,7 +1,6 @@
 import { CacheTTL } from '@nestjs/cache-manager';
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, Req, Response, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { SignInTokenResponse } from 'shared-ui';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Response, UseGuards } from '@nestjs/common';
+import { GoogleOauthCallbackFragrment } from 'shared-ui';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { GoogleTokenGuard } from '../guards/google-token.guard';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
@@ -55,7 +54,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('loginWithGoogle')
   @UseGuards(GoogleTokenGuard)
-  loginWithGoogle(@Body() body: { creds: SignInTokenResponse }) {
+  loginWithGoogle(@Body() body: { creds: GoogleOauthCallbackFragrment }) {
     return this.authService.connectGoogle(body.creds);
   }
 

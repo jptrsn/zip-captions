@@ -27,7 +27,7 @@ export class LoginComponent {
     if (this.route.snapshot.fragment) {
       if (this.route.snapshot.fragment.match("access_token")) {
         console.log('parse fragment')
-        this.store.dispatch(AuthActions.loginWithAccessToken({ token: this.route.snapshot.fragment }))
+        this.store.dispatch(AuthActions.loginWithGoogleToken({ fragment: this.route.snapshot.fragment }))
       }
     }
   }
