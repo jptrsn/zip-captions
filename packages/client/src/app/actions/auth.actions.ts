@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { LoginResponse } from '../reducers/auth.reducer';
-import { GoogleOauthCallbackFragrment } from 'shared-ui';
+import { GoogleOauthCallbackFragment } from 'shared-ui';
 
 export const AuthActions = createActionGroup({
   source: 'Auth',

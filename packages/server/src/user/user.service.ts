@@ -4,6 +4,7 @@ import { HydratedDocument, Model } from 'mongoose';
 import { User } from './user.schema';
 import { v4 } from 'uuid';
 import { DecodedToken } from 'shared-ui';
+import { GoogleUserInfo } from '../app/services/google-api/google-api.model';
 
 
 @Injectable()
@@ -29,18 +30,19 @@ export class UserService {
     return this.userModel.findOne(props);
   }
 
-  async addGoogleUser(token: DecodedToken): Promise<HydratedDocument<User>> {
-    let user = await this.findOne({ username: token.email });
+  async addGoogleUser(token: GoogleUserInfo): Promise<HydratedDocument<User>> {
+    let user = await this.findOne({ primaryEmail: token.email });
     if (!user) {
       user = await this.userModel.create({
-        username: token.email,
+        primaryEmail: token.email,
         uuid: v4(),
-        googleId: token.sub
+        googleId: token.sub,
+        pictureUrl: token.picture
       });
     } else if (user.googleId === token.sub) {
       return user;
     } else {
-      user.googleId = token.sub;  
+      user.googleId = token.sub;
     }
     await user.save();
     return user;

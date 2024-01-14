@@ -8,10 +8,13 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
+import { GoogleApiService } from '../app/services/google-api/google-api.service';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 @Module({
   imports: [
     UserModule,
+    HttpModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
@@ -24,6 +27,7 @@ import { jwtConstants } from './constants';
     AuthService,
     LocalStrategy,
     CacheService,
+    GoogleApiService,
     SessionSerializer,
   ],
 })

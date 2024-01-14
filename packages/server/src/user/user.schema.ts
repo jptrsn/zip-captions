@@ -18,17 +18,29 @@ export class User {
     required: true,
     unique: true
   })
-  username: string;
+  primaryEmail: string;
+
+  @Prop({
+    type: Date,
+    required: true,
+    default: new Date()
+  })
+  createdAt: Date;
 
   @Prop({
     type: String
   })
-  hash: string;
+  hash?: string;
 
   @Prop({
     type: String
   })
-  googleId: string;
+  googleId?: string;
+
+  @Prop({
+    type: String
+  })
+  pictureUrl?: string;
 
 }
 

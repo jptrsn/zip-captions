@@ -3,7 +3,7 @@ import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 import { Md5 } from 'ts-md5';
-import { GoogleOauthCallbackFragrment } from 'shared-ui';
+import { GoogleOauthCallbackFragment, GoogleOauthCallbackFragmentError } from 'shared-ui';
 
 @Injectable({
   providedIn: 'root'
@@ -69,8 +69,11 @@ export class AuthService {
   }
 
   loginWithGoogle(fragment: string): Observable<LoginResponse> {
-    console.log('parse fragment', fragment);
-    const creds: GoogleOauthCallbackFragrment = { access_token: '', state: ''}
+    const creds: GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError = this._parseGoogleUrlFragment(fragment)
+    console.log('creds', creds)
+    if ('error' in creds) {
+      throw new Error(creds.error)
+    }
     return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('loginWithGoogle response', response);
@@ -98,5 +101,19 @@ export class AuthService {
       }),
       catchError(() => of(false))
     )
+  }
+
+  private _parseGoogleUrlFragment(fragment: string): GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError {
+    const pairs = fragment.split('&');
+    const rtn = pairs.reduce((accumulator, keyvaluepair) => {
+      const [key, value] = keyvaluepair.split('=')
+      accumulator[key as keyof GoogleOauthCallbackFragment] = value;
+      return accumulator;
+    }, {} as any)
+
+    if (rtn.error) {
+      return rtn as GoogleOauthCallbackFragmentError
+    }
+    return rtn as GoogleOauthCallbackFragment
   }
 }

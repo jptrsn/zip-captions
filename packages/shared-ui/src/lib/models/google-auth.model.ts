@@ -1,9 +1,15 @@
-export interface GoogleOauthCallbackFragrment {
+export interface GoogleOauthCallbackFragment {
   state: string;
-  access_token?: string;
-  token_type?: string;
-  expires_in?: string | number;
-  error?: string;
+  access_token: string;
+  authuser: string;
+  token_type: string;
+  expires_in: string;
+  prompt: string;
+}
+
+export interface GoogleOauthCallbackFragmentError {
+  state: string;
+  error: string;
 }
 
 export interface DecodedToken {
