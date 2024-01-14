@@ -3,13 +3,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { SessionSerializer } from '../app/serializer/session.serializer';
 import { CacheService } from '../app/services/cache/cache.service';
-import { LocalStrategy } from '../strategies/local.strategy';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { GoogleApiService } from '../app/services/google-api/google-api.service';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { HttpModule, HttpService } from '@nestjs/axios';
   controllers: [AuthController],
   providers: [
     AuthService,
-    LocalStrategy,
     CacheService,
     GoogleApiService,
     SessionSerializer,

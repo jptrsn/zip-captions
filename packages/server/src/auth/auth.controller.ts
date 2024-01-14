@@ -11,28 +11,28 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async signIn(@Body() body: { username: string, password: string}) {
-    return await this.authService.signIn(body.username, body.password);
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @UseGuards(LocalAuthGuard)
+  // @Post('login')
+  // async signIn(@Body() body: { username: string, password: string}) {
+  //   return await this.authService.signIn(body.username, body.password);
+  // }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('signup')
-  async signup(@Body() signUpDto: SignInDto) {
-    return await this.authService.signUp(signUpDto.username.toLowerCase(), signUpDto.password);
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Post('signup')
+  // async signup(@Body() signUpDto: SignInDto) {
+  //   return await this.authService.signUp(signUpDto.username.toLowerCase(), signUpDto.password);
+  // }
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthenticatedGuard)
-  @Post('validate')
-  async validate(@Req() req, @Body() signUpDto: SignInDto) {
-    if (req.session.passport.user.username !== signUpDto.username) {
-      throw new BadRequestException('Invalid');
-    }
-    return this.authService.validateUser(signUpDto.username, signUpDto.password);
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @UseGuards(AuthenticatedGuard)
+  // @Post('validate')
+  // async validate(@Req() req, @Body() signUpDto: SignInDto) {
+  //   if (req.session.passport.user.username !== signUpDto.username) {
+  //     throw new BadRequestException('Invalid');
+  //   }
+  //   return this.authService.validateUser(signUpDto.username, signUpDto.password);
+  // }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthenticatedGuard)
@@ -60,7 +60,6 @@ export class AuthController {
   googleLogin(@Req() req, @Response() res) {
     try {
       const redirectAddress = this.authService.getGoogleOauthRedirect();
-      console.log(redirectAddress)
       res.status(HttpStatus.TEMPORARY_REDIRECT).redirect(redirectAddress);
     } catch(e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(e.message)
