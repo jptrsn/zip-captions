@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../actions/auth.actions';
 import { AppState } from '../../../../models/app.model';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
+import { CacheService } from '../../../../services/cache/cache.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent {
 
   constructor(private store: Store<AppState>,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private cache: CacheService) {
 
     const userLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
     effect(() => {
@@ -27,6 +29,12 @@ export class LoginComponent {
     if (this.route.snapshot.fragment) {
       if (this.route.snapshot.fragment.match("access_token")) {
         this.store.dispatch(AuthActions.loginWithGoogleToken({ fragment: this.route.snapshot.fragment }))
+      }
+    } else {
+      const cachedFragment = this.cache.load<{fragment: string}>('google_fragment')
+      if (cachedFragment) {
+        console.log('loaded cached fragment', cachedFragment)
+        this.store.dispatch(AuthActions.loginWithGoogleToken({ fragment: cachedFragment.fragment }))
       }
     }
   }

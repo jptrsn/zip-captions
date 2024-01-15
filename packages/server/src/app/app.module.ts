@@ -9,7 +9,6 @@ import { AppService } from './app.service';
 import { SessionGateway } from './gateways/session.gateway';
 import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
-import { GoogleApiService } from './services/google-api/google-api.service';
 import { HttpModule } from '@nestjs/axios'
 
 @Module({

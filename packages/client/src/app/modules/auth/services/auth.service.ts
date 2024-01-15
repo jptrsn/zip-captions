@@ -4,6 +4,7 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { LoginResponse } from '../../../reducers/auth.reducer';
 import { Md5 } from 'ts-md5';
 import { GoogleOauthCallbackFragment, GoogleOauthCallbackFragmentError } from 'shared-ui';
+import { CacheService } from '../../../services/cache/cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class AuthService {
   private userSessionExists: WritableSignal<boolean> = signal(false);
 
   private authEndpoint: string;
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private cache: CacheService) {
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const authRoute = process.env['ZIP_AUTH_API_ROUTE'] || 'auth';
@@ -48,12 +50,9 @@ export class AuthService {
   }
 
   logout(): Observable<{message: string}> {
-    return this.http.get<{message: string}>(`${this.authEndpoint}/logout`, { withCredentials: true }).pipe(
-      tap((response) => {
-        console.log('logout response', response)
-        this.userSessionExists.set(false);
-      })
-    )
+    this.userSessionExists.set(false);
+    this.cache.remove('google_fragment')
+    return of({message: 'ok'})
   }
 
   signUp(email: string, pw: string): Observable<LoginResponse> {
@@ -68,11 +67,13 @@ export class AuthService {
     )
   }
 
-  loginWithGoogle(fragment: string): Observable<LoginResponse> {
+  loginWithGoogle(fragment: string, skipCache?: boolean): Observable<LoginResponse> {
     const creds: GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError = this._parseGoogleUrlFragment(fragment)
-    console.log('creds', creds)
     if ('error' in creds) {
       throw new Error(creds.error)
+    }
+    if (!skipCache) {
+      this.cache.save({key: 'google_fragment', data: {fragment} })
     }
     return this.http.post<LoginResponse>(`${this.authEndpoint}/loginWithGoogle`, { creds }, { withCredentials: true }).pipe(
       tap((response) => {
@@ -93,25 +94,31 @@ export class AuthService {
   }
 
   private _checkSession(): Observable<boolean> {
-    return this.http.get<LoginResponse>(`${this.authEndpoint}/session`, { withCredentials: true, headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }).pipe(
-      map((response) => {
-        console.log('check session response', response);
-        // TODO: dispatch state if not set already
-        return true;
-      }),
-      catchError(() => of(false))
-    )
+    console.log('check session')
+    const cachedFragment = this.cache.load<{fragment: string}>('google_fragment')
+    if (cachedFragment) {
+      console.log('cached fragment', cachedFragment.fragment)
+      return this.loginWithGoogle(cachedFragment.fragment, true).pipe(
+        map((response) => {
+          console.log('check session response', response);
+          // TODO: dispatch state if not set already
+          return true;
+        }),
+        catchError(() => of(false))
+      )
+    }
+    return of(false)
   }
 
   private _parseGoogleUrlFragment(fragment: string): GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError {
     const pairs = fragment.split('&');
     const rtn = pairs.reduce((accumulator, keyvaluepair) => {
       const [key, value] = keyvaluepair.split('=')
-      accumulator[key as keyof GoogleOauthCallbackFragment] = value;
+      accumulator[key as keyof (GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError)] = value;
       return accumulator;
-    }, {} as any)
+    }, {} as GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError)
 
-    if (rtn.error) {
+    if ('error' in rtn) {
       return rtn as GoogleOauthCallbackFragmentError
     }
     return rtn as GoogleOauthCallbackFragment

@@ -28,6 +28,8 @@ export class AuthService {
     return {uuid: userDoc.uuid, username: userDoc.primaryEmail};
   }
 
+  
+
   // Username & password combination logic
   /*
   async signIn(username: string, password: string): Promise<{uuid: string; username: string;}> {
@@ -63,8 +65,10 @@ export class AuthService {
 
   async connectGoogle(params: GoogleOauthCallbackFragment): Promise<User> {
     this.googleApi.setToken(params.access_token);
-    const googleUserInfo = await this.googleApi.getUser();
-    console.log(googleUserInfo);
+    const googleUserInfo = await this.cache.wrap(
+      `google_userinfo_${params.access_token}`,
+      () => this.googleApi.getUser()
+    )
     const user = await this.cache.wrap(
       `google_token_${googleUserInfo.sub}`,
       () => this.userService.addGoogleUser(googleUserInfo)
@@ -73,26 +77,7 @@ export class AuthService {
   }
 
   getGoogleOauthRedirect(): string {
-    const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
-    const state = v4()
-    const clientId: string = process.env.GOOGLE_CLIENT_ID;
-    const redirectUri: string = process.env.GOOGLE_REDIRECT_URI;
-    const scopes: string[] = [
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'openid'
-    ];
-    const args: {[key: string] : string} = {
-      "client_id": clientId,
-      "redirect_uri": redirectUri,
-      "response_type": 'token',
-      "scope": scopes.join(' '),
-      "include_granted_scopes": 'true',
-      "state": state.toString()
-    }
-    
-    const search = new URLSearchParams(args).toString()
-    return `${oauth2Endpoint}?${search}`;
+    return this.googleApi.getGoogleOauthRedirect()
   }
 
 }

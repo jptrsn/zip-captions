@@ -1,9 +1,10 @@
 export interface GoogleOauthCallbackFragment {
   state: string;
   access_token: string;
-  authuser: string;
-  token_type: string;
+  authuser: string; // "0"
+  token_type: string; // "Bearer"
   expires_in: string;
+  scope: string;
   prompt: string;
 }
 

@@ -77,7 +77,7 @@ export class PeerService {
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
 
-    const cached = this.cache.load('userId')
+    const cached = this.cache.load<{id: string}>('userId')
     if (cached?.id) {
       this.myId = cached.id;
     }
@@ -212,7 +212,7 @@ export class PeerService {
   joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
     this.myBroadcast = !(data?.room); // If we do not have a room ID, we are creating a broadcast
     if (!data?.room) {
-      const fromCache = this.cache.load('roomId');
+      const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
       if (fromCache?.room) {
         data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
       }
@@ -221,7 +221,7 @@ export class PeerService {
       }
     }
     if (this.myBroadcast) {
-      const fromCache = this.cache.load('joinCode');
+      const fromCache = this.cache.load<{joinCode: string}>('joinCode');
       let joinCode: string;
       if (fromCache) {
         joinCode = fromCache.joinCode;
@@ -307,7 +307,7 @@ export class PeerService {
 
   endBroadcast(): Observable<void> {
     const sub = new ReplaySubject<void>();
-    const fromCache = this.cache.load('roomId');
+    const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
     const room: string | undefined = fromCache?.room;
     if (!room) {
       throw new Error('No room defined for broadcast');
