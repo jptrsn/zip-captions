@@ -32,7 +32,7 @@ export enum AppTheme {
   ZipLight = 'Zip-Light',
 }
 
-export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt';
+export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt' | 'id';
 
 export const AvailableLanguages: Language[] = [
   'en',
@@ -40,6 +40,7 @@ export const AvailableLanguages: Language[] = [
   'sp',
   'de',
   'it',
+  'id'
   // 'pt' // TODO: Portuguese translation file
 ]
 
@@ -87,7 +88,7 @@ export enum FontFamily {
   comicNeue = 'Comic Neue',
   notoSans = 'Noto Sans',
   cousine = 'Cousine',
-  consolas = 'Consolas'
+  inconsolata = 'Inconsolata'
 }
 
 export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
@@ -98,7 +99,7 @@ export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
   [FontFamily.comicNeue, 'font-comic-neue'],
   [FontFamily.notoSans, 'font-noto-sans'],
   [FontFamily.cousine, 'font-cousine'],
-  [FontFamily.consolas, 'font-consolas'],
+  [FontFamily.inconsolata, 'font-inconsolata'],
 ])
 
 export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());

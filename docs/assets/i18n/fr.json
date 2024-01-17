@@ -5,7 +5,8 @@
     "sp": "Espangol",
     "de": "Allemand (Deutsch)",
     "it": "Italien (Italiano)",
-    "pt": "Portugais (Português)"
+    "pt": "Portugais (Português)",
+    "id": "Bahasa Indonesia"
   },
   "THEMES": {
     "dark": "sombre",
@@ -309,7 +310,8 @@
     "github": "GitHub Issue Tracker",
     "discord": "Serveur Discord",
     "donate": "Faire un Don",
-    "stream": "Diffusion"
+    "stream": "Diffusion",
+    "forum": "Forum"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
