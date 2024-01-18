@@ -39,7 +39,7 @@ testem.log
 Thumbs.db
 
 .angular
-.env
+.env.*
 .secret.env
 .env.*
 
