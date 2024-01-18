@@ -6,7 +6,12 @@
     "de": "German (Deutsch)",
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
+<<<<<<< HEAD
     "id": "Bahasa Indonesia"
+=======
+    "id": "Indonesian (Bahasa Indonesia)",
+    "pl": "Polish (Polski)"
+>>>>>>> 2346319 (Polish & Portuguese in language menu)
   },
   "THEMES": {
     "dark": "dark",
@@ -311,6 +316,7 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
+    "auth": "My Account",
     "forum": "Forum"
   },
   "FOOTER": {
@@ -429,5 +435,10 @@
     "obsStreamInactive": "Waiting for OBS stream to begin",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
+  },
+  "AUTH": {
+    "genericLogin": "Login to Zip Captions",
+    "loginWithGoogle": "Connect your Google Account",
+    "loginWithAzure": "Connect your Microsoft Account"
   }
 }
