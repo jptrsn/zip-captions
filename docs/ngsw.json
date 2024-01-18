@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1705541930031,
+  "timestamp": 1705542021715,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,17 +11,17 @@
         "ignoreVary": true
       },
       "urls": [
-        "/133.ecfc1453103ba50f.js",
+        "/133.13bf1be25aa5cd08.js",
         "/57.13299231aa8e1cc9.js",
         "/658.b279399836087b36.js",
-        "/986.8d0e4c9e4b06197d.js",
+        "/986.c3db440426f314e6.js",
         "/common.7b82817a9be95a47.js",
         "/favicon.ico",
         "/index.html",
-        "/main.99ac1af3e12fa356.js",
+        "/main.f9f8395264768499.js",
         "/manifest.webmanifest",
         "/polyfills.e3fabfd0a07273d8.js",
-        "/runtime.ea89db2ca25ce7b5.js",
+        "/runtime.e7401403e4be8a38.js",
         "/styles.51f7ce776c52c5a0.css"
       ],
       "patterns": []
@@ -179,18 +179,18 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/133.ecfc1453103ba50f.js": "a3c029b8a981e88d35739c756da2268873a366b8",
+    "/133.13bf1be25aa5cd08.js": "53aa040e4100b11a6cc798a21a056fd7d37f715e",
     "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
     "/658.b279399836087b36.js": "4a3d4a8513f6291a5005af43c761e0d479a7c4a9",
-    "/986.8d0e4c9e4b06197d.js": "bc296d78638c8fda70e1027533ae87a87a34bae6",
+    "/986.c3db440426f314e6.js": "a40a3ccaf84dc104c6910e731a7a08af2240308b",
     "/assets/i18n/de.json": "3932031cb5d300471b48facdbaf449283971a882",
-    "/assets/i18n/en.json": "edc67002e8b085788008bbbedc84bc56500b081c",
-    "/assets/i18n/fr.json": "82a886a418facd7b3ff3297c1d76eb1b5edf1009",
+    "/assets/i18n/en.json": "bdbfdd7d47c843009308e24ca788d959ab366417",
+    "/assets/i18n/fr.json": "ee0bca8fc223b32a499fdcbc279d9c350129462d",
     "/assets/i18n/id.json": "b42a34d95f1cf6f468d0859e84d42e3a2f2252ab",
-    "/assets/i18n/it.json": "5b1589aab4f26245a934ca6b8aa92742bed617fb",
+    "/assets/i18n/it.json": "20904306eeaf9ef6fb467af7e03bb38f80c3fe27",
     "/assets/i18n/pl.json": "3849e91991f707eff728fc93751f12dcf28d047b",
     "/assets/i18n/pt.json": "f60cebf8ed2ff1831ce760752af9020173065295",
-    "/assets/i18n/sp.json": "9e23826713e6e860bdb5108d211b95d3f4b14d02",
+    "/assets/i18n/sp.json": "88a5a857997ab341506c43dcaa3f79a6aeee082f",
     "/assets/icons/OBS_Studio_Logo.svg": "bb371e8ab6708c864fd5955a01fc1e5b475fff0e",
     "/assets/icons/android-launchericon-512-512.png": "b49b245996fa3daa987d4f278fb2b14efa5a5569",
     "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
@@ -324,11 +324,11 @@
     "/assets/screenshots/screenshot-settings_411x730.png": "3f5a2a06f7f146f6af0a19eab499011403038cde",
     "/common.7b82817a9be95a47.js": "6d17e9b82898f72ad5db8f4edc5ecb5967eb400a",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "0a8f7e516ede3a4a24929db74e7e4391bda15273",
-    "/main.99ac1af3e12fa356.js": "290074ea361e115a85b8e9b6966b2b3f89e8b8a8",
+    "/index.html": "910683ac4300435145585e4225343d23fbdf5fd2",
+    "/main.f9f8395264768499.js": "27eeec434db810bd7dd617bf784287f8f97a65a0",
     "/manifest.webmanifest": "be652c0b13f2e4c37fb0496bf4a06c8e65ec5b1d",
     "/polyfills.e3fabfd0a07273d8.js": "cb26201bd60974ab081aa1380dfab8381bd3a46f",
-    "/runtime.ea89db2ca25ce7b5.js": "9830c9e69ba2c4fce28e551f3c364ad23e0bb5c8",
+    "/runtime.e7401403e4be8a38.js": "db5bb86c632e6b9d5bf7f2502a559414d125abec",
     "/styles.51f7ce776c52c5a0.css": "558c197596e605e1a908ba36e8c6050f1aeb92fd"
   },
   "navigationUrls": [

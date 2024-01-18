@@ -6,12 +6,8 @@
     "de": "German (Deutsch)",
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
-<<<<<<< HEAD
-    "id": "Bahasa Indonesia"
-=======
     "id": "Indonesian (Bahasa Indonesia)",
     "pl": "Polish (Polski)"
->>>>>>> 2346319 (Polish & Portuguese in language menu)
   },
   "THEMES": {
     "dark": "dark",
