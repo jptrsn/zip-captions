@@ -70,6 +70,7 @@ export class AuthService {
   loginWithGoogle(fragment: string, skipCache?: boolean): Observable<LoginResponse> {
     const creds: GoogleOauthCallbackFragment | GoogleOauthCallbackFragmentError = this._parseGoogleUrlFragment(fragment)
     if ('error' in creds) {
+      this.cache.remove('google_fragment')
       throw new Error(creds.error)
     }
     if (!skipCache) {
@@ -85,8 +86,10 @@ export class AuthService {
     )
   }
 
-  getGoogleLoginUrl(): string {
-    return `${this.authEndpoint}/google-login`;
+  getGoogleLoginUrl(): Observable<string> {
+    return this.http.get<string>(`${this.authEndpoint}/google-login`).pipe(
+      tap((v) => console.log('google-login string', v))
+      )
   }
 
   private _hashString(input: string): string {

@@ -56,11 +56,12 @@ export class AuthController {
     return this.authService.connectGoogle(body.creds);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('google-login')
-  googleLogin(@Req() req, @Response() res) {
+  googleLogin(@Response() res) {
     try {
       const redirectAddress = this.authService.getGoogleOauthRedirect();
-      res.status(HttpStatus.TEMPORARY_REDIRECT).redirect(redirectAddress);
+      res.send({url: redirectAddress});
     } catch(e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(e.message)
     }

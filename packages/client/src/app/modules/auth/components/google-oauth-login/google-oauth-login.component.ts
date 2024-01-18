@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-google-oauth-login',
@@ -7,8 +8,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./google-oauth-login.component.scss'],
 })
 export class GoogleOauthLoginComponent {
-  public authLink: string;
+  public authLink: Signal<string>;
   constructor(private authService: AuthService) {
-    this.authLink = this.authService.getGoogleLoginUrl()
+    this.authLink = toSignal(this.authService.getGoogleLoginUrl()) as Signal<string>
   }
 }
