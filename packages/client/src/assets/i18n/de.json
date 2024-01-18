@@ -7,7 +7,8 @@
     "it": "Italienisch (Italiano)",
     "pt": "Portugiesisch (Português)",
     "id": "Bahasa Indonesien",
-    "pl": "Polnisch (Polski)"
+    "pl": "Polnisch (Polski)",
+    "uk": "Ukranisch (Український)"
   },
   "THEMES": {
     "dark": "dunkel",
@@ -48,16 +49,12 @@
   "ABOUT": {
     "h1": "Was ist Zip Captions?",
     "b1": "Zip Captions ist ein Tool, das Sprache-zu-Text-Ergebnisse für ein bestimmtes Eingabegerät wie das Mikrofon Ihres Computers erzeugt.",
-
     "h2": "Warum?",
     "b2": "Die Umwandlung von Audio in Text in Echtzeit kann das Leben zugänglicher machen. Unser Ziel ist es, dies für jeden kostenlos und so einfach wie möglich zu machen.",
-
     "h3": "Wer sind Sie?",
     "b3": "Wir sind zwei Pädagogen und Programmierer, die glauben, dass Technologie zugänglich sein sollte und dass Zugänglichkeit nicht hinter einer Bezahlschranke existiert.",
-
     "h4": "Wie viel?",
     "b4": "Die Kernfunktionalität wird immer kostenlos sein. Wir bemühen uns, so viel wie möglich von dem Tool kostenlos zu machen. In einigen Fällen können wir jedoch Geld verlangen, um die Projektkosten zu decken.",
-
     "h5": "Wie?",
     "b5": "Die Kernfunktionalität wird immer kostenlos sein. Unser Ziel ist es, das Tool so kostenlos wie möglich zu machen. In manchen Fällen bitten wir jedoch um Geld, um die Projektkosten zu decken."
   },
@@ -259,7 +256,8 @@
     "p1": "Jedes Segment des zuvor erkannten Textes wird wie folgt aussehen.",
     "p2": "Von unten nach oben blättern.",
     "p3": "Jedes neue Ergebnis erscheint unterhalb des vorherigen.",
-    "p4": "Live-Ergebnisse sehen so aus"
+    "p4": "Live-Ergebnisse sehen so aus",
+    "font": "Schriftart"
   },
   "STREAM": {
     "serverStatus": "Broadcast-Server",

@@ -7,7 +7,8 @@
     "it": "Italiano",
     "pt": "Portoghese (Português)",
     "id": "Indonesiana (Bahasa Indonesia)",
-    "pl": "Polacco (Polski)"
+    "pl": "Polacco (Polski)",
+    "uk": "Ukrainian (Український)"
   },
   "THEMES": {
     "dark": "buio",
@@ -48,16 +49,12 @@
   "ABOUT": {
     "h1": "Cos'è Zip Captions?",
     "b1": "Zip Captions è uno strumento che genera risultati speech-to-text per un dato dispositivo di input come il microfono della vostra macchina",
-
     "h2": "Perché?",
     "b2": "La conversione dell'audio in testo in tempo reale può rendere la vita più accessibile. Ci proponiamo di farlo per tutti, gratuitamente e nel modo più semplice possibile.",
-
     "h3": "Chi siete?",
     "b3": "Siamo una coppia di educatori e coder che credono che la tecnologia debba essere accessibile e che l'accessibilità non esista dietro un paywall",
-
     "h4": "Quanto?",
     "b4": "Le funzionalità di base saranno sempre gratuite. Il nostro obiettivo è quello di rendere il più possibile gratuito lo strumento. Tuttavia, in alcuni casi, potremmo chiedere denaro per contribuire a compensare i costi del progetto.",
-
     "h5": "Come?",
     "b5": "La funzionalità di base sarà sempre gratuita. Il nostro obiettivo è quello di rendere il più possibile gratuito lo strumento. Tuttavia, in alcuni casi, potremmo chiedere denaro per contribuire a compensare i costi del progetto."
   },
@@ -259,7 +256,8 @@
     "p1": "Ogni segmento di testo riconosciuto in precedenza apparirà così",
     "p2": "Scorrendo dal basso verso l'alto",
     "p3": "Con ogni nuovo risultato che appare sotto il precedente",
-    "p4": "Il testo in tempo reale viene visualizzato in questo modo"
+    "p4": "Il testo in tempo reale viene visualizzato in questo modo",
+    "font": "Carattere"
   },
   "STREAM": {
     "serverStatus": "Server di trasmissione",

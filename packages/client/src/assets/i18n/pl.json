@@ -7,7 +7,8 @@
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
     "id": "Bahasa Indonesia",
-    "pl": "Polski"
+    "pl": "Polski",
+    "uk": "Język ukraiński (Український)"
   },
   "THEMES": {
     "dark":  "ciemny",
@@ -48,16 +49,12 @@
   "ABOUT": {
     "h1":  "Co to jest podpisy zip?",
     "b1":  "Podpisy zip to narzędzie, które wygeneruje wyniki mowy do tekstu dla danego urządzenia wejściowego, takiego jak mikrofon twojego maszyny.",
-
     "h2":  "Dlaczego?",
     "b2":  "Przekształcenie dźwięku na tekst w czasie rzeczywistym może uczynić życie bardziej dostępnym. Staramy się to zrobić dla wszystkich za darmo, jak to możliwe.",
-
     "h3":  "Kim jesteś?",
     "b3":  "Jesteśmy parą nauczycieli i koderów, którzy uważają, że technologia powinna być dostępna, a dostępność nie istnieje za wypłatą.",
-
     "h4":  "Ile?",
     "b4":  "Podstawowa funkcjonalność będzie zawsze bezpłatna. Staramy się uczynić jak najwięcej narzędzia, jak to możliwe. Jednak w niektórych przypadkach możemy poprosić o pieniądze o zrekompensowanie kosztów projektu.",
-   
     "h5":  "Jak?",
     "b5":  "Podstawowa funkcjonalność będzie zawsze bezpłatna. Staramy się stworzyć jak najwięcej narzędzia, jak to możliwe. Jednak w niektórych przypadkach możemy poprosić o pieniądze o zrekompensowanie kosztów projektu"
   },
@@ -259,7 +256,8 @@
     "p1":  "Każdy segment wcześniej uznanego tekstu będzie wyglądał w ten sposób.",
     "p2":  "Przewijanie w górę od dołu.",
     "p3":  "Z każdym nowym wynikiem pojawiającym się pod poprzednim.",
-    "p4":  "Tekst na żywo takie"
+    "p4":  "Tekst na żywo takie",
+    "font": "Czcionka"
   },
   "STREAM": {
     "serverStatus":  "Serwer transmisji",
