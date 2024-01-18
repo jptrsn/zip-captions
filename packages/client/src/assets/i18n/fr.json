@@ -7,7 +7,8 @@
     "it": "Italien (Italiano)",
     "pt": "Portugais (Português)",
     "id": "Indonesio (Bahasa Indonesia)",
-    "pl": "Polonais (Polski)"
+    "pl": "Polonais (Polski)",
+    "uk": "Ukrainien (Український)"
   },
   "THEMES": {
     "dark": "sombre",
@@ -48,16 +49,12 @@
   "ABOUT": {
     "h1" : "Qu'est-ce que Zip Captions ?",
     "b1" : "Zip Captions est un outil qui génère des résultats de synthèse vocale pour un périphérique d'entrée donné, tel que le microphone de votre machine",
-
     "h2" : "Pourquoi ?",
     "b2" : "La conversion de l'audio en texte en temps réel peut rendre la vie plus accessible. Notre objectif est de le faire pour tout le monde, gratuitement et aussi simplement que possible.",
-
     "h3" : "Qui êtes-vous ?",
     "b3" : "Nous sommes une paire d'éducateurs et de codeurs qui croient que la technologie devrait être accessible, et que l'accessibilité n'existe pas derrière un paywall.",
-
     "h4" : "Combien ?",
     "b4" : "Les fonctionnalités de base seront toujours gratuites. Nous nous efforçons de rendre la plus grande partie de l'outil aussi gratuite que possible. Cependant, dans certains cas, nous pouvons demander de l'argent pour aider à compenser les coûts du projet",
-
     "h5" : "Comment ?",
     "b5" : "Les fonctionnalités de base seront toujours gratuites. Nous nous efforçons de rendre l'outil aussi gratuit que possible. Cependant, dans certains cas, nous pouvons demander de l'argent pour aider à compenser les coûts du projet."
   },
@@ -259,7 +256,8 @@
     "p1" : "Chaque segment de texte déjà reconnu apparaîtra comme ceci",
     "p2" : "Défilement vers le haut à partir du bas",
     "p3" : "Chaque nouveau résultat apparaissant sous le précédent.",
-    "p4" : "Des émissions de texte en direct comme celle-ci"
+    "p4" : "Des émissions de texte en direct comme celle-ci",
+    "font": "Police de Caractères"
   },
   "STREAM": {
     "serverStatus": "Serveur de diffusion",

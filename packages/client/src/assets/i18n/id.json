@@ -7,7 +7,8 @@
     "it": "Italia (Italia)",
     "pt": "Portugis (Portugis)",
     "id": "Bahasa Indonesia (Bahasa Indonesia)",
-    "pl": "Polandia (Polski)"
+    "pl": "Polandia (Polski)",
+    "uk": "Ukrania (Український)"
   },
   "THEMES": {
     "dark": "gelap",
@@ -255,7 +256,8 @@
     "p1": "Setiap segmen teks yang sebelumnya diakui akan muncul seperti ini.",
     "p2": "Menggulir dari bawah.",
     "p3": "Dengan setiap hasil baru muncul di bawah yang sebelumnya.",
-    "p4": "Teks Langsung Pertunjukan Seperti Ini"
+    "p4": "Teks Langsung Pertunjukan Seperti Ini",
+    "font": "Huruf"
   },
   "STREAM": {
     "serverStatus": "Server siaran",

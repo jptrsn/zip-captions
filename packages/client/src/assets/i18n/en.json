@@ -7,7 +7,8 @@
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
     "id": "Indonesian (Bahasa Indonesia)",
-    "pl": "Polish (Polski)"
+    "pl": "Polish (Polski)",
+    "uk": "Ukrainian (Український)"
   },
   "THEMES": {
     "dark": "dark",
@@ -255,7 +256,8 @@
     "p1": "Each segment of previously-recognized text will appear like this.",
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
-    "p4": "Live text shows like this"
+    "p4": "Live text shows like this",
+    "font": "Font"
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",

@@ -7,7 +7,8 @@
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
     "id": "Bahasa Indonesia",
-    "pl": "Polaco (Polski)"
+    "pl": "Polaco (Polski)",
+    "uk": "Ucraniano (Український)"
   },
   "THEMES": {
     "dark": "dark",
@@ -48,16 +49,12 @@
   "ABOUT": {
     "h1": "O que são legendas com Zip Captions?",
     "b1": "Zip Captions é uma ferramenta que gerará resultados de fala para texto para um determinado dispositivo de entrada, como o microfone da sua máquina.",
-
     "h2": "Por que?",
     "b2": "A conversão de áudio em texto em tempo real pode tornar a vida mais acessível. Nosso objetivo é fazer isso para todos de graça, o mais simplesmente possível.",
-
     "h3": "Quem é você?",
     "b3": "Somos um par de educadores e codificadores que acreditam que a tecnologia deve estar acessível e que a acessibilidade não existe atrás de um paywall.",
-
     "h4": "Quanto?",
     "b4": "A funcionalidade principal sempre será gratuita. Nosso objetivo é tornar o máximo possível da ferramenta. No entanto, em alguns casos, podemos pedir dinheiro para ajudar a compensar os custos do projeto. ",
-    
     "h5": "Como?",
     "b5": "A funcionalidade principal sempre será gratuita. Nosso objetivo é ganhar o máximo de ferramenta o mais gratuito possível. No entanto, em alguns casos, podemos pedir dinheiro para ajudar a compensar os custos do projeto."
   },
@@ -259,7 +256,8 @@
     "p1":  "Cada segmento do texto reconhecido anteriormente será assim.",
     "p2":  "Rolando para cima do fundo.",
     "p3":  "Com cada novo resultado aparecendo embaixo do anterior.",
-    "p4":  "Shows de texto ao vivo como este"
+    "p4":  "Shows de texto ao vivo como este",
+    "font": "Tipo de letra"
   },
   "STREAM": {
     "serverStatus":  "Servidor de transmissão",
