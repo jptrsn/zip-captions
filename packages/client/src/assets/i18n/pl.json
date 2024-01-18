@@ -1,14 +1,14 @@
 {
   "LANGUAGES": {
-    "en": "English (język angielski)",
-    "fr": "French (Français)",
-    "sp": "Spanish (Espagnol)",
-    "de": "German (Deutsch)",
-    "it": "Italian (Italiano)",
-    "pt": "Portuguese (Português)",
-    "id": "Bahasa Indonesia",
+    "en": "Angielski (English)",
+    "fr": "Francuski (Français)",
+    "sp": "Hiszpański (Espagnol)",
+    "de": "Niemiecki (Deutsch)",
+    "it": "Włoski (Italiano)",
+    "pt": "Portugalski (Português)",
+    "id": "Indonezyjski (Bahasa Indonesia)",
     "pl": "Polski",
-    "uk": "Język ukraiński (Український)"
+    "uk": "Ukraiński (Український)"
   },
   "THEMES": {
     "dark":  "ciemny",
