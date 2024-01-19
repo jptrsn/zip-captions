@@ -11,17 +11,6 @@ import { GoogleUserInfo } from '../app/services/google-api/google-api.model';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async createUser(username: string, hash: string): Promise<HydratedDocument<User>> {
-    const uuid = v4();
-    const newUser: HydratedDocument<User> = new this.userModel({
-      username: username.toLowerCase(),
-      hash,
-      uuid
-    });
-    await newUser.save();
-    return newUser;
-  }
-
   async findById(id: string): Promise<HydratedDocument<User> | undefined> {
     return this.userModel.findById(id);
   }

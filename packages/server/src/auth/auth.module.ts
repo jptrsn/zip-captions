@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { SessionSerializer } from '../app/serializer/session.serializer';
-import { CacheService } from '../app/services/cache/cache.service';
-import { UserModule } from '../user/user.module';
-import { AuthController } from './auth.controller';
+// import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
-import { GoogleApiService } from '../app/services/google-api/google-api.service';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    UserModule,
-    HttpModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
@@ -21,12 +14,9 @@ import { HttpModule } from '@nestjs/axios';
     }),
     PassportModule.register({ session: true }),
   ],
-  controllers: [AuthController],
+  controllers: [],
   providers: [
-    AuthService,
-    CacheService,
-    GoogleApiService,
-    SessionSerializer,
+    AuthService
   ],
 })
 export class AuthModule {}

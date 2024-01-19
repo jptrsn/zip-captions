@@ -40,7 +40,7 @@
         "production": {
           "buildTarget": "server:build:production"
         }
-      },
+      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
