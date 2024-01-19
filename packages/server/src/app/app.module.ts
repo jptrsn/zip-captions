@@ -9,6 +9,7 @@ import { PeerServerService } from './services/peer-server/peer-server.service';
 import { HttpModule } from '@nestjs/axios'
 import { GoogleStrategy } from './strategies/google.strategy';
 import { AppService } from './app.service';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -18,16 +19,13 @@ import { AppService } from './app.service';
       user: process.env.MONGO_DB_USER,
       pass: process.env.MONGO_DB_PASSWORD
     }),
-    HttpModule
-  ],
-  controllers: [
-    AppController,
+    HttpModule,
+    UserModule
   ],
   providers: [
     CacheService,
     PeerServerService,
     SessionGateway,
-    AppService,
     { provide: APP_INTERCEPTOR, useClass: CacheInterceptor },
     GoogleStrategy
   ],
