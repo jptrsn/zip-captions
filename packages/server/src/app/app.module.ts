@@ -3,11 +3,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SessionGateway } from './gateways/session.gateway';
 import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
 import { HttpModule } from '@nestjs/axios'
+import { GoogleStrategy } from './strategies/google.strategy';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -23,11 +24,12 @@ import { HttpModule } from '@nestjs/axios'
     AppController,
   ],
   providers: [
-    AppService,
     CacheService,
     PeerServerService,
     SessionGateway,
-    { provide: APP_INTERCEPTOR, useClass: CacheInterceptor }
+    AppService,
+    { provide: APP_INTERCEPTOR, useClass: CacheInterceptor },
+    GoogleStrategy
   ],
   exports: []
 })
