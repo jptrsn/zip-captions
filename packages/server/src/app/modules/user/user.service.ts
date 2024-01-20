@@ -25,6 +25,7 @@ export class UserService {
     return this.userModel.findOne(props);
   }
 
+  // Finds or creates the user document and returns it for valid google oauth responses
   async googleLogin(req) {
     if (!req.user) {
       throw new Error('No user from google');

@@ -10,7 +10,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_REDIRECT_URI,
-      scope: ['email', 'profile', 'openid'],
+      scope: ['email', 'profile'],
     });
   }
   async validate(
@@ -19,10 +19,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { name, emails, photos } = profile;
+    const { id, provider, name, emails, photos } = profile;
     const user: PassportUserInfo = {
-      id: profile.id,
-      provider: profile.provider,
+      id: id,
+      provider: provider,
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,
