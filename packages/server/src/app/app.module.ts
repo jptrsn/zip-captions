@@ -2,13 +2,11 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AppController } from './app.controller';
 import { SessionGateway } from './gateways/session.gateway';
 import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
 import { HttpModule } from '@nestjs/axios'
 import { GoogleStrategy } from './strategies/google.strategy';
-import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
