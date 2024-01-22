@@ -24,7 +24,9 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
-      - uses: nrwl/nx-set-shas@v3
+      - uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: "origin/develop"
       # This line is needed for nx affected to work when CI is running on a PR
       - run: git branch --track main origin/develop
 
