@@ -33,7 +33,7 @@ jobs:
 
       - name: Identify affected projects
         run: |
-          echo "AFFECTED=$(npx nx show projects --affected --json --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} | jq -r '.projects | join(" ")')" >> $GITHUB_ENV
+          echo "AFFECTED=$(npx nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} | jq -r '.projects | join(" ")')" >> $GITHUB_ENV
 
       - name: Set affected projects as output
         id: set-output
