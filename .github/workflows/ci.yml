@@ -19,10 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Fetch Base Branch
-        run: |
-          git fetch origin main:main
+        with:
+          fetch-depth: 0
 
       - name: Install Dependencies
         run: npm ci
