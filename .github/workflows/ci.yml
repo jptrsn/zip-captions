@@ -47,11 +47,11 @@ jobs:
         project: [ client ]
     steps:
       - name: Checkout code
-        if: needs.identify_affected.outputs.affected != ""
+        if: needs.identify_affected.outputs.affected
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        if: needs.identify_affected.outputs.affected != ""
+        if: needs.identify_affected.outputs.affected
         run: npm ci
 
       - name: Build Project
