@@ -32,7 +32,7 @@ export enum AppTheme {
   ZipLight = 'Zip-Light',
 }
 
-export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt' | 'id';
+export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt' | 'id' | 'pl' | 'uk';
 
 export const AvailableLanguages: Language[] = [
   'en',
@@ -40,8 +40,10 @@ export const AvailableLanguages: Language[] = [
   'sp',
   'de',
   'it',
-  'id'
-  // 'pt' // TODO: Portuguese translation file
+  'pt',
+  'id',
+  'pl',
+  'uk'
 ]
 
 export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';

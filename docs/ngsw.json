@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1704733115317,
+  "timestamp": 1705541014935,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,16 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
-        "/415.fe8021d05f843592.js",
+        "/415.c00ce363112dac8f.js",
         "/57.13299231aa8e1cc9.js",
-        "/658.49a9bb7c5de7186d.js",
+        "/658.b279399836087b36.js",
         "/favicon.ico",
         "/index.html",
-        "/main.081f31da470c6157.js",
+        "/main.ca1f7f321a159b90.js",
         "/manifest.webmanifest",
-        "/polyfills.5dd5880891494581.js",
-        "/runtime.708d594cc1907c27.js",
-        "/styles.ae430c6331d7099e.css"
+        "/polyfills.e3fabfd0a07273d8.js",
+        "/runtime.7d4a7fe6cdc8c89c.js",
+        "/styles.7b7671a8da4c9ed2.css"
       ],
       "patterns": []
     },
@@ -37,6 +37,8 @@
         "/assets/i18n/fr.json",
         "/assets/i18n/id.json",
         "/assets/i18n/it.json",
+        "/assets/i18n/pl.json",
+        "/assets/i18n/pt.json",
         "/assets/i18n/sp.json",
         "/assets/icons/OBS_Studio_Logo.svg",
         "/assets/icons/android-launchericon-512-512.png",
@@ -175,19 +177,21 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/415.fe8021d05f843592.js": "5d1e556184f1ac493eba519eb57d12959d313138",
+    "/415.c00ce363112dac8f.js": "d3fbd2c52485d4a5bf8a54988dedfd5399ef9fe9",
     "/57.13299231aa8e1cc9.js": "0899f7bff46d8620de7bd15ebbdc897683086b3e",
-    "/658.49a9bb7c5de7186d.js": "48e293f13e0a8c08df6810e4514c9d47f8292da5",
-    "/assets/i18n/de.json": "6cda4dea456c78a683443c736e2311ab851c4698",
-    "/assets/i18n/en.json": "1b79705af02c775c2cc333d8e329c06e554ee635",
-    "/assets/i18n/fr.json": "941897cf14c292681c87e4d31b053dbd53e3ff05",
-    "/assets/i18n/id.json": "f6114bc0e5bbc4040e975c2dd24d5c8296c75b08",
-    "/assets/i18n/it.json": "f2155e8b026a89054ec453f7c5cebb33a6d8f999",
-    "/assets/i18n/sp.json": "a97520dc706a5d7283597f30145cdee7430a8ff6",
+    "/658.b279399836087b36.js": "4a3d4a8513f6291a5005af43c761e0d479a7c4a9",
+    "/assets/i18n/de.json": "3932031cb5d300471b48facdbaf449283971a882",
+    "/assets/i18n/en.json": "40bb8a6c16f95655f4f612b27d7c988aba79c47d",
+    "/assets/i18n/fr.json": "ee0bca8fc223b32a499fdcbc279d9c350129462d",
+    "/assets/i18n/id.json": "b42a34d95f1cf6f468d0859e84d42e3a2f2252ab",
+    "/assets/i18n/it.json": "20904306eeaf9ef6fb467af7e03bb38f80c3fe27",
+    "/assets/i18n/pl.json": "3849e91991f707eff728fc93751f12dcf28d047b",
+    "/assets/i18n/pt.json": "f60cebf8ed2ff1831ce760752af9020173065295",
+    "/assets/i18n/sp.json": "88a5a857997ab341506c43dcaa3f79a6aeee082f",
     "/assets/icons/OBS_Studio_Logo.svg": "bb371e8ab6708c864fd5955a01fc1e5b475fff0e",
     "/assets/icons/android-launchericon-512-512.png": "b49b245996fa3daa987d4f278fb2b14efa5a5569",
-    "/assets/icons/basic_icon_white.svg": "1fce3467dc10a9d14afe67c97c5b04b836e16499",
-    "/assets/icons/bolt_icon_white.svg": "e3f3c8752766f6ee51a9cb362fd7976c6b08b567",
+    "/assets/icons/basic_icon_white.svg": "c836f9e5bdc97f291234931bddccf88e971ba74e",
+    "/assets/icons/bolt_icon_white.svg": "f022dcfd322eba6c1fa942a402fdea1df70dd1ea",
     "/assets/icons/discord-mark-white.svg": "6068e50249899fe9d308132e89c1a0114b992ecb",
     "/assets/icons/github-mark-white.svg": "f202b6faccfd5cc46299b976c2635fee60b55aa0",
     "/assets/icons/github-mark.svg": "6b232428006160df976af8f0585a2bee5b1059de",
@@ -316,12 +320,12 @@
     "/assets/screenshots/screenshot-render_411x730.png": "3caae33a327bd970175386356be3ea93d299e760",
     "/assets/screenshots/screenshot-settings_411x730.png": "3f5a2a06f7f146f6af0a19eab499011403038cde",
     "/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
-    "/index.html": "3d31984b28f0b393fb721906f2c4158535068604",
-    "/main.081f31da470c6157.js": "0cd72c851e98750203ec7219c0ec3595a46490d6",
-    "/manifest.webmanifest": "92be55c75feefa4f1ec4aefc6b621bee445df841",
-    "/polyfills.5dd5880891494581.js": "237a27d2ac544566549967bd3fc84d7e999db70e",
-    "/runtime.708d594cc1907c27.js": "13684383749483de6217c45cd06eb52d5903ac75",
-    "/styles.ae430c6331d7099e.css": "c4ef36a78dd6b79227aa78b04cca1b2c4442d92c"
+    "/index.html": "60a0cbe1300f06a8a59c1013f945aae35827fe0c",
+    "/main.ca1f7f321a159b90.js": "9c011ecab693cbe700d2253978a2cb34d41226c5",
+    "/manifest.webmanifest": "be652c0b13f2e4c37fb0496bf4a06c8e65ec5b1d",
+    "/polyfills.e3fabfd0a07273d8.js": "cb26201bd60974ab081aa1380dfab8381bd3a46f",
+    "/runtime.7d4a7fe6cdc8c89c.js": "ea6e15b038808c0e522db5c13863931d1bbef124",
+    "/styles.7b7671a8da4c9ed2.css": "0f495166b2ac76ad4b719b21ed1c88e60a70ef79"
   },
   "navigationUrls": [
     {
