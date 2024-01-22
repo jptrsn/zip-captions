@@ -7,13 +7,15 @@ import { User, UserSchema } from './user.model';
 import { CacheService } from '../../services/cache/cache.service';
 import { AzureStrategy } from '../../strategies/azure.strategy';
 import { GoogleStrategy } from '../../strategies/google.strategy';
-import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     HttpModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    PassportModule.register({})
+    JwtModule.registerAsync({
+      useFactory: () => ({ secret: process.env.JWT_SECRET })
+    })
   ],
   controllers: [
     UserController

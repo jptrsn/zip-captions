@@ -50,6 +50,11 @@ export class User {
   })
   googleId?: string;
 
+  @Prop({
+    type: String
+  })
+  msId?: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -60,7 +65,7 @@ export interface PassportUserInfo {
   email: string;
   firstName: string;
   lastName: string;
-  picture: string;
+  picture?: string;
   accessToken: string;
   refreshToken?: string;
 }
