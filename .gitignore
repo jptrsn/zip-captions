@@ -46,3 +46,6 @@ Thumbs.db
 
 # Android Build
 .gradle/*
+
+# Monorepo cache artifacts
+.nx/*
