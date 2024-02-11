@@ -38,7 +38,6 @@ export class AppComponent {
 
     this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector));
     if ('windowControlsOverlay' in navigator) {
-      console.log(navigator.windowControlsOverlay)
       // @ts-expect-error navigator.windowControlsOverlay is of type unknown
       this.store.dispatch(AppActions.updateWindowsOverlayState({visible: navigator.windowControlsOverlay.visible}));
       
