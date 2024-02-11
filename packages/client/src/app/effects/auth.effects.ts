@@ -13,19 +13,9 @@ export class AuthEffects {
   constructor(private actions$: Actions,
               private authService: AuthService) {}
 
-  login$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.login),
-      switchMap(({email, password}) => this.authService.login(email, password)
-        .pipe(
-          map((data) => AuthActions.loginSuccess({data})),
-          catchError((err: any) => of(AuthActions.loginFailure({error: err.message})))
-        )
-      )
-    )
-  )
-
+              /*
   validate$ = createEffect(() =>
+  // TODO: Modify validate to verify jwt
     this.actions$.pipe(
       ofType(AuthActions.validate),
       switchMap(({email, password}) => this.authService.validate(email, password)
@@ -35,6 +25,7 @@ export class AuthEffects {
       )
     )
   )
+  */
 
   logout$ = createEffect(() =>
     this.actions$.pipe(
@@ -48,27 +39,4 @@ export class AuthEffects {
     )
   )
 
-  signup$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.signUp),
-      switchMap(({email, password}) => this.authService.signUp(email, password)
-        .pipe(
-          map((data) => AuthActions.signUpSuccess({data})),
-          catchError((err: any) => of(AuthActions.signUpFailure({error: err.message})))
-        )
-      )
-    )
-  )
-
-  loginWithGoogle$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.loginWithGoogleToken),
-      switchMap(({ fragment }) => this.authService.loginWithGoogle(fragment)
-        .pipe(
-          map((data) => AuthActions.loginWithGoogleSuccess({ data })),
-          catchError((err: any) => of(AuthActions.loginWithGoogleFailure({error: err.message})))
-        )
-      )
-    )
-  )
 }

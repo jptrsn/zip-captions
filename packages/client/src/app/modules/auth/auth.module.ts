@@ -11,7 +11,6 @@ import { AuthEffects } from '../../effects/auth.effects';
 import { StoreModule } from '@ngrx/store';
 import { authReducer } from '../../reducers/auth.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
-import { EmailLoginComponent } from './components/email-login/email-login.component';
 import { NgIconsModule } from '@ng-icons/core';
 import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-login.component';
 import { GoogleOauthLoginComponent } from './components/google-oauth-login/google-oauth-login.component';
@@ -20,7 +19,6 @@ import { GoogleOauthLoginComponent } from './components/google-oauth-login/googl
   declarations: [
     LoginComponent,
     UserHomeComponent,
-    EmailLoginComponent,
     MicrosoftLoginComponent,
     GoogleOauthLoginComponent,
   ],
