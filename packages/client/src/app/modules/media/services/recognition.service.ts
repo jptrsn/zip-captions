@@ -1,7 +1,7 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { Subject, auditTime, debounceTime, map, takeUntil, throttleTime } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
 import { ObsActions } from '../../../actions/obs.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
@@ -27,6 +27,7 @@ export class RecognitionService {
   private platform: Signal<AppPlatform | undefined>;
   private DEBOUNCE_TIME_MS = 250;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
+  private NETWORK_ERROR_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 15;
   private historyWorker: Worker;
   private language: Signal<Language>;
@@ -131,8 +132,12 @@ export class RecognitionService {
     // Debounce is to provide a timeout after the last-recognized full text, 
     // in order to better handle chunking in related tasks for the media stream
     // TODO: Allow adjustment of debounce
-    const debounce$: Subject<void> = new Subject<void>()
+    const debounce$: Subject<number> = new Subject<number>()
     const disconnect$: Subject<void> = new Subject<void>();
+
+    // Network error observable is used to debounce intermittent network issues that interrupt connection to the recognition server without going offline fully
+    const networkError$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
     // Live results logic
     debounce$.pipe(
       takeUntil(disconnect$),
@@ -174,7 +179,7 @@ export class RecognitionService {
           });
           transcript = '';
           liveOutput.set('');
-                    debounce$.next();
+          debounce$.next(Date.now());
         }
       }
     });
@@ -196,11 +201,11 @@ export class RecognitionService {
         console.log('liveoutput blank')
         recognition.stop();
       }
-    })
+    });
 
     recognition.addEventListener('result', (e: any) => {
       // console.log('result')
-      debounce$.next();
+      debounce$.next(Date.now());
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
         transcript = mostRecentResults
@@ -252,27 +257,48 @@ export class RecognitionService {
       }
     });
 
+    networkError$.pipe(
+      takeUntil(disconnect$),
+      auditTime(this.NETWORK_ERROR_DEBOUNCE_MS),
+      delay(1500),
+      withLatestFrom(debounce$)
+    ).subscribe(([errTimestamp, resultTimestamp]) => {
+      // console.log(`err: ${new Date(errTimestamp).toTimeString()}, result: ${new Date(resultTimestamp).toTimeString()}`)
+      if (errTimestamp > resultTimestamp) {
+        recognition.stop();
+        this._handleRecognitionError(streamId, { error: "network"});
+      } else {
+        console.log('**************************** THROTTLED NETWORK ERROR SUPPRESSED **********************************')
+      }
+    })
+
     recognition.addEventListener('error', (err: any) => {
-      console.log('recognition error', err.message);
-      console.error(err);
+      if (err.error === 'network') {
+        // Use backoff to retry recognition
+        networkError$.next(Date.now());
+        return;
+      } else if (networkError$.value) {
+        networkError$.next(0);
+      }
       if (err.error === 'no-speech') {
         if (liveOutput() !== '') {
           liveOutput.set('');
-        // } else if (recognizedText().length) {
-        //   recognizedText.update((previous) => previous.slice(0, previous.length - 1))
         }
         return;
-      // } else if (err.error === 'aborted' && this.activeRecognitionStreams.has(streamId)) {
-      //   console.log('supressing aborted error, still acive');
-      //   return;
       }
-      this.activeRecognitionStreams.delete(streamId);
-      // console.log('stopping due to error');
+
+      this._handleRecognitionError(streamId, err);
       recognition.stop();
-      this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
-      this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
     });
 
+  }
+
+  private _handleRecognitionError(streamId: string, err: any) {
+    console.warn('recognition error', err.error);
+    this.activeRecognitionStreams.delete(streamId);
+    this.store.dispatch(RecognitionActions.disconnectRecognition({id: streamId}))
+    this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
+    this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
   }
 
   private _debugAllEventListeners(recognition: SpeechRecognition): void {
