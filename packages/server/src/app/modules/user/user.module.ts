@@ -8,6 +8,7 @@ import { CacheService } from '../../services/cache/cache.service';
 import { AzureStrategy } from '../../strategies/azure.strategy';
 import { GoogleStrategy } from '../../strategies/google.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from '../../strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [
     AzureStrategy,
     GoogleStrategy,
+    JwtStrategy,
     UserService,
     CacheService,
   ],

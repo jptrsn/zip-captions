@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CacheService } from '../../../services/cache/cache.service';
+import { StorageService } from '../../../services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class AuthService {
   private userEndpoint: string;
 
   constructor(private http: HttpClient,
+              private storage: StorageService,
               private cache: CacheService) {
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
@@ -29,6 +31,11 @@ export class AuthService {
     }
     console.log('CHECK user authentication here')
     return false;
+  }
+
+  login(token: string): Observable<any> {
+    this.storage.set(token, token);
+    return this.http.get(`${this.userEndpoint}/profile`, { headers: new HttpHeaders({"Authorization": `Bearer ${token}`})})
   }
 
   logout(): Observable<{message: string}> {

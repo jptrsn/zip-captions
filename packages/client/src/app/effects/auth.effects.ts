@@ -27,6 +27,18 @@ export class AuthEffects {
   )
   */
 
+  login$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(AuthActions.login),
+      switchMap(({token}) => this.authService.login(token)
+        .pipe(
+          map((result) => AuthActions.loginSuccess({ data: result })),
+          catchError((err) => of(AuthActions.loginFailure({ error: err.message})))
+        )
+      )
+    )
+  )
+
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logout),

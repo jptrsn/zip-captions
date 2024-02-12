@@ -4,7 +4,7 @@ import { LoginResponse } from '../reducers/auth.reducer';
 export const AuthActions = createActionGroup({
   source: 'Auth',
   events: {
-    'Login': emptyProps(),
+    'Login': props<{token: string}>(),
     'Login Success': props<{ data: LoginResponse }>(),
     'Login Failure': props<{ error: string }>(),
 

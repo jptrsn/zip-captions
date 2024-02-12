@@ -16,10 +16,6 @@ export class UserService {
     await newUser.save();
     return newUser;
   }
-   
-  async findById(id: string): Promise<HydratedDocument<User> | undefined> {
-    return this.userModel.findById(id);
-  }
 
   async findOne(props: Partial<User>): Promise<HydratedDocument<User> | undefined> {
     return this.userModel.findOne(props);
@@ -50,11 +46,7 @@ export class UserService {
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
-  async msLogin(req) {
-    if (!req.user) {
-      throw new Error('No user from microsoft');
-    }
-    const userInfo: PassportUserInfo = req.user;
+  async msLogin(userInfo: PassportUserInfo) {
     const cacheKey = `ms_user_${userInfo.id}`
     let user = await this.cache.wrap(
       cacheKey,
