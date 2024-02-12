@@ -2,10 +2,18 @@ import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
 import { UserService } from './user.service';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService,
+                private jwtService: JwtService) 
+    {
+
+    }
+
+    @Get('login')
+    @UseGuards()
 
     @Get('google-login')
     @UseGuards(GoogleOAuthGuard)
@@ -22,8 +30,10 @@ export class UserController {
     @Get('google-redirect')
     @UseGuards(GoogleOAuthGuard)
     async googleAuthRedirect(@Req() req, @Res() res) {
-        const response = await this.userService.googleLogin(req);
-        res.json(response)
+        const user = await this.userService.googleLogin(req);
+        const token = this.jwtService.sign({sub: user.id, user})
+        res.cookie('id', token, { sameSite: true });
+        res.redirect(`http://localhost:4200/auth/login?getUser`)
     }
 
     @Get('azure-redirect')
@@ -33,8 +43,7 @@ export class UserController {
       res.json(response)
     }
 
-    @Get('azure-logout')
-    // @UseGuards(AzureOAuthGuard)
+    @Get('logout')
     azureAuthLogout(@Req() req, @Res() res) {
       req.session.destroy(() => {
         req.logout(() => {

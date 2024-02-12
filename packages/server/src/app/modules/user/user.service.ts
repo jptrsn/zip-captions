@@ -26,7 +26,7 @@ export class UserService {
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
-  async googleLogin(req) {
+  async googleLogin(req): Promise<HydratedDocument<User>> {
     if (!req.user) {
       throw new Error('No user from google');
     }
@@ -46,10 +46,7 @@ export class UserService {
       await this.cache.set(cacheKey, user)
     }
 
-    return {
-      message: 'User information from google',
-      user
-    };
+    return user;
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
