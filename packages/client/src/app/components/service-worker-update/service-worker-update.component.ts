@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit, Signal, WritableSignal, signal } from '@angular/core';
+import { Component, Signal, WritableSignal, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationStart, Router } from '@angular/router';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { expandRightOnEnterAnimation } from 'angular-animations';
-import { Subject, filter, map, takeUntil, tap, throttle, throttleTime } from 'rxjs';
+import { filter, map, tap, throttleTime } from 'rxjs';
 
 @Component({
   selector: 'app-service-worker-update',
