@@ -46,7 +46,7 @@ export class UserService {
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
-  async msLogin(userInfo: PassportUserInfo) {
+  async msLogin(userInfo: PassportUserInfo): Promise<HydratedDocument<User>> {
     const cacheKey = `ms_user_${userInfo.id}`
     let user = await this.cache.wrap(
       cacheKey,
@@ -62,10 +62,7 @@ export class UserService {
       await this.cache.set(cacheKey, user)
     }
 
-    return {
-      message: 'User information from microsoft',
-      user
-    };
+    return user;
   }
 
   private async _loginUser(email: string, additionalUserInfo: Partial<User>): Promise<HydratedDocument<User>> {

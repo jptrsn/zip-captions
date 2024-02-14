@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, WritableSignal, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { CacheService } from '../../../services/cache/cache.service';
 import { StorageService } from '../../../services/storage.service';
 
@@ -9,8 +9,6 @@ import { StorageService } from '../../../services/storage.service';
 })
 export class AuthService {
 
-  private userHasAuth: WritableSignal<boolean> = signal(false);
-  private authEndpoint: string;
   private userEndpoint: string;
 
   constructor(private http: HttpClient,
@@ -18,30 +16,30 @@ export class AuthService {
               private cache: CacheService) {
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
-    const authRoute = process.env['ZIP_AUTH_API_ROUTE'] || 'auth';
     const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';
-    this.authEndpoint = `${baseUrl}/${apiVersion}/${authRoute}`;
     this.userEndpoint = `${baseUrl}/${apiVersion}/${userRoute}`;
   }
 
   // TODO: Refactor to proper auth check
-  userIsAuthenticated(): boolean {
-    if (this.userHasAuth()) {
-      return true;
+  userIsAuthenticated(): boolean | Observable<boolean> {
+    const storageToken = this.storage.get('token');
+    if (storageToken) {
+      return this.login(storageToken);
     }
-    console.log('CHECK user authentication here')
     return false;
   }
 
   login(token: string): Observable<any> {
-    this.storage.set(token, token);
-    return this.http.get(`${this.userEndpoint}/profile`, { headers: new HttpHeaders({"Authorization": `Bearer ${token}`})})
+    this.storage.set('token', token);
+    return this.http.get(`${this.userEndpoint}/profile`).pipe(
+      tap((loginResponse) => console.log('login response', loginResponse))
+      )
   }
 
-  logout(): Observable<{message: string}> {
-    this.userHasAuth.set(false);
-    this.cache.remove('google_fragment')
-    return of({message: 'ok'})
+  logout(): Observable<any> {
+    return this.http.get(`${this.userEndpoint}/logout`).pipe(
+      tap(() => this.storage.remove('token'))
+    )
   }
 
   getGoogleLoginUrl(): string {
@@ -50,11 +48,6 @@ export class AuthService {
   
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
-  }
-
-  private _checkSession(): Observable<boolean> {
-    console.log('check session')
-    return of(false)
   }
   
 }

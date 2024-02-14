@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule, isDevMode } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -37,6 +37,7 @@ import { obsReducers } from './reducers/obs.reducer';
 import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 import { DetectPwaInstallComponent } from './components/detect-pwa-install/detect-pwa-install.component';
 import { ObsConnectionStatusComponent } from './components/obs-connection-status/obs-connection-status.component';
+import { jwtInterceptor } from './interceptors/jwt.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -99,6 +100,12 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     TimeagoModule.forRoot(),
+  ],
+  providers: [
+    provideHttpClient(withInterceptors([
+      jwtInterceptor
+    ])),
+
   ],
   bootstrap: [AppComponent],
 })

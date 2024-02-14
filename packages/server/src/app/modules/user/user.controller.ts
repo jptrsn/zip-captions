@@ -1,9 +1,10 @@
-import { Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Next, Req, Res, UseGuards } from '@nestjs/common';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
 import { UserService } from './user.service';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -36,32 +37,41 @@ export class UserController {
     @Get('google-redirect')
     @UseGuards(GoogleOAuthGuard)
     async googleAuthRedirect(@Req() req, @Res() res) {
+      try {
         const user = await this.userService.googleLogin(req);
-        const token = this.jwtService.sign({sub: user.id })
-        res.redirect(`http://localhost:4200/auth/login?id_token=${token}`)
+        this._sendTokenResponse(user.id, res);
+      } catch(e) {
+        res.redirect(`http://localhost:4200/auth/login?error=${encodeURIComponent(e)}`)
+      }
     }
 
     @Get('azure-redirect')
     @UseGuards(AzureOAuthGuard)
     async azureAuthRedirect(@Req() req, @Res() res) {
-      console.log('azure redirect', req);
       try {
         if (req.authInfo.message) {
           throw new Error('No user from microsoft');
         }
-        const response = await this.userService.msLogin(req.user);
-        res.json(response) 
+        const user = await this.userService.msLogin(req.user);
+        this._sendTokenResponse(user.id, res);
       } catch(e: any) {
         res.redirect(`http://localhost:4200/auth/login?error=${encodeURIComponent(e)}`)
       }
     }
 
     @Get('logout')
-    azureAuthLogout(@Req() req, @Res() res) {
-      req.session.destroy(() => {
-        req.logout(() => {
-          res.send('OK')
-        })
+    @UseGuards(JwtAuthGuard)
+    logout(@Req() req, @Res() res, @Next() next) {
+      req.logout((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect('/')
       })
+    }
+
+    private _sendTokenResponse(userId: string, res: Response): void {
+      const token = this.jwtService.sign({ sub: userId })
+      res.redirect(`http://localhost:4200/auth/login?id_token=${token}`);
     }
 }
