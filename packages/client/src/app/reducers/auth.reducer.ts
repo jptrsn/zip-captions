@@ -12,7 +12,6 @@ export interface AuthState {
   loading: boolean;
   loggedIn: boolean;
   email?: string;
-  uuid?: string;
   error?: string;
 }
 
@@ -24,7 +23,7 @@ export const defaultAuthState: AuthState = {
 export const authReducer = createReducer(
   defaultAuthState,
   on(AuthActions.login, (state: AuthState) => ({...state, loading: true, error: undefined})),
-  on(AuthActions.loginSuccess, (state: AuthState, action: { data: LoginResponse }) => ({...state, loading: false, loggedIn: true, email: action.data.username, uuid: action.data.uuid })),
+  on(AuthActions.loginSuccess, (state: AuthState) => ({...state, loading: false, loggedIn: true })),
   on(AuthActions.loginFailure, (state: AuthState, action: { error: string}) => ({...state, error: action.error, loading: false, loggedIn: false, email: undefined, uuid: undefined})),
   
   on(AuthActions.clearError, (state: AuthState) => ({...state, error: undefined})),

@@ -12,8 +12,7 @@ export class AuthService {
   private userEndpoint: string;
 
   constructor(private http: HttpClient,
-              private storage: StorageService,
-              private cache: CacheService) {
+              private storage: StorageService) {
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';

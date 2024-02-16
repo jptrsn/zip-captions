@@ -312,7 +312,8 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
-    "auth": "My Account",
+    "auth": "Login",
+    "user": "My Account",
     "forum": "Forum"
   },
   "FOOTER": {

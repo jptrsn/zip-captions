@@ -1,4 +1,4 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 import { AppState } from '../models/app.model';
 import { AuthState } from '../reducers/auth.reducer';
 
@@ -12,16 +12,6 @@ export const selectUserLoggedIn = createSelector(
 export const selectAuthLoading = createSelector(
   selectAuthState,
   (state) => state.loading
-)
-
-export const selectUserEmail = createSelector(
-  selectAuthState,
-  (state) => state.email
-)
-
-export const selectUserUuid = createSelector(
-  selectAuthState,
-  (state) => state.uuid
 )
 
 export const selectAuthError = createSelector(
