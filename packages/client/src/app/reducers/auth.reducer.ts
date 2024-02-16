@@ -1,17 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthActions } from '../actions/auth.actions';
 
-export interface LoginResponse {
-  uuid: string;
-  username: string;
-  access_token: string;
-  expiry: number;
-}
-
 export interface AuthState {
   loading: boolean;
   loggedIn: boolean;
-  email?: string;
   error?: string;
 }
 

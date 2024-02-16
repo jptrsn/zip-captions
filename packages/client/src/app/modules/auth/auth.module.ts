@@ -10,15 +10,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '../../effects/auth.effects';
 import { StoreModule } from '@ngrx/store';
 import { authReducer } from '../../reducers/auth.reducer';
-import { UserHomeComponent } from './components/user-home/user-home.component';
 import { NgIconsModule } from '@ng-icons/core';
 import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-login.component';
 import { GoogleOauthLoginComponent } from './components/google-oauth-login/google-oauth-login.component';
+import { UserEffects } from '../../effects/user.effects';
+import { userReducer } from '../../reducers/user.reducer';
 
 @NgModule({
   declarations: [
     LoginComponent,
-    UserHomeComponent,
     MicrosoftLoginComponent,
     GoogleOauthLoginComponent,
   ],
@@ -29,8 +29,9 @@ import { GoogleOauthLoginComponent } from './components/google-oauth-login/googl
     NgIconsModule,
     ReactiveFormsModule,
     TranslateModule.forChild({ extend: true }),
-    EffectsModule.forFeature([AuthEffects]),
+    EffectsModule.forFeature([AuthEffects, UserEffects]),
     StoreModule.forFeature('auth', authReducer),
+    StoreModule.forFeature('user', userReducer)
   ],
 })
 export class AuthModule {}

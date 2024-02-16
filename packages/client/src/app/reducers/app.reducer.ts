@@ -7,6 +7,7 @@ import { defaultSettingsState } from './settings.reducer';
 import { defaultPeerState } from './peer.reducer';
 import { defaultObsState } from './obs.reducer';
 import { defaultAuthState } from './auth.reducer';
+import { defaultUserState } from './user.reducer';
 
 export const defaultAppAppearance: AppAppearanceState = {
   loading: false,
@@ -25,6 +26,7 @@ export const defaultAppState: AppState = {
   peer: defaultPeerState,
   obs: defaultObsState,
   auth: defaultAuthState,
+  user: defaultUserState
 }
 
 export const appAppearanceReducers = createReducer(

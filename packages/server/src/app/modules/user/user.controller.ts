@@ -11,7 +11,6 @@ export class UserController {
     constructor(private readonly userService: UserService,
                 private jwtService: JwtService) 
     {
-
     }
 
     @Get('profile')
@@ -19,7 +18,14 @@ export class UserController {
     async getUser(@Req() req, @Res() res) {
       console.log('get User', req.user)
       const user = await this.userService.findOne({id: req.user.id});
-      res.status(HttpStatus.OK).send(user.toJSON());
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt,
+        familyName: user.familyName,
+        givenName: user.givenName,
+        primaryEmail: user.primaryEmail
+      }
+      res.status(HttpStatus.OK).json(userProfile);
     }
 
     @Get('google-login')

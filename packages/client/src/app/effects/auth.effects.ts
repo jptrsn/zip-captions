@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../modules/auth/services/auth.service';
 import { AuthActions } from '../actions/auth.actions';
-import { switchMap, map, of, catchError } from 'rxjs';
+import { switchMap, map, of, catchError, tap } from 'rxjs';
+import { UserActions } from '../actions/user.actions';
 
 
 
@@ -13,26 +14,13 @@ export class AuthEffects {
   constructor(private actions$: Actions,
               private authService: AuthService) {}
 
-              /*
-  validate$ = createEffect(() =>
-  // TODO: Modify validate to verify jwt
-    this.actions$.pipe(
-      ofType(AuthActions.validate),
-      switchMap(({email, password}) => this.authService.validate(email, password)
-        .pipe(
-          map((data) => AuthActions.validateResponse({data}))
-        )
-      )
-    )
-  )
-  */
-
   login$ = createEffect(() => 
     this.actions$.pipe(
       ofType(AuthActions.login),
       switchMap(({token}) => this.authService.login(token)
         .pipe(
-          map((result) => AuthActions.loginSuccess({ data: result })),
+          tap((result) => console.log('login result', result)),
+          switchMap((result) => [AuthActions.loginSuccess(), UserActions.setProfile({ profile: result })]),
           catchError((err) => of(AuthActions.loginFailure({ error: err.message})))
         )
       )
@@ -48,6 +36,16 @@ export class AuthEffects {
           catchError((err) => of(AuthActions.logoutFailure({error: err.message})))
         )
       )
+    )
+  )
+
+  validate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.validate),
+      switchMap(() => this.authService.validate().pipe(
+        map(() => AuthActions.loginSuccess()),
+        catchError(() => of(AuthActions.logoutSuccess()))
+      ))
     )
   )
 
