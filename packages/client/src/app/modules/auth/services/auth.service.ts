@@ -57,12 +57,17 @@ export class AuthService {
         console.log('validate')
         return this.login(storageToken).pipe(
           map((result) => {
+            console.log('result', result)
             this.userLoggedIn.set(true);
             this.store.dispatch(AuthActions.loginSuccess())
             this.store.dispatch(UserActions.setProfile({profile: result}))
             return true;
           }),
-          catchError(() => of(false))
+          catchError(() => {
+            this.storage.remove('token')
+            this.router.navigate([''])
+            return of(false);
+          })
         )
       }
     }
@@ -77,7 +82,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.get(`${this.userEndpoint}/logout`).pipe(
+    return this.http.post(`${this.userEndpoint}/logout`, {}, { responseType: 'text' }).pipe(
       tap((result) => console.log('logout result', result)),
       tap(() => this.storage.remove('token'))
     )

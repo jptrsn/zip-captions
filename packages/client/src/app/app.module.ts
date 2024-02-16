@@ -38,6 +38,12 @@ import { OfflineWarningComponent } from './components/offline-warning/offline-wa
 import { DetectPwaInstallComponent } from './components/detect-pwa-install/detect-pwa-install.component';
 import { ObsConnectionStatusComponent } from './components/obs-connection-status/obs-connection-status.component';
 import { jwtInterceptor } from './interceptors/jwt.interceptor';
+import { authReducer } from './reducers/auth.reducer';
+import { userReducer } from './reducers/user.reducer';
+import { PeerEffects } from './effects/peer.effects';
+import { ObsEffects } from './effects/obs.effects';
+import { AuthEffects } from './effects/auth.effects';
+import { UserEffects } from './effects/user.effects';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -85,8 +91,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       settings: settingsReducers,
       peer: peerReducers,
       obs: obsReducers,
+      auth: authReducer,
+      user: userReducer
     }),
-    EffectsModule.forRoot([AppEffects, SettingsEffects, RecognitionEffects]),
+    EffectsModule.forRoot([AppEffects, SettingsEffects, RecognitionEffects, PeerEffects, ObsEffects, AuthEffects, UserEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),

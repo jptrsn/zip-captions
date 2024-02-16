@@ -1,10 +1,12 @@
-import { Controller, Get, HttpStatus, Next, Req, Res, UseGuards } from '@nestjs/common';
-import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
-import { UserService } from './user.service';
-import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { Response } from 'express';
+import { NoCache } from '../../decorators/no-cache.decorator';
+import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
+import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { User } from './user.model';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -15,8 +17,7 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getUser(@Req() req, @Res() res) {
-      console.log('get User', req.user)
+    async getUser(@Req() req): Promise<Partial<User>> {
       const user = await this.userService.findOne({id: req.user.id});
       const userProfile = {
         id: user.id,
@@ -25,22 +26,25 @@ export class UserController {
         givenName: user.givenName,
         primaryEmail: user.primaryEmail
       }
-      res.status(HttpStatus.OK).json(userProfile);
+      return userProfile;
     }
 
     @Get('google-login')
+    @NoCache()
     @UseGuards(GoogleOAuthGuard)
-    async googleAuth(@Req() req) {
+    googleAuth(@Req() req) {
         console.log('login with google')
     }
 
     @Get('azure-login')
+    @NoCache()
     @UseGuards(AzureOAuthGuard)
-    async azureAuth(@Req() req) {
+    azureAuth(@Req() req) {
       console.log('login with azure')
     }
 
     @Get('google-redirect')
+    @NoCache()
     @UseGuards(GoogleOAuthGuard)
     async googleAuthRedirect(@Req() req, @Res() res) {
       try {
@@ -52,6 +56,7 @@ export class UserController {
     }
 
     @Get('azure-redirect')
+    @NoCache()
     @UseGuards(AzureOAuthGuard)
     async azureAuthRedirect(@Req() req, @Res() res) {
       try {
@@ -65,15 +70,17 @@ export class UserController {
       }
     }
 
-    @Get('logout')
+    @Post('logout')
     @UseGuards(JwtAuthGuard)
-    logout(@Req() req, @Res() res, @Next() next) {
-      req.logout((err) => {
+    async logout(@Req() req, @Res() res) {
+      await req.logout((err) => {
         if (err) {
-          return next(err);
+          console.warn(err)
+          Promise.reject(err)
         }
-        res.redirect('/')
+        Promise.resolve('OK')
       })
+      res.status(200).send('OK')
     }
 
     private _sendTokenResponse(userId: string, res: Response): void {

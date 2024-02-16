@@ -73,5 +73,9 @@
       </ng-template>
 
     </li>
+    
+    <li *ngIf="isLoggedIn()">
+      <button [ngClass]="{'text-lg': largeText}" (click)="logout()">LOGOUT</button>
+    </li>
   </ul>
 </ng-template>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal, computed } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
@@ -10,7 +10,7 @@ import { selectUserProfile } from '../../../../selectors/user.selector';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent {
   profile: Signal<UserProfile | undefined>;
   joined: Signal<Date | undefined>;
   constructor(private store: Store<AppState>) {
@@ -23,7 +23,5 @@ export class UserProfileComponent implements OnInit {
       return undefined;
     })
   }
-  ngOnInit(): void {
-    console.log('init', this.profile());
-  }
+  
 }
