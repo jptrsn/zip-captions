@@ -310,7 +310,8 @@
     "discord":  "Discord Server",
     "donate":  "Doar",
     "stream":  "Compartilhamento",
-    "forum":  "Fórum"
+    "forum":  "Fórum",
+    "auth": "Minha Conta"
   },
   "FOOTER": {
     "copyright":  "Direito autoral"
@@ -332,7 +333,8 @@
     "reconnect":  "Reconectar",
     "goBack":  "Volte",
     "start":  "Começar",
-    "stop":  "Parar"
+    "stop":  "Parar",
+    "logout": "Sair"
   },
   "LABELS": {
     "menu":  "Cardápio",
@@ -427,5 +429,23 @@
     "obsStreamInactive":  "Esperando o fluxo do OBS começar",
     "connectionEstablished":  "Conectado - você pode começar a sessão de legenda",
     "disconnected":  "Desconectado"
+  },
+  "AUTH": {
+    "title": "Faça login em legendas",
+    "blurb": "Use sua conta para ativar os recursos que funcionam em todas as sessões",
+    "loginWithGoogle": "Faça login no Google",
+    "loginWithAzure": "Faça login com a Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Bem-vindo",
+      "blurb": "Aqui está o que sabemos sobre você:",
+      "email": "Email registrado",
+      "name": "Nome",
+      "organization": "Organização",
+      "joined": "Ingressou",
+      "providers": "Provedores de inscrição conectados",
+      "notSet": "Não configurado"
+    }
   }
 }

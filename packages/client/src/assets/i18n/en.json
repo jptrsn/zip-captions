@@ -310,8 +310,8 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
-    "auth": "My Account",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "My Account"
   },
   "FOOTER": {
     "copyright": "Copyright"

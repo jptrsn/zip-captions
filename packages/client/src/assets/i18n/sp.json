@@ -310,7 +310,8 @@
     "discord": "Servidor de Discordia",
     "donate": "Donar",
     "stream": "Difusión",
-    "forum": "Foro"
+    "forum": "Foro",
+    "auth": "Mi Cuenta"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +333,8 @@
     "reconnect": "Vuelva a conectar",
     "goBack": "Volver atrás",
     "start": "Start",
-    "stop": "Parar"
+    "stop": "Parar",
+    "logout": "Cerrar Sesión"
   },
   "LABELS": {
     "menu": "Menu",
@@ -428,5 +430,23 @@
     "obsStreamInactive": "Esperando a que comience el flujo de OBS",
     "connectionEstablished": "Conectado - puede iniciar la sesión de redacción",
     "disconnected": "Desconectado"
+  },
+  "AUTH": {
+    "title": "Iniciar sesión en los subtítulos",
+    "blurb": "Use su cuenta para habilitar las características que funcionan en todas las sesiones",
+    "loginWithGoogle": "Inicia sesión con Google",
+    "loginWithAzure": "Inicie sesión con Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Bienvenido",
+      "blurb": "Esto es lo que sabemos de ti:",
+      "email": "Correo electrónico registrado",
+      "name": "Nombre",
+      "organization": "Organización",
+      "joined": "Unido",
+      "providers": "Proveedores de inicio de sesión conectados",
+      "notSet": "No listo"
+    }
   }
 }

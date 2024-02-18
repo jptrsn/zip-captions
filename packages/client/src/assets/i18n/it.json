@@ -310,7 +310,8 @@
     "discord": "Discord Server",
     "donate": "Donare",
     "stream": "Trasmissione",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Il Mio Conto"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +333,8 @@
     "reconnect": "Ricollegarsi",
     "goBack": "Torna indietro",
     "start": "Avvio",
-    "stop": "Stop"
+    "stop": "Stop",
+    "logout": "Disconnettersi"
   },
   "LABELS": {
     "menu": "Menu",
@@ -428,5 +430,23 @@
     "obsStreamInactive": "In attesa dell'inizio del flusso OBS",
     "connectionEstablished": "Connesso - può iniziare la sessione di didascalia",
     "disconnected": "Disconnesso"
+  },
+  "AUTH": {
+    "title": "Accedi a didascalie zip",
+    "blurb": "Usa il tuo account per abilitare le funzionalità che funzionano in tutte le sessioni.",
+    "loginWithGoogle": "Accedi con Google",
+    "loginWithAzure": "Accedi con Microsoft"
+    },
+  "USER": {
+    "PROFILE": {
+      "title": "Benvenuto",
+      "blurb": "Ecco cosa sappiamo di te:",
+      "email": "Email registrata",
+      "name": "Nome",
+      "organization": "Organizzazione",
+      "joined": "Partecipato",
+      "providers": "Fornitori di accesso connessi",
+      "notSet": "Non impostato"
+    }
   }
 }
