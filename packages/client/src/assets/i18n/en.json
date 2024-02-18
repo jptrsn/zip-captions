@@ -438,5 +438,18 @@
     "blurb": "Use your account to enable features that work across all sessions.",
     "loginWithGoogle": "Sign in with Google",
     "loginWithAzure": "Sign in with Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Welcome",
+      "blurb": "Here's what we know about you:",
+      "email": "Registered Email",
+      "name": "Name",
+      "organization": "Organization",
+      "joined": "Joined",
+      "providers": "Sign-in providers connected",
+      "notSet": "Not set"
+    }
+    
   }
 }

@@ -1,13 +1,17 @@
 <div class="card bg-base-100 shadow-xl flex flex-col" *ngIf="profile() as profile;">
   <div class="card-body">
-    <div class="card-title">Welcome, {{profile.givenName}}</div>
-    <div class="text-sm mb-3">Here's what we know about you:</div>
-    <div>Registered Email: <span class="blurry">{{profile.primaryEmail}}</span></div>
-    <div>Name: <span class="blurry">{{profile.givenName}} {{profile.familyName}}</span></div>
-    <div *ngIf="profile.organizationName">Organization: {{profile.organizationName}}</div>
-    <div *ngIf="joined() as ts">Joined {{ ts | timeago}}</div>
+    <div class="card-title"><span translate>USER.PROFILE.title</span>, {{profile.givenName}}</div>
+    <div class="text-sm mb-3" translate>USER.PROFILE.blurb</div>
+    <div><span translate>USER.PROFILE.email</span>: <span class="blurry">{{profile.primaryEmail}}</span></div>
+    <div><span translate>USER.PROFILE.name</span>: <span class="blurry">{{profile.givenName}} {{profile.familyName}}</span></div>
+    <div>
+      <span translate>USER.PROFILE.organization</span>: 
+      <span *ngIf="profile.organizationName; else notSet">{{profile.organizationName}}</span>
+    </div>
+    <div *ngIf="joined() as ts"><span translate>USER.PROFILE.joined</span> {{ ts | timeago}}</div>
     <div class="flex flex-row items-center gap-3">
-      <span class="text-sm">Sign-in providers connected:</span>
+      <span class="text-sm" translate>USER.PROFILE.providers</span>
+      <span class="flex flex-auto"></span>
       <img *ngIf="profile.googleConnected" src="assets/brands/google/web_neutral_rd_na.svg">
       <img *ngIf="profile.azureConnected" src="assets/brands/msft/ms-symbollockup_mssymbol_19.svg">
     </div>
@@ -68,3 +72,6 @@
     </ng-container>
   </div>
 </div>
+<ng-template #notSet>
+  <span class="text-xs" translate>USER.PROFILE.notSet</span>
+</ng-template>
