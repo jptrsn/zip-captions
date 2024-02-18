@@ -335,7 +335,8 @@
     "reconnect": "Reconnect",
     "goBack": "Go Back",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "logout": "Log Out"
   },
   "LABELS": {
     "menu": "Menu",
@@ -433,8 +434,9 @@
     "disconnected": "Disconnected"
   },
   "AUTH": {
-    "genericLogin": "Login to Zip Captions",
-    "loginWithGoogle": "Connect your Google Account",
-    "loginWithAzure": "Connect your Microsoft Account"
+    "title": "Login to Zip Captions",
+    "blurb": "Use your account to enable features that work across all sessions.",
+    "loginWithGoogle": "Sign in with Google",
+    "loginWithAzure": "Sign in with Microsoft"
   }
 }

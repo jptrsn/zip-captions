@@ -71,7 +71,7 @@ export class AuthService {
         )
       }
     }
-    return of(false);
+    return of(true);
   }
 
   login(token: string): Observable<UserProfile> {
@@ -83,6 +83,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     return this.http.post(`${this.userEndpoint}/logout`, {}, { responseType: 'text' }).pipe(
+      catchError((err) => of(err)),
       tap((result) => console.log('logout result', result)),
       tap(() => this.storage.remove('token'))
     )

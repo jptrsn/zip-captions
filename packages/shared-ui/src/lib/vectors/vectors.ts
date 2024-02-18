@@ -23,6 +23,7 @@ export {
   heroArrowsPointingIn,
   heroArrowLongDown,
   heroArrowLongUp,
+  heroQuestionMarkCircle,
 } from '@ng-icons/heroicons/outline';
 
 export {

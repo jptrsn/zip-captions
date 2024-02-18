@@ -11,5 +11,10 @@ export const selectUserProfile = createSelector(
 
 export const selectUserSavedSettings = createSelector(
   selectUserState,
-  (state) => state.savedSettings
+  (state) => state.uiSettings
+)
+
+export const selectUserMetadata = createSelector(
+  selectUserState,
+  (state) => state.metadata
 )

@@ -69,3 +69,14 @@ export interface PassportUserInfo {
   accessToken: string;
   refreshToken?: string;
 }
+
+export interface UserProfile {
+  id: string;
+  primaryEmail: string;
+  createdAt: string;
+  familyName?: string;
+  givenName?: string;
+  organizationName?: string;
+  googleConnected?: boolean;
+  azureConnected?: boolean;
+}

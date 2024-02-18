@@ -11,11 +11,20 @@ export interface UserProfile {
   familyName?: string;
   givenName?: string;
   organizationName?: string;
+  googleConnected?: boolean;
+  azureConnected?: boolean;
+}
+
+export interface UserMetadata {
+  roomId?: string;
+  joinCode?: string;
+  lastChanged?: Date;
 }
 
 export interface UserState {
   profile?: UserProfile;
-  savedSettings?: SettingsState;
+  uiSettings?: SettingsState;
+  metadata?: UserMetadata;
 }
 
 export const defaultUserState: UserState = {

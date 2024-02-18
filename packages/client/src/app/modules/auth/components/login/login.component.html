@@ -1,7 +1,10 @@
 <div class="flex flex-col basis-full items-center justify-center gap-6">
   <div class="text-xl" translate>
-    AUTH.genericLogin
+    AUTH.title
   </div>
+  <p class="text-sm mb-2" translate>
+    AUTH.blurb
+  </p>
   <app-google-oauth-login></app-google-oauth-login>
   <app-microsoft-login></app-microsoft-login>
   <div class="loading loading-spinner" *ngIf="loading()"></div>

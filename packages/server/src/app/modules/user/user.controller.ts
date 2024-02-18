@@ -5,7 +5,7 @@ import { NoCache } from '../../decorators/no-cache.decorator';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { User } from './user.model';
+import { UserProfile } from './user.model';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -17,14 +17,16 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getUser(@Req() req): Promise<Partial<User>> {
+    async getUser(@Req() req): Promise<UserProfile> {
       const user = await this.userService.findOne({id: req.user.id});
       const userProfile = {
         id: user.id,
-        createdAt: user.createdAt,
+        createdAt: user.createdAt.toString(),
         familyName: user.familyName,
         givenName: user.givenName,
-        primaryEmail: user.primaryEmail
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId
       }
       return userProfile;
     }
