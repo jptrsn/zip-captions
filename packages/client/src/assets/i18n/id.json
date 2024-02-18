@@ -310,7 +310,10 @@
     "discord": "Server Perselisihan",
     "donate": "Menyumbangkan",
     "stream": "Membagikan",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Akun Saya",
+    "logout": "Keluar",
+    "login": "Masuk"
   },
   "FOOTER": {
     "copyright": "Hak cipta"
@@ -428,5 +431,23 @@
     "obsStreamInactive": "Menunggu aliran obs untuk memulai",
     "connectionEstablished": "Terhubung - Anda dapat memulai sesi teks",
     "disconnected": "Terputus"
+  },
+  "AUTH": {
+    "title": "Masuk ke Zip Captions",
+    "blurb": "Gunakan akun Anda untuk mengaktifkan fitur yang berfungsi di semua sesi.",
+    "loginWithGoogle": "Masuk dengan Google",
+    "loginWithAzure": "Masuk dengan Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Selamat datang",
+      "blurb": "Inilah yang kami ketahui tentang Anda:",
+      "email": "Email Terdaftar",
+      "name": "Nama",
+      "organization": "Organisasi",
+      "joined": "Bergabung",
+      "providers": "Penyedia masuk terhubung",
+      "notSet": "Tidak diatur"
+    }
   }
 }

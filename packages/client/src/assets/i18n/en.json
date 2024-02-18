@@ -310,7 +310,8 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "My Account"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +333,9 @@
     "reconnect": "Reconnect",
     "goBack": "Go Back",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "logout": "Log Out",
+    "login": "Login"
   },
   "LABELS": {
     "menu": "Menu",
@@ -428,5 +431,24 @@
     "obsStreamInactive": "Waiting for OBS stream to begin",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
+  },
+  "AUTH": {
+    "title": "Login to Zip Captions",
+    "blurb": "Use your account to enable features that work across all sessions.",
+    "loginWithGoogle": "Sign in with Google",
+    "loginWithAzure": "Sign in with Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Welcome",
+      "blurb": "Here's what we know about you:",
+      "email": "Registered Email",
+      "name": "Name",
+      "organization": "Organization",
+      "joined": "Joined",
+      "providers": "Sign-in providers connected",
+      "notSet": "Not set"
+    }
+    
   }
 }

@@ -21,7 +21,7 @@ export class CacheService {
     sessionStorage.setItem(options.key, JSON.stringify(record))
   }
 
-  load(key: string) {
+  load<T>(key: string): T | null {
       // Get cached data from sessionStorage
       const item = sessionStorage.getItem(key)
       if (item !== null) {

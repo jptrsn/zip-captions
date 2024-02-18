@@ -6,8 +6,8 @@
     "de": "Deutsch",
     "it": "Italienisch (Italiano)",
     "pt": "Portugiesisch (Português)",
-    "id": "Bahasa Indonesien",
     "pl": "Polnisch (Polski)",
+    "id": "Indonesisch (Bahasa Indonesia)",
     "uk": "Ukranisch (Український)"
   },
   "THEMES": {
@@ -310,7 +310,8 @@
     "discord": "Diskord-Server",
     "donate": "Spende",
     "stream": "Sendung",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Mein Konto"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +333,9 @@
     "reconnect": "Neu verbinden",
     "goBack": "Zurückgehen",
     "start": "Start",
-    "stop": "Stopp"
+    "stop": "Stopp",
+    "logout": "Ausloggen",
+    "login": "Anmelden"
   },
   "LABELS": {
     "menu": "Menü",
@@ -428,5 +431,23 @@
     "obsStreamInactive": "Warten auf den Beginn des OBS-Streams",
     "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
     "disconnected": "Getrennt"
+  },
+  "AUTH": {
+    "title": "Anmelden Sie sich für Zip -Bildunterschriften an",
+    "blurb": "Verwenden Sie Ihr Konto, um Funktionen zu aktivieren, die über alle Sitzungen hinweg funktionieren.",
+    "loginWithGoogle": "Anmeldung mit Google",
+    "loginWithAzure": "Melden Sie sich bei Microsoft an"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Willkommen",
+      "blurb": "Hier ist, was wir über dich wissen:",
+      "email": "Registrierte Email",
+      "name": "Name",
+      "organization": "Organisation",
+      "joined": "Beigetreten",
+      "providers": "Anmeldeanbieter angeschlossen",
+      "notSet": "Nicht eingestellt"
+    }
   }
 }

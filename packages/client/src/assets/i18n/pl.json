@@ -310,7 +310,8 @@
     "discord":  "Serwer niezgody",
     "donate":  "Podarować",
     "stream":  "Dzielenie się",
-    "forum":  "Forum"
+    "forum":  "Forum",
+    "auth": "Moje Konto"
   },
   "FOOTER": {
     "copyright":  "Prawa autorskie"
@@ -332,7 +333,9 @@
     "reconnect":  "Na nowo połączyć",
     "goBack":  "Wróć",
     "start":  "Początek",
-    "stop":  "Zatrzymywać się"
+    "stop":  "Zatrzymywać się",
+    "logout": "Wyloguj",
+    "login": "Zalogować Się"
   },
   "LABELS": {
     "menu":  "Menu",
@@ -428,5 +431,23 @@
     "obsStreamInactive":  "Czekam na rozpoczęcie strumienia OB",
     "connectionEstablished":  "Connected - możesz rozpocząć sesję podpisów",
     "disconnected":  "Bezładny"
+  },
+  "AUTH": {
+    "title": "Zaloguj się do podpisów zip",
+    "blurb": "Skorzystaj z konta, aby włączyć funkcje, które działają we wszystkich sesjach.",
+    "loginWithGoogle": "Zaloguj się z Google",
+    "loginWithAzure": "Zaloguj się z Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Powitanie",
+      "blurb": "Oto, co o tobie wiemy:",
+      "email": "Zarejestrowany email",
+      "name": "Nazwa",
+      "organization": "Organizacja",
+      "joined": "Dołączył",
+      "providers": "Połączeni dostawcy logowania",
+      "notSet": "Nie ustawiony"
+    }
   }
 }

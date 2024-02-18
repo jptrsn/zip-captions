@@ -7,6 +7,7 @@ import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
 import { windowControlsOverlaySelector } from './selectors/app.selector';
 import { languageSelector, themeSelector } from './selectors/settings.selector';
+import { AuthActions } from './actions/auth.actions';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ export class AppComponent {
     
     this.store.dispatch(AppActions.initAppearance());
     this.store.dispatch(AppActions.checkUserAgent());
+    this.store.dispatch(AuthActions.validate());
     this.renderSwUpdateNotice.set(this.updates.isEnabled);
 
     this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector));

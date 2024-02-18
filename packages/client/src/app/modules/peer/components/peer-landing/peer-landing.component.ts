@@ -20,7 +20,7 @@ import { recognitionActiveSelector } from '../../../../selectors/recognition.sel
   templateUrl: './peer-landing.component.html',
   styleUrls: ['./peer-landing.component.scss'],
 })
-export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
+export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   @HostListener('window:beforeunload')
   @ViewChild('broadcastOpen') broadcastCheckbox!: ElementRef<HTMLInputElement>;
   public acceptedPeerConnections: Signal<boolean | undefined>;
@@ -67,12 +67,6 @@ export class PeerLandingComponent implements OnInit, OnDestroy, ComponentCanDeac
         this.store.dispatch(PeerActions.connectSocketServer())
       }
     }, { allowSignalWrites: true})
-  }
-
-  ngOnInit(): void {
-    if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
-      this.store.dispatch(PeerActions.connectSocketServer());
-    }
   }
 
   ngOnDestroy(): void {

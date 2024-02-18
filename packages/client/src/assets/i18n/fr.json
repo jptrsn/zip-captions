@@ -310,7 +310,8 @@
     "discord": "Serveur Discord",
     "donate": "Faire un Don",
     "stream": "Diffusion",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Mon Compte"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
@@ -332,7 +333,9 @@
     "reconnect": "Se reconnecter",
     "goBack": "Revenir en arrière",
     "start": "Démarrer",
-    "stop": "Arrêt"
+    "stop": "Arrêt",
+    "logout": "Se Déconnecter",
+    "login": "Se Connecter"
   },
   "LABELS" : {
     "menu" : "Menu",
@@ -428,5 +431,23 @@
     "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS",
     "connectionEstablished": "Connecté - vous pouvez commencer la session de légende",
     "disconnected": "Déconnecté"
+  },
+  "AUTH": {
+    "title": "Connectez-vous aux légendes de zip",
+    "blurb": "Utilisez votre compte pour activer les fonctionnalités qui fonctionnent à toutes les sessions.",
+    "loginWithGoogle": "Connectez-vous avec Google",
+    "loginWithAzure": "Connectez-vous avec Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Accueillir",
+      "blurb": "Voici ce que nous savons de vous:",
+      "email": "Email enregistré",
+      "name": "Nom",
+      "organization": "Organisation",
+      "joined": "Rejoint",
+      "providers": "Fournisseurs de connexion connectés",
+      "notSet": "Pas encore défini"
+    }
   }
 }

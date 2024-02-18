@@ -13,6 +13,8 @@ import { recognitionStatusSelector } from '../../selectors/recognition.selector'
 import { MenuItem } from './header.model';
 import { ObsConnectionState } from '../../reducers/obs.reducer';
 import { selectObsConnected } from '../../selectors/obs.selectors';
+import { selectUserLoggedIn } from '../../selectors/auth.selectors';
+import { AuthActions } from '../../actions/auth.actions';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -38,6 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public isBroadcasting: Signal<boolean | undefined>;
   public windowControlsOverlay: Signal<boolean | undefined>;
   public showObsConnectionState: Signal<boolean | undefined>;
+  public isLoggedIn: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -52,6 +55,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)))
+
+    this.isLoggedIn = toSignal<boolean>(this.store.select(selectUserLoggedIn))
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(
@@ -78,7 +83,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'forum', href: 'https://discuss.zipcaptions.app' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
-      ]}
+      ]},
+      {label: 'auth', routerOutlet: '/auth' }
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 
@@ -96,5 +102,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+  }
+
+  logout(): void {
+    this.store.dispatch(AuthActions.logout());
   }
 }

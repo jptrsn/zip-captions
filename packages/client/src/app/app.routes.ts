@@ -13,5 +13,7 @@ export const appRoutes: Route[] = [
   { path: 'terms', component: TermsAndConditionsComponent, data: { name: 'terms'}},
   { path: 'cookies', component: CookiePolicyComponent, data: { name: 'cookies'}},
   { path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule), data: { name: `settings`} },
-  { path: 'stream', loadChildren: () => import('./modules/peer/peer.module').then(m =>m.PeerModule), data: { name: 'stream' }}
+  { path: 'stream', loadChildren: () => import('./modules/peer/peer.module').then(m =>m.PeerModule), data: { name: 'stream' }},
+  { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule), data: { name: 'login' }},
+  { path: 'user', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule), data: { name: 'account'}}
 ];
