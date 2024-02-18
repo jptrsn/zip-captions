@@ -334,7 +334,8 @@
     "goBack":  "Volte",
     "start":  "Começar",
     "stop":  "Parar",
-    "logout": "Sair"
+    "logout": "Sair",
+    "login": "Entrar"
   },
   "LABELS": {
     "menu":  "Cardápio",

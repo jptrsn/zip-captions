@@ -312,7 +312,8 @@
     "stream": "Membagikan",
     "forum": "Forum",
     "auth": "Akun Saya",
-    "logout": "Keluar"
+    "logout": "Keluar",
+    "login": "Masuk"
   },
   "FOOTER": {
     "copyright": "Hak cipta"

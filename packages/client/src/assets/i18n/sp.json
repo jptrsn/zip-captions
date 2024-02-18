@@ -334,7 +334,8 @@
     "goBack": "Volver atrás",
     "start": "Start",
     "stop": "Parar",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "login": "Iniciar Sesión"
   },
   "LABELS": {
     "menu": "Menu",

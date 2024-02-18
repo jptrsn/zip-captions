@@ -334,7 +334,8 @@
     "goBack": "Torna indietro",
     "start": "Avvio",
     "stop": "Stop",
-    "logout": "Disconnettersi"
+    "logout": "Disconnettersi",
+    "login": "Registrazione"
   },
   "LABELS": {
     "menu": "Menu",

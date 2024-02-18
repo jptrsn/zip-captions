@@ -334,7 +334,8 @@
     "goBack":  "Wróć",
     "start":  "Początek",
     "stop":  "Zatrzymywać się",
-    "logout": "Wyloguj"
+    "logout": "Wyloguj",
+    "login": "Zalogować Się"
   },
   "LABELS": {
     "menu":  "Menu",
