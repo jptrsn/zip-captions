@@ -51,25 +51,23 @@ export class AuthService {
   }
 
   validate(): Observable<boolean> {
-    if (!this.userLoggedIn()) {
-      const storageToken = this.storage.get('token');
-      if (storageToken) {
-        console.log('validate')
-        return this.login(storageToken).pipe(
-          map((result) => {
-            console.log('result', result)
-            this.userLoggedIn.set(true);
-            this.store.dispatch(AuthActions.loginSuccess())
-            this.store.dispatch(UserActions.setProfile({profile: result}))
-            return true;
-          }),
-          catchError(() => {
-            this.storage.remove('token')
-            this.router.navigate([''])
-            return of(false);
-          })
-        )
-      }
+    const storageToken = this.storage.get('token');
+    if (storageToken) {
+      return this.login(storageToken).pipe(
+        map((result) => {
+          console.log('result', result)
+          this.userLoggedIn.set(true);
+          this.store.dispatch(AuthActions.loginSuccess())
+          this.store.dispatch(UserActions.setProfile({profile: result}))
+          return true;
+        }),
+        catchError(() => {
+          this.userLoggedIn.set(false);
+          this.storage.remove('token')
+          this.router.navigate([''])
+          return of(false);
+        })
+      )
     }
     return of(true);
   }

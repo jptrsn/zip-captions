@@ -9,10 +9,12 @@ import { UserModule } from './modules/user/user.module';
 import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     CacheModule.register({ttl: (60 * 60 * 1000), max: 500, isGlobal: true}),
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(`${process.env.MONGO_DB_URL}`, {
       dbName: process.env.MONGO_DB_NAME,
       user: process.env.MONGO_DB_USER,
