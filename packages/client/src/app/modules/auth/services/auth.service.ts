@@ -55,7 +55,6 @@ export class AuthService {
     if (storageToken) {
       return this.login(storageToken).pipe(
         map((result) => {
-          console.log('result', result)
           this.userLoggedIn.set(true);
           this.store.dispatch(AuthActions.loginSuccess())
           this.store.dispatch(UserActions.setProfile({profile: result}))
@@ -64,12 +63,12 @@ export class AuthService {
         catchError(() => {
           this.userLoggedIn.set(false);
           this.storage.remove('token')
-          this.router.navigate([''])
           return of(false);
         })
       )
     }
-    return of(true);
+    this.userLoggedIn.set(false);
+    return of(false);
   }
 
   login(token: string): Observable<UserProfile> {

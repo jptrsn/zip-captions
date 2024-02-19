@@ -6,6 +6,7 @@ import { PassportUserInfo } from '../modules/user/user.model';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
+    console.log('google client ID', process.env.GOOGLE_CLIENT_ID)
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,

@@ -43,7 +43,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.validate),
       switchMap(() => this.authService.validate().pipe(
-        map(() => AuthActions.loginSuccess()),
+        map((isValid: boolean) => (isValid ? AuthActions.loginSuccess() : AuthActions.logoutSuccess())),
         catchError(() => of(AuthActions.logoutSuccess()))
       ))
     )
