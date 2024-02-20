@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
@@ -19,6 +19,7 @@ export class UserController {
   }
 
   @Get('profile')
+  @NoCache()
   @UseGuards(JwtAuthGuard)
   async getUser(@Req() req): Promise<UserProfile> {
     const user = await this.userService.findOne({id: req.user.id});
@@ -56,6 +57,7 @@ export class UserController {
       const user = await this.userService.googleLogin(req);
       this._sendTokenResponse(user.id, res);
     } catch(e) {
+      console.error(e)
       res.redirect(`${this.clientUrl}/auth/login?error=${encodeURIComponent(e)}`)
     }
   }
@@ -65,17 +67,19 @@ export class UserController {
   @UseGuards(AzureOAuthGuard)
   async azureAuthRedirect(@Req() req, @Res() res) {
     try {
-      if (req.authInfo.message) {
+      if (req.authInfo?.message) {
         throw new Error('No user from microsoft');
       }
       const user = await this.userService.msLogin(req.user);
       this._sendTokenResponse(user.id, res);
     } catch(e: any) {
+      console.error(e);
       res.redirect(`${this.clientUrl}/auth/login?error=${encodeURIComponent(e)}`)
     }
   }
 
   @Post('logout')
+  @NoCache()
   @UseGuards(JwtAuthGuard)
   async logout(@Req() req, @Res() res) {
     await req.logout((err) => {

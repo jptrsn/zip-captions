@@ -1,6 +1,6 @@
 <div class="card bg-base-100 shadow-xl flex flex-col" *ngIf="profile() as profile;">
   <div class="card-body">
-    <div class="card-title"><span translate>USER.PROFILE.title</span>, {{profile.givenName}}</div>
+    <div class="card-title"><span translate>USER.PROFILE.title</span> {{profile.givenName}}</div>
     <div class="text-sm mb-3" translate>USER.PROFILE.blurb</div>
     <div><span translate>USER.PROFILE.email</span>: <span class="blurry">{{profile.primaryEmail}}</span></div>
     <div><span translate>USER.PROFILE.name</span>: <span class="blurry">{{profile.givenName}} {{profile.familyName}}</span></div>

@@ -11,7 +11,12 @@ export class UserService {
               private cache: CacheService) {}
 
   async createUser(email: string, opts?: Partial<User>): Promise<HydratedDocument<User>> {
-    const model: Partial<User> = opts ? { ...opts, primaryEmail: email.toLowerCase() } : { primaryEmail: email.toLowerCase() };
+    const model: Partial<User> = { primaryEmail: email.toLowerCase() };
+    for (const [key, value] of Object.entries(opts)) {
+      if (value) {
+        model[key] = value;
+      }
+    }
     const newUser: HydratedDocument<User> = new this.userModel(model);
     await newUser.save();
     return newUser;
