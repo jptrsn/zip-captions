@@ -4,7 +4,7 @@ FROM $IMAGE as base_image
 WORKDIR /usr/src/app
 COPY package*.json .
 ARG NX_NON_NATIVE_HASHER=true
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # DEVELOPMENT
 FROM base_image as dev

@@ -140,6 +140,7 @@
     "ng-packagr": "~16.0.0",
     "ngx-translate-testing": "^7.0.0",
     "nx": "16.2.2",
+    "parcel": "^2.11.0",
     "postcss": "^8.4.5",
     "postcss-import": "~14.1.0",
     "postcss-preset-env": "~7.5.0",
