@@ -5,7 +5,6 @@ import { SettingsState } from '../modules/settings/models/settings.model';
 export const userFeatureKey = 'user';
 
 export interface UserProfile {
-  id: string;
   primaryEmail: string;
   createdAt: string;
   familyName?: string;
@@ -22,6 +21,7 @@ export interface UserMetadata {
 }
 
 export interface UserState {
+  id?: string;
   profile?: UserProfile;
   uiSettings?: SettingsState;
   metadata?: UserMetadata;
@@ -32,7 +32,8 @@ export const defaultUserState: UserState = {
 
 export const userReducer = createReducer(
   defaultUserState,
-  on(UserActions.setProfile, (state: UserState, action: { profile: UserProfile }) => ({...state, profile: action.profile})),
+  on(UserActions.getProfile, (state: UserState, action: { id: string}) => ({...state,  id: action.id })),
+  on(UserActions.getProfileSuccess, (state: UserState, action: { profile: UserProfile }) => ({...state, profile: action.profile})),
   on(UserActions.clearProfile, (state: UserState) => ({...state, profile: undefined }))
 );
 

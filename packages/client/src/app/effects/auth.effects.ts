@@ -17,10 +17,10 @@ export class AuthEffects {
   login$ = createEffect(() => 
     this.actions$.pipe(
       ofType(AuthActions.login),
-      switchMap(({token}) => this.authService.login(token)
+      switchMap(() => this.authService.login()
         .pipe(
           tap((result) => console.log('login result', result)),
-          switchMap((result) => [AuthActions.loginSuccess(), UserActions.setProfile({ profile: result })]),
+          switchMap((id) => [AuthActions.loginSuccess({ id })]),
           catchError((err) => of(AuthActions.loginFailure({ error: err.message})))
         )
       )
@@ -42,8 +42,8 @@ export class AuthEffects {
   validate$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.validate),
-      switchMap(() => this.authService.validate().pipe(
-        map((isValid: boolean) => (isValid ? AuthActions.loginSuccess() : AuthActions.logoutSuccess())),
+      switchMap(() => this.authService.login().pipe(
+        map((id: string | null) => (id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess())),
         catchError(() => of(AuthActions.logoutSuccess()))
       ))
     )

@@ -18,10 +18,13 @@ export class UserController {
     this.clientUrl = process.env.APP_ORIGIN
   }
 
-  @Get('profile')
-  @NoCache()
+  @Get('profile/:id')
   @UseGuards(JwtAuthGuard)
-  async getUser(@Req() req): Promise<UserProfile> {
+  async getUser(@Req() req, @Param() params: { id: string }): Promise<UserProfile> {
+    console.log('profile', params)
+    if (params.id !== req.user.id) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+    }
     const user = await this.userService.findOne({id: req.user.id});
     const userProfile = {
       id: user.id,
@@ -33,6 +36,18 @@ export class UserController {
       azureConnected: !!user.msId
     }
     return userProfile;
+  }
+
+  @Get('validate')
+  @NoCache()
+  @UseGuards(JwtAuthGuard)
+  async validate(@Req() req): Promise<{id: string} | null> {
+    console.log('validate', req.user)
+    if ((req.user?.exp * 1000) > Date.now()) {
+      console.log('returning id', req.user.id)
+      return {id: req.user.id}
+    }
+    return null
   }
 
   @Get('google-login')

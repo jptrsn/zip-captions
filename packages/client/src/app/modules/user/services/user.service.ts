@@ -21,8 +21,8 @@ export class UserService {
     this.userEndpoint = `${baseUrl}/${apiVersion}/${userRoute}`;
   }
 
-  getUserProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.userEndpoint}/profile`)
+  getUserProfile(userId: string): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
   }
 
 }

@@ -31,11 +31,12 @@ export class AuthService {
   // TODO: Refactor to proper auth state check
   userIsAuthenticated(): boolean | Observable<boolean> {
     if (!this.userLoggedIn()) {
-      return this.validate().pipe(
-        tap((isValid: boolean) => {
-          if (!isValid) {
+      return this.login().pipe(
+        map((id: string | null) => {
+          if (!id) {
             this.router.navigate(['auth', 'login'])
           }
+          return !!id;
         })
       )
     }
@@ -50,31 +51,15 @@ export class AuthService {
     return true;
   }
 
-  validate(): Observable<boolean> {
-    const storageToken = this.storage.get('token');
-    if (storageToken) {
-      return this.login(storageToken).pipe(
-        map((result) => {
-          this.userLoggedIn.set(true);
-          this.store.dispatch(AuthActions.loginSuccess())
-          this.store.dispatch(UserActions.setProfile({profile: result}))
-          return true;
-        }),
-        catchError(() => {
-          this.userLoggedIn.set(false);
-          this.storage.remove('token')
-          return of(false);
-        })
-      )
-    }
-    this.userLoggedIn.set(false);
-    return of(false);
-  }
-
-  login(token: string): Observable<UserProfile> {
-    this.storage.set('token', token);
-    return this.http.get<UserProfile>(`${this.userEndpoint}/profile`).pipe(
-      tap(() => this.userLoggedIn.set(true))
+  login(): Observable<string> {
+    return this.http.get<{id: string | null}>(`${this.userEndpoint}/validate`).pipe(
+      map(({ id }) => {
+        if (!id) {
+          throw new Error('Login failed')
+        }
+        this.userLoggedIn.set(true);
+        return id
+      }),
     );
   }
 

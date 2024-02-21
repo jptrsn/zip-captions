@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../actions/auth.actions';
 import { AppState } from '../../../../models/app.model';
 import { selectAuthLoading, selectUserLoggedIn } from '../../../../selectors/auth.selectors';
+import { StorageService } from '../../../../services/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent {
 
   public loading: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
+              private storage: StorageService,
               private router: Router,
               private route: ActivatedRoute) {
 
@@ -29,7 +31,8 @@ export class LoginComponent {
 
     if (this.route.snapshot.queryParams) {
       if (this.route.snapshot.queryParams['id_token']) {
-        this.store.dispatch(AuthActions.login({token: this.route.snapshot.queryParams['id_token']}));
+        this.storage.set('token', this.route.snapshot.queryParams['id_token']);
+        this.store.dispatch(AuthActions.login());
         this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {id_token: null}, relativeTo: this.route})
       } else if (this.route.snapshot.queryParams['error']) {
         this.store.dispatch(AuthActions.loginFailure({error: decodeURIComponent(this.route.snapshot.queryParams['error'])}))
