@@ -1,14 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, WritableSignal, signal } from '@angular/core';
-import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
-import { CacheService } from '../../../services/cache/cache.service';
-import { StorageService } from '../../../services/storage.service';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserProfile } from '../../../reducers/user.reducer';
 import { Store } from '@ngrx/store';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { AppState } from '../../../models/app.model';
-import { AuthActions } from '../../../actions/auth.actions';
-import { UserActions } from '../../../actions/user.actions';
+import { StorageService } from '../../../services/storage.service';
+import { selectUserLoggedIn } from '../../../selectors/auth.selectors';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +14,7 @@ import { UserActions } from '../../../actions/user.actions';
 export class AuthService {
 
   private userEndpoint: string;
-  private userLoggedIn: WritableSignal<boolean> = signal(false);
+  private userLoggedIn: Signal<boolean | undefined>;
 
   constructor(private http: HttpClient,
               private storage: StorageService,
@@ -26,9 +24,9 @@ export class AuthService {
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';
     this.userEndpoint = `${baseUrl}/${apiVersion}/${userRoute}`;
+    this.userLoggedIn = toSignal(this.store.select(selectUserLoggedIn))
   }
 
-  // TODO: Refactor to proper auth state check
   userIsAuthenticated(): boolean | Observable<boolean> {
     if (!this.userLoggedIn()) {
       return this.login().pipe(
@@ -51,13 +49,13 @@ export class AuthService {
     return true;
   }
 
-  login(): Observable<string> {
+  login(): Observable<string | null> {
+    if (!this.storage.get('token')) {
+      console.log('no token for validation');
+      return of(null);
+    }
     return this.http.get<{id: string | null}>(`${this.userEndpoint}/validate`).pipe(
       map(({ id }) => {
-        if (!id) {
-          throw new Error('Login failed')
-        }
-        this.userLoggedIn.set(true);
         return id
       }),
     );
@@ -66,7 +64,6 @@ export class AuthService {
   logout(): Observable<any> {
     return this.http.post(`${this.userEndpoint}/logout`, {}, { responseType: 'text' }).pipe(
       catchError((err) => of(err)),
-      tap((result) => console.log('logout result', result)),
       tap(() => this.storage.remove('token'))
     )
   }

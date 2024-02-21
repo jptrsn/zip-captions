@@ -42,9 +42,8 @@ export class UserController {
   @NoCache()
   @UseGuards(JwtAuthGuard)
   async validate(@Req() req): Promise<{id: string} | null> {
-    console.log('validate', req.user)
     if ((req.user?.exp * 1000) > Date.now()) {
-      console.log('returning id', req.user.id)
+      console.log('id validated', req.user.id)
       return {id: req.user.id}
     }
     return null

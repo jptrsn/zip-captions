@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AuthService } from '../modules/auth/services/auth.service';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { AuthActions } from '../actions/auth.actions';
-import { switchMap, map, of, catchError, tap } from 'rxjs';
-import { UserActions } from '../actions/user.actions';
+import { AuthService } from '../modules/auth/services/auth.service';
 
 
 
@@ -19,8 +18,7 @@ export class AuthEffects {
       ofType(AuthActions.login),
       switchMap(() => this.authService.login()
         .pipe(
-          tap((result) => console.log('login result', result)),
-          switchMap((id) => [AuthActions.loginSuccess({ id })]),
+          map((id) => id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess()),
           catchError((err) => of(AuthActions.loginFailure({ error: err.message})))
         )
       )
@@ -42,10 +40,12 @@ export class AuthEffects {
   validate$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.validate),
-      switchMap(() => this.authService.login().pipe(
-        map((id: string | null) => (id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess())),
-        catchError(() => of(AuthActions.logoutSuccess()))
-      ))
+      switchMap(() => this.authService.login()
+        .pipe(
+          map((id: string | null) => (id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess())),
+          catchError(() => of(AuthActions.logoutSuccess()))
+        )
+      )
     )
   )
 

@@ -81,8 +81,6 @@ export class PeerService {
     if (cached?.id) {
       this.myId = cached.id;
     }
-    console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
-    
   }
 
   connectSocket(): Observable<string> {
