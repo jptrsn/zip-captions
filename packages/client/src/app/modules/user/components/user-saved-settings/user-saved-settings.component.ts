@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { selectUserSavedSettings } from '../../../../selectors/user.selector';
 import { SettingsState } from '../../../settings/models/settings.model';
+import { selectAppSettings } from '../../../../selectors/settings.selector';
 
 @Component({
   selector: 'app-user-saved-settings',
@@ -13,7 +14,9 @@ import { SettingsState } from '../../../settings/models/settings.model';
 export class UserSavedSettingsComponent {
 
   public savedUiSettings: Signal<SettingsState | undefined>;
+  public currentUiSettings: Signal<SettingsState>;
   constructor(private store: Store<AppState>) {
     this.savedUiSettings = toSignal(this.store.select(selectUserSavedSettings));
+    this.currentUiSettings = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>
   }
 }
