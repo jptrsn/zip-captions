@@ -29,7 +29,7 @@ export class UiSettingsService {
     const key = `ui_settings_${id}`;
     const doc = await this.cache.wrap(
       key,
-      () => this.uiSettingsModel.findOne({ ownerId: id })
+      () => this.uiSettingsModel.findOne({ ownerId: id }, '-_id')
     )
     return doc;
   }

@@ -19,12 +19,10 @@ module.exports = {
       'noto-sans': '"Noto Sans"',
       'cousine': 'Cousine',
       'inconsolata': 'Inconsolata',
-    },
-    extend: {},
+    }
   },
   plugins: [
-    require('daisyui'),
-    require('@tailwindcss/forms'),
+    require('daisyui')
   ],
   daisyui: {
     themes: [

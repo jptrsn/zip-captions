@@ -27,7 +27,7 @@ export class UserEffects {
         ofType(UserActions.saveSettingsState),
         switchMap(({settings}) => this.userService.saveUiSettings(settings)
           .pipe(
-            map(() => UserActions.saveSettingsStateSuccess()),
+            map((settings) => UserActions.saveSettingsStateSuccess({ settings })),
             catchError((err) => of(UserActions.saveSettingsStateFailure({error: err.message})))
           )
         )

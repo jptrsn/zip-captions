@@ -36,6 +36,7 @@ export const userReducer = createReducer(
   on(UserActions.getProfileSuccess, (state: UserState, action: { profile: UserProfile }) => ({...state, profile: action.profile})),
   on(UserActions.getProfileFailure, (state: UserState) => ({...state, profile: undefined})),
   on(UserActions.clearProfile, (state: UserState) => ({...state, profile: undefined })),
-  on(UserActions.setUserID, (state: UserState, action: { id: string }) => ({...state, id: action.id }))
+  on(UserActions.setUserID, (state: UserState, action: { id: string }) => ({...state, id: action.id })),
+  on(UserActions.saveSettingsStateSuccess, (state: UserState, action: { settings: SettingsState }) => ({...state, uiSettings: action.settings})),
 );
 

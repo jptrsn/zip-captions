@@ -12,7 +12,7 @@ export const UserActions = createActionGroup({
     'Set User ID': props<{id: string}>(),
 
     'Save Settings State': props<{ settings: SettingsState }>(),
-    'Save Settings State Success': emptyProps(),
+    'Save Settings State Success': props<{ settings: SettingsState }>(),
     'Save Settings State Failure': props<{error: string}>(),
     'Clear Profile': emptyProps()
   }

@@ -46,7 +46,7 @@ export class UserController {
   async getSettings(@Req() req, @Param() params: { id: string }): Promise<UiSettingsDocument | undefined> {
     this._validateParam(req, params);
     const settings = await this.uiSettingsService.findByOwnerId(params.id);
-    return settings;
+    return settings.toObject();
   }
 
   @Post('profile/:id/settings')
@@ -56,7 +56,9 @@ export class UserController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
     const settings = await this.uiSettingsService.upsert({...body.settings, ownerId: params.id });
-    return settings.toJSON();
+    const converted = settings.toJSON({versionKey: false});
+    delete converted.ownerId;
+    return converted;
   }
 
   @Get('validate')
