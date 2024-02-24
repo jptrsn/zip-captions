@@ -4,6 +4,7 @@ import { catchError, map, of, switchMap, tap } from "rxjs";
 import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { StorageService } from "../services/storage.service";
 import { TranslateService } from '@ngx-translate/core'
+import { defaultSettingsState } from "../reducers/settings.reducer";
 
 @Injectable()
 export class SettingsEffects {
@@ -11,10 +12,22 @@ export class SettingsEffects {
               private storage: StorageService,
               private translate: TranslateService) {}
 
-  init$ = createEffect(() => 
+  init$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.initSettings),
-      map(() => this.storage.get('settings')),
+      map(() => {
+        const cached = this.storage.get('settings');
+        const defaults = {...defaultSettingsState};
+        // This ensures that any deprecated properties are pruned from the saved object
+        for (const k of Object.keys(defaults)) {
+          if (k in cached) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore Keys are iteratble
+            defaults[k] = cached[k];
+          }
+        }
+        return defaults;
+      }),
       map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
     )
   )
@@ -39,7 +52,7 @@ export class SettingsEffects {
   applyWakeLock$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.updateWakeLockEnabled),
-      map(({enabled}) => this.storage.update('settings', 'wakeLock', enabled)),
+      map(({enabled}) => this.storage.update('settings', 'wakelock', enabled)),
       map(() => SettingsActions.updateWakeLockEnabledSuccess()),
       catchError((err) => of(SettingsActions.updateWakeLockEnabledFailure({error: err.message})))
     )

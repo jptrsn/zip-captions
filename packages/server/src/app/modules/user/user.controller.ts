@@ -1,18 +1,21 @@
-import { Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { UserProfile } from './user.model';
-import { UserService } from './user.service';
+import { UserProfile } from './models/user.model';
+import { UserService } from './services/user.service';
+import { UiSettingsService } from './services/ui-settings.service';
+import { UiSettingsDocument } from './models/ui-settings.model';
 
 @Controller('user')
 export class UserController {
   
   private clientUrl: string;
   constructor(private readonly userService: UserService,
+              private readonly uiSettingsService: UiSettingsService,
               private jwtService: JwtService) 
   {
     this.clientUrl = process.env.APP_ORIGIN
@@ -21,11 +24,11 @@ export class UserController {
   @Get('profile/:id')
   @UseGuards(JwtAuthGuard)
   async getUser(@Req() req, @Param() params: { id: string }): Promise<UserProfile> {
-    console.log('profile', params)
     if (params.id !== req.user.id) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
     const user = await this.userService.findOne({id: req.user.id});
+    console.log('user', user);
     const userProfile = {
       id: user.id,
       createdAt: user.createdAt.toString(),
@@ -36,6 +39,24 @@ export class UserController {
       azureConnected: !!user.msId
     }
     return userProfile;
+  }
+
+  @Get('profile/:id/settings')
+  @UseGuards(JwtAuthGuard)
+  async getSettings(@Req() req, @Param() params: { id: string }): Promise<UiSettingsDocument | undefined> {
+    this._validateParam(req, params);
+    const settings = await this.uiSettingsService.findByOwnerId(params.id);
+    return settings;
+  }
+
+  @Post('profile/:id/settings')
+  @UseGuards(JwtAuthGuard)
+  async saveSettings(@Req() req, @Param() params: { id: string}, @Body() body): Promise<any> {
+    if (params.id !== req.user.id) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+    }
+    const settings = await this.uiSettingsService.upsert({...body.settings, ownerId: params.id });
+    return settings.toJSON();
   }
 
   @Get('validate')
@@ -109,5 +130,11 @@ export class UserController {
   private _sendTokenResponse(userId: string, res: Response): void {
     const token = this.jwtService.sign({ sub: userId })
     res.redirect(`${this.clientUrl}/auth/login?id_token=${token}`);
+  }
+
+  private _validateParam(req: { user: { id: string }}, params: { id: string }): void {
+    if (params.id !== req.user.id) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+    }
   }
 }

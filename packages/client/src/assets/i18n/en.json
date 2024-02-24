@@ -364,7 +364,8 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "On-screen Results"
+    "renderHistory": "On-screen Results",
+    "fontFamily": "Font"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

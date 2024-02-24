@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
-import { CacheService } from '../../services/cache/cache.service';
-import { PassportUserInfo, User } from './user.model';
+import { Model } from 'mongoose';
+import { CacheService } from '../../../services/cache/cache.service';
+import { PassportUserInfo, User, UserDocument } from '../models/user.model';
 
 @Injectable()
 export class UserService {
@@ -10,24 +10,24 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>,
               private cache: CacheService) {}
 
-  async createUser(email: string, opts?: Partial<User>): Promise<HydratedDocument<User>> {
+  async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
     const model: Partial<User> = { primaryEmail: email.toLowerCase() };
     for (const [key, value] of Object.entries(opts)) {
       if (value) {
         model[key] = value;
       }
     }
-    const newUser: HydratedDocument<User> = new this.userModel(model);
+    const newUser: UserDocument = new this.userModel(model);
     await newUser.save();
     return newUser;
   }
 
-  async findOne(props: Partial<User>): Promise<HydratedDocument<User> | undefined> {
+  async findOne(props: Partial<User>): Promise<UserDocument | undefined> {
     return this.userModel.findOne(props);
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
-  async googleLogin(req): Promise<HydratedDocument<User>> {
+  async googleLogin(req): Promise<UserDocument> {
     if (!req.user) {
       throw new Error('No user from google');
     }
@@ -51,7 +51,7 @@ export class UserService {
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses
-  async msLogin(userInfo: PassportUserInfo): Promise<HydratedDocument<User>> {
+  async msLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
     const cacheKey = `ms_user_${userInfo.id}`
     let user = await this.cache.wrap(
       cacheKey,
@@ -70,7 +70,7 @@ export class UserService {
     return user;
   }
 
-  private async _loginUser(email: string, additionalUserInfo: Partial<User>): Promise<HydratedDocument<User>> {
+  private async _loginUser(email: string, additionalUserInfo: Partial<User>): Promise<UserDocument> {
     const fromDb = await this.findOne({primaryEmail: email})
     if (fromDb) {
       for (const [key, value] of Object.entries(additionalUserInfo)) {

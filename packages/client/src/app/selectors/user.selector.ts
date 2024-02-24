@@ -9,6 +9,11 @@ export const selectUserProfile = createSelector(
   (state) => state.profile
 )
 
+export const selectUserId = createSelector(
+  selectUserState,
+  (state) => state.id
+)
+
 export const selectUserSavedSettings = createSelector(
   selectUserState,
   (state) => state.uiSettings

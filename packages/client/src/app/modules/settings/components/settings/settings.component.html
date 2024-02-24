@@ -14,7 +14,7 @@
       </div>
       <div>
         <div class="flex w-full justify-end items-center gap-1 sm:gap-3">
-          <div *ngIf="!acceptedCookies()" class="text-error text-sm">You must accept cookies in order to save settings.</div>
+          <div *ngIf="!acceptedCookies()" class="text-error text-sm" translate>SETTINGS.warning</div>
           <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
             BUTTONS.cancel
           </button>

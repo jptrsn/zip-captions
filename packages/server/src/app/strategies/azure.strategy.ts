@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback } from 'passport-microsoft';
-import { PassportUserInfo } from "../modules/user/user.model";
+import { PassportUserInfo } from "../modules/user/models/user.model";
 
 @Injectable()
 export class AzureStrategy extends PassportStrategy(Strategy, 'azure') {

@@ -4,7 +4,7 @@ import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, SettingsSt
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
-  wakeLock: true,
+  wakelock: true,
   renderHistory: 15,
   textSize: 'textSize-3xl',
   lineHeight: 'lineHeight-normal',

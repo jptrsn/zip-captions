@@ -257,7 +257,8 @@
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
     "p4": "Live text shows like this",
-    "font": "Font"
+    "font": "Font",
+    "warning": "You must accept cookies in order to save settings."
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",
@@ -364,7 +365,8 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "On-screen Results"
+    "renderHistory": "On-screen Results",
+    "fontFamily": "Font"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

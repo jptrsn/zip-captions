@@ -2,12 +2,24 @@
   <div class="card-body">
     <div class="card-title">Appearance Settings Sync</div>
     <div class="text-sm mb-3">Synchronize the appearance of the application</div>
-    <div *ngIf="savedUiSettings()">
-      
+    <div *ngIf="savedUiSettings() as server; else currentState">
+      <ng-container *ngTemplateOutlet="currentState; context: server"></ng-container>
     </div>
+    <ng-template #currentState let-server>
+      <pre>{{server}}</pre>
+      <div *ngIf="currentUiSettings() as local">
+        <div class="d-flex">
+          <div class="flex flex-row gap-3 justify-between" *ngFor="let item of local | keyvalue">
+            <span translate>{{'LABELS.' + item.key}}</span>
+            <span>{{item.value}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    
     <div class="card-actions">
-      <button class="btn btn-xs btn-secondary">Apply Saved</button>
-      <button class="btn btn-xs btn-accent">Save Current</button>
+      <button class="btn btn-xs btn-secondary" [disabled]="!savedUiSettings()" (click)="applySaved()">Apply Saved</button>
+      <button class="btn btn-xs btn-accent" (click)="saveCurrent()">Save Current</button>
     </div>
   </div>
 </div>
