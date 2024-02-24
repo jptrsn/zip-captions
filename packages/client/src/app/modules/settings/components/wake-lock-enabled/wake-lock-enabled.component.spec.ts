@@ -20,9 +20,9 @@ describe('WakeLockEnabledComponent', () => {
     fixture = TestBed.createComponent(WakeLockEnabledComponent);
     component = fixture.componentInstance;
     component.group = new FormGroup({
-      wakeLock: new FormControl(true)
+      wakelock: new FormControl(true)
     })
-    component.controlName = 'wakeLock';
+    component.controlName = 'wakelock';
     fixture.detectChanges();
   });
 

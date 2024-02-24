@@ -17,18 +17,20 @@ export class SettingsEffects {
       ofType(SettingsActions.initSettings),
       map(() => {
         const cached = this.storage.get('settings');
-        const defaults = {...defaultSettingsState};
-        // This ensures that any deprecated properties are pruned from the saved object
-        for (const k of Object.keys(defaults)) {
-          if (k in cached) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore Keys are iteratble
-            defaults[k] = cached[k];
-          }
-        }
-        return defaults;
+        return this._applySettingsToDefault(cached);
       }),
       map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
+    )
+  )
+
+  applySettings$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.applySettings),
+      map(({ settings }) => {
+        this.storage.set('settings', settings);
+        return this._applySettingsToDefault(settings);
+      }),
+      map((settings) => SettingsActions.initSettingsComplete({settings}))
     )
   )
 
@@ -102,5 +104,18 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.setFontFamilyFailure({error: err.message})))
     )
   )
+
+  private _applySettingsToDefault(partial: Partial<SettingsState>): SettingsState {
+    const defaults = {...defaultSettingsState};
+        // This ensures that any deprecated properties are pruned from the saved object
+        for (const k of Object.keys(defaults)) {
+          if (k in partial) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore Keys are iteratble
+            defaults[k] = partial[k];
+          }
+        }
+        return defaults;
+  }
   
 }

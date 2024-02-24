@@ -36,10 +36,7 @@ export class UserSavedSettingsComponent {
       const saved = this.savedUiSettings();
       const current = this.currentUiSettings();
       if (saved && current) {
-        console.log('checking if settings match', saved, current)
-        if (Object.keys(saved).length === Object.keys(current).length) {
-          console.log('key length match')
-        }
+        console.log('comparing objects', saved)
         return Object.keys(saved).length === Object.keys(current).length &&
         (Object.keys(saved) as (keyof SettingsState)[]).every((key) => 
           (key in current && saved[key] == current[key])
@@ -67,4 +64,5 @@ export class UserSavedSettingsComponent {
   toggleView(): void {
     this.viewingSaved = !this.viewingSaved;
   }
+  
 }

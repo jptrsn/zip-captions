@@ -28,7 +28,6 @@ export class UserController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
     const user = await this.userService.findOne({id: req.user.id});
-    console.log('user', user);
     const userProfile = {
       id: user.id,
       createdAt: user.createdAt.toString(),
@@ -43,24 +42,23 @@ export class UserController {
 
   @Get('profile/:id/settings')
   @UseGuards(JwtAuthGuard)
-  async getSettings(@Req() req, @Param() params: { id: string }): Promise<Partial<UiSettings> | undefined> {
+  async getSettings(@Req() req, @Param() params: { id: string }): Promise<Partial<UiSettings> | null> {
     this._validateParam(req, params);
     const settings = await this.uiSettingsService.findByOwnerId(params.id);
-    const converted = settings.toJSON({versionKey: false});
-    delete converted.ownerId;
-    return converted;
+    if (settings) {
+      return this._pruneSettingsFields(settings)
+    }
+    return null;
   }
 
   @Post('profile/:id/settings')
   @UseGuards(JwtAuthGuard)
-  async saveSettings(@Req() req, @Param() params: { id: string}, @Body() body): Promise<any> {
+  async saveSettings(@Req() req, @Param() params: { id: string}, @Body() body): Promise<Partial<UiSettings>> {
     if (params.id !== req.user.id) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
     const settings = await this.uiSettingsService.upsert({...body.settings, ownerId: params.id });
-    const converted = settings.toJSON({versionKey: false});
-    delete converted.ownerId;
-    return converted;
+    return this._pruneSettingsFields(settings);
   }
 
   @Get('validate')
@@ -68,7 +66,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async validate(@Req() req): Promise<{id: string} | null> {
     if ((req.user?.exp * 1000) > Date.now()) {
-      console.log('id validated', req.user.id)
       return {id: req.user.id}
     }
     return null
@@ -140,6 +137,13 @@ export class UserController {
     if (params.id !== req.user.id) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
+  }
+
+  private _pruneSettingsFields(settings: UiSettingsDocument): Partial<UiSettings> {
+    const converted = settings.toJSON({versionKey: false});
+    delete converted.ownerId;
+    delete converted._id;
+    return converted;
   }
   
 }
