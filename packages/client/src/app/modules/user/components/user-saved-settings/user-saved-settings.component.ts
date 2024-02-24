@@ -1,8 +1,8 @@
-import { Component, Signal, ViewEncapsulation, computed } from '@angular/core';
+import { Component, Signal, ViewEncapsulation, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { selectUserSavedSettings } from '../../../../selectors/user.selector';
+import { selectUserId, selectUserSavedSettings } from '../../../../selectors/user.selector';
 import { SettingsActions, SettingsState } from '../../../settings/models/settings.model';
 import { selectAppSettings } from '../../../../selectors/settings.selector';
 import { UserActions } from '../../../../actions/user.actions';
@@ -20,8 +20,18 @@ export class UserSavedSettingsComponent {
   public settingsMatch: Signal<boolean>;
   public viewingSaved: boolean;
   constructor(private store: Store<AppState>) {
+    
+    this.viewingSaved = false;
+
     this.savedUiSettings = toSignal(this.store.select(selectUserSavedSettings));
-    this.currentUiSettings = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>
+    this.currentUiSettings = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
+    const userId = toSignal(this.store.select(selectUserId))
+    effect(() => {
+      if (userId()) {
+        this.store.dispatch(UserActions.getSettings())
+      }
+    }, { allowSignalWrites: true})
+    
     this.settingsMatch = computed(() => {
       const saved = this.savedUiSettings();
       const current = this.currentUiSettings();
@@ -37,7 +47,7 @@ export class UserSavedSettingsComponent {
       }
       return false;
     })
-    this.viewingSaved = false;
+    
   }
 
   applySaved(): void {

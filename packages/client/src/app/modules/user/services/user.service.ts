@@ -32,14 +32,20 @@ export class UserService {
     return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
   }
 
+  getUiSettings(): Observable<SettingsState> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.get<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`)
+  }
+
   saveUiSettings(settings: SettingsState): Observable<SettingsState> {
     const id = this.userId();
     if (!id) {
       throw new Error('No user ID set')
     }
-    return this.http.post<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`, { settings }).pipe(
-      tap((st) => console.log(st))
-    );
+    return this.http.post<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`, { settings })
   }
 
 }

@@ -33,5 +33,17 @@ export class UserEffects {
         )
       )
     )
+
+    getUiSettings$ = createEffect(() => 
+      this.actions$.pipe(
+        ofType(UserActions.getSettings),
+        switchMap(() => this.userService.getUiSettings()
+          .pipe(
+            map((settings) => UserActions.getSettingsSuccess({ settings })),
+            catchError((err) => of(UserActions.getSettingsFailure({error: err.message})))
+          )
+        )
+      )
+    )
               
 }

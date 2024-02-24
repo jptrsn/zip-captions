@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { UserProfile } from './models/user.model';
 import { UserService } from './services/user.service';
 import { UiSettingsService } from './services/ui-settings.service';
-import { UiSettingsDocument } from './models/ui-settings.model';
+import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
 
 @Controller('user')
 export class UserController {
@@ -43,10 +43,12 @@ export class UserController {
 
   @Get('profile/:id/settings')
   @UseGuards(JwtAuthGuard)
-  async getSettings(@Req() req, @Param() params: { id: string }): Promise<UiSettingsDocument | undefined> {
+  async getSettings(@Req() req, @Param() params: { id: string }): Promise<Partial<UiSettings> | undefined> {
     this._validateParam(req, params);
     const settings = await this.uiSettingsService.findByOwnerId(params.id);
-    return settings.toObject();
+    const converted = settings.toJSON({versionKey: false});
+    delete converted.ownerId;
+    return converted;
   }
 
   @Post('profile/:id/settings')
@@ -139,4 +141,5 @@ export class UserController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
   }
+  
 }
