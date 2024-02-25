@@ -142,7 +142,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   saveToServerCallback(shouldSave: boolean): void {
-    console.log('save to server', shouldSave)
     const state = this.settingsState();
     if (shouldSave && state) {
       this.store.dispatch(UserActions.saveSettingsState({settings: state}))
@@ -175,6 +174,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setFontFamily({font}))
     
     this.formGroup.markAsPristine();
+    console.log('syncUiSettings', this.syncUiSettings())
     if (this.syncUiSettings()) {
       this.showSaveToServerModal = true;
     } else {

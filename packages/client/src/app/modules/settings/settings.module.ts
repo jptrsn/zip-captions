@@ -18,6 +18,7 @@ import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDi
 import { RenderHistoryComponent } from './components/render-history/render-history.component';
 import { FontFamilySelectorComponent } from './components/font-family-selector/font-family-selector.component';
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
+import { UserEffects } from '../../effects/user.effects';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dia
     SharedUiModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
-    EffectsModule.forFeature([SettingsEffects]),
+    EffectsModule.forFeature([SettingsEffects, UserEffects]),
     TranslateModule.forChild({ extend: true }),
     UnsavedChangesDialogComponent,
     SaveToServerDialogComponent,
