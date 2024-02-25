@@ -294,7 +294,10 @@
     "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
     "accessP3": "Would you like to enable this feature?",
     "unsavedChangesTitle": "Unsaved Changes!",
-    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?"
+    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?",
+    "syncSettingsTitle": "Save these changes everywhere?",
+    "syncSettingsP1": "You have opted to sync your appearance settings when signed in. Would you like to save these changes everywhere?",
+    "syncSettingsP2": "If you choose not to save, your stored settings will be applied the next time you sign in."
   },
   "ROUTES": {
     "home": "Home",

@@ -26,5 +26,5 @@ export const selectUserMetadata = createSelector(
 
 export const selectUserSettingsSync = createSelector(
   selectUserProfile,
-  (profile) => profile?.syncUiSettings
+  (profile) => profile?.syncUiSettings || false
 )

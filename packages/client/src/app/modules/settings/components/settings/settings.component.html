@@ -49,3 +49,4 @@
 </div>
 
 <app-unsaved-changes-dialog [openModal]="showUnsavedChangesModal" (afterClosed)="modalClosed($event)"></app-unsaved-changes-dialog>
+<app-save-to-server-dialog [openModal]="showSaveToServerModal" (afterClosed)="saveToServerCallback($event)"></app-save-to-server-dialog>

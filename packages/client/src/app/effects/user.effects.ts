@@ -16,7 +16,9 @@ export class UserEffects {
         ofType(AuthActions.loginSuccess),
         switchMap(({id}) => this.userService.getUserProfile(id)
           .pipe(
-            map((profile) => UserActions.getProfileSuccess({ profile })),
+            switchMap((profile) => {
+              return profile.syncUiSettings ? [UserActions.loadAndApplySettings(), UserActions.getProfileSuccess({ profile })] : [UserActions.getProfileSuccess({ profile })];
+            }),
             catchError((err) => of(UserActions.getProfileFailure({error: err.message})))
           )
         )

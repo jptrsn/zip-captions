@@ -3,17 +3,17 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, Writable
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-unsaved-changes-dialog',
+  selector: 'app-save-to-server-dialog',
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, 
     TranslateModule
   ],
-  templateUrl: './unsaved-changes-dialog.component.html',
-  styleUrls: ['./unsaved-changes-dialog.component.scss'],
+  templateUrl: './save-to-server-dialog.component.html',
+  styleUrls: ['./save-to-server-dialog.component.scss'],
 })
-export class UnsavedChangesDialogComponent {
-  @ViewChild('unsavedChangesModal', {read: ElementRef}) modal!: ElementRef<HTMLElement>;
+export class SaveToServerDialogComponent {
+  @ViewChild('saveToServerModal', {read: ElementRef}) modal!: ElementRef<HTMLElement>;
   @Input() set openModal(value: boolean | undefined) {
     if (value && !this.modalOpen()) {
       this.modalOpen.set(true);

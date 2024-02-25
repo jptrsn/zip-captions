@@ -7,9 +7,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, combineLatest, filter, map, startWith, take, takeUntil } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
-import { languageSelector, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
-import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, TextSize, FontFamilyClassMap } from '../../models/settings.model';
+import { languageSelector, selectAppSettings, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
+import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, TextSize, FontFamilyClassMap, SettingsState } from '../../models/settings.model';
 import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
+import { selectUserSettingsSync } from '../../../../selectors/user.selector';
+import { UserActions } from '../../../../actions/user.actions';
 
 @Component({
   selector: 'app-settings',
@@ -33,6 +35,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public acceptedCookies: Signal<boolean | undefined>;
   public classList: WritableSignal<string>;
   public showUnsavedChangesModal?: boolean;
+  public showSaveToServerModal?: boolean;
   public modalClosed$: Subject<boolean> = new Subject<boolean>();
   public renderHistory: Signal<number>;
   public renderHistoryFormValue: Signal<number>;
@@ -44,6 +47,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private wakeLockEnabled: Signal<boolean | undefined>;
   private currentTextSize: Signal<TextSize>;
   private currentLineHeight: Signal<LineHeight>;
+
+  private settingsState: Signal<SettingsState>;
+  private syncUiSettings: Signal<boolean | undefined>;
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
@@ -58,6 +64,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     this.fontFamily = toSignal(this.store.select(selectFontFamily)) as Signal<FontFamily>;
+
+    this.settingsState = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
+    this.syncUiSettings = toSignal(this.store.select(selectUserSettingsSync));
     
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
@@ -132,6 +141,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.modalClosed$.next(value);
   }
 
+  saveToServerCallback(shouldSave: boolean): void {
+    console.log('save to server', shouldSave)
+    const state = this.settingsState();
+    if (shouldSave && state) {
+      this.store.dispatch(UserActions.saveSettingsState({settings: state}))
+    }
+    this.showSaveToServerModal = false;
+    this.router.navigate([''])
+  }
+
   saveSettings(): boolean {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.get('theme')!.value as AppTheme;
@@ -156,7 +175,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setFontFamily({font}))
     
     this.formGroup.markAsPristine();
-    this.router.navigate([''])
+    if (this.syncUiSettings()) {
+      this.showSaveToServerModal = true;
+    } else {
+      this.router.navigate([''])
+    }
+    
     return false;
   }
 

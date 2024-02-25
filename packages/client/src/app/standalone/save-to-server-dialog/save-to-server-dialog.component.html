@@ -1,0 +1,15 @@
+<dialog #saveToServerModal class="modal modal-bottom sm:modal-middle" [open]="modalOpen()">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg" translate>MODAL.syncSettingsTitle</h3>
+    <p class="text-sm my-3" translate>
+      MODAL.syncSettingsP1
+    </p>
+    <p class="text-sm my-3" translate>
+      MODAL.syncSettingsP2
+    </p>
+    <div class="modal-action gap-3">
+      <button class="btn" (click)="decline()" translate>BUTTONS.decline</button>
+      <button class="btn btn-primary" (click)="accept()" translate>BUTTONS.saveAndClose</button>
+    </div>
+  </div>
+</dialog>

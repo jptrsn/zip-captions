@@ -57,6 +57,7 @@ module.exports = {
       'winter',
       {
         'Zip-Dark': {
+          "color-scheme": "dark",
           "primary": "#4178bf",
           "secondary": "#66b1f2",
           "accent": "#bf877a",
@@ -68,6 +69,7 @@ module.exports = {
           "error": "#E33D2B",
         },
         'Zip-Light': {
+          "color-scheme": "light",
           "primary": "#4178bf",
           "secondary": "#66b1f2",
           "accent": "#bf877a",

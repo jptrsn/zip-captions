@@ -18,11 +18,13 @@ export class UserService {
   private userId: Signal<string | undefined>;
   constructor(private http: HttpClient,
               private store: Store<AppState>) {
+
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';
     this.userEndpoint = `${baseUrl}/${apiVersion}/${userRoute}`;
-    this.userId = toSignal(this.store.select(selectUserId))
+    
+    this.userId = toSignal(this.store.select(selectUserId));
   }
 
   getUserProfile(userId: string): Observable<UserProfile> {
