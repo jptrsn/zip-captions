@@ -105,17 +105,19 @@ export class SettingsEffects {
     )
   )
 
-  private _applySettingsToDefault(partial: Partial<SettingsState>): SettingsState {
+  private _applySettingsToDefault(partial: Partial<SettingsState> | null): SettingsState {
     const defaults = {...defaultSettingsState};
-        // This ensures that any deprecated properties are pruned from the saved object
-        for (const k of Object.keys(defaults)) {
-          if (k in partial) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore Keys are iteratble
-            defaults[k] = partial[k];
-          }
+    // This ensures that any deprecated properties are pruned from the saved object
+    if (partial) {
+      for (const k of Object.keys(defaults)) {
+        if (k in partial) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore Keys are iteratble
+          defaults[k] = partial[k];
         }
-        return defaults;
+      }
+    }
+    return defaults;
   }
   
 }
