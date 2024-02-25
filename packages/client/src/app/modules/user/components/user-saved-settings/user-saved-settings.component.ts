@@ -52,7 +52,6 @@ export class UserSavedSettingsComponent {
       const saved = this.savedUiSettings();
       const current = this.currentUiSettings();
       if (saved && current) {
-        console.log('comparing objects', saved)
         return Object.keys(saved).length === Object.keys(current).length &&
         (Object.keys(saved) as (keyof SettingsState)[]).every((key) => 
           (key in current && saved[key] == current[key])
@@ -64,7 +63,6 @@ export class UserSavedSettingsComponent {
     this.syncControl.valueChanges.pipe(
       takeUntilDestroyed()
     ).subscribe((newValue) => {
-      console.log('sync control changed', newValue);
       this.store.dispatch(UserActions.saveSyncProperty({ sync: !!newValue }))
     })
     
@@ -75,7 +73,7 @@ export class UserSavedSettingsComponent {
     if (settings) {
       this.store.dispatch(SettingsActions.applySettings({ settings }))
     } else {
-      console.error('no saved settings to apply');
+      this.store.dispatch(UserActions.getSettingsFailure({ error: 'No saved settings loaded into memory'}))
     }
   }
 
