@@ -256,8 +256,7 @@
     "p1": "Setiap segmen teks yang sebelumnya diakui akan muncul seperti ini.",
     "p2": "Menggulir dari bawah.",
     "p3": "Dengan setiap hasil baru muncul di bawah yang sebelumnya.",
-    "p4": "Teks Langsung Pertunjukan Seperti Ini",
-    "font": "Huruf"
+    "p4": "Teks Langsung Pertunjukan Seperti Ini"
   },
   "STREAM": {
     "serverStatus": "Server siaran",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions menganonimkan informasi Anda sebanyak mungkin, tetapi detail abadi tertentu (mis. Alamat IP) dapat diekspos saat terhubung ke rekan online.",
     "accessP3": "Apakah Anda ingin mengaktifkan fitur ini?",
     "unsavedChangesTitle": "Perubahan yang belum disimpan!",
-    "unsavedChangesParagraph": "Anda memiliki perubahan yang belum disimpan, apakah Anda yakin ingin membuangnya?"
+    "unsavedChangesParagraph": "Anda memiliki perubahan yang belum disimpan, apakah Anda yakin ingin membuangnya?",
+    "syncSettingsTitle": "Simpan perubahan ini di mana -mana?",
+    "syncSettingsP1": "Anda telah memilih untuk menyinkronkan pengaturan penampilan Anda saat masuk. Apakah Anda ingin menyimpan perubahan ini di mana -mana?",
+    "syncSettingsP2": "Jika Anda memilih untuk tidak menyimpan, pengaturan tersimpan Anda akan diterapkan saat berikutnya Anda masuk."
   },
   "ROUTES": {
     "home": "Rumah",
@@ -364,7 +366,8 @@
     "streaming": "Mengalir",
     "idle": "Menganggur",
     "build": "Membangun",
-    "renderHistory": "Hasil di layar"
+    "renderHistory": "Hasil di layar",
+    "fontFamily": "Font"
   },
   "HINTS": {
     "beginSpeaking": "Mulailah berbicara ...",

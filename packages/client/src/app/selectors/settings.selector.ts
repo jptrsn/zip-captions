@@ -16,7 +16,7 @@ export const languageSelector = createSelector(
 
 export const wakeLockEnabledSelector = createSelector(
   selectAppSettings,
-  (state) => state.wakeLock
+  (state) => state.wakelock
 )
 
 export const selectTextSize = createSelector(

@@ -17,6 +17,7 @@ import { LineHeightComponent } from './components/line-height/line-height.compon
 import { UnsavedChangesDialogComponent } from '../../standalone/unsavedChangesDialog/unsaved-changes-dialog.component';
 import { RenderHistoryComponent } from './components/render-history/render-history.component';
 import { FontFamilySelectorComponent } from './components/font-family-selector/font-family-selector.component';
+import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { FontFamilySelectorComponent } from './components/font-family-selector/f
     EffectsModule.forFeature([SettingsEffects]),
     TranslateModule.forChild({ extend: true }),
     UnsavedChangesDialogComponent,
+    SaveToServerDialogComponent,
   ],
 })
 export class SettingsModule {}

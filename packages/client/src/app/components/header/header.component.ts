@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)))
 
-    this.isLoggedIn = toSignal<boolean>(this.store.select(selectUserLoggedIn))
+    this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn))
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(

@@ -3,6 +3,7 @@ import { AppTheme, FontFamily, Language, LineHeight, SettingsState, TextFlow, Te
 
 
 export const initSettings = createAction('[Settings] Init');
+export const applySettings = createAction('[Settings] Apply Settings', props<{settings: SettingsState}>());
 export const initSettingsComplete = createAction('[Settings] Init Complete', props<{settings: SettingsState}>());
 
 export const setTheme = createAction('[Settings] Set Theme', props<{theme: AppTheme}>());

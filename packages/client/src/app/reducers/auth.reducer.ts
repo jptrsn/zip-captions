@@ -3,13 +3,12 @@ import { AuthActions } from '../actions/auth.actions';
 
 export interface AuthState {
   loading: boolean;
-  loggedIn: boolean;
+  loggedIn?: boolean;
   error?: string;
 }
 
 export const defaultAuthState: AuthState = {
   loading: false,
-  loggedIn: false,
 };
 
 export const authReducer = createReducer(

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UserRoutingModule } from './user-routing.module';
 import { UserHomeComponent } from './components/user-home/user-home.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIconsModule } from '@ng-icons/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedUiModule } from 'shared-ui';
@@ -29,6 +29,7 @@ import { TimeagoModule } from 'ngx-timeago';
     NgIconsModule,
     TimeagoModule,
     ReactiveFormsModule,
+    FormsModule,
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([UserEffects, AuthEffects]),
     StoreModule.forFeature('user', userReducer),

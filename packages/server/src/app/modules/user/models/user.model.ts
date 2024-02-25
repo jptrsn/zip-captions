@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { v4 } from 'uuid';
+import { UiSettingsDocument, UiSettingsSchema } from './ui-settings.model';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -54,6 +55,11 @@ export class User {
     type: String
   })
   msId?: string;
+
+  @Prop({
+    type: Boolean
+  })
+  syncUiSettings?: boolean;
 
 }
 
