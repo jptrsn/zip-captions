@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CacheService } from '../../../services/cache/cache.service';
@@ -24,6 +24,19 @@ export class UserService {
 
   async findOne(props: Partial<User>): Promise<UserDocument | undefined> {
     return this.userModel.findOne(props);
+  }
+
+  async updateUser(id: string, update: Partial<User>): Promise<UserDocument> {
+    const user = await this.findOne({id});
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    for (const [key, value] of Object.entries(update)) {
+      user[key] = value;
+    }
+    await user.save();
+    return user;
+
   }
 
   // Finds or creates the user document and returns it for valid google oauth responses

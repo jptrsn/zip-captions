@@ -23,3 +23,8 @@ export const selectUserMetadata = createSelector(
   selectUserState,
   (state) => state.metadata
 )
+
+export const selectUserSettingsSync = createSelector(
+  selectUserProfile,
+  (profile) => profile?.syncUiSettings
+)

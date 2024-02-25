@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { UserActions } from '../../../actions/user.actions';
 import { AppState } from '../../../models/app.model';
 import { UserProfile } from '../../../reducers/user.reducer';
@@ -30,6 +30,16 @@ export class UserService {
       this.store.dispatch(UserActions.setUserID({ id: userId }))
     }
     return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
+  }
+
+  saveSyncSetting(sync: boolean): Observable<boolean> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.post<{sync: boolean}>(`${this.userEndpoint}/profile/${id}/sync`, { sync }).pipe(
+      map(({sync}) => (sync))
+    )
   }
 
   getUiSettings(): Observable<SettingsState> {

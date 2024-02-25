@@ -57,9 +57,9 @@ export class User {
   msId?: string;
 
   @Prop({
-    type: UiSettingsSchema
+    type: Boolean
   })
-  uiSettings?: UiSettingsDocument
+  syncUiSettings?: boolean;
 
 }
 

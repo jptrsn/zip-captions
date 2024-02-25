@@ -13,7 +13,17 @@
           </ng-container>
           <ng-template #settingsStateManagement>
             <ng-container *ngIf="settingsMatch(); else settingsSwitch">
-              <span class="label-text">Your appearance settings are in sync</span>
+              <div class="flex flex-col">
+                <span class="label">Your appearance settings are in sync</span>
+
+                <div class="flex flex-row items-center gap-2">
+                  <input type="checkbox" class="checkbox checkbox-sm" [formControl]="syncControl" />
+                  <span class="label-text">
+                    Use these settings everywhere I log in
+                  </span>
+                </div>
+              </div>
+              
             </ng-container>
             <ng-template #settingsSwitch>
               <span class="label-text">
@@ -22,7 +32,7 @@
               <span class="label-text">
                 <span class="badge badge-accent" [ngClass]="{'badge-outline': viewingSaved}">Local</span>
               </span>
-              <input #env type="checkbox" class="toggle toggle-sm" (click)="toggleView()" />
+              <input type="checkbox" class="toggle toggle-sm" (click)="toggleView()" />
               <span class="label-alt-text">
                 <span class="badge badge-primary" [ngClass]="{'badge-outline': !viewingSaved}">Server</span>
               </span>
@@ -34,7 +44,7 @@
             <span class="label-text" translate>{{'LABELS.' + item.key}}</span>
             <ng-container *ngIf="server && local[item.key] !== server[item.key]; else valuesMatch">
               <span class="tooltip tooltip-left tooltip-rounded" [ngClass]="{'tooltip-accent' : viewingSaved, 'tooltip-primary': !viewingSaved}" [attr.data-tip]="(viewingSaved ? local[item.key] : server[item.key])">
-                <span class="label-text text-info">{{viewingSaved ? server[item.key] : local[item.key]}}</span>  
+                <span class="label-text text-warning">{{viewingSaved ? server[item.key] : local[item.key]}}</span>  
               </span>
             </ng-container>
             <ng-template #valuesMatch>
@@ -47,8 +57,8 @@
     </ng-template>
     
     <div class="card-actions mt-3 justify-between">
-      <button class="btn btn-sm btn-accent" [disabled]="settingsMatch()" (click)="saveCurrent()">Save Current</button>
-      <button class="btn btn-sm btn-secondary" [disabled]="!savedUiSettings() || settingsMatch()" (click)="applySaved()">Apply Saved</button>
+      <button class="btn btn-sm btn-accent" [disabled]="settingsMatch() || viewingSaved" (click)="saveCurrent()">Save Current</button>
+      <button class="btn btn-sm btn-secondary" *ngIf="savedUiSettings()" [disabled]="settingsMatch() || !viewingSaved" (click)="applySaved()">Apply Saved</button>
     </div>
   </div>
 </div>

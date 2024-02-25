@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UiSettings, UiSettingsDocument } from '../models/ui-settings.model';
-import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { CacheService } from '../../../services/cache/cache.service';
+import { Model } from 'mongoose';
+import { UiSettings, UiSettingsDocument } from '../models/ui-settings.model';
 
 @Injectable()
 export class UiSettingsService {
-  constructor(@InjectModel(UiSettings.name) private uiSettingsModel: Model<UiSettings>,
-              private cache: CacheService) {}
+  constructor(@InjectModel(UiSettings.name) private uiSettingsModel: Model<UiSettings>) {}
 
   async upsert(settings: Partial<UiSettings>): Promise<UiSettingsDocument> {
     const fromDb = await this.findByOwnerId(settings.ownerId);
@@ -26,11 +24,6 @@ export class UiSettingsService {
   }
 
   async findByOwnerId(id: string): Promise<UiSettingsDocument> {
-    const key = `ui_settings_${id}`;
-    const doc = await this.cache.wrap(
-      key,
-      () => this.uiSettingsModel.findOne({ ownerId: id })
-    )
-    return doc;
+    return this.uiSettingsModel.findOne({ ownerId: id });
   }
 }

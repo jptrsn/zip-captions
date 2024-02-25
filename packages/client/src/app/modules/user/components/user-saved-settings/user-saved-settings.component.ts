@@ -1,11 +1,12 @@
 import { Component, Signal, ViewEncapsulation, computed, effect } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { selectUserId, selectUserSavedSettings } from '../../../../selectors/user.selector';
+import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
 import { SettingsActions, SettingsState } from '../../../settings/models/settings.model';
 import { selectAppSettings } from '../../../../selectors/settings.selector';
 import { UserActions } from '../../../../actions/user.actions';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-user-saved-settings',
@@ -19,18 +20,33 @@ export class UserSavedSettingsComponent {
   public currentUiSettings: Signal<SettingsState>;
   public settingsMatch: Signal<boolean>;
   public viewingSaved: boolean;
-  constructor(private store: Store<AppState>) {
+  public syncControl: FormControl<boolean | null>;
+
+  private syncSettings: Signal<boolean | undefined>;
+
+  constructor(private store: Store<AppState>,
+              private fb: FormBuilder) {
     
     this.viewingSaved = false;
-
+    
+    this.syncSettings = toSignal(this.store.select(selectUserSettingsSync));
+    this.syncControl = this.fb.control<boolean | null>(null);
     this.savedUiSettings = toSignal(this.store.select(selectUserSavedSettings));
     this.currentUiSettings = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
     const userId = toSignal(this.store.select(selectUserId))
+    
     effect(() => {
       if (userId()) {
         this.store.dispatch(UserActions.getSettings())
       }
     }, { allowSignalWrites: true})
+
+    effect(() => {
+      const sync = this.syncSettings();
+      if (sync !== undefined) {
+        this.syncControl.setValue(sync, {emitEvent: false})
+      }
+    })
     
     this.settingsMatch = computed(() => {
       const saved = this.savedUiSettings();
@@ -44,11 +60,17 @@ export class UserSavedSettingsComponent {
       }
       return false;
     })
+
+    this.syncControl.valueChanges.pipe(
+      takeUntilDestroyed()
+    ).subscribe((newValue) => {
+      console.log('sync control changed', newValue);
+      this.store.dispatch(UserActions.saveSyncProperty({ sync: !!newValue }))
+    })
     
   }
 
   applySaved(): void {
-    console.log('apply saved')
     const settings = this.savedUiSettings();
     if (settings) {
       this.store.dispatch(SettingsActions.applySettings({ settings }))

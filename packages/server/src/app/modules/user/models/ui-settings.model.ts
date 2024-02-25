@@ -9,7 +9,8 @@ export class UiSettings {
 
   @Prop({
     type: String,
-    required: true
+    required: true,
+    unique: true
   })
   ownerId: string;
 
