@@ -256,8 +256,7 @@
     "p1" : "Chaque segment de texte déjà reconnu apparaîtra comme ceci",
     "p2" : "Défilement vers le haut à partir du bas",
     "p3" : "Chaque nouveau résultat apparaissant sous le précédent.",
-    "p4" : "Des émissions de texte en direct comme celle-ci",
-    "font": "Police de Caractères"
+    "p4" : "Des émissions de texte en direct comme celle-ci"
   },
   "STREAM": {
     "serverStatus": "Serveur de diffusion",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonymise vos informations autant que possible, mais certains détails immuables (par exemple l'adresse IP) peuvent être exposés lors de la connexion avec des pairs en ligne.",
     "accessP3": "Souhaitez-vous activer cette fonctionnalité?",
     "unsavedChangesTitle": "Changements non enregistrés!",
-    "unsavedChangesParagraph": "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir les supprimer ?"
+    "unsavedChangesParagraph": "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir les supprimer?",
+    "syncSettingsTitle": "Enregistrez ces changements partout?",
+    "syncSettingsP1": "Vous avez choisi de synchroniser vos paramètres d'apparence lors de la connexion. Souhaitez-vous enregistrer ces modifications partout?",
+    "syncSettingsP2": "Si vous choisissez de ne pas enregistrer, vos paramètres stockés seront appliqués la prochaine fois que vous vous connectez."
   },
   "ROUTES" : {
     "home" : "Principal",
@@ -364,7 +366,8 @@
     "streaming": "Streaming",
     "idle": "Inactif",
     "build": "Création",
-    "renderHistory": "Résultats à l'écran"
+    "renderHistory": "Résultats à l'écran",
+    "fontFamily": "Police De Caractère"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",

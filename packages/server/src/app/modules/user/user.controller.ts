@@ -161,7 +161,6 @@ export class UserController {
     const converted = settings.toJSON({versionKey: false});
     delete converted.ownerId;
     delete converted._id;
-    console.log('returning', converted)
     return converted;
   }
 

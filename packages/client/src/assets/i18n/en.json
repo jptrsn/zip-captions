@@ -256,8 +256,7 @@
     "p1": "Each segment of previously-recognized text will appear like this.",
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
-    "p4": "Live text shows like this",
-    "font": "Font"
+    "p4": "Live text shows like this"
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",
@@ -453,6 +452,5 @@
       "providers": "Sign-in providers connected",
       "notSet": "Not set"
     }
-    
   }
 }

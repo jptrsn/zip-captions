@@ -256,8 +256,7 @@
     "p1":  "Każdy segment wcześniej uznanego tekstu będzie wyglądał w ten sposób.",
     "p2":  "Przewijanie w górę od dołu.",
     "p3":  "Z każdym nowym wynikiem pojawiającym się pod poprzednim.",
-    "p4":  "Tekst na żywo takie",
-    "font": "Czcionka"
+    "p4":  "Tekst na żywo takie"
   },
   "STREAM": {
     "serverStatus":  "Serwer transmisji",
@@ -294,7 +293,10 @@
     "accessP2":  "Zipcaptions anonimizuje Twoje informacje w jak największym stopniu, ale pewne niezmienne szczegóły (np. Adres IP) można ujawnić podczas łączenia się z rówieśnikami online.",
     "accessP3":  "Czy chciałbyś włączyć tę funkcję?",
     "unsavedChangesTitle":  "Niezbawione zmiany!",
-    "unsavedChangesParagraph":  "Masz niezbawione zmiany, czy na pewno chcesz je odrzucić?"
+    "unsavedChangesParagraph":  "Masz niezbawione zmiany, czy na pewno chcesz je odrzucić?",
+    "syncSettingsTitle": "Zapisz te zmiany wszędzie?",
+    "syncSettingsP1": "Zdecydowałeś się zsynchronizować ustawienia wyglądu po zalogowaniu. Czy chciałbyś zapisać te zmiany wszędzie?",	
+    "syncSettingsP2": "Jeśli zdecydujesz się nie zapisać, przechowywane ustawienia zostaną zastosowane następnym razem, gdy się zalogujesz"
   },
   "ROUTES": {
     "home":  "Dom",
@@ -364,7 +366,8 @@
     "streaming":  "Streaming",
     "idle":  "Bezczynny",
     "build":  "Zbudować",
-    "renderHistory":  "Wyniki na ekranie"
+    "renderHistory":  "Wyniki na ekranie",
+    "fontFamily": "Czcionka"
   },
   "HINTS": {
     "beginSpeaking":  "Zacznij mówić ...",

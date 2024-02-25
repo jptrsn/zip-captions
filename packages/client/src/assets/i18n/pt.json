@@ -256,8 +256,7 @@
     "p1":  "Cada segmento do texto reconhecido anteriormente será assim.",
     "p2":  "Rolando para cima do fundo.",
     "p3":  "Com cada novo resultado aparecendo embaixo do anterior.",
-    "p4":  "Shows de texto ao vivo como este",
-    "font": "Tipo de letra"
+    "p4":  "Shows de texto ao vivo como este"
   },
   "STREAM": {
     "serverStatus":  "Servidor de transmissão",
@@ -294,7 +293,10 @@
     "accessP2":  "O ZipCaptions anonimiza suas informações o máximo possível, mas certos detalhes imutáveis ​​(por exemplo, endereço IP) podem ser expostos ao se conectar a colegas on -line.",
     "accessP3":  "Você gostaria de ativar esse recurso?",
     "unsavedChangesTitle":  "Mudanças não salvas!",
-    "unsavedChangesParagraph":  "Você tem mudanças não salvas, tem certeza de que deseja descartá -las?"
+    "unsavedChangesParagraph":  "Você tem mudanças não salvas, tem certeza de que deseja descartá -las?",
+    "syncSettingsTitle": "Salvar essas mudanças em todos os lugares?",
+    "syncSettingsP1": "Você optou por sincronizar suas configurações de aparência quando assinado. Você gostaria de salvar essas mudanças em todos os lugares?",
+    "syncSettingsP2": "Se você optar por não salvar, suas configurações armazenadas serão aplicadas na próxima vez que você entrar."
   },
   "ROUTES": {
     "home":  "Lar",
@@ -364,7 +366,8 @@
     "streaming":  "Transmissão",
     "idle":  "Parado",
     "build":  "Construir",
-    "renderHistory":  "Resultados na tela"
+    "renderHistory":  "Resultados na tela",
+    "fontFamily": "Tipo de letra"
   },
   "HINTS": {
     "beginSpeaking":  "Comece a falar ...",
@@ -373,7 +376,8 @@
     "hostConnecting":  "Esperando pelo anfitrião da sessão ...",
     "recognitionPaused":  "O reconhecimento foi pausado ...",
     "viewStream":  "Visite Zipcaptions.App e use o ID da sessão e participe do código para visualizar legendas em seu próprio dispositivo.",
-    "offlineWarning":  "Você parece estar offline - o ZipCaptions requer uma conexão com a Internet para operar."
+    "offlineWarning":  "Você parece estar offline - o ZipCaptions requer uma conexão com a Internet para operar.",
+    "advancedWarning": "Não Mude A Menos Que Você Esteja Confiante De Que Sabe O Que Está Fazendo"
   },
   "ERRORS": {
     "missingApi":  "Desculpe, seu navegador ainda não implementou as APIs necessárias para a execução do ZipCaptions. Recomendamos o Chrome ou o Safari na área de trabalho.",

@@ -256,8 +256,7 @@
     "p1": "Ogni segmento di testo riconosciuto in precedenza apparirà così",
     "p2": "Scorrendo dal basso verso l'alto",
     "p3": "Con ogni nuovo risultato che appare sotto il precedente",
-    "p4": "Il testo in tempo reale viene visualizzato in questo modo",
-    "font": "Carattere"
+    "p4": "Il testo in tempo reale viene visualizzato in questo modo"
   },
   "STREAM": {
     "serverStatus": "Server di trasmissione",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonimizza il più possibile le informazioni, ma alcuni dettagli immutabili (ad esempio l'indirizzo IP) possono essere esposti quando ci si connette ai peer online.",
     "accessP3": "Vuoi abilitare questa funzione?",
     "unsavedChangesTitle": "Modifiche non salvate!",
-    "unsavedChangesParagraph": "Ci sono modifiche non salvate, sei sicuro di volerle scartare?"
+    "unsavedChangesParagraph": "Ci sono modifiche non salvate, sei sicuro di volerle scartare?",
+    "syncSettingsTitle": "Salva queste modifiche ovunque?",
+    "syncSettingsP1": "Hai optato per sincronizzare le impostazioni dell'aspetto quando sei firmato. Vorresti salvare queste modifiche ovunque?",
+    "syncSettingsP2": "Se scegli di non salvare, le impostazioni memorizzate verranno applicate la prossima volta che accedi."
   },
   "ROUTES": {
     "home": "Home",
@@ -364,7 +366,8 @@
     "streaming": "Streaming",
     "idle": "Inattivo",
     "build": "Costruire",
-    "renderHistory": "Risultati su schermo"
+    "renderHistory": "Risultati su schermo",
+    "fontFamily": "Carattere"
   },
   "HINTS": {
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
