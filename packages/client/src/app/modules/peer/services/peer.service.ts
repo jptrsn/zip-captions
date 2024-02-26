@@ -81,10 +81,13 @@ export class PeerService {
     if (cached?.id) {
       this.myId = cached.id;
     }
+    
   }
 
   connectSocket(): Observable<string> {
     console.log('connect socket')
+    console.log(`Peer host: ${this.CONNECT_OPTS.host}`)
+    console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
     if (this.socket) {
       this.socket.removeAllListeners();
     }
