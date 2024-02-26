@@ -23,9 +23,6 @@ export class PeerService {
   private readonly SOCKET_URL: string;
   private readonly PEER_PORT: number;
   private readonly PEER_URL: string;
-  private readonly STUN_SERVER: string;
-  private readonly TURN_SERVER: string;
-  private readonly TURN_PASS: string;
   private readonly SOCKET_CONFIG: SocketIoConfig;
 
   private CONNECT_OPTS: PeerJSOption;
@@ -51,9 +48,6 @@ export class PeerService {
       }
     }
     this.PEER_URL = process.env['ZIP_PEER_SERVER'] || 'localhost';
-    this.STUN_SERVER = process.env['ZIP_STUN_SERVER'] || 'localhost:19302';
-    this.TURN_SERVER = process.env['ZIP_TURN_SERVER'] || 'localhost:3478';
-    this.TURN_PASS = process.env['ZIP_TURN_PASSWORD'] || 'coturn';
     this.CONNECT_OPTS = {
       debug: 0,
       host: this.PEER_URL,
@@ -64,11 +58,8 @@ export class PeerService {
         iceServers: [{
           urls: [
             `stun:stun1.l.google.com:19302`,
-            `stun:stun2.l.google.com:19302`,
-            `stun:${this.STUN_SERVER}`,
-            `turn:${this.TURN_SERVER}`
-          ],
-          credential: this.TURN_PASS
+            `stun:stun2.l.google.com:19302`
+          ]
         }
         ]
       }
@@ -85,9 +76,10 @@ export class PeerService {
   }
 
   connectSocket(): Observable<string> {
-    console.log('connect socket')
-    console.log(`Peer host: ${this.CONNECT_OPTS.host}`)
-    console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
+    // console.log('connect socket')
+    // console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
+    // console.log(`Peer connect opts`, this.CONNECT_OPTS)
+    
     if (this.socket) {
       this.socket.removeAllListeners();
     }
