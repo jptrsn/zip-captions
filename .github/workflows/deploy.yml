@@ -26,9 +26,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Dependencies
-        run: npm ci
-
       - uses: nrwl/nx-set-shas@v4
         with:
           main-branch-name: 'main'
@@ -71,7 +68,6 @@ jobs:
   push_and_deploy_server:
     if: contains(needs.identify_affected.outputs.affected, 'server')
     needs: identify_affected
-    name: Push server Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
