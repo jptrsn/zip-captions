@@ -107,7 +107,7 @@ jobs:
         with:
           containerAppName: zip-captions-server
           resourceGroup: ZipCaptions
-          imageToBuild: educoder/zip-captions-server:${{ github.sha }}
+          imageToDeploy: educoder/zip-captions-server:${{ github.sha }}
           targetPort: 3000
           disableTelemetry: true
           ingress: external
