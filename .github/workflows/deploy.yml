@@ -26,6 +26,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Dependencies
+        run: npm ci
+
       - uses: nrwl/nx-set-shas@v4
         with:
           main-branch-name: 'main'
