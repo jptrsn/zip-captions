@@ -1,0 +1,138 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  identify_affected:
+    runs-on: ubuntu-latest
+    outputs:
+      affected: ${{ steps.set-output.outputs.affected }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'main'
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+
+      - name: Identify affected projects
+        run: |
+          echo "AFFECTED=$(npx nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} | jq -r '.projects | join(" ")')" >> $GITHUB_ENV
+
+      - name: Set affected projects as output
+        id: set-output
+        run: echo "::set-output name=affected::${{ env.AFFECTED }}"
+
+  build_and_deploy_client:
+    if: contains(needs.identify_affected.outputs.affected, 'client')
+    needs: identify_affected
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build:client
+
+      - name: Deploy
+        id: deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: '/docs' # App source code path
+
+  push_and_deploy_server:
+    if: contains(needs.identify_affected.outputs.affected, 'server')
+    needs: identify_affected
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: educoder/zip-captions-server
+
+      - name: Build and push server Docker image
+        uses: docker/build-push-action@v4
+        with:
+          target: prod_server
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name != 'pull_request'}}
+          tags: educoder/zip-captions-server:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to container app
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: zip-captions-server
+          resourceGroup: ZipCaptions
+          imageToBuild: educoder/zip-captions-server:${{ github.sha }}
+          targetPort: 3000
+          disableTelemetry: true
+          ingress: external
+          environmentVariables: |
+            MONGO_DB_USER=secretref:mongo-db-user 
+            MONGO_DB_PASSWORD=secretref:mongo-db-password 
+            MONGO_DB_URL=secretref:mongo-db-url 
+            MONGO_DB_PORT=10255
+            MONGO_DB_NAME=secretref:mongo-db-name 
+            AZURE_CLIENT_ID=secretref:azure-client-id 
+            AZURE_CLIENT_SECRET=secretref:azure-client-secret 
+            AZURE_REDIRECT_URI=secretref:azure-redirect-url 
+            GOOGLE_CLIENT_ID=secretref:google-client-id 
+            GOOGLE_CLIENT_SECRET=secretref:google-client-secret 
+            GOOGLE_REDIRECT_URI=secretref:google-redirect-uri 
+            SESSION_SECRET=secretref:session-secret
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: 'close'
