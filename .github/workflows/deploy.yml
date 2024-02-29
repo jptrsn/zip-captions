@@ -43,7 +43,7 @@ jobs:
         run: echo "::set-output name=affected::${{ env.AFFECTED }}"
 
   build_and_deploy_client:
-    if: contains(needs.identify_affected.outputs.affected, client)
+    if: contains(needs.identify_affected.outputs.affected, "client")
     needs: identify_affected
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +68,7 @@ jobs:
           app_location: '/docs' # App source code path
 
   push_and_deploy_server:
-    if: contains(needs.identify_affected.outputs.affected, server)
+    if: contains(needs.identify_affected.outputs.affected, "server")
     needs: identify_affected
     name: Push server Docker image to Docker Hub
     runs-on: ubuntu-latest
