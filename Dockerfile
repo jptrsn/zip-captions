@@ -63,4 +63,4 @@ RUN npm run build:server
 
 FROM prod_build_server as prod_server
 CMD ["node", "./dist/packages/server/main.js"]
-EXPOSE 3000 9000
+EXPOSE 3000
