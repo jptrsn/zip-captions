@@ -1,4 +1,4 @@
-name: CI
+name: Deploy Changed Project to Azure
 on:
   workflow_dispatch:
   push:
@@ -107,7 +107,7 @@ jobs:
         with:
           containerAppName: zip-captions-server
           resourceGroup: ZipCaptions
-          imageToBuild: educoder/zip-captions-server:${{ github.sha }}
+          imageToDeploy: educoder/zip-captions-server:${{ github.sha }}
           targetPort: 3000
           disableTelemetry: true
           ingress: external
