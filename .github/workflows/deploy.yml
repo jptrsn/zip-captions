@@ -107,15 +107,15 @@ jobs:
         with:
           containerAppName: zip-captions-server
           resourceGroup: ZipCaptions
-          imageToDeploy: educoder/zip-captions-server:${{ github.sha }}
+          imageToDeploy: educoder/zip-captions-server:6f0814def23ede142be388338126fd008018ffa9
           targetPort: 3000
           disableTelemetry: true
           ingress: external
-          environmentVariables: |
+          environmentVariables: >
             MONGO_DB_USER=secretref:mongo-db-user 
             MONGO_DB_PASSWORD=secretref:mongo-db-password 
             MONGO_DB_URL=secretref:mongo-db-url 
-            MONGO_DB_PORT=10255
+            MONGO_DB_PORT=10255 
             MONGO_DB_NAME=secretref:mongo-db-name 
             AZURE_CLIENT_ID=secretref:azure-client-id 
             AZURE_CLIENT_SECRET=secretref:azure-client-secret 
@@ -124,6 +124,7 @@ jobs:
             GOOGLE_CLIENT_SECRET=secretref:google-client-secret 
             GOOGLE_REDIRECT_URI=secretref:google-redirect-uri 
             SESSION_SECRET=secretref:session-secret
+            JWT_SECRET=secretref:jwt-secret
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
