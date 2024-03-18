@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - predeploy
   # pull_request:
   #   types: [opened, synchronize, reopened, closed]
   #   branches:
