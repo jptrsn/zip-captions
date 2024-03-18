@@ -32,7 +32,7 @@ jobs:
         with:
           main-branch-name: 'main'
       # This line is needed for nx affected to work when CI is running on a PR
-      - run: git branch --track main origin/main
+      # - run: git branch --track main origin/main
 
       - name: Identify affected projects
         run: |
