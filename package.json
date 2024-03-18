@@ -15,6 +15,7 @@
     "build:signal": "nx build --project=signal",
     "build:server": "nx build --project=server",
     "build:server:staging": "nx build --project=server --configuration=staging",
+    "act:azure": "act --secret-file .secret.env --workflows .github/workflows/deploy.yml --container-architecture linux/amd64",
     "act:client": "act --secret-file .secret.env --workflows .github/workflows/build-client.yml",
     "act:signal": "act --secret-file .secret.env --workflows .github/workflows/build-signal.yml",
     "act:server": "act --secret-file .secret.env --workflows .github/workflows/build-server.yml",

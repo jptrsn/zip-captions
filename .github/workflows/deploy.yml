@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
+  # pull_request:
+  #   types: [opened, synchronize, reopened, closed]
+  #   branches:
+  #     - main
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
@@ -125,6 +125,7 @@ jobs:
             GOOGLE_REDIRECT_URI=secretref:google-redirect-uri 
             SESSION_SECRET=secretref:session-secret
             JWT_SECRET=secretref:jwt-secret
+            APP_ORIGIN=https://zipcaptions.app
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
