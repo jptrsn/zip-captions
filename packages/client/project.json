@@ -24,7 +24,6 @@
           "packages/client/src/favicon.ico",
           "packages/client/src/assets",
           "packages/client/src/manifest.webmanifest",
-          "packages/client/src/CNAME",
           "packages/client/src/.well-known/web-app-origin-association",
           {
             "glob": "web-app-origin-association",
