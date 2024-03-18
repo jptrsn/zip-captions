@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild, WritableSignal, effect, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, WritableSignal, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

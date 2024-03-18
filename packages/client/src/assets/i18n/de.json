@@ -6,8 +6,8 @@
     "de": "Deutsch",
     "it": "Italienisch (Italiano)",
     "pt": "Portugiesisch (Português)",
-    "id": "Bahasa Indonesien",
     "pl": "Polnisch (Polski)",
+    "id": "Indonesisch (Bahasa Indonesia)",
     "uk": "Ukranisch (Український)"
   },
   "THEMES": {
@@ -256,8 +256,7 @@
     "p1": "Jedes Segment des zuvor erkannten Textes wird wie folgt aussehen.",
     "p2": "Von unten nach oben blättern.",
     "p3": "Jedes neue Ergebnis erscheint unterhalb des vorherigen.",
-    "p4": "Live-Ergebnisse sehen so aus",
-    "font": "Schriftart"
+    "p4": "Live-Ergebnisse sehen so aus"
   },
   "STREAM": {
     "serverStatus": "Broadcast-Server",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonymisiert Ihre Informationen so weit wie möglich, aber bestimmte unveränderliche Details (z. B. die IP-Adresse) können offengelegt werden, wenn Sie eine Verbindung zu Online-Kollegen herstellen.",
     "accessP3": "Möchten Sie diese Funktion aktivieren?",
     "unsavedChangesTitle": "Nicht gespeicherte Änderungen!",
-    "unsavedChangesParagraph": "Sie haben ungespeicherte Änderungen, wollen Sie diese wirklich verwerfen?"
+    "unsavedChangesParagraph": "Sie haben ungespeicherte Änderungen, wollen Sie diese wirklich verwerfen?",
+    "syncSettingsTitle": "Sparen Sie diese Änderungen überall?",
+    "syncSettingsP1": "Sie haben sich dafür entschieden, Ihre Erscheinungseinstellungen bei der Anmeldung zu synchronisieren. Möchten Sie diese Änderungen überall speichern?",
+    "syncSettingsP2": "Wenn Sie nicht speichern möchten, werden Ihre gespeicherten Einstellungen beim nächsten Anmelden angewendet."
   },
   "ROUTES": {
     "home": "Hauptsächlich",
@@ -310,7 +312,8 @@
     "discord": "Diskord-Server",
     "donate": "Spende",
     "stream": "Sendung",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Mein Konto"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +335,9 @@
     "reconnect": "Neu verbinden",
     "goBack": "Zurückgehen",
     "start": "Start",
-    "stop": "Stopp"
+    "stop": "Stopp",
+    "logout": "Ausloggen",
+    "login": "Anmelden"
   },
   "LABELS": {
     "menu": "Menü",
@@ -361,7 +366,8 @@
     "streaming": "Streaming",
     "idle": "Leerlauf",
     "build": "Bauen Sie",
-    "renderHistory": "Ergebnisse auf dem Bildschirm"
+    "renderHistory": "Ergebnisse auf dem Bildschirm",
+    "fontFamily": "Schriftart"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
@@ -428,5 +434,23 @@
     "obsStreamInactive": "Warten auf den Beginn des OBS-Streams",
     "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
     "disconnected": "Getrennt"
+  },
+  "AUTH": {
+    "title": "Anmelden Sie sich für Zip -Bildunterschriften an",
+    "blurb": "Verwenden Sie Ihr Konto, um Funktionen zu aktivieren, die über alle Sitzungen hinweg funktionieren.",
+    "loginWithGoogle": "Anmeldung mit Google",
+    "loginWithAzure": "Melden Sie sich bei Microsoft an"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Willkommen",
+      "blurb": "Hier ist, was wir über dich wissen:",
+      "email": "Registrierte Email",
+      "name": "Name",
+      "organization": "Organisation",
+      "joined": "Beigetreten",
+      "providers": "Anmeldeanbieter angeschlossen",
+      "notSet": "Nicht eingestellt"
+    }
   }
 }

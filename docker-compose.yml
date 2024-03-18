@@ -1,36 +1,73 @@
 version: '3'
 
 services:
-  client:
-    container_name: client
-    image: zip_captions_client
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
-    volumes:
-      - .:/usr/src/app:delegated
-      - mono-node-modules:/app/node_modules
-    command: 'npm run start:client'
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server
     ports:
-      - 4200:4200
-    depends_on: 
-      - signal
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=db_user
+      - MONGO_INITDB_ROOT_PASSWORD=changeme
 
-  signal:
-    container_name: signal
-    image: zip_captions_server
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
-    volumes:
-      - .:/usr/src/app:delegated
-      - mono-node-modules:/app/node_modules
-    command: 'npm run start:signal'
-    ports:
-      - 3000:3000
-      - 9000:9000
+  # client:
+  #   container_name: client
+  #   image: zip_captions_client
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: dev
+  #   volumes:
+  #     - .:/usr/src/app:delegated
+  #     - mono-node-modules:/app/node_modules
+  #   command: 'npm run start:client'
+  #   ports:
+  #     - 4200:4200
+  #   depends_on: 
+  #     - signal
+  
+  # zipcaptions_server:
+  #   container_name: zip-captions-server
+  #   image: zip_captions_server
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: staging_server
+  #   environment:
+  #     - MONGO_DB_URL=${DB_URL}
+  #     - MONGO_DB_PORT=${DB_PORT}
+  #     - MONGO_DB_NAME=${DB_NAME}
+  #     - MONGO_DB_USER=${DB_USER}
+  #     - MONGO_DB_PASSWORD=${DB_PASSWORD}
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - SESSION_SECRET=${SESSION_SECRET}
+  #     - APP_ORIGIN=http://localhost:4200
+  #     - ALLOWED_ORIGINS=http://localhost:4200
+  #     - GOOGLE_CLIENT_ID=${G_CLIENT_ID}
+  #     - GOOGLE_CLIENT_SECRET=${G_CLIENT_SECRET}
+  #     - GOOGLE_REDIRECT_URI=${G_REDIRECT_URI}
+  #     - AZURE_CLIENT_ID=${A_CLIENT_ID}
+  #     - AZURE_CLIENT_SECRET=${A_CLIENT_SECRET}
+  #     - AZURE_REDIRECT_URI=${A_REDIRECT_URI}
+  #   ports:
+  #     - 3000:3000
+  #     - 9000:9000
+  #   restart: unless-stopped
+
+  # signal:
+  #   container_name: signal
+  #   image: zip_captions_server
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: dev
+  #   volumes:
+  #     - .:/usr/src/app:delegated
+  #     - mono-node-modules:/app/node_modules
+  #   command: 'npm run start:signal'
+  #   ports:
+  #     - 3000:3000
+  #     - 9000:9000
 
   # coturn:
   #   container_name: coturn

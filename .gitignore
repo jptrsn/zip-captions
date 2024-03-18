@@ -16,6 +16,7 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+.nx/*
 
 # IDE - VSCode
 .vscode/*
@@ -41,6 +42,7 @@ Thumbs.db
 .angular
 .env.*
 .secret.env
+.env.*
 
 # Android Build
 .gradle/*

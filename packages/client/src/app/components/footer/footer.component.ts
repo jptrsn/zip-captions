@@ -22,6 +22,7 @@ export class FooterComponent {
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
   public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
   public patreonUrl = 'https://patreon.com/zipcaptions';
+  public discordUrl = 'https://discord.gg/Swe2JeHnPc';
   public copyrightYear = process.env['BUILD_YEAR'] || 2023;
   public buildTimestamp = process.env['BUILD_TS'] || 'unknown';
 

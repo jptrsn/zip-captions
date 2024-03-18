@@ -257,7 +257,8 @@
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
     "p4": "Live text shows like this",
-    "font": "Font"
+    "font": "Font",
+    "warning": "You must accept cookies in order to save settings."
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",
@@ -294,7 +295,10 @@
     "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
     "accessP3": "Would you like to enable this feature?",
     "unsavedChangesTitle": "Unsaved Changes!",
-    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?"
+    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?",
+    "syncSettingsTitle": "Save these changes everywhere?",
+    "syncSettingsP1": "You have opted to sync your appearance settings when signed in. Would you like to save these changes everywhere?",
+    "syncSettingsP2": "If you choose not to save, your stored settings will be applied the next time you sign in."
   },
   "ROUTES": {
     "home": "Home",
@@ -310,6 +314,9 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
+    "forum": "Forum",
+    "auth": "Login",
+    "user": "My Account",
     "forum": "Forum"
   },
   "FOOTER": {
@@ -361,7 +368,8 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "On-screen Results"
+    "renderHistory": "On-screen Results",
+    "fontFamily": "Font"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -428,5 +436,10 @@
     "obsStreamInactive": "Waiting for OBS stream to begin",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
+  },
+  "AUTH": {
+    "genericLogin": "Login to Zip Captions",
+    "loginWithGoogle": "Connect your Google Account",
+    "loginWithAzure": "Connect your Microsoft Account"
   }
 }

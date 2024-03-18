@@ -19,12 +19,10 @@ module.exports = {
       'noto-sans': '"Noto Sans"',
       'cousine': 'Cousine',
       'inconsolata': 'Inconsolata',
-    },
-    extend: {},
+    }
   },
   plugins: [
-    require('daisyui'),
-    require('@tailwindcss/forms'),
+    require('daisyui')
   ],
   daisyui: {
     themes: [
@@ -59,17 +57,21 @@ module.exports = {
       'winter',
       {
         'Zip-Dark': {
+          "color-scheme": "dark",
           "primary": "#4178bf",
           "secondary": "#66b1f2",
           "accent": "#bf877a",
           "neutral": "#19202E",
           "base-100": "#0d0d0d",
+          "base-200": "#0e0e0e",
+          "base-300": "#1f1f1f",
           "info": "#e0e7ff",
           "success": "#6ee7b7",
           "warning": "#FCDE45",
           "error": "#E33D2B",
         },
         'Zip-Light': {
+          "color-scheme": "light",
           "primary": "#4178bf",
           "secondary": "#66b1f2",
           "accent": "#bf877a",

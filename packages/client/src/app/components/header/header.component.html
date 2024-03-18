@@ -37,15 +37,15 @@
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <div class="dropdown-content w-64">
-      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true}"></ng-container>
+      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true, topLevel: true}"></ng-container>
     </div>
   </details>
 
 </div>
 
 <!-- Menu template with recursion for sub-menus -->
-<ng-template #routeList let-entries="items" let-largeText="largeText">
-  <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-secondary text-neutral-content rounded-box">
+<ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel">
+  <ul tabindex="0" class="menu menu-vertical p-2 shadow btn-primary rounded-box">
     <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of entries">
       
       <ng-container *ngIf="item.children; else routeButton">
@@ -72,6 +72,10 @@
 
       </ng-template>
 
+    </li>
+    
+    <li *ngIf="isLoggedIn() && topLevel">
+      <button [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
     </li>
   </ul>
 </ng-template>

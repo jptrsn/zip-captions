@@ -256,8 +256,7 @@
     "p1": "Cada segmento de texto reconocido previamente aparecerá así",
     "p2": "Desplazándose hacia arriba desde abajo",
     "p3": "Con cada nuevo resultado apareciendo debajo del anterior",
-    "p4": "Texto en directo se muestra así",
-    "font": "Fuente"
+    "p4": "Texto en directo se muestra así"
   },
   "STREAM": {
     "serverStatus": "Servidor de difusión",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonimiza tu información en la medida de lo posible, pero ciertos detalles inmutables (por ejemplo, la dirección IP) pueden quedar expuestos cuando te conectas a compañeros en línea",
     "accessP3": "¿Desea activar esta función?",
     "unsavedChangesTitle": "¡Cambios no guardados!",
-    "unsavedChangesParagraph": "Tienes cambios sin guardar, ¿estás seguro de que quieres descartarlos?"
+    "unsavedChangesParagraph": "Tienes cambios sin guardar, ¿estás seguro de que quieres descartarlos?",
+    "syncSettingsTitle": "¿Guardar estos cambios en todas partes?",
+    "syncSettingsP1": "Ha optado por sincronizar su configuración de apariencia cuando se registra. ¿Le gustaría guardar estos cambios en todas partes?",
+    "syncSettingsP2": "Si elige no guardar, su configuración almacenada se aplicará la próxima vez que inicie sesión"
   },
   "ROUTES": {
     "home": "Casa",
@@ -310,7 +312,8 @@
     "discord": "Servidor de Discordia",
     "donate": "Donar",
     "stream": "Difusión",
-    "forum": "Foro"
+    "forum": "Foro",
+    "auth": "Mi Cuenta"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +335,9 @@
     "reconnect": "Vuelva a conectar",
     "goBack": "Volver atrás",
     "start": "Start",
-    "stop": "Parar"
+    "stop": "Parar",
+    "logout": "Cerrar Sesión",
+    "login": "Iniciar Sesión"
   },
   "LABELS": {
     "menu": "Menu",
@@ -361,7 +366,8 @@
     "streaming": "Transmisión",
     "idle": "Ralentí",
     "build": "Construya",
-    "renderHistory": "Resultados en pantalla"
+    "renderHistory": "Resultados en pantalla",
+    "fontFamily": "Fuente"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
@@ -428,5 +434,23 @@
     "obsStreamInactive": "Esperando a que comience el flujo de OBS",
     "connectionEstablished": "Conectado - puede iniciar la sesión de redacción",
     "disconnected": "Desconectado"
+  },
+  "AUTH": {
+    "title": "Iniciar sesión en los subtítulos",
+    "blurb": "Use su cuenta para habilitar las características que funcionan en todas las sesiones",
+    "loginWithGoogle": "Inicia sesión con Google",
+    "loginWithAzure": "Inicie sesión con Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Bienvenido",
+      "blurb": "Esto es lo que sabemos de ti:",
+      "email": "Correo electrónico registrado",
+      "name": "Nombre",
+      "organization": "Organización",
+      "joined": "Unido",
+      "providers": "Proveedores de inicio de sesión conectados",
+      "notSet": "No listo"
+    }
   }
 }

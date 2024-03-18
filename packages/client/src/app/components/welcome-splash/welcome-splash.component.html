@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center justify-center p-6 gap-12 bg-primary text-primary-content basis-full">
+<div class="flex flex-col items-center justify-center p-6 gap-12 bg-secondary-focus text-primary-content basis-full">
   <p class="flex max-w-2xl text-4xl sm:text-6xl leading-normal text-center">
     {{ 'WELCOME.p1' | translate }}
   </p>
@@ -10,5 +10,13 @@
   </p>
   <p class="flex max-w-2xl text-base leading-relaxed text-center">
     {{ 'WELCOME.p3' | translate }}
+  </p>
+  <p>
+    <button class="btn btn-secondary btn-wide text-primary-content btn-xl rounded-full" [routerLink]="['auth', 'login']">
+      <span *ngIf="isLoggedIn(); else login" translate>ROUTES.auth</span>
+      <ng-template #login>
+        <span translate>BUTTONS.login</span>
+      </ng-template>
+    </button>
   </p>
 </div>

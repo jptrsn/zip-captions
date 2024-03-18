@@ -1,14 +1,14 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, catchError, filter, of, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
-import { CacheService } from '../../../services/cache/cache.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
+import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
+import { CacheService } from '../../../services/cache/cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +21,8 @@ export class PeerService {
   private readonly CACHE_PERSIST_MINS = 60;
 
   private readonly SOCKET_URL: string;
-  private readonly SOCKET_PORT: number;
-  private readonly PEER_URL: string;
   private readonly PEER_PORT: number;
-  private readonly STUN_SERVER: string;
-  private readonly TURN_SERVER: string;
-  private readonly TURN_PASS: string;
+  private readonly PEER_URL: string;
   private readonly SOCKET_CONFIG: SocketIoConfig;
 
   private CONNECT_OPTS: PeerJSOption;
@@ -42,33 +38,28 @@ export class PeerService {
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
-    this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost';
-    this.SOCKET_PORT = process.env['ZIP_SOCKET_PORT'] ? Number(process.env['ZIP_SOCKET_PORT']) : 3000;
+    this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost:3000';
+    this.PEER_PORT = process.env['ZIP_PEER_PORT'] ? Number(process.env['ZIP_PEER_PORT']) : 3000;
     this.SOCKET_CONFIG = {
-      url: `${this.SOCKET_URL}:${this.SOCKET_PORT}`,
+      url: `${this.SOCKET_URL}`,
       options: {
         reconnectionAttempts: 10,
+        reconnection: true,
       }
     }
     this.PEER_URL = process.env['ZIP_PEER_SERVER'] || 'localhost';
-    this.PEER_PORT = process.env['ZIP_PEER_PORT'] ? Number(process.env['ZIP_PEER_PORT']) : 9000;
-    this.STUN_SERVER = process.env['ZIP_STUN_SERVER'] || 'localhost:19302';
-    this.TURN_SERVER = process.env['ZIP_TURN_SERVER'] || 'localhost:3478';
-    this.TURN_PASS = process.env['ZIP_TURN_PASSWORD'] || 'coturn';
     this.CONNECT_OPTS = {
       debug: 0,
       host: this.PEER_URL,
       port: this.PEER_PORT,
+      path: 'peer-server',
       secure: (this.PEER_URL !== 'localhost'),
       config: {
         iceServers: [{
           urls: [
             `stun:stun1.l.google.com:19302`,
-            `stun:stun2.l.google.com:19302`,
-            `stun:${this.STUN_SERVER}`,
-            `turn:${this.TURN_SERVER}`
-          ],
-          credential: this.TURN_PASS
+            `stun:stun2.l.google.com:19302`
+          ]
         }
         ]
       }
@@ -77,16 +68,18 @@ export class PeerService {
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
 
-    const cached = this.cache.load('userId')
+    const cached = this.cache.load<{id: string}>('userId')
     if (cached?.id) {
       this.myId = cached.id;
     }
-    // console.log(`Socket Server: ${this.SOCKET_URL}:${this.SOCKET_PORT}`);
-    // console.log(`Peer Server: ${this.PEER_URL}:${this.PEER_PORT}`)
     
   }
 
   connectSocket(): Observable<string> {
+    // console.log('connect socket')
+    // console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
+    // console.log(`Peer connect opts`, this.CONNECT_OPTS)
+    
     if (this.socket) {
       this.socket.removeAllListeners();
     }
@@ -94,12 +87,13 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      // console.log('socket connected');
+      console.log('socket connected');
       this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
         sub.next(this.myId);
         if (!this.peerServerConnected()) {
+          console.log('connect peer server', this.myId);
           this.store.dispatch(PeerActions.connectPeerServer());
         }
       }
@@ -107,35 +101,36 @@ export class PeerService {
     this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
-      // console.log('error', err);
+      console.log('error', err);
       this.store.dispatch(PeerActions.socketServerError({error: err.message}))
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
-      // console.log('message', data);
+      console.log('socket message', data);
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
-            // console.log('nexting room id', data.room);
+            console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
           }
           break;
         }
         case 'set user id': {
-          // console.log('set user id', data.id, this.myId)
-          if (this.myId) {
+          console.log('set user id', data.id, this.myId)
+          if (this.myId && this.myId !== data.id) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
               sub.next(this.myId);
             }
           } else if (data.id) {
             this.myId = data.id;
-            // console.log('SAVING USER ID', data.id)
+            console.log('SAVING USER ID', data.id)
             this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             sub.next(data.id);
           }
           if (!this.peerServerConnected() && this.myId) {
+            console.log('connect peer server', this.myId)
             this.store.dispatch(PeerActions.connectPeerServer());
           }
           break;
@@ -148,18 +143,18 @@ export class PeerService {
             if (this.myBroadcast) {
               this._connectToPeer(data.user);
             } else {
-              // console.log('not my broadcast, peer connected', data.user)
+              console.log('not my broadcast, peer connected', data.user)
             }
           }
           break;
         }
         case 'user left room': {
           if (data.user) {
-            // console.log('disconnect from peer!', data)
+            console.log('disconnect from peer!', data)
             const connection: DataConnection | undefined = this.peerMap.get(data.user);
             if (connection) {
               connection.addListener('close', () => {
-                // console.log('closed!');
+                console.log('closed!');
                 this.peerMap.delete(data.user);
               })
               connection.close();
@@ -170,7 +165,7 @@ export class PeerService {
         case 'connect clients': {
           if (data.clients) {
             const clientIds: string[] = data.clients;
-            // console.log('clientIds', clientIds, this.myId);
+            console.log('clientIds', clientIds, this.myId);
             for (const id of clientIds) {
               if (id !== this.myId) {
                 this._connectToPeer(id);
@@ -210,7 +205,7 @@ export class PeerService {
   joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
     this.myBroadcast = !(data?.room); // If we do not have a room ID, we are creating a broadcast
     if (!data?.room) {
-      const fromCache = this.cache.load('roomId');
+      const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
       if (fromCache?.room) {
         data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
       }
@@ -219,7 +214,7 @@ export class PeerService {
       }
     }
     if (this.myBroadcast) {
-      const fromCache = this.cache.load('joinCode');
+      const fromCache = this.cache.load<{joinCode: string}>('joinCode');
       let joinCode: string;
       if (fromCache) {
         joinCode = fromCache.joinCode;
@@ -242,28 +237,30 @@ export class PeerService {
       throw new Error('Must obtain ID from socket server');
     }
     if (this.peer?.id === this.myId && !this.peer.disconnected) {
-      // console.log('peer server connection already exists and appears to be connected!!!');
+      console.log('peer server connection already exists and appears to be connected!!!');
       return of(this.myId);
     }
     const sub: ReplaySubject<string> = new ReplaySubject<string>();
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
+      console.log('peer server connection opened')
       this.store.dispatch(PeerActions.peerServerConnected());
       sub.next(this.myId as string);
     });
     this.peer.addListener('disconnected', () => {
+      console.log('peer server disconnected')
       if (this.peerServerConnected()) {
         this.store.dispatch(PeerActions.peerServerDisconnected());
       }
     });
     this.peer.once('error', (err: any) => {
-      // console.log(err.message);
+      console.log('peer server error', err.message);
       this.store.dispatch(PeerActions.peerServerError({error: err.message}));
       this._reconnectPeerServer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
-      // console.log('incoming connection!', connection);
+      console.log('incoming connection!', connection);
       this.peerMap.set(connection.connectionId, connection);
       this._handlePeerData(connection);
     })
@@ -281,7 +278,7 @@ export class PeerService {
     });
     setTimeout(() => {
       this.peer!.disconnect();
-      // console.log('peer disconnected');
+      console.log('peer disconnected');
     }, 1);
     return sub.asObservable().pipe(take(1));
   }
@@ -303,7 +300,7 @@ export class PeerService {
 
   endBroadcast(): Observable<void> {
     const sub = new ReplaySubject<void>();
-    const fromCache = this.cache.load('roomId');
+    const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
     const room: string | undefined = fromCache?.room;
     if (!room) {
       throw new Error('No room defined for broadcast');
@@ -311,7 +308,7 @@ export class PeerService {
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
-      // console.log('endbroadcast response recieved');
+      console.log('endbroadcast response recieved');
       sub.next();
       sub.complete();
     });
@@ -320,11 +317,11 @@ export class PeerService {
   }
 
   leaveSession(): void {
-    // console.log('leaveSession', this.peerMap.size);
+    console.log('leaveSession', this.peerMap.size);
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.peerMap.forEach((connection: DataConnection) => {
-      // console.log('peer', id);
+      console.log('peer', connection.connectionId);
       connection.close();
     });
     this.textOutput$.next([]);
@@ -360,7 +357,7 @@ export class PeerService {
     this.peerMap.set(peerId, connection);
     this._updateConnectedPeerCount();
     connection.on('close', () => {
-      // console.log('connection closed', peerId)
+      console.log('connection closed', peerId)
       this.peerMap.delete(peerId);
       this._updateConnectedPeerCount();
     })
@@ -392,7 +389,7 @@ export class PeerService {
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
-      // console.log('connection closed');
+      console.log('connection closed');
       if (!this.myBroadcast) {
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       }
@@ -400,9 +397,9 @@ export class PeerService {
     });
     
     connection.on('open', () => {
-      // console.log('peer connection opened', this.myBroadcast);
+      console.log('peer connection opened', this.myBroadcast);
       if (this.myBroadcast) {
-        // console.log('must validate join code', this.sessionJoinCode());
+        console.log('must validate join code', this.sessionJoinCode());
         connection.send({request: 'joinCode'})
       }
     });
@@ -415,27 +412,27 @@ export class PeerService {
             break;
           case 'validateJoinCode':
             if (this._verifyJoinCode(data.joinCode)) {
-              // console.log('join code verified')
+              console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
-              // console.log('closing connection');
+              console.log('closing connection');
               connection.send({response: 'invalid'})
             }
             break;
           case 'disconnect':
-            // console.log('disconnect requested');
+            console.log('disconnect requested');
             connection.close();
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
           case 'hostOffline':
-            // console.log('host offline');
+            console.log('host offline');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
         }
       } else if (data?.response) {
         switch (data.response) {
           case 'valid':
-            // console.log('join code valid!');
+            console.log('join code valid!');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':

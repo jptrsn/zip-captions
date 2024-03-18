@@ -108,7 +108,7 @@ export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
-  wakeLock: boolean;
+  wakelock: boolean;
   renderHistory: number;
   textSize: TextSize;
   lineHeight: LineHeight;

@@ -256,8 +256,7 @@
     "p1" : "Chaque segment de texte déjà reconnu apparaîtra comme ceci",
     "p2" : "Défilement vers le haut à partir du bas",
     "p3" : "Chaque nouveau résultat apparaissant sous le précédent.",
-    "p4" : "Des émissions de texte en direct comme celle-ci",
-    "font": "Police de Caractères"
+    "p4" : "Des émissions de texte en direct comme celle-ci"
   },
   "STREAM": {
     "serverStatus": "Serveur de diffusion",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonymise vos informations autant que possible, mais certains détails immuables (par exemple l'adresse IP) peuvent être exposés lors de la connexion avec des pairs en ligne.",
     "accessP3": "Souhaitez-vous activer cette fonctionnalité?",
     "unsavedChangesTitle": "Changements non enregistrés!",
-    "unsavedChangesParagraph": "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir les supprimer ?"
+    "unsavedChangesParagraph": "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir les supprimer?",
+    "syncSettingsTitle": "Enregistrez ces changements partout?",
+    "syncSettingsP1": "Vous avez choisi de synchroniser vos paramètres d'apparence lors de la connexion. Souhaitez-vous enregistrer ces modifications partout?",
+    "syncSettingsP2": "Si vous choisissez de ne pas enregistrer, vos paramètres stockés seront appliqués la prochaine fois que vous vous connectez."
   },
   "ROUTES" : {
     "home" : "Principal",
@@ -310,7 +312,8 @@
     "discord": "Serveur Discord",
     "donate": "Faire un Don",
     "stream": "Diffusion",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "Mon Compte"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
@@ -332,7 +335,9 @@
     "reconnect": "Se reconnecter",
     "goBack": "Revenir en arrière",
     "start": "Démarrer",
-    "stop": "Arrêt"
+    "stop": "Arrêt",
+    "logout": "Se Déconnecter",
+    "login": "Se Connecter"
   },
   "LABELS" : {
     "menu" : "Menu",
@@ -361,7 +366,8 @@
     "streaming": "Streaming",
     "idle": "Inactif",
     "build": "Création",
-    "renderHistory": "Résultats à l'écran"
+    "renderHistory": "Résultats à l'écran",
+    "fontFamily": "Police De Caractère"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
@@ -428,5 +434,23 @@
     "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS",
     "connectionEstablished": "Connecté - vous pouvez commencer la session de légende",
     "disconnected": "Déconnecté"
+  },
+  "AUTH": {
+    "title": "Connectez-vous aux légendes de zip",
+    "blurb": "Utilisez votre compte pour activer les fonctionnalités qui fonctionnent à toutes les sessions.",
+    "loginWithGoogle": "Connectez-vous avec Google",
+    "loginWithAzure": "Connectez-vous avec Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Accueillir",
+      "blurb": "Voici ce que nous savons de vous:",
+      "email": "Email enregistré",
+      "name": "Nom",
+      "organization": "Organisation",
+      "joined": "Rejoint",
+      "providers": "Fournisseurs de connexion connectés",
+      "notSet": "Pas encore défini"
+    }
   }
 }

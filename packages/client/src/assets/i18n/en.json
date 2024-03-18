@@ -256,8 +256,7 @@
     "p1": "Each segment of previously-recognized text will appear like this.",
     "p2": "Scrolling up from the bottom.",
     "p3": "With each new result appearing underneath the previous.",
-    "p4": "Live text shows like this",
-    "font": "Font"
+    "p4": "Live text shows like this"
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",
@@ -294,7 +293,10 @@
     "accessP2": "ZipCaptions anonymizes your information as much as possible, but certain immutable details (e.g. IP address) can be exposed when connecting to peers online.",
     "accessP3": "Would you like to enable this feature?",
     "unsavedChangesTitle": "Unsaved Changes!",
-    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?"
+    "unsavedChangesParagraph": "You have unsaved changes, are you sure you want to discard them?",
+    "syncSettingsTitle": "Save these changes everywhere?",
+    "syncSettingsP1": "You have opted to sync your appearance settings when signed in. Would you like to save these changes everywhere?",
+    "syncSettingsP2": "If you choose not to save, your stored settings will be applied the next time you sign in."
   },
   "ROUTES": {
     "home": "Home",
@@ -310,7 +312,8 @@
     "discord": "Discord Server",
     "donate": "Donate",
     "stream": "Sharing",
-    "forum": "Forum"
+    "forum": "Forum",
+    "auth": "My Account"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -332,7 +335,9 @@
     "reconnect": "Reconnect",
     "goBack": "Go Back",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "logout": "Log Out",
+    "login": "Login"
   },
   "LABELS": {
     "menu": "Menu",
@@ -361,7 +366,8 @@
     "streaming": "Streaming",
     "idle": "Idle",
     "build": "Build",
-    "renderHistory": "On-screen Results"
+    "renderHistory": "On-screen Results",
+    "fontFamily": "Font"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -428,5 +434,23 @@
     "obsStreamInactive": "Waiting for OBS stream to begin",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
+  },
+  "AUTH": {
+    "title": "Login to Zip Captions",
+    "blurb": "Use your account to enable features that work across all sessions.",
+    "loginWithGoogle": "Sign in with Google",
+    "loginWithAzure": "Sign in with Microsoft"
+  },
+  "USER": {
+    "PROFILE": {
+      "title": "Welcome",
+      "blurb": "Here's what we know about you:",
+      "email": "Registered Email",
+      "name": "Name",
+      "organization": "Organization",
+      "joined": "Joined",
+      "providers": "Sign-in providers connected",
+      "notSet": "Not set"
+    }
   }
 }
