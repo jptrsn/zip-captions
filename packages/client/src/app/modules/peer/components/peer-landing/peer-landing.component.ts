@@ -127,15 +127,18 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
 
   private _injectDashIfRequired(): void {
     const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
-
+    const dashIndexes = [2, 7]
     sessionControl.valueChanges.pipe(
       takeUntilDestroyed(),
     ).subscribe((value) => {
-      if (value && value.length > 4) {
-        if (value[4] !== '-') {
-          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
+      for (const i of dashIndexes) {
+        if (value && value.length > i) {
+          if (value[i] !== '-') {
+            sessionControl.setValue(value.slice(0,i) + '-' + value.slice(i, value.length))
+          }
         }
       }
+      
     })
   }
 }
