@@ -78,7 +78,7 @@
                   <label class="label">
                     <span class="label-text" [ngClass]="{'text-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" translate>STREAM.sessionId</span>
                   </label>
-                  <input type="text" class="input input-bordered input-lg" maxlength="12" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="4N-A79E-F2GV" formControlName="session" />
+                  <input type="text" class="input input-bordered input-lg" maxlength="12" [ngClass]="{'input-error': joinSessionFormGroup.controls['session'].invalid && joinSessionFormGroup.controls['session'].touched}" placeholder="4N-A79E-F2GV" formControlName="session" spellcheck="false" />
                   <label class="label no-height">
                     <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('invalid') && joinSessionFormGroup.controls['session'].touched">Invalid ID</span>
                     <span class="label-alt-text text-error text-xs" *ngIf="joinSessionFormGroup.controls['session'].hasError('required') && joinSessionFormGroup.controls['session'].touched">Required</span>
