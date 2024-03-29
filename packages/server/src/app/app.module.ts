@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { SessionGateway } from './gateways/session.gateway';
 import { CustomCacheInterceptor } from './interceptors/custom-cache.interceptor';
 import { UserModule } from './modules/user/user.module';
@@ -11,30 +11,21 @@ import { PeerServerService } from './services/peer-server/peer-server.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 
-function getDbConnectionString() {
-  const dbConnectionString =
-    'mongodb://' +
-    process.env.MONGO_DB_URL +
-    ':' +
-    process.env.MONGO_DB_PORT +
-    '/' +
-    process.env.MONGO_DB_NAME +
-    '?ssl=true&replicaSet=globaldb';
-
-  return dbConnectionString;
+function getDbConnectionData(): [string, MongooseModuleOptions] {
+  const isLocal = process.env.APP_ORIGIN.match('localhost')
+    if (!isLocal) {
+      const dbConnectionString = `mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}/${process.env.MONGO_DB_NAME}?ssl=true&replicaSet=globaldb`
+      return [dbConnectionString, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, retryWrites: true}]
+    } else {
+      return [`mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}`, {auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, ssl: false}]
+    }
 }
 
 @Module({
   imports: [
     CacheModule.register({ ttl: 60 * 60 * 1000, max: 500, isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
-    MongooseModule.forRoot(getDbConnectionString(), {
-      auth: {
-        username: process.env.MONGO_DB_USER,
-        password: process.env.MONGO_DB_PASSWORD,
-      },
-      retryWrites: false,
-    }),
+    MongooseModule.forRoot(...getDbConnectionData()),
     HttpModule,
     UserModule,
   ],
