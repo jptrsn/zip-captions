@@ -12,12 +12,18 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
+  // TODO: Make prod more consistent and remove custom environment handlers
   const isLocal = process.env.APP_ORIGIN.match('localhost')
-    if (!isLocal) {
+  const isStaging = process.env.APP_ORIGIN.match('next');
+    if (isLocal) {
+      return [`mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}`, {auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, ssl: false}];
+    } else if (isStaging) {
+      console.log(process.env.MONGO_DB_URL)
+      return [process.env.MONGO_DB_URL, { retryWrites: true }]
+    } else {
       const dbConnectionString = `mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}/${process.env.MONGO_DB_NAME}?ssl=true&replicaSet=globaldb`
       return [dbConnectionString, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, retryWrites: true}]
-    } else {
-      return [`mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}`, {auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, ssl: false}]
+      
     }
 }
 
