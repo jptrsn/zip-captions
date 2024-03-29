@@ -21,7 +21,6 @@ import { recognitionActiveSelector } from '../../../../selectors/recognition.sel
   styleUrls: ['./peer-landing.component.scss'],
 })
 export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
-  @HostListener('window:beforeunload')
   @ViewChild('broadcastOpen') broadcastCheckbox!: ElementRef<HTMLInputElement>;
   public acceptedPeerConnections: Signal<boolean | undefined>;
   public socketServerConnected: Signal<boolean | undefined>;
@@ -66,7 +65,8 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
       if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
         this.store.dispatch(PeerActions.connectSocketServer())
       }
-    }, { allowSignalWrites: true})
+    }, { allowSignalWrites: true});
+
   }
 
   ngOnDestroy(): void {
@@ -81,8 +81,11 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     ).subscribe(() => this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'})))
   }
 
+  @HostListener('window:beforeunload')
   canDeactivate(): boolean | Observable<boolean> {
-    return !toSignal(this.store.select(selectIsBroadcasting))();
+    const isBusy = this.isBroadcasting();
+    console.log('isBusy', isBusy)
+    return !isBusy;
   }
 
   createRoom() {
@@ -104,7 +107,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
 
   private _validateSessionId(control: AbstractControl): ValidationErrors | null {
     if (control.value) {
-      const exp = new RegExp(/^([acdefghjkmnpqrstuvwxyz2345679]{4})-([acdefghjkmnpqrstuvwxyz2345679]{4})$/i)
+      const exp = new RegExp(/^([acdefghjkmnpqrstuvwxyz2345679]{2})-([acdefghjkmnpqrstuvwxyz2345679]{4})-([acdefghjkmnpqrstuvwxyz2345679]{4})$/i)
       if (!exp.test(control.value)) {
         return { invalid: true }
       }
