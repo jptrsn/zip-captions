@@ -120,19 +120,42 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
   }
 
-  private _generateRandomRoomId(): string {
-    let outString = '';
-  const outParts: string[] = [];
-  const inOptions = 'acdefghjkmnpqrstuvwxyz2345679';
-
-  for (let i = 0; i < 2; i++) {
-    outString = '';
-    for (let j = 0; j < 4; j++) {
-      outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+  private _generateRandomRoomId(isStatic?: boolean): string {
+    let outString: string;
+    const outParts: string[] = [];
+    const inOptions = 'acdefghjkmnpqrstuvwxyz2345679';
+    
+    outParts.push(this._generatePrefix(inOptions, isStatic));
+    for (let i = 0; i < 2; i++) {
+      outString = '';
+      for (let j = 0; j < 4; j++) {
+        outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+      }
+      outParts.push(outString);
     }
-    outParts.push(outString);
+    return outParts.join('-');
   }
-  return outParts.join('-');
+
+  private _generatePrefix(inOptions: string, isStatic?: boolean): string {
+    let outString: string;
+    do {
+      outString = '';
+      for (let i = 0; i < 2; i++) {
+        outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+      }
+    } while (this._prefixIndicatesDynamic(outString) === !isStatic)
+    return outString;
+  }
+
+  private _prefixIndicatesDynamic(prefix: string): boolean {
+    if (prefix.length < 2) {
+      throw new Error("Incorrect session ID prefix")
+    }
+    let currentValue = 0;
+    for (let i = 0; i < 2; i++) {
+      currentValue += prefix.charCodeAt(i)
+    }
+    return !!(currentValue % 2)
   }
 
 }
