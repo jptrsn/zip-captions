@@ -1,28 +1,30 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { v4 } from 'uuid';
 
 export type BroadcastSessionDocument = HydratedDocument<BroadcastSession>;
 
 @Schema()
 export class BroadcastSession {
+  // The user ID, either matches the id property in the User collection, or is randomized
   @Prop({
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    default: () => v4()
   })
-  roomId: string;
+  userId: string;
+
+  @Prop({
+    type: Array<string>,
+  })
+  clientIds?: string[];
 
   @Prop({
     type: String,
-    required: true,
     unique: true
   })
-  hostId: string;
-
-  @Prop({
-    type: String
-  })
-  ownerId?: string;
+  roomId?: string;
 
   @Prop({
     type: String

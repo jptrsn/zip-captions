@@ -18,10 +18,10 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
   const isLocal = process.env.APP_ORIGIN.match('localhost')
   const isStaging = process.env.APP_ORIGIN.match('next');
     if (isLocal) {
-      return [`mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}`, {auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, ssl: false}];
+      return [`mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}`, {auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, dbName: process.env.MONGO_DB_NAME, ssl: false}];
     } else if (isStaging) {
       console.log(process.env.MONGO_DB_URL)
-      return [process.env.MONGO_DB_URL, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, retryWrites: true }]
+      return [process.env.MONGO_DB_URL, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, dbName: process.env.MONGO_DB_NAME, retryWrites: true }]
     } else {
       const dbConnectionString = `mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}/${process.env.MONGO_DB_NAME}?ssl=true&replicaSet=globaldb`
       return [dbConnectionString, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, retryWrites: true}]

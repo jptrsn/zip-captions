@@ -1,4 +1,4 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from "socket.io";
 import { CacheService } from '../services/cache/cache.service';
@@ -21,6 +21,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   
   // Gateway disconnect handler
   async handleDisconnect(client: Socket) {
+    this.session.handleClientDisconnected(client.id);
     const clientBroadcastRoom: string | undefined = this.clientBroadcastIdMap.get(client.id);
     if (clientBroadcastRoom) {
       const clientUserId = this.clientToUserIdMap.get(client.id);
@@ -95,9 +96,9 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('setId')
   async handleSetUserId(client: Socket, payload: { id?: string }): Promise<WsResponse<{message: string, id: string}>> {
-    const userId = await this.session.setUserId(payload.id);
-    client.send({message: 'set user id', id: userId})
-    return {event: 'ok', data: { message: 'ok', id: userId}}
+    const userId = await this.session.setUserId(client.id, payload.id);
+
+    // client.send({message: 'set user id', id: userId})
     return {event: 'setUserId', data: { message: 'set user id', id: userId }}
   }
 

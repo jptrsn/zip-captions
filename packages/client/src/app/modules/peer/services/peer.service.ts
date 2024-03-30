@@ -83,16 +83,18 @@ export class PeerService {
     const cached = this.cache.load<{id: string}>('userId')
     if (cached?.id) {
       this.myId = cached.id;
+      console.log('got user ID from cache', this.myId)
     }
     
   }
 
   connectSocket(): Observable<string> {
-    // console.log('connect socket')
+    console.log('connect socket')
     // console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
     // console.log(`Peer connect opts`, this.CONNECT_OPTS)
     
     if (this.socket) {
+      throw new Error("Socket already exists")
       this.socket.removeAllListeners();
     }
     this.socket = new Socket(this.SOCKET_CONFIG);
