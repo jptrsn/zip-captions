@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadcast-session.model';
+import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
 import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class SessionService {
-  constructor(@InjectModel(BroadcastSession.name) private sessionModel: Model<BroadcastSession>,
+  constructor(@InjectModel(SocketConnection.name) private sessionModel: Model<SocketConnection>,
               private cache: CacheService) {}
 
   async setUserId(clientId: string, id?: string): Promise<string> {
-    let response: BroadcastSessionDocument | undefined;
+    let response: SocketConnectionDocument | undefined;
     let userId: string | undefined;
 
     if (id) {
@@ -45,7 +45,7 @@ export class SessionService {
 
   async handleClientDisconnected(clientId: string): Promise<void> {
     const userId = await this._getClientUserId(clientId);
-    let response: BroadcastSessionDocument | undefined;
+    let response: SocketConnectionDocument | undefined;
 
     if (userId) {
       response = await this.sessionModel.findOne({userId})
@@ -54,7 +54,8 @@ export class SessionService {
         await response.save();
       }
     } else {
-      await this.sessionModel.updateMany({ clientIds: { "$in": [clientId] }}, { $pull: { clientIds: clientId }})
+      await this.sessionModel.updateMany({ clientIds: { "$in": [clientId] }}, { $pull: { clientIds: clientId }});
+      await this.sessionModel.deleteMany({clientIds: { $exists: true, $size: 0 }});
     }
   }
 

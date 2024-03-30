@@ -11,7 +11,7 @@ import { PeerServerService } from './services/peer-server/peer-server.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { SessionService } from './services/session/session.service';
-import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
+import { SocketConnection, SocketConnectionSchema } from './models/socket-connection.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -35,7 +35,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
     MongooseModule.forRoot(...getDbConnectionData()),
     MongooseModule.forFeature([
-      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
+      { name: SocketConnection.name, schema: SocketConnectionSchema }
     ]),
     HttpModule,
     UserModule,

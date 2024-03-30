@@ -97,8 +97,9 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('setId')
   async handleSetUserId(client: Socket, payload: { id?: string }): Promise<WsResponse<{message: string, id: string}>> {
     const userId = await this.session.setUserId(client.id, payload.id);
-
-    // client.send({message: 'set user id', id: userId})
+    if (!payload.id) {
+      client.send({message: 'set user id', id: userId})
+    }
     return {event: 'setUserId', data: { message: 'set user id', id: userId }}
   }
 

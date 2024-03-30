@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { v4 } from 'uuid';
 
-export type BroadcastSessionDocument = HydratedDocument<BroadcastSession>;
+export type SocketConnectionDocument = HydratedDocument<SocketConnection>;
 
 @Schema()
-export class BroadcastSession {
+export class SocketConnection {
   // The user ID, either matches the id property in the User collection, or is randomized
   @Prop({
     type: String,
@@ -22,7 +22,6 @@ export class BroadcastSession {
 
   @Prop({
     type: String,
-    unique: true
   })
   roomId?: string;
 
@@ -47,4 +46,4 @@ export class BroadcastSession {
   isStatic?: boolean;
 }
 
-export const BroadcastSessionSchema = SchemaFactory.createForClass(BroadcastSession);
+export const SocketConnectionSchema = SchemaFactory.createForClass(SocketConnection);

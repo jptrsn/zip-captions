@@ -75,16 +75,16 @@ export class PeerService {
 
     effect(() => {
       if (this.userId()) {
+        console.log('authed user ID')
         this.myId = this.userId();
-        this.cache.save({key: 'userId', data: { id: this.myId }})
+        this.cache.save({key: 'userId', data: { id: this.myId }, expirationMins: this.CACHE_PERSIST_MINS})
       }
     })
 
-    const cached = this.cache.load<{id: string}>('userId')
-    if (cached?.id) {
-      this.myId = cached.id;
-      console.log('got user ID from cache', this.myId)
-    }
+    // const cached = this.cache.load<{id: string}>('userId')
+    // if (cached?.id) {
+    //   this.myId = cached.id;
+    // }
     
   }
 
