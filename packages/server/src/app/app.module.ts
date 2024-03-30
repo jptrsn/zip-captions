@@ -10,6 +10,8 @@ import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
+import { SessionService } from './services/session/session.service';
+import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -32,6 +34,9 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     CacheModule.register({ ttl: 60 * 60 * 1000, max: 500, isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
     MongooseModule.forRoot(...getDbConnectionData()),
+    MongooseModule.forFeature([
+      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
+    ]),
     HttpModule,
     UserModule,
   ],
@@ -41,6 +46,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     SessionGateway,
     { provide: APP_INTERCEPTOR, useClass: CustomCacheInterceptor },
     GoogleStrategy,
+    SessionService,
   ],
   exports: [],
 })

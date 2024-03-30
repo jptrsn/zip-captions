@@ -1,4 +1,4 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, Signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
@@ -9,6 +9,7 @@ import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
 import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
+import { selectUserId } from '../../../selectors/user.selector';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,8 @@ export class PeerService {
   private peerMap: Map<string, DataConnection> = new Map();
   private peerServerConnected: Signal<boolean | undefined>;
   private peerCount: Signal<number | undefined>;
+
+  private userId: Signal<string | undefined>;
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
@@ -67,6 +70,15 @@ export class PeerService {
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
+
+    this.userId = toSignal(this.store.select(selectUserId))
+
+    effect(() => {
+      if (this.userId()) {
+        this.myId = this.userId();
+        this.cache.save({key: 'userId', data: { id: this.myId }})
+      }
+    })
 
     const cached = this.cache.load<{id: string}>('userId')
     if (cached?.id) {
@@ -124,10 +136,12 @@ export class PeerService {
               sub.next(this.myId);
             }
           } else if (data.id) {
-            this.myId = data.id;
-            console.log('SAVING USER ID', data.id)
-            this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
-            sub.next(data.id);
+            if (!this.userId() || data.id !== this.userId()) {
+              this.myId = data.id;
+              console.log('SAVING USER ID', data.id)
+              this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
+            }
+            sub.next(data.id);  
           }
           if (!this.peerServerConnected() && this.myId) {
             console.log('connect peer server', this.myId)

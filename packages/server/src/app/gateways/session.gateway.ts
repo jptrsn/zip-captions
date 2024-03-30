@@ -1,8 +1,8 @@
 import { Inject, Logger } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from "socket.io";
-import { v4 } from 'uuid';
 import { CacheService } from '../services/cache/cache.service';
+import { SessionService } from '../services/session/session.service';
 
 @WebSocketGateway({ cors: true })
 export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -11,7 +11,8 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   private clientBroadcastIdMap: Map<string, string> = new Map();
   @WebSocketServer() server: Server;
 
-  constructor(private cache: CacheService) { }
+  constructor(private cache: CacheService,
+              private session: SessionService) { }
   
   // Gateway connection handler
   handleConnection(client: Socket, ...args: any[]): void {
@@ -94,15 +95,10 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('setId')
   async handleSetUserId(client: Socket, payload: { id?: string }): Promise<WsResponse<{message: string, id: string}>> {
-    let userId: string;
-    if (payload.id) {
-      userId = payload.id;
-    } else {
-      userId = await this.cache.wrap(`client_id_${client.id}`, async () => v4());
-      client.send({message: 'set user id', id: userId})
-    }
-    this.clientToUserIdMap.set(client.id, userId);
-    return {event: 'setUserId', data: { message: 'set user id', id: client.id }}
+    const userId = await this.session.setUserId(payload.id);
+    client.send({message: 'set user id', id: userId})
+    return {event: 'ok', data: { message: 'ok', id: userId}}
+    return {event: 'setUserId', data: { message: 'set user id', id: userId }}
   }
 
   @SubscribeMessage('endBroadcast')
