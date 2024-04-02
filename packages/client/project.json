@@ -15,7 +15,7 @@
           "sdp",
           "rtcpeerconnection-shim"
         ],
-        "outputPath": "dist/client",
+        "outputPath": "docs",
         "index": "packages/client/src/index.html",
         "main": "packages/client/src/main.ts",
         "polyfills": ["zone.js"],
