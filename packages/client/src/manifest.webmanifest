@@ -25,10 +25,11 @@
   ],
   "handle_links": "preferred",
   "url_handlers": [
-    { "origin": "*.zipcaptions.app" }
+    { "origin": "https://zipcaptions.app" },
+    { "origin": "https://*.zipcaptions.app" }
   ],
   "scope_extensions": [
-    { "origin": "https://*.zipcaptions.app" }
+    { "origin": "https://zipcaptions.app" }
   ],
   "launch_handler": {
     "client_mode": ["focus-existing", "auto"]
