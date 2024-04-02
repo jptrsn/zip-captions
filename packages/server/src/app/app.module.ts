@@ -12,6 +12,8 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { SessionService } from './services/session/session.service';
 import { SocketConnection, SocketConnectionSchema } from './models/socket-connection.model';
+import { OwnerRoom, OwnerRoomSchema } from './models/owner-rooms.model';
+import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -35,7 +37,9 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
     MongooseModule.forRoot(...getDbConnectionData()),
     MongooseModule.forFeature([
-      { name: SocketConnection.name, schema: SocketConnectionSchema }
+      { name: SocketConnection.name, schema: SocketConnectionSchema },
+      { name: OwnerRoom.name, schema: OwnerRoomSchema },
+      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
     ]),
     HttpModule,
     UserModule,

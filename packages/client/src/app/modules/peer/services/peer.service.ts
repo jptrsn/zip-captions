@@ -101,7 +101,7 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('socket connected');
+      console.log('socket connected, setting id', this.myId);
       this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
@@ -112,7 +112,9 @@ export class PeerService {
         }
       }
     });
-    this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
+    this.socket.on('disconnect', () => {
+      this.store.dispatch(PeerActions.socketServerDisconnected());
+    })
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
       console.log('error', err);

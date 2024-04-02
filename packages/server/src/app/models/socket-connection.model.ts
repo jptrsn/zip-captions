@@ -21,29 +21,18 @@ export class SocketConnection {
   clientIds?: string[];
 
   @Prop({
-    type: String,
+    type: Date,
+    expires: 1000 * 60 * 60 * 24, // one day
+    required: true,
+    default: Date.now
   })
-  roomId?: string;
+  lastUpdated: Date;
 
-  @Prop({
-    type: String
-  })
-  joinCode?: string;
-
-  @Prop({
-    type: Date
-  })
-  startTime?: Date;
-
-  @Prop({
-    type: Date
-  })
-  endTime?: Date;
-
-  @Prop({
-    type: Boolean
-  })
-  isStatic?: boolean;
 }
 
 export const SocketConnectionSchema = SchemaFactory.createForClass(SocketConnection);
+
+SocketConnectionSchema.pre<SocketConnection>('save', function (next) {
+  this.lastUpdated = new Date();
+  return next()
+})
