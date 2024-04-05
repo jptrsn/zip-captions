@@ -54,7 +54,7 @@ export class SessionService {
       if (payload.myBroadcast) {
         // Hosting or re-joining an existing broadcast room
         room = await this.rooms.findOne({ userId, roomId: payload.room });
-        broadcast = await this.broadcasts.findOne({ roomId: room.roomId, hostUserId: userId })
+        broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId })
       } else {
         // Joining a room as a viewer
         room = await this.rooms.findOne({ roomId: payload.room});
