@@ -3,6 +3,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGa
 import { Server, Socket } from "socket.io";
 import { CacheService } from '../services/cache/cache.service';
 import { SessionService } from '../services/session/session.service';
+import { BroadcastSession } from '../models/broadcast-session.model';
 
 @WebSocketGateway({ cors: true })
 export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -16,20 +17,19 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   
   // Gateway connection handler
   async handleConnection(client: Socket): Promise<void> {
-    const userId = await this.sessionService.handleClientConnected(client.id);
+    const userId = await this.sessionService.getUserIdForNewClientConnection(client.id);
     if (userId) {
-      console.log(`connection from established user ${userId}`)
       client.send({message: 'set user id', id: userId})
     }
   }
   
   // Gateway disconnect handler
   async handleDisconnect(client: Socket) {
-    this.sessionService.handleClientDisconnected(client.id);
-    const clientBroadcastRoom: string | undefined = this.clientBroadcastIdMap.get(client.id);
-    if (clientBroadcastRoom) {
-      const clientUserId = this.clientToUserIdMap.get(client.id);
-      client.broadcast.to(clientBroadcastRoom).emit('message', { user: clientUserId, message: 'user left room', room: clientBroadcastRoom });
+    const broadcastRooms: BroadcastSession[] | null = await this.sessionService.handleClientDisconnected(client.id);
+    if (broadcastRooms?.length) {
+      broadcastRooms.forEach((session) => {
+        client.broadcast.to(session.roomId).emit('message', { user: session.hostUserId, message: 'user left room', room: session.roomId });
+      })
     }
   }
   
@@ -66,9 +66,15 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
-
-      const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room));
-      const clients: string[] = clientIds.filter((id) => id !== client.id).map((id) => this.server.sockets.sockets.get(id)).map((socket) => this.clientToUserIdMap.get(socket.id))
+      const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
+      const clients: string[] = [];
+      for (const id of clientIds) {
+        // Looks like the host is reconnecting to an active broadcast. Tell it to reconnect to viewer peers
+        const peerUserId = await this.sessionService.getUserFromClientId(id);
+        if (peerUserId) {
+          clients.push(peerUserId);
+        }
+      }
       if (clients.length) {
         client.send({message: 'connect clients', clients });
       }
@@ -78,7 +84,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.server.to(ownerClientId).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false });
       } else {
         this.logger.warn(`Failed to determine owner for room ${room}. Falling back to room broadcast about member join`);
-        client.broadcast.to(room).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false})
+        client.broadcast.to(room).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false});
       }
     }
     client.send({user: clientUserId, message: 'room joined', room });
@@ -98,11 +104,14 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('endBroadcast')
   async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
+    const broadcast = await this.sessionService.endBroadcastSession(client.id, payload);
+    const userId = await this.sessionService.getUserFromClientId(client.id);
+    console.log(`ending broadcast ${broadcast.roomId}`)
     this.logger.log(`end ${payload.room} broadcast`)
     this.server.in(payload.room).emit('endBroadcast');
-    const hostId: string | null = await this.cache.get<string>(`${payload.room}_host_client_id`);
-    if (hostId === client.id) {
-      const expiredAt = Date.now();
+    // const hostId: string | null = await this.cache.get<string>(`${payload.room}_host_client_id`);
+    if (broadcast.hostUserId === userId) {
+      const expiredAt = broadcast.endTime;
       await this.cache.set(`${payload.room}_broadcast_ended`, expiredAt);
       this.clientBroadcastIdMap.delete(client.id);
       client.broadcast.to(payload.room).emit('message', { message: 'broadcast ended', expiredAt});

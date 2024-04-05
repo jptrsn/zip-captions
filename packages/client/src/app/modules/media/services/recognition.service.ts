@@ -52,7 +52,7 @@ export class RecognitionService {
       this.SEGMENTATION_DEBOUNCE_MS = 2500;
     }
 
-    console.log('resultCount', this.resultCount())
+    // console.log('resultCount', this.resultCount())
     if (this.resultCount() === 0) {
       this.DEBOUNCE_TIME_MS = 1000;
       this.SEGMENTATION_DEBOUNCE_MS = 1000;
@@ -191,14 +191,14 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      console.log('segment')
+      // console.log('segment')
       if (liveOutput() !== '') {
-        console.log('live output has data')
+        // console.log('live output has data')
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
         recognition.stop();
       } else {
-        console.log('liveoutput blank')
+        // console.log('liveoutput blank')
         recognition.stop();
       }
     });
@@ -249,7 +249,7 @@ export class RecognitionService {
         transcript = '';
       }
       if (this.activeRecognitionStreams.has(streamId)) {
-        console.log('recognition still active, restarting')
+        // console.log('recognition still active, restarting')
         recognition.start();
       } else {
         // console.log('recognition inactive, disconnecting')
@@ -268,7 +268,7 @@ export class RecognitionService {
         recognition.stop();
         this._handleRecognitionError(streamId, { error: "network"});
       } else {
-        console.log('**************************** THROTTLED NETWORK ERROR SUPPRESSED **********************************')
+        // console.log('**************************** THROTTLED NETWORK ERROR SUPPRESSED **********************************')
       }
     })
 

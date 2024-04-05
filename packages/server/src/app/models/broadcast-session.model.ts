@@ -28,7 +28,7 @@ export class BroadcastSession {
 
   @Prop({
     type: Date,
-    expires: 1000 * 60 * 60 * 24 * 30 // 30 days
+    expires: 1000 * 60 * 60 * 24 // 1 day
   })
   startTime?: Date;
 

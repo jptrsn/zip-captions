@@ -26,9 +26,11 @@ export class OwnerRoom {
 
   @Prop({
     type: Date,
-    expires: 1000 * 60 * 60 // one hour
+    expires: 1000 * 60 * 60 * 24, // one day
+    required: true,
+    default: Date.now
   })
-  expiresAt: Date;
+  createdAt: Date;
 }
 
 export const OwnerRoomSchema = SchemaFactory.createForClass(OwnerRoom);
