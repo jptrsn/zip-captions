@@ -26,11 +26,23 @@ export class OwnerRoom {
 
   @Prop({
     type: Date,
-    expires: 1000 * 60 * 60 * 24, // one day
     required: true,
     default: Date.now
   })
   createdAt: Date;
+
+  @Prop({
+    type: Date,
+    expires: 1000 * 60 * 60 * 24, // one day
+  })
+  hasExpiry: Date;
 }
 
 export const OwnerRoomSchema = SchemaFactory.createForClass(OwnerRoom);
+
+OwnerRoomSchema.pre<OwnerRoom>('validate', function (next) {
+  if (!this.isStatic && !this.hasExpiry) {
+    this.hasExpiry = new Date();
+    return next();
+  }
+})

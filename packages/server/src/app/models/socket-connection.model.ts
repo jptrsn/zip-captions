@@ -34,5 +34,5 @@ export const SocketConnectionSchema = SchemaFactory.createForClass(SocketConnect
 
 SocketConnectionSchema.pre<SocketConnection>('save', function (next) {
   this.lastUpdated = new Date();
-  return next()
+  return next();
 })

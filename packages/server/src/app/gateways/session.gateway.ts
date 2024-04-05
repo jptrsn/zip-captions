@@ -35,12 +35,12 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: any): WsResponse<string> {
-    this.logger.log('message payload', payload);
+    console.log('message payload', payload);
     if (payload.user && payload.message && payload.room) {
       console.log(`broadcast to ${payload.room}`, payload.message);
       this.server.in(payload.room).emit('message', { user: payload.user, message: payload.message, room: payload.room })
     } else {
-      this.logger.warn('Unhandled message payload with keys: ', Object.keys(payload).toString())
+      console.warn('Unhandled message payload with keys: ', Object.keys(payload).toString())
     }
     return { event: 'message', data: 'Hello World' };
   }
@@ -52,14 +52,14 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     const isHosting = broadcast.hostClientId === client.id;
     // Check if the broadcast is over
     if (broadcast.endTime) {
-      this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
-      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime});
+      // this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
+      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime.getTime()});
       return;
     }
     
     // Add client to room
     const room = broadcast.roomId;
-    this.logger.log(`client ${client.id} joined room ${room} as ${payload?.myBroadcast ? 'host' : 'viewer'}`);
+    // this.logger.log(`client ${client.id} joined room ${room} as ${payload?.myBroadcast ? 'host' : 'viewer'}`);
     client.join(room);
 
     const clientUserId = await this.sessionService.getUserFromClientId(client.id);
@@ -106,17 +106,13 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
     const broadcast = await this.sessionService.endBroadcastSession(client.id, payload);
     const userId = await this.sessionService.getUserFromClientId(client.id);
-    console.log(`ending broadcast ${broadcast.roomId}`)
-    this.logger.log(`end ${payload.room} broadcast`)
+    // this.logger.log(`end ${payload.room} broadcast`)
     this.server.in(payload.room).emit('endBroadcast');
-    // const hostId: string | null = await this.cache.get<string>(`${payload.room}_host_client_id`);
     if (broadcast.hostUserId === userId) {
-      const expiredAt = broadcast.endTime;
-      await this.cache.set(`${payload.room}_broadcast_ended`, expiredAt);
-      this.clientBroadcastIdMap.delete(client.id);
+      const expiredAt = broadcast.endTime.getTime();
       client.broadcast.to(payload.room).emit('message', { message: 'broadcast ended', expiredAt});
     } else {
-      this.logger.warn(`endBroadcastr from non-owner client id ${client.id}`);
+      this.logger.warn(`endBroadcast from non-owner client id ${client.id}`);
     }
   }
 

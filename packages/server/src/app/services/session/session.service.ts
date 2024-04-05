@@ -79,8 +79,7 @@ export class SessionService {
     // Create the broadcast if not found
     if (!broadcast) {
       broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date() })
-    } else if (broadcast.endTime) {
-      console.warn('BROADCAST ALREADY ENDED.')
+    } else if (broadcast.endTime && payload.myBroadcast) {
       broadcast.endTime = undefined;
       broadcast.startTime = new Date();
     }
@@ -95,7 +94,6 @@ export class SessionService {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
     const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room});
-    
     broadcast.endTime = new Date();
     await broadcast.save();
     return broadcast.toObject();
@@ -125,7 +123,9 @@ export class SessionService {
           // New client ID for this user's connection
           // console.log('New client ID for existing user');
           const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId }, { hostClientId: clientId });
-          console.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
+          if (broadcasts.matchedCount) {
+            console.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
+          }
           connection.clientIds = [...connection.clientIds, clientId];
         }
       } else {
