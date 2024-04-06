@@ -35,6 +35,10 @@ export class UserController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
     const user = await this.userService.findOne({id: req.user.id});
+    if (!user) {
+      console.log(`User ${params.id} not found`);
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
     const userProfile = {
       id: user.id,
       createdAt: user.createdAt.toString(),

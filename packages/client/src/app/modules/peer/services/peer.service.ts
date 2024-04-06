@@ -1,4 +1,4 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, Signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
@@ -9,6 +9,7 @@ import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
 import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
+import { selectUserId } from '../../../selectors/user.selector';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,8 @@ export class PeerService {
   private peerMap: Map<string, DataConnection> = new Map();
   private peerServerConnected: Signal<boolean | undefined>;
   private peerCount: Signal<number | undefined>;
+
+  private userId: Signal<string | undefined>;
   
   constructor(private store: Store<AppState>,
               private cache: CacheService) { 
@@ -68,26 +71,37 @@ export class PeerService {
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
 
-    const cached = this.cache.load<{id: string}>('userId')
-    if (cached?.id) {
-      this.myId = cached.id;
-    }
+    this.userId = toSignal(this.store.select(selectUserId))
+
+    effect(() => {
+      if (this.userId()) {
+        console.log('authed user ID')
+        this.myId = this.userId();
+        this.cache.save({key: 'userId', data: { id: this.myId }, expirationMins: this.CACHE_PERSIST_MINS})
+      }
+    })
+
+    // const cached = this.cache.load<{id: string}>('userId')
+    // if (cached?.id) {
+    //   this.myId = cached.id;
+    // }
     
   }
 
   connectSocket(): Observable<string> {
-    // console.log('connect socket')
+    console.log('connect socket')
     // console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
     // console.log(`Peer connect opts`, this.CONNECT_OPTS)
     
     if (this.socket) {
+      throw new Error("Socket already exists")
       this.socket.removeAllListeners();
     }
     this.socket = new Socket(this.SOCKET_CONFIG);
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('socket connected');
+      console.log('socket connected, setting id', this.myId);
       this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
@@ -98,7 +112,9 @@ export class PeerService {
         }
       }
     });
-    this.socket.on('disconnect', () => this.store.dispatch(PeerActions.socketServerDisconnected()))
+    this.socket.on('disconnect', () => {
+      this.store.dispatch(PeerActions.socketServerDisconnected());
+    })
     this.socket.on('error', (err: any) => {
       sub.error(err.message);
       console.log('error', err);
@@ -124,10 +140,12 @@ export class PeerService {
               sub.next(this.myId);
             }
           } else if (data.id) {
-            this.myId = data.id;
-            console.log('SAVING USER ID', data.id)
-            this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
-            sub.next(data.id);
+            if (!this.userId() || data.id !== this.userId()) {
+              this.myId = data.id;
+              console.log('SAVING USER ID', data.id)
+              this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
+            }
+            sub.next(data.id);  
           }
           if (!this.peerServerConnected() && this.myId) {
             console.log('connect peer server', this.myId)
