@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
@@ -8,13 +8,14 @@ import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadca
 
 @Injectable()
 export class SessionService {
+  private readonly logger = new Logger(SessionService.name);
   constructor(@InjectModel(SocketConnection.name) private socketConnections: Model<SocketConnection>,
               @InjectModel(OwnerRoom.name) private rooms: Model<OwnerRoom>,
               @InjectModel(BroadcastSession.name) private broadcasts: Model<BroadcastSession>,
               private cache: CacheService) {}
 
   async getUserIdForNewClientConnection(clientId: string): Promise<string | void> {
-    console.log(`client ${clientId} connected`)
+    this.logger.log(`client ${clientId} connected`)
     const userId = await this.getUserFromClientId(clientId);
     if (userId) {
       await this.setUserId(userId);
@@ -23,7 +24,7 @@ export class SessionService {
   }
   
   async handleClientDisconnected(clientId: string): Promise<BroadcastSession[] | null> {
-    console.log(`client ${clientId} disconnected`)
+    this.logger.log(`client ${clientId} disconnected`)
     const userId = await this._getClientUserId(clientId);
     let response: SocketConnectionDocument | undefined;
 
@@ -100,7 +101,6 @@ export class SessionService {
   }
 
   async setUserId(clientId: string, id?: string): Promise<string> {
-    // console.log(`set user id`, clientId, id)
     let connection: SocketConnectionDocument | undefined;
     let userId: string | undefined;
 
@@ -115,16 +115,14 @@ export class SessionService {
     if (connection) {
       if (id && id !== connection.userId) {
         // User ID changed, user logged in/out
-        console.log('User ID changed')
         connection.userId = id;
       }
       if (connection.clientIds) {
         if (!connection.clientIds.find((val) => val === clientId)) {
           // New client ID for this user's connection
-          // console.log('New client ID for existing user');
           const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId }, { hostClientId: clientId });
           if (broadcasts.matchedCount) {
-            console.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
+            this.logger.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
           }
           connection.clientIds = [...connection.clientIds, clientId];
         }
@@ -208,7 +206,6 @@ export class SessionService {
     }
     const conn: SocketConnectionDocument | null = await this.socketConnections.findOne({clientIds: clientId});
     if (conn) {
-      // console.log('found connection user ID from DB')
       await this._cacheClientUserIdMap(clientId, conn.userId);
       return conn.userId;
     } 
