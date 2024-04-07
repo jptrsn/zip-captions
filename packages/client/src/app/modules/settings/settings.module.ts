@@ -20,6 +20,7 @@ import { FontFamilySelectorComponent } from './components/font-family-selector/f
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
 import { UserEffects } from '../../effects/user.effects';
 import { UiSettingsComponent } from './components/ui-settings/ui-settings.component';
+import { UserSavedSettingsComponent } from './user-saved-settings/user-saved-settings.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { UiSettingsComponent } from './components/ui-settings/ui-settings.compon
     RenderHistoryComponent,
     FontFamilySelectorComponent,
     UiSettingsComponent,
+    UserSavedSettingsComponent,
   ],
   imports: [
     CommonModule,

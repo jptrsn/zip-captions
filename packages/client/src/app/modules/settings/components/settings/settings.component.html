@@ -7,7 +7,7 @@
   <!-- Tabs body -->
   <div class="basis-full overflow-y-auto p-3">
     <app-ui-settings *ngIf="tabIndex() === 0" @fadeInOnEnter></app-ui-settings>
-    
+    <app-user-saved-settings *ngIf="tabIndex() === 1" @fadeInOnEnter></app-user-saved-settings>
   </div>
   
 
