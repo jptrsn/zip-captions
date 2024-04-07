@@ -5,10 +5,10 @@
   </form>
 
   <!-- Tabs body -->
-  <div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabIndex()">
-    <app-ui-settings *ngSwitchCase="0" @fadeInOnEnter></app-ui-settings>
-    <app-user-saved-settings *ngSwitchCase="1" @fadeInOnEnter></app-user-saved-settings>
-    <app-broadcast-settings *ngSwitchCase="2" @fadeInOnEnter></app-broadcast-settings>
+  <div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabNames[tabIndex()]">
+    <app-ui-settings *ngSwitchCase="'appearance'" @fadeInOnEnter></app-ui-settings>
+    <app-user-saved-settings *ngSwitchCase="'sync'" @fadeInOnEnter></app-user-saved-settings>
+    <app-broadcast-settings *ngSwitchCase="'sharing'" @fadeInOnEnter></app-broadcast-settings>
   </div>
   
 

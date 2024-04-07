@@ -72,5 +72,29 @@ export class UserEffects {
         )
       )
     )
+
+    getRooms$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.getRooms),
+        switchMap(() => this.userService.getUserRooms()
+          .pipe(
+            map((rooms) => UserActions.getRoomsSuccess({ rooms })),
+            catchError((err) => of(UserActions.getRoomsFailure({ error: err.message })))
+          )
+        )
+      )
+    )
+
+    saveRooms$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.saveRooms),
+        switchMap(({ rooms, upsert }) => this.userService.saveUserRooms(rooms, upsert)
+          .pipe(
+            map((rooms) => UserActions.saveRoomsSuccess({ rooms })),
+            catchError((err) => of(UserActions.saveRoomsFailure({ error: err.message })))
+          )
+        )
+      )
+    )
               
 }

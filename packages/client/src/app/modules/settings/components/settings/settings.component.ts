@@ -29,17 +29,13 @@ export class SettingsComponent {
   public tabIndex: Signal<number>;
 
   public tabNames = [
+    'sharing',
     'appearance',
-    'sync',
-    'sharing'
+    'sync'
   ];
   
   constructor(private fb: FormBuilder,
-              private store: Store<AppState>,
-              private renderer: Renderer2,
-              private el: ElementRef,
-              private router: Router,
-              private translate: TranslateService) {
+              private store: Store<AppState>) {
     this.tabsControl = this.fb.control(0)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(takeUntilDestroyed(), startWith(0))) as Signal<number>;
     

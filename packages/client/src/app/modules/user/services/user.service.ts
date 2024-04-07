@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable, map, tap } from 'rxjs';
 import { UserActions } from '../../../actions/user.actions';
 import { AppState } from '../../../models/app.model';
-import { UserProfile } from '../../../reducers/user.reducer';
+import { UserProfile, UserRoom } from '../../../reducers/user.reducer';
 import { selectUserId } from '../../../selectors/user.selector';
 import { SettingsState } from '../../settings/models/settings.model';
 
@@ -58,6 +58,22 @@ export class UserService {
       throw new Error('No user ID set')
     }
     return this.http.post<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`, { settings })
+  }
+
+  getUserRooms(): Observable<UserRoom[]> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.get<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`)
+  }
+
+  saveUserRooms(rooms: UserRoom[], upsert?: boolean): Observable<UserRoom[]> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.patch<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`, { rooms, upsert })
   }
 
 }
