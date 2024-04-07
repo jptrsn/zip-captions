@@ -252,11 +252,21 @@
     "warning": "For optimal results, we recommend using Chrome or Safari on Desktop."
   },
   "SETTINGS": {
-    "t1": "Preview",
-    "p1": "Each segment of previously-recognized text will appear like this.",
-    "p2": "Scrolling up from the bottom.",
-    "p3": "With each new result appearing underneath the previous.",
-    "p4": "Live text shows like this"
+    "TABS": {
+      "appearance": "Look & Feel",
+      "sync": "Sync",
+      "sharing": "Sharing"
+    },
+    "UI": {
+      "t1": "Preview",
+      "p1": "Each segment of previously-recognized text will appear like this.",
+      "p2": "Scrolling up from the bottom.",
+      "p3": "With each new result appearing underneath the previous.",
+      "p4": "Live text shows like this"
+    },
+    "SHARING": {
+      
+    }
   },
   "STREAM": {
     "serverStatus": "Broadcast Server",

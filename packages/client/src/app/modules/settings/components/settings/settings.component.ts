@@ -29,9 +29,9 @@ export class SettingsComponent {
   public tabIndex: Signal<number>;
 
   public tabNames = [
-    'Look & Feel',
-    'Sync',
-    'Sharing'
+    'appearance',
+    'sync',
+    'sharing'
   ];
   
   constructor(private fb: FormBuilder,

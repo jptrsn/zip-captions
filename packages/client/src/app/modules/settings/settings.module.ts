@@ -21,6 +21,7 @@ import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dia
 import { UserEffects } from '../../effects/user.effects';
 import { UiSettingsComponent } from './components/ui-settings/ui-settings.component';
 import { UserSavedSettingsComponent } from './user-saved-settings/user-saved-settings.component';
+import { BroadcastSettingsComponent } from './components/broadcast-settings/broadcast-settings.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { UserSavedSettingsComponent } from './user-saved-settings/user-saved-set
     FontFamilySelectorComponent,
     UiSettingsComponent,
     UserSavedSettingsComponent,
+    BroadcastSettingsComponent,
   ],
   imports: [
     CommonModule,

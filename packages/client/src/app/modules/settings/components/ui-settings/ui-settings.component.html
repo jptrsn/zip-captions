@@ -13,8 +13,8 @@
     </div>
     <div>
       <div class="flex w-full justify-end items-center gap-1 sm:gap-3">
-        <div *ngIf="!acceptedCookies()" class="text-error text-sm" translate>SETTINGS.warning</div>
-        <button class="btn btn-ghost rounded-xl" translate type="button" routerLink="..">
+        <div *ngIf="!acceptedCookies()" class="text-error text-sm" translate>SETTINGS.UI.warning</div>
+        <button class="btn btn-secondaryß rounded-xl" translate type="button" routerLink="..">
           BUTTONS.cancel
         </button>
     
@@ -24,20 +24,20 @@
       </div>
       <div class="form-control overflow-y-auto">
         <div class="label">
-          <label class="text-accent" translate>SETTINGS.t1</label>
+          <label class="text-accent" translate>SETTINGS.UI.t1</label>
         </div>
         <div class="bg-base-100 text-base-content font-raleway p-6 gap-3 overflow-hidden rounded-lg">
           <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 0" @fadeOutOnLeave @fadeInOnEnter translate>
-            SETTINGS.p1
+            SETTINGS.UI.p1
           </div>
           <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 1" @fadeOutOnLeave @fadeInOnEnter translate>
-            SETTINGS.p2
+            SETTINGS.UI.p2
           </div>
           <div [classList]="classList()" *ngIf="renderHistoryFormValue() > 2" @fadeOutOnLeave @fadeInOnEnter translate>
-            SETTINGS.p3
+            SETTINGS.UI.p3
           </div>
           <div [classList]="classList() + ' live pt-3'" translate>
-            SETTINGS.p4
+            SETTINGS.UI.p4
           </div>
         </div>
       </div>

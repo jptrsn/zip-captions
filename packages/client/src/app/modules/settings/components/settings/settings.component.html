@@ -1,13 +1,14 @@
 <div class="flex flex-col basis-full items-center justify-start w-full overflow-hidden bg-base-300">
   <!-- Tabs header -->
   <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
-    <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="name" [value]="i">
+    <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="'SETTINGS.TABS.' + name | translate" [value]="i">
   </form>
 
   <!-- Tabs body -->
-  <div class="basis-full overflow-y-auto p-3">
-    <app-ui-settings *ngIf="tabIndex() === 0" @fadeInOnEnter></app-ui-settings>
-    <app-user-saved-settings *ngIf="tabIndex() === 1" @fadeInOnEnter></app-user-saved-settings>
+  <div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabIndex()">
+    <app-ui-settings *ngSwitchCase="0" @fadeInOnEnter></app-ui-settings>
+    <app-user-saved-settings *ngSwitchCase="1" @fadeInOnEnter></app-user-saved-settings>
+    <app-broadcast-settings *ngSwitchCase="2" @fadeInOnEnter></app-broadcast-settings>
   </div>
   
 
