@@ -19,6 +19,7 @@ import { RenderHistoryComponent } from './components/render-history/render-histo
 import { FontFamilySelectorComponent } from './components/font-family-selector/font-family-selector.component';
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
 import { UserEffects } from '../../effects/user.effects';
+import { UiSettingsComponent } from './components/ui-settings/ui-settings.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { UserEffects } from '../../effects/user.effects';
     LineHeightComponent,
     RenderHistoryComponent,
     FontFamilySelectorComponent,
+    UiSettingsComponent,
   ],
   imports: [
     CommonModule,
