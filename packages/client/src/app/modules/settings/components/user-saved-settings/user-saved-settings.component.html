@@ -57,8 +57,9 @@
     </ng-template>
     
     <div class="card-actions mt-3 justify-between">
-      <button class="btn btn-sm btn-accent" [disabled]="settingsMatch() || viewingSaved" (click)="saveCurrent()">Save Current</button>
+      <button class="btn btn-sm btn-accent" [disabled]="settingsMatch() || viewingSaved || !userLoggedIn()" (click)="saveCurrent()">Save Current</button>
       <button class="btn btn-sm btn-secondary" *ngIf="savedUiSettings()" [disabled]="settingsMatch() || !viewingSaved" (click)="applySaved()">Apply Saved</button>
     </div>
+    <div class="badge badge-warning p-3 cursor-pointer" *ngIf="!userLoggedIn()" [routerLink]="['..','auth']">You must log in before you can save your sync settings.</div>
   </div>
 </div>

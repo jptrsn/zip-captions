@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
@@ -12,6 +12,8 @@ import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
 import { CustomCacheInterceptor } from '../../interceptors/custom-cache.interceptor';
 import { CacheKey } from '@nestjs/cache-manager';
 import { CacheService } from '../../services/cache/cache.service';
+import { SessionService } from '../../services/session/session.service';
+import { OwnerRoom, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
 
 @Controller('user')
 export class UserController {
@@ -20,6 +22,7 @@ export class UserController {
   private clientUrl: string;
   constructor(private readonly userService: UserService,
               private readonly uiSettingsService: UiSettingsService,
+              private readonly sessionService: SessionService,
               private cache: CacheService,
               private jwtService: JwtService) 
   {
@@ -31,9 +34,7 @@ export class UserController {
   @UseInterceptors(CustomCacheInterceptor)
   @CacheKey(UserController.PROFILE_CACHE_KEY)
   async getUser(@Req() req, @Param() params: { id: string }): Promise<UserProfile> {
-    if (params.id !== req.user.id) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
-    }
+    this._validateParam(req, params);
     const user = await this.userService.findOne({id: req.user.id});
     if (!user) {
       console.log(`User ${params.id} not found`);
@@ -63,6 +64,32 @@ export class UserController {
       return this._pruneSettingsFields(settings)
     }
     return null;
+  }
+
+  @Get('profile/:id/rooms')
+  @UseGuards(JwtAuthGuard)
+  @NoCache()
+  async getRooms(@Req() req, @Param() params: { id: string }): Promise<OwnerRoom[]> {
+    this._validateParam(req, params);
+    const rooms = await this.sessionService.findUserRooms(params.id)
+    return rooms;
+  }
+
+  @Get('rooms/ids')
+  @NoCache()
+  async getAvailableRoomIds(@Query('count') count?: number): Promise<RoomIdsList> {
+    if (count > 100) {
+      throw new HttpException('Invalid count', HttpStatus.BAD_REQUEST);
+    }
+    return this.sessionService.getRoomIdsList(count);
+  }
+
+  @Post('profile/:id/rooms')
+  @UseGuards(JwtAuthGuard)
+  async saveRooms(@Req() req, @Param() params: { id: string, rooms: OwnerRoomUpdate[]}): Promise<OwnerRoom[]> {
+    this._validateParam(req, params);
+    const rooms = await this.sessionService.updateUserRooms(params.id, params.rooms);
+    return rooms;
   }
 
   @Post('profile/:id/settings')

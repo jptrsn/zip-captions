@@ -15,17 +15,19 @@ export interface UserProfile {
   syncUiSettings?: boolean;
 }
 
-export interface UserMetadata {
-  roomId?: string;
-  joinCode?: string;
-  lastChanged?: Date;
+export interface UserRoom {
+  roomId: string;
+  isStatic?: boolean;
+  allowAnonymous?: boolean;
+  createdAt: string;
+  expires?: string;
 }
 
 export interface UserState {
   id?: string;
   profile?: UserProfile;
   uiSettings?: SettingsState;
-  metadata?: UserMetadata;
+  rooms?: UserRoom[];
   error?: string;
 }
 
@@ -49,6 +51,12 @@ export const userReducer = createReducer(
 
   on(UserActions.saveSyncPropertySuccess, (state: UserState, action: { sync: boolean }) => ({...state, profile: state.profile ? {...state.profile, syncUiSettings: action.sync} : undefined })),
   on(UserActions.saveSyncPropertyFailure, (state: UserState, action: { error: string }) => ({...state, profile: undefined, error: action.error })),
+
+  on(UserActions.getRoomsSuccess, (state: UserState, action: { rooms: UserRoom[] }) => ({...state, rooms: action.rooms })),
+  on(UserActions.getRoomsFailure, (state: UserState, action: { error: string }) => ({...state, rooms: [], error: action.error })),
+
+  on(UserActions.saveRoomsSuccess, (state: UserState, action: { rooms: UserRoom[] }) => ({...state, rooms: action.rooms })),
+  on(UserActions.saveRoomsFailure, (state: UserState, action: { error: string }) => ({...state, rooms: [], error: action.error })),
 
 );
 

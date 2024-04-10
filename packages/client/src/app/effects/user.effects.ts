@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { UserService } from "../modules/user/services/user.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthActions } from "../actions/auth.actions";
-import { catchError, map, of, switchMap } from "rxjs";
+import { catchError, map, of, switchMap, tap } from "rxjs";
 import { UserActions } from "../actions/user.actions";
 import { SettingsActions } from "../modules/settings/models/settings.model";
 
@@ -68,6 +68,31 @@ export class UserEffects {
           .pipe(
             map((sync) => UserActions.saveSyncPropertySuccess({ sync })),
             catchError((err) => of(UserActions.saveSyncPropertyFailure({ error: err.message })))
+          )
+        )
+      )
+    )
+
+    getRooms$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.getRooms),
+        switchMap(() => this.userService.getUserRooms()
+          .pipe(
+            tap((rooms) => console.log('rooms', rooms)),
+            map((rooms) => UserActions.getRoomsSuccess({ rooms })),
+            catchError((err) => of(UserActions.getRoomsFailure({ error: err.message })))
+          )
+        )
+      )
+    )
+
+    saveRooms$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.saveRooms),
+        switchMap(({ rooms, upsert }) => this.userService.saveUserRooms(rooms, upsert)
+          .pipe(
+            map((rooms) => UserActions.saveRoomsSuccess({ rooms })),
+            catchError((err) => of(UserActions.saveRoomsFailure({ error: err.message })))
           )
         )
       )

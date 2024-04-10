@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
 import { CacheService } from '../cache/cache.service';
-import { OwnerRoom, OwnerRoomDocument } from '../../models/owner-rooms.model';
+import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadcast-session.model';
 
 @Injectable()
@@ -47,6 +47,7 @@ export class SessionService {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
 
+    // console.log(`get broadcast session for ${userId}`)
     let room: OwnerRoomDocument;
     let broadcast: BroadcastSessionDocument;
     // If we know what room user wants
@@ -55,17 +56,17 @@ export class SessionService {
       if (payload.myBroadcast) {
         // Hosting or re-joining an existing broadcast room
         room = await this.rooms.findOne({ userId, roomId: payload.room });
-        broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId })
+        broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
         room = await this.rooms.findOne({ roomId: payload.room});
-        broadcast = await this.broadcasts.findOne({roomId: payload.room})
+        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined })
       }
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
       // The user is hosting, do we have an existing room for them?
       room = await this.rooms.findOne({ userId });
-      broadcast = await this.broadcasts.findOne({ hostUserId: userId })
+      broadcast = await this.broadcasts.findOne({ hostUserId: userId, endTime: undefined })
     } else {
       // No room ID specified, not hosting - no op
       throw new Error(`No room to join as viewer`);
@@ -79,10 +80,11 @@ export class SessionService {
 
     // Create the broadcast if not found
     if (!broadcast) {
+      // console.log('creating new broadcast entry')
       broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date() })
-    } else if (broadcast.endTime && payload.myBroadcast) {
-      broadcast.endTime = undefined;
-      broadcast.startTime = new Date();
+    } else if (broadcast.hostClientId !== clientId) {
+      // console.log('updating broadcast host client ID')
+      broadcast.hostClientId = clientId;
     }
     await broadcast.save();
 
@@ -120,7 +122,7 @@ export class SessionService {
       if (connection.clientIds) {
         if (!connection.clientIds.find((val) => val === clientId)) {
           // New client ID for this user's connection
-          const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId }, { hostClientId: clientId });
+          const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId, endTime: undefined }, { hostClientId: clientId });
           if (broadcasts.matchedCount) {
             this.logger.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
           }
@@ -142,7 +144,36 @@ export class SessionService {
   }
 
   async findUserRooms(userId: string, query?: Partial<OwnerRoom>): Promise<OwnerRoom[]> {
-    return await this.rooms.find(query ? {...query, userId} : {userId})
+    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]])
+  }
+
+  async updateUserRooms(userId: string, rooms: OwnerRoomUpdate[]): Promise<OwnerRoom[]> {
+    const updateRoomIds = rooms.map((room) => room.roomId);
+    
+    const broadcastingRooms = await this.broadcasts.find({roomId: [ updateRoomIds ], endTime: undefined })
+    if (broadcastingRooms.length) {
+      throw new HttpException(`Unable to update room with broadcast in progress.`, HttpStatus.CONFLICT);
+    }
+
+    const existingRooms = (await this.rooms.find({roomId: [updateRoomIds]})).reduce((acc, room) => {
+      acc[room.roomId] = room;
+      return acc;
+    }, {} as {[roomId: string]: OwnerRoomDocument})
+    
+    const updates: OwnerRoom[] = [];
+
+    for (const update of rooms) {
+      const room = existingRooms[update.roomId] || new this.rooms({ userId });
+      room.roomId = update.roomId;
+      room.isStatic = !!update.isStatic;
+      room.allowAnonymous = !!update.allowAnonymous;
+      if (!this._validateRoomForUser(userId, room)) {
+        throw new HttpException(`Invalid room update ${room.roomId}`, HttpStatus.BAD_REQUEST)
+      }
+      await room.save();
+      updates.push(room.toObject())
+    }
+    return updates;
   }
 
   async getUserFromClientId(clientId: string): Promise<string | undefined> {
@@ -155,6 +186,28 @@ export class SessionService {
       this._cacheClientUserIdMap(clientId, response.userId)
       return response.userId;
     }
+  }
+
+  getRoomIdsList(count?: number): RoomIdsList {
+    const length = count || 15;
+    const list: RoomIdsList = { static: [], dynamic: []};
+    for (let i = 0; i < length; i++) {
+      list.static.push(this.generateRandomRoomId(true));
+      list.dynamic.push(this.generateRandomRoomId(false));
+    }
+    return list;
+  }
+
+  private _validateRoomForUser(userId: string, room: OwnerRoom): boolean {
+    if (userId !== room.userId) {
+      console.log(`room ${room.roomId} is not owned by ${userId}`);
+      return false;
+    }
+    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
+      console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
+      return false;
+    }
+    return true;
   }
 
   generateRandomRoomId(isStatic?: boolean): string {
@@ -190,9 +243,9 @@ export class SessionService {
     }
     let currentValue = 0;
     for (let i = 0; i < 2; i++) {
-      currentValue += prefix.charCodeAt(i)
+      currentValue += prefix.charCodeAt(i);
     }
-    return !!(currentValue % 2)
+    return !!(currentValue % 2);
   }
 
   private _cacheClientUserIdMap(clientId: string, userId: string): Promise<void> {

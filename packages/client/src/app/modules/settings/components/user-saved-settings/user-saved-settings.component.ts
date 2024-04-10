@@ -3,10 +3,11 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
-import { SettingsActions, SettingsState } from '../../../settings/models/settings.model';
+import { SettingsActions, SettingsState } from '../../models/settings.model';
 import { selectAppSettings } from '../../../../selectors/settings.selector';
 import { UserActions } from '../../../../actions/user.actions';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 
 @Component({
   selector: 'app-user-saved-settings',
@@ -16,6 +17,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 })
 export class UserSavedSettingsComponent {
 
+  public userLoggedIn: Signal<boolean | undefined>;
   public savedUiSettings: Signal<SettingsState | undefined>;
   public currentUiSettings: Signal<SettingsState>;
   public settingsMatch: Signal<boolean>;
@@ -29,6 +31,7 @@ export class UserSavedSettingsComponent {
     
     this.viewingSaved = false;
     
+    this.userLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
     this.syncSettings = toSignal(this.store.select(selectUserSettingsSync));
     this.syncControl = this.fb.control<boolean | null>(null);
     this.savedUiSettings = toSignal(this.store.select(selectUserSavedSettings));

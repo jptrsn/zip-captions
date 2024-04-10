@@ -19,6 +19,10 @@ import { RenderHistoryComponent } from './components/render-history/render-histo
 import { FontFamilySelectorComponent } from './components/font-family-selector/font-family-selector.component';
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
 import { UserEffects } from '../../effects/user.effects';
+import { UiSettingsComponent } from './components/ui-settings/ui-settings.component';
+import { UserSavedSettingsComponent } from './components/user-saved-settings/user-saved-settings.component';
+import { BroadcastSettingsComponent } from './components/broadcast-settings/broadcast-settings.component';
+import { TimeagoModule } from 'ngx-timeago';
 
 @NgModule({
   declarations: [
@@ -31,6 +35,9 @@ import { UserEffects } from '../../effects/user.effects';
     LineHeightComponent,
     RenderHistoryComponent,
     FontFamilySelectorComponent,
+    UiSettingsComponent,
+    UserSavedSettingsComponent,
+    BroadcastSettingsComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +48,7 @@ import { UserEffects } from '../../effects/user.effects';
     TranslateModule.forChild({ extend: true }),
     UnsavedChangesDialogComponent,
     SaveToServerDialogComponent,
+    TimeagoModule,
   ],
 })
 export class SettingsModule {}

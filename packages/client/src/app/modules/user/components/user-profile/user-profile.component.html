@@ -15,61 +15,6 @@
       <img *ngIf="profile.googleConnected" src="assets/brands/google/web_neutral_rd_na.svg">
       <img *ngIf="profile.azureConnected" src="assets/brands/msft/ms-symbollockup_mssymbol_19.svg">
     </div>
-
-    <ng-container *ngIf="showForm">
-      <div class="divider"></div>
-    <div class="flex flex-row gap-1 mb-3">
-      <span class="text-sm break-word">These are your custom broadcast settings:</span>
-      <ng-icon name="heroQuestionMarkCircle" class="tooltip" data-tip="Use the same session ID and join code for every broadcast"></ng-icon>
-    </div>
-  
-    <form [formGroup]="formGroup" (submit)="saveForm()">
-      
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text" translate>Static Session ID</span>
-        </label>
-        <label class="input input-bordered flex items-center gap-3" [ngClass]="{'input-error': formGroup.controls['roomId'].invalid}">
-          <input type="text" class="px-0 grow bg-transparent border-none focus:ring-0" maxlength="9"  placeholder="Session ID" formControlName="roomId" />
-          <!-- <button class="btn btn-circle btn-xs" type="button" (click)="refreshSessionId()">
-            <ng-icon name="heroArrowPath"></ng-icon>
-          </button> -->
-        </label>
-        <label class="label no-height">
-          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['roomId'].hasError('invalid') && formGroup.controls['roomId'].touched">Invalid ID</span>
-          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['roomId'].hasError('required') && formGroup.controls['roomId'].touched">Required</span>
-        </label>
-      </div>
-
-    
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text" translate>Static Join Code</span>
-        </label>
-        <label class="input input-bordered flex items-center gap-3" [ngClass]="{'input-error': formGroup.controls['joinCode'].invalid}">
-          <input type="text" class="px-0 grow bg-transparent border-none focus:ring-0" maxlength="9" placeholder="Join Code" formControlName="joinCode" />
-          <!-- <button class="btn btn-circle btn-xs" type="button" (click)="refreshSessionId()">
-            <ng-icon name="heroArrowPath"></ng-icon>
-          </button> -->
-        </label>
-
-        <label class="label no-height">
-          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['joinCode'].hasError('invalid') && formGroup.controls['joinCode'].touched">Invalid Code</span>
-          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['joinCode'].hasError('required') && formGroup.controls['joinCode'].touched">Required</span>
-        </label>
-      </div>
-
-      <div class="flex flex-row justify-end gap-3">
-        <button class="btn btn-accent" type="button">
-          GET NEW
-        </button>
-        <button class="btn btn-primary" type="submit" [disabled]="true">
-          SAVE
-        </button>
-      </div>
-      
-    </form>
-    </ng-container>
   </div>
 </div>
 <ng-template #notSet>

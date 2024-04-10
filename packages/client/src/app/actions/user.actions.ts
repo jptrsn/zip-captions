@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { UserProfile } from '../reducers/user.reducer';
+import { UserProfile, UserRoom } from '../reducers/user.reducer';
 import { SettingsState } from '../modules/settings/models/settings.model';
 
 export const UserActions = createActionGroup({
@@ -14,6 +14,14 @@ export const UserActions = createActionGroup({
     'Get Settings': emptyProps(),
     'Get Settings Success': props<{ settings: SettingsState }>(), 
     'Get Settings Failure': props<{error: string}>(),
+
+    'Get Rooms': emptyProps(),
+    'Get Rooms Success': props<{rooms: UserRoom[]}>(),
+    'Get Rooms Failure': props<{error: string}>(),
+
+    'Save Rooms': props<{rooms: UserRoom[], upsert?: boolean}>(),
+    'Save Rooms Success': props<{rooms: UserRoom[]}>(),
+    'Save Rooms Failure': props<{error: string}>(),
 
     'Save Sync Property': props<{sync: boolean}>(),
     'Save Sync Property Success': props<{sync: boolean}>(),

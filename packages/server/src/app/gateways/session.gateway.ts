@@ -66,13 +66,17 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
+      console.log('we are the host, look to reconnect')
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
       const clients: string[] = [];
+      console.log(`room has ${clientIds.length} other clients connected`)
       for (const id of clientIds) {
         // Looks like the host is reconnecting to an active broadcast. Tell it to reconnect to viewer peers
         const peerUserId = await this.sessionService.getUserFromClientId(id);
         if (peerUserId) {
           clients.push(peerUserId);
+        } else {
+          console.log(`no user ID for peer client ${id}`)
         }
       }
       if (clients.length) {

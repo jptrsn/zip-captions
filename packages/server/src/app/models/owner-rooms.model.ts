@@ -1,6 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+export interface OwnerRoomUpdate  {
+  roomId: string;
+  isStatic: boolean;
+  allowAnonymous: boolean;
+}
+
+export interface RoomIdsList {
+  static: string[];
+  dynamic: string[];
+}
+
 export type OwnerRoomDocument = HydratedDocument<OwnerRoom>;
 
 @Schema()
@@ -23,6 +34,12 @@ export class OwnerRoom {
     default: false
   })
   isStatic?: boolean;
+
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  allowAnonymous?: boolean;
 
   @Prop({
     type: Date,

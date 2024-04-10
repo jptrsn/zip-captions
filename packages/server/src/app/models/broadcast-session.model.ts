@@ -8,15 +8,13 @@ export type BroadcastSessionDocument = HydratedDocument<BroadcastSession>;
 export class BroadcastSession {
   @Prop({
     type: String,
-    required: true,
-    unique: true
+    required: true
   })
   roomId: string;
 
   @Prop({
     type: String,
-    required: true,
-    unique: true
+    required: true
   })
   hostClientId: string;
 
@@ -33,8 +31,7 @@ export class BroadcastSession {
   startTime?: Date;
 
   @Prop({
-    type: Date,
-    expires: 1000 * 60 * 60 // one hour
+    type: Date
   })
   endTime?: Date;
 
