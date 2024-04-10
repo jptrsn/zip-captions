@@ -13,7 +13,7 @@ import { CustomCacheInterceptor } from '../../interceptors/custom-cache.intercep
 import { CacheKey } from '@nestjs/cache-manager';
 import { CacheService } from '../../services/cache/cache.service';
 import { SessionService } from '../../services/session/session.service';
-import { OwnerRoom } from '../../models/owner-rooms.model';
+import { OwnerRoom, OwnerRoomUpdate } from '../../models/owner-rooms.model';
 
 @Controller('user')
 export class UserController {
@@ -72,6 +72,14 @@ export class UserController {
   async getRooms(@Req() req, @Param() params: { id: string }): Promise<OwnerRoom[]> {
     this._validateParam(req, params);
     const rooms = await this.sessionService.findUserRooms(params.id)
+    return rooms;
+  }
+
+  @Post('profile/:id/rooms')
+  @UseGuards(JwtAuthGuard)
+  async saveRooms(@Req() req, @Param() params: { id: string, rooms: OwnerRoomUpdate[]}): Promise<OwnerRoom[]> {
+    this._validateParam(req, params);
+    const rooms = await this.sessionService.updateUserRooms(params.id, params.rooms);
     return rooms;
   }
 

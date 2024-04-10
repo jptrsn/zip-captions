@@ -1,6 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+export interface OwnerRoomUpdate  {
+  roomId: string;
+  isStatic: boolean;
+  allowAnonymous: boolean;
+}
+
 export type OwnerRoomDocument = HydratedDocument<OwnerRoom>;
 
 @Schema()

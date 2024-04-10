@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
 import { CacheService } from '../cache/cache.service';
-import { OwnerRoom, OwnerRoomDocument } from '../../models/owner-rooms.model';
+import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadcast-session.model';
 
 @Injectable()
@@ -147,6 +147,35 @@ export class SessionService {
     return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]])
   }
 
+  async updateUserRooms(userId: string, rooms: OwnerRoomUpdate[]): Promise<OwnerRoom[]> {
+    const updateRoomIds = rooms.map((room) => room.roomId);
+    
+    const broadcastingRooms = await this.broadcasts.find({roomId: [ updateRoomIds ], endTime: undefined })
+    if (broadcastingRooms.length) {
+      throw new HttpException(`Unable to update room with broadcast in progress.`, HttpStatus.CONFLICT);
+    }
+
+    const existingRooms = (await this.rooms.find({roomId: [updateRoomIds]})).reduce((acc, room) => {
+      acc[room.roomId] = room;
+      return acc;
+    }, {} as {[roomId: string]: OwnerRoomDocument})
+    
+    const updates: OwnerRoom[] = [];
+
+    for (const update of rooms) {
+      const room = existingRooms[update.roomId] || new this.rooms({ userId });
+      room.roomId = update.roomId;
+      room.isStatic = !!update.isStatic;
+      room.allowAnonymous = !!update.allowAnonymous;
+      if (!this._validateRoomForUser(userId, room)) {
+        throw new HttpException(`Invalid room update ${room.roomId}`, HttpStatus.BAD_REQUEST)
+      }
+      await room.save();
+      updates.push(room.toObject())
+    }
+    return updates;
+  }
+
   async getUserFromClientId(clientId: string): Promise<string | undefined> {
     const userId = await this._getClientUserId(clientId);
     if (userId) {
@@ -157,6 +186,18 @@ export class SessionService {
       this._cacheClientUserIdMap(clientId, response.userId)
       return response.userId;
     }
+  }
+
+  private _validateRoomForUser(userId: string, room: OwnerRoom): boolean {
+    if (userId !== room.userId) {
+      console.log(`room ${room.roomId} is not owned by ${userId}`);
+      return false;
+    }
+    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
+      console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
+      return false;
+    }
+    return true;
   }
 
   generateRandomRoomId(isStatic?: boolean): string {
@@ -192,9 +233,9 @@ export class SessionService {
     }
     let currentValue = 0;
     for (let i = 0; i < 2; i++) {
-      currentValue += prefix.charCodeAt(i)
+      currentValue += prefix.charCodeAt(i);
     }
-    return !!(currentValue % 2)
+    return !!(currentValue % 2);
   }
 
   private _cacheClientUserIdMap(clientId: string, userId: string): Promise<void> {
