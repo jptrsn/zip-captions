@@ -20,8 +20,9 @@ import { FontFamilySelectorComponent } from './components/font-family-selector/f
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
 import { UserEffects } from '../../effects/user.effects';
 import { UiSettingsComponent } from './components/ui-settings/ui-settings.component';
-import { UserSavedSettingsComponent } from './user-saved-settings/user-saved-settings.component';
+import { UserSavedSettingsComponent } from './components/user-saved-settings/user-saved-settings.component';
 import { BroadcastSettingsComponent } from './components/broadcast-settings/broadcast-settings.component';
+import { TimeagoModule } from 'ngx-timeago';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { BroadcastSettingsComponent } from './components/broadcast-settings/broa
     TranslateModule.forChild({ extend: true }),
     UnsavedChangesDialogComponent,
     SaveToServerDialogComponent,
+    TimeagoModule,
   ],
 })
 export class SettingsModule {}

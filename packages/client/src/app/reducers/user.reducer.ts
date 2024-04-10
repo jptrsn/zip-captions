@@ -19,6 +19,8 @@ export interface UserRoom {
   roomId: string;
   isStatic?: boolean;
   allowAnonymous?: boolean;
+  createdAt: string;
+  expires?: string;
 }
 
 export interface UserState {

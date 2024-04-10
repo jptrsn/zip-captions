@@ -1,11 +1,32 @@
-<div class="flex flex-col basis-full px-3 sm:px-6 gap-3 sm:gap-12 max-w-4xl">
-  <form class="basis-full grid sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-12">
-
-  </form>
-  <div>
-    is logged in: {{isLoggedIn()}}
-  </div>
-  <div>
-    rooms: {{userRooms()}}
-  </div>
-</div>
+<form class="flex flex-col basis-full px-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
+  <ng-container *ngFor="let room of userRooms()">
+    <div class="collapse collapse-arrow bg-base-200">
+      <input type="radio" name="room-accordion" checked="room.isStatic"/>
+      <div class="collapse-title text-lg" [ngClass]="{'bg-primary': room.isStatic}">
+        Room {{room.roomId | uppercase}}
+      </div>
+      <div class="collapse-content text-sm">
+        <div class="flex flex-row justify-between items-center gap-1 mt-3">
+          <span>Room Type:</span>
+          <span>{{room.isStatic ? 'Static' : 'Dynamic'}}</span>
+        </div>
+        <div class="flex flex-row justify-between items-center gap-1 mt-3">
+          <span>Requires Join Code:</span>
+          <span>{{room.allowAnonymous ? 'No' : 'Yes'}}</span>
+        </div>
+        <div class="flex flex-row justify-between items-center gap-1 mt-3">
+          <span>Created:</span>
+          <span>{{ room.createdAt | timeago }}</span>
+        </div>
+        <div *ngIf="room.expires" class="flex flex-row justify-between items-center gap-1 mt-3">
+          <span>Expires:</span>
+          <span>{{ room.expires | timeago }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>
+        
+<ng-template #loginRequired>
+  <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']">You must log in before you can save custom broadcast settings.</div>
+</ng-template>

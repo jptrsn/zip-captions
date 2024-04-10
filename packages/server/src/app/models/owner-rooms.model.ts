@@ -25,6 +25,12 @@ export class OwnerRoom {
   isStatic?: boolean;
 
   @Prop({
+    type: Boolean,
+    default: false
+  })
+  allowAnonymous?: boolean;
+
+  @Prop({
     type: Date,
     required: true,
     default: Date.now

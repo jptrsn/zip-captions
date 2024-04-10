@@ -1,13 +1,13 @@
 import { Component, Signal, ViewEncapsulation, computed, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../models/app.model';
-import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../selectors/user.selector';
-import { SettingsActions, SettingsState } from '../models/settings.model';
-import { selectAppSettings } from '../../../selectors/settings.selector';
-import { UserActions } from '../../../actions/user.actions';
+import { AppState } from '../../../../models/app.model';
+import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
+import { SettingsActions, SettingsState } from '../../models/settings.model';
+import { selectAppSettings } from '../../../../selectors/settings.selector';
+import { UserActions } from '../../../../actions/user.actions';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { selectUserLoggedIn } from '../../../selectors/auth.selectors';
+import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 
 @Component({
   selector: 'app-user-saved-settings',

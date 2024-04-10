@@ -47,6 +47,7 @@ export class SessionService {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
 
+    // console.log(`get broadcast session for ${userId}`)
     let room: OwnerRoomDocument;
     let broadcast: BroadcastSessionDocument;
     // If we know what room user wants
@@ -55,17 +56,17 @@ export class SessionService {
       if (payload.myBroadcast) {
         // Hosting or re-joining an existing broadcast room
         room = await this.rooms.findOne({ userId, roomId: payload.room });
-        broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId })
+        broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
         room = await this.rooms.findOne({ roomId: payload.room});
-        broadcast = await this.broadcasts.findOne({roomId: payload.room})
+        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined })
       }
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
       // The user is hosting, do we have an existing room for them?
       room = await this.rooms.findOne({ userId });
-      broadcast = await this.broadcasts.findOne({ hostUserId: userId })
+      broadcast = await this.broadcasts.findOne({ hostUserId: userId, endTime: undefined })
     } else {
       // No room ID specified, not hosting - no op
       throw new Error(`No room to join as viewer`);
@@ -79,10 +80,11 @@ export class SessionService {
 
     // Create the broadcast if not found
     if (!broadcast) {
+      // console.log('creating new broadcast entry')
       broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date() })
-    } else if (broadcast.endTime && payload.myBroadcast) {
-      broadcast.endTime = undefined;
-      broadcast.startTime = new Date();
+    } else if (broadcast.hostClientId !== clientId) {
+      // console.log('updating broadcast host client ID')
+      broadcast.hostClientId = clientId;
     }
     await broadcast.save();
 
@@ -120,7 +122,7 @@ export class SessionService {
       if (connection.clientIds) {
         if (!connection.clientIds.find((val) => val === clientId)) {
           // New client ID for this user's connection
-          const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId }, { hostClientId: clientId });
+          const broadcasts = await this.broadcasts.updateMany({ hostUserId: connection.userId, endTime: undefined }, { hostClientId: clientId });
           if (broadcasts.matchedCount) {
             this.logger.log(`${broadcasts.matchedCount} broadcast host client IDs updated`)
           }
@@ -142,7 +144,7 @@ export class SessionService {
   }
 
   async findUserRooms(userId: string, query?: Partial<OwnerRoom>): Promise<OwnerRoom[]> {
-    return await this.rooms.find(query ? {...query, userId} : {userId})
+    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]])
   }
 
   async getUserFromClientId(clientId: string): Promise<string | undefined> {
