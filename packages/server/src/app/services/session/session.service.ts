@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
 import { CacheService } from '../cache/cache.service';
-import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate } from '../../models/owner-rooms.model';
+import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadcast-session.model';
 
 @Injectable()
@@ -186,6 +186,16 @@ export class SessionService {
       this._cacheClientUserIdMap(clientId, response.userId)
       return response.userId;
     }
+  }
+
+  getRoomIdsList(count?: number): RoomIdsList {
+    const length = count || 15;
+    const list: RoomIdsList = { static: [], dynamic: []};
+    for (let i = 0; i < length; i++) {
+      list.static.push(this.generateRandomRoomId(true));
+      list.dynamic.push(this.generateRandomRoomId(false));
+    }
+    return list;
   }
 
   private _validateRoomForUser(userId: string, room: OwnerRoom): boolean {

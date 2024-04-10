@@ -7,6 +7,11 @@ export interface OwnerRoomUpdate  {
   allowAnonymous: boolean;
 }
 
+export interface RoomIdsList {
+  static: string[];
+  dynamic: string[];
+}
+
 export type OwnerRoomDocument = HydratedDocument<OwnerRoom>;
 
 @Schema()

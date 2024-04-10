@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
@@ -13,7 +13,7 @@ import { CustomCacheInterceptor } from '../../interceptors/custom-cache.intercep
 import { CacheKey } from '@nestjs/cache-manager';
 import { CacheService } from '../../services/cache/cache.service';
 import { SessionService } from '../../services/session/session.service';
-import { OwnerRoom, OwnerRoomUpdate } from '../../models/owner-rooms.model';
+import { OwnerRoom, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
 
 @Controller('user')
 export class UserController {
@@ -73,6 +73,15 @@ export class UserController {
     this._validateParam(req, params);
     const rooms = await this.sessionService.findUserRooms(params.id)
     return rooms;
+  }
+
+  @Get('rooms/ids')
+  @NoCache()
+  async getAvailableRoomIds(@Query('count') count?: number): Promise<RoomIdsList> {
+    if (count > 100) {
+      throw new HttpException('Invalid count', HttpStatus.BAD_REQUEST);
+    }
+    return this.sessionService.getRoomIdsList(count);
   }
 
   @Post('profile/:id/rooms')
