@@ -195,9 +195,7 @@ export class SessionService {
       roomModel.allowAnonymous = room.allowAnonymous;
     }
 
-    console.log('saving room model', roomModel.toJSON())
     roomModel = await roomModel.save()
-    console.log('room saved, returning object')
     return roomModel.toObject();
   }
 

@@ -18,8 +18,10 @@ export class BroadcastSettingsComponent implements OnInit {
   public isLoggedIn: Signal<boolean | undefined>;
   public canAddRooms: Signal<boolean>;
   public modalOpen: WritableSignal<boolean> = signal(false);
-  public userRooms: Signal<UserRoom[] | undefined>;
+  public staticRooms: Signal<UserRoom[] | undefined>;
+  public dynamicRooms: Signal<UserRoom[] | undefined>;
 
+  private userRooms: Signal<UserRoom[] | undefined>;
   private userId$: Observable<string | undefined>;
   constructor(private store: Store<AppState>) {
     this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
@@ -31,6 +33,20 @@ export class BroadcastSettingsComponent implements OnInit {
       return true;
     })
     this.userId$ = this.store.select(selectUserId).pipe(takeUntilDestroyed());
+    this.staticRooms = computed(() => {
+      const rooms = this.userRooms()?.filter((room) => room.isStatic)
+      if (rooms && rooms.length) {
+        return rooms;
+      }
+      return undefined;
+    });
+    this.dynamicRooms = computed(() => {
+      const rooms = this.userRooms()?.filter((room) => !room.isStatic);
+      if (rooms && rooms.length) {
+        return rooms;
+      }
+      return undefined;
+    });
   }
 
   ngOnInit(): void {

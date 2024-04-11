@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { TranslateModule } from '@ngx-translate/core';
 import { TimeagoModule } from 'ngx-timeago';
-import { SharedUiModule } from 'shared-ui';
+import { Icons, SharedUiModule } from 'shared-ui';
 import { SettingsEffects } from '../../effects/settings.effects';
 import { UserEffects } from '../../effects/user.effects';
 import { SaveToServerDialogComponent } from '../../standalone/save-to-server-dialog/save-to-server-dialog.component';
@@ -24,6 +24,7 @@ import { UiSettingsComponent } from './components/ui-settings/ui-settings.compon
 import { UserSavedSettingsComponent } from './components/user-saved-settings/user-saved-settings.component';
 import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
 import { routes } from './settings.routes';
+import { NgIconsModule } from '@ng-icons/core';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,9 @@ import { routes } from './settings.routes';
     UnsavedChangesDialogComponent,
     SaveToServerDialogComponent,
     TimeagoModule,
+    NgIconsModule.withIcons({
+      ...Icons,
+    }),
   ],
 })
 export class SettingsModule {}
