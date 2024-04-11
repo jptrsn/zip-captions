@@ -1,31 +1,18 @@
-<form class="flex flex-col basis-full px-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
+<div class="flex flex-col basis-full py-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
+  <div class="flex flex-col gap-3 max-w-sm text-center mb-3" *ngIf="canAddRooms()">
+    <div class="text-lg">Static Broadcast ID</div>
+    <p>Claim your own set broadcast ID, so you can use the same address for every stream.</p>
+    <p>You can also allow set the stream to public, so anyone can view without a join code.</p>
+    <button class="btn btn-primary">Create a room</button>
+  </div>
+  <div class="text-lg text-center">
+    My Recent Broadcasts
+  </div>
   <ng-container *ngFor="let room of userRooms()">
-    <div class="collapse collapse-arrow bg-base-200">
-      <input type="radio" name="room-accordion" checked="room.isStatic"/>
-      <div class="collapse-title text-lg" [ngClass]="{'bg-primary': room.isStatic}">
-        Room {{room.roomId | uppercase}}
-      </div>
-      <div class="collapse-content text-sm">
-        <div class="flex flex-row justify-between items-center gap-1 mt-3">
-          <span>Room Type:</span>
-          <span>{{room.isStatic ? 'Static' : 'Dynamic'}}</span>
-        </div>
-        <div class="flex flex-row justify-between items-center gap-1 mt-3">
-          <span>Requires Join Code:</span>
-          <span>{{room.allowAnonymous ? 'No' : 'Yes'}}</span>
-        </div>
-        <div class="flex flex-row justify-between items-center gap-1 mt-3">
-          <span>Created:</span>
-          <span>{{ room.createdAt | timeago }}</span>
-        </div>
-        <div *ngIf="room.expires" class="flex flex-row justify-between items-center gap-1 mt-3">
-          <span>Expires:</span>
-          <span>{{ room.expires | timeago }}</span>
-        </div>
-      </div>
-    </div>
+    <app-room-card [room]="room"></app-room-card>
+    <div class="divider divider-secondary" *ngIf="room.isStatic"></div>
   </ng-container>
-</form>
+</div>
         
 <ng-template #loginRequired>
   <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']">You must log in before you can save custom broadcast settings.</div>

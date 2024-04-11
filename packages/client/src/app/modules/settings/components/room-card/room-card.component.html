@@ -1,0 +1,24 @@
+<div class="collapse collapse-arrow bg-base-100 shadow-lg">
+  <input type="checkbox" #expanded checked/>
+  <div class="collapse-title text-lg" [ngClass]="{'bg-primary': room.isStatic, 'bg-neutral': !room.isStatic}" (click)="expanded.checked = !expanded.checked">
+    Broadcast ID {{room.roomId | uppercase}}
+  </div>
+  <div class="collapse-content text-sm">
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Broadcast Type:</span>
+      <span>{{room.isStatic ? 'Static' : 'Randomized'}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Requires Join Code:</span>
+      <span>{{room.allowAnonymous ? 'No' : 'Yes'}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Created:</span>
+      <span>{{ room.createdAt | timeago }}</span>
+    </div>
+    <div *ngIf="room.expires" class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Expires:</span>
+      <span>{{ room.expires | timeago }}</span>
+    </div>
+  </div>
+</div>

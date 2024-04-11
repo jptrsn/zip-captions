@@ -15,20 +15,19 @@ import { selectUserId, selectUserRooms } from '../../../../selectors/user.select
 })
 export class BroadcastSettingsComponent implements OnInit {
   public isLoggedIn: Signal<boolean | undefined>;
-  public staticRooms: Signal<UserRoom[] | undefined>;
-  public dynamicRooms: Signal<UserRoom[] | undefined>;
 
+  public canAddRooms: Signal<boolean>;
   public userRooms: Signal<UserRoom[] | undefined>;
   private userId$: Observable<string | undefined>;
   constructor(private store: Store<AppState>) {
     this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
     this.userRooms = toSignal(this.store.select(selectUserRooms));
-    this.staticRooms = computed(() => 
-      this.userRooms()?.filter((room) => room.isStatic)
-    )
-    this.dynamicRooms = computed(() =>
-      this.userRooms()?.filter((room) => !room.isStatic)
-    )
+    this.canAddRooms = computed(() => {
+      if (this.userRooms()) {
+        return !this.userRooms()?.some((room) => room.isStatic);
+      }
+      return true;
+    })
     this.userId$ = this.store.select(selectUserId).pipe(takeUntilDestroyed());
   }
 

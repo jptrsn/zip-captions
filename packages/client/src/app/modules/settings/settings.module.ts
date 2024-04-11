@@ -23,6 +23,8 @@ import { UiSettingsComponent } from './components/ui-settings/ui-settings.compon
 import { UserSavedSettingsComponent } from './components/user-saved-settings/user-saved-settings.component';
 import { BroadcastSettingsComponent } from './components/broadcast-settings/broadcast-settings.component';
 import { TimeagoModule } from 'ngx-timeago';
+import { RoomCardComponent } from './components/room-card/room-card.component';
+import { EditRoomModalComponent } from './components/edit-room-modal/edit-room-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { TimeagoModule } from 'ngx-timeago';
     UiSettingsComponent,
     UserSavedSettingsComponent,
     BroadcastSettingsComponent,
+    RoomCardComponent,
+    EditRoomModalComponent,
   ],
   imports: [
     CommonModule,
