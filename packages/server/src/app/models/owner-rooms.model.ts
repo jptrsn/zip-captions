@@ -7,11 +7,6 @@ export interface OwnerRoomUpdate  {
   allowAnonymous: boolean;
 }
 
-export interface RoomIdsList {
-  static: string[];
-  dynamic: string[];
-}
-
 export type OwnerRoomDocument = HydratedDocument<OwnerRoom>;
 
 @Schema()
@@ -62,6 +57,6 @@ OwnerRoomSchema.pre<OwnerRoom>('validate', function (next) {
     const expires = new Date();
     expires.setDate(new Date().getDate() + 1);
     this.expires = expires;
-    return next();
   }
+  return next();
 })

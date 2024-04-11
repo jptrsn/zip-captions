@@ -1,19 +1,19 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { CacheKey } from '@nestjs/cache-manager';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { UserProfile } from './models/user.model';
-import { UserService } from './services/user.service';
-import { UiSettingsService } from './services/ui-settings.service';
-import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
 import { CustomCacheInterceptor } from '../../interceptors/custom-cache.interceptor';
-import { CacheKey } from '@nestjs/cache-manager';
+import { OwnerRoom, OwnerRoomUpdate } from '../../models/owner-rooms.model';
 import { CacheService } from '../../services/cache/cache.service';
 import { SessionService } from '../../services/session/session.service';
-import { OwnerRoom, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
+import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
+import { UserProfile } from './models/user.model';
+import { UiSettingsService } from './services/ui-settings.service';
+import { UserService } from './services/user.service';
 
 @Controller('user')
 export class UserController {
@@ -77,19 +77,25 @@ export class UserController {
 
   @Get('rooms/ids')
   @NoCache()
-  async getAvailableRoomIds(@Query('count') count?: number): Promise<RoomIdsList> {
-    if (count > 100) {
-      throw new HttpException('Invalid count', HttpStatus.BAD_REQUEST);
-    }
-    return this.sessionService.getRoomIdsList(count);
+  async getAvailableRoomIds(@Query('isStatic') isStatic?: boolean): Promise<string[]> {
+    return this.sessionService.getRoomIdsList(isStatic);
   }
 
   @Post('profile/:id/rooms')
   @UseGuards(JwtAuthGuard)
-  async saveRooms(@Req() req, @Param() params: { id: string, rooms: OwnerRoomUpdate[]}): Promise<OwnerRoom[]> {
+  async saveRooms(@Req() req, @Param() params: { id: string}, @Body() body: {rooms: OwnerRoomUpdate[]}): Promise<OwnerRoom[]> {
     this._validateParam(req, params);
-    const rooms = await this.sessionService.updateUserRooms(params.id, params.rooms);
+    const rooms = await this.sessionService.updateUserRooms(params.id, body.rooms);
     return rooms;
+  }
+
+  @Patch('profile/:id/rooms/:roomId')
+  @UseGuards(JwtAuthGuard)
+  async saveRoom(@Req() req, @Param() params: { id: string, roomId: string }, @Body() body: { room: OwnerRoomUpdate }): Promise<OwnerRoom> {
+    this._validateParam(req, params);
+    console.log('save room', body.room);
+    return await this.sessionService.updateUserRoom(params.id, body.room);
+    
   }
 
   @Post('profile/:id/settings')

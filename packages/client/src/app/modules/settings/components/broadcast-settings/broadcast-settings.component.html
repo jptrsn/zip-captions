@@ -1,10 +1,11 @@
 <div class="flex flex-col basis-full py-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
-  <div class="flex flex-col gap-3 max-w-sm text-center mb-3" *ngIf="canAddRooms()">
+  <div class="flex flex-col gap-3 max-w-sm text-center mb-3" *ngIf="canAddRooms() && !modalOpen()">
     <div class="text-lg">Static Broadcast ID</div>
     <p>Claim your own set broadcast ID, so you can use the same address for every stream.</p>
     <p>You can also allow set the stream to public, so anyone can view without a join code.</p>
-    <button class="btn btn-primary">Create a room</button>
+    <button class="btn btn-primary" (click)="openModal()">Create a room</button>
   </div>
+  <app-room-card [isStatic]="true" *ngIf="modalOpen()" class="mb-6" (editClosed)="hideModal()"></app-room-card>
   <div class="text-lg text-center">
     My Recent Broadcasts
   </div>
