@@ -25,6 +25,7 @@ import { UserSavedSettingsComponent } from './components/user-saved-settings/use
 import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lock-enabled.component';
 import { routes } from './settings.routes';
 import { NgIconsModule } from '@ng-icons/core';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { NgIconsModule } from '@ng-icons/core';
     NgIconsModule.withIcons({
       ...Icons,
     }),
+    ClipboardModule,
   ],
 })
 export class SettingsModule {}

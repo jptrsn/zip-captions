@@ -41,7 +41,12 @@ export class RoomCardComponent implements AfterViewInit {
         allowAnonymous: this.room.allowAnonymous
       });
       this.roomFormGroup.controls['roomId'].disable();
+      this.isStatic = this.room.isStatic;
     }
+  }
+
+  showEditMode(): void {
+    this.editMode.set(true);
   }
 
   closeEditMode(): void {
@@ -75,6 +80,7 @@ export class RoomCardComponent implements AfterViewInit {
             this.room = room;
           }
           this.loading.set(false);
+          this.roomFormGroup.enable();
           this.closeEditMode();
         },
         error: () => {
