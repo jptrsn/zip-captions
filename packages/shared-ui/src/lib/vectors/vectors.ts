@@ -24,6 +24,8 @@ export {
   heroArrowLongDown,
   heroArrowLongUp,
   heroQuestionMarkCircle,
+  heroLockClosed,
+  heroLockOpen,
 } from '@ng-icons/heroicons/outline';
 
 export {

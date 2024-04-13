@@ -1,0 +1,67 @@
+<div *ngIf="room && !editMode(); else editRoom" class="collapse collapse-arrow bg-base-100 shadow-lg">
+  <input type="checkbox" #expanded [checked]="room.isStatic"/>
+  <div class="collapse-title inline-flex items-center gap-6 justify-between" [ngClass]="{'bg-primary': room.isStatic, 'bg-neutral': !room.isStatic}" (click)="expanded.checked = !expanded.checked">
+    <span class="text-lg">Broadcast ID {{room.roomId | uppercase}}</span>
+    <div *ngIf="room.allowAnonymous" class="badge shadow-md badge-accent p-3">
+      <ng-icon name="heroLockOpen"></ng-icon>
+    </div>
+    <div *ngIf="!room.allowAnonymous" class="badge shadow-md badge-secondary p-3">
+      <ng-icon name="heroLockClosed"></ng-icon>
+    </div>
+    
+  </div>
+  <div class="collapse-content text-sm">
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Broadcast Type:</span>
+      <span>{{room.isStatic ? 'Static' : 'Randomized'}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Authentication:</span>
+      <span>{{room.allowAnonymous ? 'Anonymous' : 'Join Code'}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Created:</span>
+      <span>{{ room.createdAt | timeago }}</span>
+    </div>
+    <div *ngIf="room.expires" class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span>Expires:</span>
+      <span>{{ room.expires | timeago }}</span>
+    </div>
+  </div>
+</div>
+
+<ng-template #editRoom>
+  <form [formGroup]="roomFormGroup" class="collapse collapse-open bg-base-100 shadow-lg">
+    <div class="inline-flex justify-between items-center p-3 gap-6" [ngClass]="{'bg-primary': isStatic}">
+      <div class="inline-flex flex-col">
+        <span class="text-xs" *ngIf="!room">Create a new <span *ngIf="isStatic">static</span></span>
+        <span class="text-lg">Broadcast ID</span>
+      </div>
+      
+      <select class="select" formControlName="roomId" *ngIf="roomIdsList() as ids">
+        <option *ngFor="let id of ids" [value]="id">{{id | uppercase}}</option>
+      </select>
+    </div>
+    <div class="collapse-content text-sm">
+      <p *ngIf="isStatic" class="text-warning">
+        The broadcast ID cannot be changed after saving.
+      </p>
+      <div class="flex flex-row justify-between items-center gap-1 mt-3">
+        <span>Broadcast Type:</span>
+        <span>{{isStatic ? 'Static' : 'Randomized'}}</span>
+      </div>
+      <div class="flex flex-row justify-between items-center gap-1">
+        <span>Authentication</span>
+        <select class="select" formControlName="allowAnonymous">
+          <option [value]="false">Require Join Code</option>
+          <option [value]="true">Allow Anonymous</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-3 flex items-center justify-end gap-6">
+      <button type="button" class="btn btn-sm btn-accent" *ngIf="room && room.roomId" (click)="deleteRoom(room.roomId)" [disabled]="loading()">Delete</button>
+      <button type="button" class="btn btn-sm" translate (click)="closeEditMode()" [disabled]="loading()">BUTTONS.cancel</button>
+      <button type="submit" class="btn btn-sm btn-primary" translate (click)="saveAndClose()" [disabled]="loading()">BUTTONS.saveAndClose</button>
+    </div>
+  </form>
+</ng-template>

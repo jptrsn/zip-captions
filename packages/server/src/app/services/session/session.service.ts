@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
 import { Model } from 'mongoose';
-import { CacheService } from '../cache/cache.service';
-import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate, RoomIdsList } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionDocument } from '../../models/broadcast-session.model';
+import { OwnerRoom, OwnerRoomDocument, OwnerRoomUpdate } from '../../models/owner-rooms.model';
+import { SocketConnection, SocketConnectionDocument } from '../../models/socket-connection.model';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class SessionService {
@@ -176,6 +176,29 @@ export class SessionService {
     return updates;
   }
 
+  async updateUserRoom(userId: string, room: OwnerRoomUpdate): Promise<OwnerRoom> {
+    const broadcastingRooms = await this.broadcasts.find({roomId: room.roomId, endTime: undefined })
+    if (broadcastingRooms.length) {
+      throw new HttpException(`Unable to update room with broadcast in progress.`, HttpStatus.CONFLICT);
+    }
+
+    let roomModel: OwnerRoomDocument = await this.rooms.findOne({userId, roomId: room.roomId});
+    if (!roomModel) {
+      roomModel = new this.rooms({
+        userId,
+        roomId: room.roomId,
+        isStatic: room.isStatic,
+        allowAnonymous: room.allowAnonymous
+      })
+    } else {
+      roomModel.isStatic = room.isStatic;
+      roomModel.allowAnonymous = room.allowAnonymous;
+    }
+
+    roomModel = await roomModel.save()
+    return roomModel.toObject();
+  }
+
   async getUserFromClientId(clientId: string): Promise<string | undefined> {
     const userId = await this._getClientUserId(clientId);
     if (userId) {
@@ -188,12 +211,10 @@ export class SessionService {
     }
   }
 
-  getRoomIdsList(count?: number): RoomIdsList {
-    const length = count || 15;
-    const list: RoomIdsList = { static: [], dynamic: []};
-    for (let i = 0; i < length; i++) {
-      list.static.push(this.generateRandomRoomId(true));
-      list.dynamic.push(this.generateRandomRoomId(false));
+  getRoomIdsList(isStatic?: boolean): string[] {
+    const list: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      list.push(this.generateRandomRoomId(isStatic))
     }
     return list;
   }
