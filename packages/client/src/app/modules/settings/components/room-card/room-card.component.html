@@ -27,12 +27,24 @@
       <span>Expires:</span>
       <span>{{ room.expires | timeago }}</span>
     </div>
+    <div class="flex flex-row justify-end items-center gap-1 mt-3">
+      <button class="btn btn-secondary btn-sm" (click)="showEditMode()">
+        <ng-icon name="heroPencilSquare"></ng-icon>
+        <span>Edit</span>
+      </button>
+    </div>
+    <div class="mt-3 -mb-4 flex flex-row justify-center">
+      <span>Direct link to this broadcast:</span>
+    </div>
+  </div>
+  <div class="flex flex-row justify-center items-center p-1">
+    <div class="text-xs tooltip tooltip-secondary" ngxClipboard [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'Click to copy.'">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
   </div>
 </div>
 
 <ng-template #editRoom>
   <form [formGroup]="roomFormGroup" class="collapse collapse-open bg-base-100 shadow-lg">
-    <div class="inline-flex justify-between items-center p-3 gap-6" [ngClass]="{'bg-primary': isStatic}">
+    <div class="inline-flex justify-between items-center p-3 gap-6" [ngClass]="{'bg-primary': isStatic || room && room.isStatic}">
       <div class="inline-flex flex-col">
         <span class="text-xs" *ngIf="!room">Create a new <span *ngIf="isStatic">static</span></span>
         <span class="text-lg">Broadcast ID</span>
@@ -41,9 +53,11 @@
       <select class="select" formControlName="roomId" *ngIf="roomIdsList() as ids">
         <option *ngFor="let id of ids" [value]="id">{{id | uppercase}}</option>
       </select>
+      <span class="text-lg" *ngIf="room && room.roomId">{{room.roomId | uppercase}}</span>
+
     </div>
     <div class="collapse-content text-sm">
-      <p *ngIf="isStatic" class="text-warning">
+      <p *ngIf="isStatic" class="text-warning mt-3">
         The broadcast ID cannot be changed after saving.
       </p>
       <div class="flex flex-row justify-between items-center gap-1 mt-3">
