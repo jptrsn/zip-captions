@@ -1,0 +1,13 @@
+<div class="form-row mb-6 sm:mb-12" *ngIf="!(isMobileDevice() || isIncompatibleBrowser()); else broadcastingNotAvailable">
+  <button class="w-64 btn btn-primary btn-lg" [disabled]="disabled" (click)="createRoom()" translate>STREAM.createBroadcast</button>
+  <div class="flex basis-1/2" translate>
+    STREAM.broadcastExplanantion
+  </div>
+</div>
+
+<ng-template #broadcastingNotAvailable>
+  <ng-container *ngIf="acceptedPeerConnections()">
+    <div *ngIf="isMobileDevice()" class="text-warning text-center" translate>ERRORS.mobileBroadcast</div>
+    <div *ngIf="isIncompatibleBrowser()" class="text-warning text-center" translate>ERRORS.unsupportedBrowserBroadcast</div>
+  </ng-container>
+</ng-template>

@@ -1,9 +1,9 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, Signal, ViewChild, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, take } from 'rxjs';
+import { Observable, filter, map, startWith, take } from 'rxjs';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
@@ -38,7 +38,15 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
     joinCode: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateJoinCode(ctrl)])
-  })
+  });
+
+  public tabsControl: FormControl;
+  public tabIndex: Signal<number>;
+
+  public tabNames = [
+    'view',
+    'broadcast',
+  ];
 
   constructor(private store: Store<AppState>,
               private fb: FormBuilder,
@@ -67,6 +75,9 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
       }
     }, { allowSignalWrites: true});
 
+    this.tabsControl = this.fb.control(0)
+    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(takeUntilDestroyed(), startWith(0))) as Signal<number>;
+
   }
 
   ngOnDestroy(): void {
@@ -86,10 +97,6 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     const isBusy = this.isBroadcasting();
     console.log('isBusy', isBusy)
     return !isBusy;
-  }
-
-  createRoom() {
-    this.store.dispatch(PeerActions.createBroadcastRoom());
   }
 
   joinSession(): boolean {

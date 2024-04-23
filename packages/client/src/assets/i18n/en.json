@@ -269,6 +269,10 @@
     }
   },
   "STREAM": {
+    "TABS": {
+      "broadcast": "Share",
+      "view": "Watch"
+    },
     "serverStatus": "Broadcast Server",
     "peerStatus": "Peer Connections",
     "sessionId": "Session ID",
