@@ -1,19 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from "socket.io";
-import { CacheService } from '../services/cache/cache.service';
-import { SessionService } from '../services/session/session.service';
 import { BroadcastSession } from '../models/broadcast-session.model';
+import { SessionService } from '../services/session/session.service';
 
 @WebSocketGateway({ cors: true })
 export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SessionGateway.name);
-  private clientToUserIdMap: Map<string, string> = new Map();
-  private clientBroadcastIdMap: Map<string, string> = new Map();
   @WebSocketServer() server: Server;
-
-  constructor(private cache: CacheService,
-              private sessionService: SessionService) { }
+  constructor(private sessionService: SessionService) { }
   
   // Gateway connection handler
   async handleConnection(client: Socket): Promise<void> {
@@ -100,7 +95,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     if (!payload.id) {
       client.send({message: 'set user id', id: userId})
     }
-    const userRooms = await this.sessionService.findUserRooms(userId, { isStatic: true });
+    const userRooms = await this.sessionService.findUserRooms(userId);
     if (userRooms.length) {
       client.send({message: 'set rooms', rooms: userRooms })
     }

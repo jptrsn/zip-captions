@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { PeerActions } from '../actions/peer.actions';
+import { UserRoom } from './user.reducer';
 
 export const peerFeatureKey = 'peer';
 
@@ -17,6 +18,7 @@ export interface PeerState {
   isViewingBroadcast?: boolean;
   hostOnline?: boolean;
   error?: string;
+  myUserRooms?: UserRoom[]; // This is different from the user state property, as this is via socket connection rather than http
 }
 
 export const defaultPeerState: PeerState = {
@@ -61,5 +63,8 @@ export const peerReducers = createReducer(
   on(PeerActions.updateConnectedPeerCount, (state: PeerState, action: { count: number}) => ({...state, peerConnectionCount: action.count})),
 
   on(PeerActions.setBroadcastPausedState, (state: PeerState, action: { paused: boolean}) => ({...state, broadcastPaused: action.paused})),
+
+  on(PeerActions.setBroadcastRooms, (state: PeerState, action: { rooms: UserRoom[] }) => ({...state, myUserRooms: action.rooms })),
+  on(PeerActions.clearBroadcastRooms, (state: PeerState) => ({...state, myUserRooms: undefined })),
 );
 

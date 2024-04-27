@@ -199,6 +199,12 @@ export class PeerService {
           }
           break;
         }
+        case 'set rooms': {
+          if (data.rooms) {
+            this.store.dispatch(PeerActions.setBroadcastRooms(data))
+          }
+          break;
+        }
         default: {
           console.warn('UNHANDLED MESSAGE!!!', data);
           break;
@@ -220,18 +226,19 @@ export class PeerService {
     return sub.asObservable().pipe(timeout(500), take(1));
   }
 
-  joinRoom(data?: { room: string, myBroadcast?: boolean }): Observable<string> {
-    this.myBroadcast = !(data?.room); // If we do not have a room ID, we are creating a broadcast
-    if (!data?.room) {
+  joinRoom(data: { roomId?: string, myBroadcast?: boolean, allowAnonymous?: boolean }): Observable<string> {
+    this.myBroadcast = !(data?.roomId) || !!data.myBroadcast; // If we do not have a room ID, we are creating a broadcast
+    if (!data.roomId) {
       const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
       if (fromCache?.room) {
-        data = { room: fromCache.room, myBroadcast: fromCache?.myBroadcast }
+        data = { roomId: fromCache.room, myBroadcast: fromCache?.myBroadcast }
       }
       if (fromCache?.myBroadcast !== undefined) {
         this.myBroadcast = fromCache.myBroadcast;
       }
     }
-    if (this.myBroadcast) {
+    console.log('join room', data)
+    if (this.myBroadcast && !data.allowAnonymous) {
       const fromCache = this.cache.load<{joinCode: string}>('joinCode');
       let joinCode: string;
       if (fromCache) {
@@ -242,7 +249,8 @@ export class PeerService {
       }
       this.store.dispatch(PeerActions.setJoinCode({joinCode}));
     }
-    this.socket.volatile().emit('join', { room: data?.room, myBroadcast: this.myBroadcast });
+    // TODO: Allow no join code by dispatching anonymous state
+    this.socket.volatile().emit('join', { room: data?.roomId, myBroadcast: this.myBroadcast });
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 

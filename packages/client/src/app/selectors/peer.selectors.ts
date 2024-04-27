@@ -1,3 +1,5 @@
+
+
 import { createSelector } from '@ngrx/store';
 import { AppState } from '../models/app.model';
 import { PeerState } from '../reducers/peer.reducer';
@@ -24,7 +26,7 @@ export const selectPeerError = createSelector(
   (state) => state.error
 )
 
-export const selectMyUserId = createSelector(
+export const selectMyPeerId = createSelector(
   selectPeerState,
   (state) => state.id
 )
@@ -67,4 +69,9 @@ export const selectBroadcastEndedTimestamp = createSelector(
 export const selectBroadcastPaused = createSelector(
   selectPeerState,
   (state) => state.broadcastPaused
+)
+
+export const selectMyBroadcastRooms = createSelector(
+  selectPeerState,
+  (state) => state.myUserRooms
 )

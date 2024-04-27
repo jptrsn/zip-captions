@@ -44,8 +44,8 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   public tabIndex: Signal<number>;
 
   public tabNames = [
-    'view',
     'broadcast',
+    'view',
   ];
 
   constructor(private store: Store<AppState>,
@@ -75,6 +75,9 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
       }
     }, { allowSignalWrites: true});
 
+    if (this.isMobileDevice()) {
+      this.tabNames = ['view']
+    }
     this.tabsControl = this.fb.control(0)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(takeUntilDestroyed(), startWith(0))) as Signal<number>;
 
