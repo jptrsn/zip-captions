@@ -228,7 +228,7 @@ export class PeerService {
 
   joinRoom(data: { roomId?: string, myBroadcast?: boolean, allowAnonymous?: boolean }): Observable<string> {
     this.myBroadcast = !(data?.roomId) || !!data.myBroadcast; // If we do not have a room ID, we are creating a broadcast
-    if (!data.roomId) {
+    if (!data.roomId && !data.myBroadcast) {
       const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
       if (fromCache?.room) {
         data = { roomId: fromCache.room, myBroadcast: fromCache?.myBroadcast }
@@ -250,7 +250,7 @@ export class PeerService {
       this.store.dispatch(PeerActions.setJoinCode({joinCode}));
     }
     // TODO: Allow no join code by dispatching anonymous state
-    this.socket.volatile().emit('join', { room: data?.roomId, myBroadcast: this.myBroadcast });
+    this.socket.volatile().emit('join', { room: data?.roomId, myBroadcast: this.myBroadcast, allowAnonymous: data.allowAnonymous });
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 

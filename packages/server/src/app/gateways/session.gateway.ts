@@ -41,8 +41,8 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   }
 
   @SubscribeMessage('join')
-  async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean}): Promise<void> {
-    
+  async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<void> {
+    console.log('join room', payload)
     const broadcast = await this.sessionService.getBroadcastSession(client.id, payload);
     const isHosting = broadcast.hostClientId === client.id;
     // Check if the broadcast is over
@@ -61,7 +61,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
-      console.log('we are the host, look to reconnect')
+      console.log('we are the host, look to reconnect', room)
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
       const clients: string[] = [];
       console.log(`room has ${clientIds.length} other clients connected`)

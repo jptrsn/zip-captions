@@ -65,8 +65,10 @@ export class SessionService {
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
       // The user is hosting, do we have an existing room for them?
-      room = await this.rooms.findOne({ userId });
       broadcast = await this.broadcasts.findOne({ hostUserId: userId, endTime: undefined })
+      if (broadcast) {
+        room = await this.rooms.findOne({ userId });
+      }
     } else {
       // No room ID specified, not hosting - no op
       throw new Error(`No room to join as viewer`);
