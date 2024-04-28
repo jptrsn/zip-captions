@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../models/app.model';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PeerActions } from '../../../../actions/peer.actions';
-import { Router, ActivatedRoute } from '@angular/router';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-join-broadcast',
@@ -17,8 +14,7 @@ export class JoinBroadcastComponent {
     room: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
   });
 
-  constructor(private store: Store<AppState>,
-              private fb: FormBuilder,
+  constructor(private fb: FormBuilder,
               private router: Router,
               private route: ActivatedRoute) {
     this._injectDashIfRequired();
