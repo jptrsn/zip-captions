@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { PeerActions } from '../actions/peer.actions';
+import { UserRoom } from './user.reducer';
 
 export const peerFeatureKey = 'peer';
 
@@ -14,9 +15,11 @@ export interface PeerState {
   broadcastEndedTimestamp?: number;
   broadcastPaused?: boolean;
   joinCode?: string;
+  allowAnonymous?: boolean;
   isViewingBroadcast?: boolean;
   hostOnline?: boolean;
   error?: string;
+  myUserRooms?: UserRoom[]; // This is different from the user state property, as this is via socket connection rather than http
 }
 
 export const defaultPeerState: PeerState = {
@@ -38,6 +41,7 @@ export const peerReducers = createReducer(
   on(PeerActions.peerServerDisconnected, (state: PeerState) => ({...state, peerConnected: false})),
   on(PeerActions.peerServerError, (state: PeerState, action: { error: string}) => ({...state, peerConnected: false, error: action.error })),
 
+  on(PeerActions.createBroadcastRoom, (state: PeerState, action: {roomId?: string, myBroadcast?: boolean, allowAnonymous: boolean }) => ({...state, allowAnonymous: action.allowAnonymous })),
   on(PeerActions.createBroadcastRoomSuccess, (state: PeerState, action: { id: string}) => ({...state, roomId: action.id, isBroadcasting: true})),
   on(PeerActions.createBroadcastRoomFailure, (state: PeerState, action: { error: string}) => ({...state, error: action.error})),
 
@@ -61,5 +65,8 @@ export const peerReducers = createReducer(
   on(PeerActions.updateConnectedPeerCount, (state: PeerState, action: { count: number}) => ({...state, peerConnectionCount: action.count})),
 
   on(PeerActions.setBroadcastPausedState, (state: PeerState, action: { paused: boolean}) => ({...state, broadcastPaused: action.paused})),
+
+  on(PeerActions.setBroadcastRooms, (state: PeerState, action: { rooms: UserRoom[] }) => ({...state, myUserRooms: action.rooms })),
+  on(PeerActions.clearBroadcastRooms, (state: PeerState) => ({...state, myUserRooms: undefined })),
 );
 

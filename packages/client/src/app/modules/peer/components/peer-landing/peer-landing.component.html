@@ -36,8 +36,33 @@
     <app-broadcast-room class="flex basis-full overflow-y-hidden" *ngIf="isBroadcasting()"></app-broadcast-room>
     <app-stream-captions class="flex basis-full overflow-y-hidden" *ngIf="!isBroadcasting() && recognitionActive()"></app-stream-captions>
   </ng-container>
-
+  
   <ng-template #landing>
+    <div class="flex flex-col basis-full items-center justify-start w-full overflow-hidden bg-base-300">
+      <!-- Tabs header -->
+      <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
+        <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="'STREAM.TABS.' + name | translate" [value]="i">
+      </form>
+
+      <!-- Tabs body -->
+      <div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabNames[tabIndex()]">
+        <app-start-broadcast 
+          [acceptedPeerConnections]="acceptedPeerConnections" 
+          [isMobileDevice]="isMobileDevice" 
+          [isIncompatibleBrowser]="isIncompatibleBrowser"
+          [disabled]="!!(serverOffline() || serverError())"
+          *ngSwitchCase="'broadcast'">
+        </app-start-broadcast>
+        <app-join-broadcast 
+          [disabled]="!!(serverOffline() || serverError())"
+          *ngSwitchCase="'view'">
+        </app-join-broadcast>
+      </div>
+    </div>
+    
+  </ng-template>
+
+  <ng-template #oldLandingPage>
     <div class="flex basis-full items-stretch justify-center overflow-y-auto">
       <div class="max-w-4xl p-3">
         
@@ -48,19 +73,7 @@
           </div>
 
           <div class="collapse-content">
-            <div class="form-row mb-6 sm:mb-12" *ngIf="!(isMobileDevice() || isIncompatibleBrowser()); else broadcastingNotAvailable">
-              <button class="w-64 btn btn-primary btn-lg" [disabled]="serverOffline() || serverError()" (click)="createRoom()" translate>STREAM.createBroadcast</button>
-              <div class="flex basis-1/2" translate>
-                STREAM.broadcastExplanantion
-              </div>
-            </div>
-    
-            <ng-template #broadcastingNotAvailable>
-              <ng-container *ngIf="acceptedPeerConnections()">
-                <div *ngIf="isMobileDevice()" class="text-warning text-center" translate>ERRORS.mobileBroadcast</div>
-                <div *ngIf="isIncompatibleBrowser()" class="text-warning text-center" translate>ERRORS.unsupportedBrowserBroadcast</div>
-              </ng-container>
-            </ng-template>
+            
         
             <form class="flex flex-col sm:gap-12 gap-6" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
               <div class="sm:hidden divider divider-vertical uppercase">{{'STREAM.joinSession' | translate }}</div>

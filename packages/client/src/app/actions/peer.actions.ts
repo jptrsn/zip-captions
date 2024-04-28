@@ -1,4 +1,5 @@
 import { createAction, props } from "@ngrx/store";
+import { UserRoom } from "../reducers/user.reducer";
 
 export const PeerActions = {
   connectSocketServer: createAction('[Peer] Connect Socket Server'),
@@ -12,7 +13,7 @@ export const PeerActions = {
   socketServerMessageReceived: createAction('[Peer] Server Message Received', props<{data: any}>()),
   socketServerError: createAction('[Peer] Socket Server Error Recieved', props<{error: string}>()),
 
-  createBroadcastRoom: createAction('[Peer] Create Broadcast Room'),
+  createBroadcastRoom: createAction('[Peer] Create Broadcast Room', props<{ roomId?: string, myBroadcast?: boolean, allowAnonymous: boolean}>()),
   createBroadcastRoomSuccess: createAction('[Peer] Create Broadcast Room Success', props<{id:string}>()),
   createBroadcastRoomFailure: createAction('[Peer] Create Broadcast Room Failure', props<{error: string}>()),
 
@@ -57,4 +58,7 @@ export const PeerActions = {
   updateConnectedPeerCount: createAction('[Peer] Update Connected Peer Count', props<{count: number}>()),
 
   setBroadcastPausedState: createAction('[Peer] Set Broadcast Paused State', props<{paused: boolean}>()),
+  
+  setBroadcastRooms: createAction('[Peer] Set Broadcast Rooms', props<{ rooms: UserRoom[] }>()),
+  clearBroadcastRooms: createAction('[Peer] Clear Broadcast Rooms'),
 }

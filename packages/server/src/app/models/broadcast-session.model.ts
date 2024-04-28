@@ -35,6 +35,11 @@ export class BroadcastSession {
   })
   endTime?: Date;
 
+  @Prop({
+    type: Boolean
+  })
+  allowAnonymous?: boolean;
+
 }
 
 export const BroadcastSessionSchema = SchemaFactory.createForClass(BroadcastSession)
