@@ -220,7 +220,7 @@ export class PeerService {
   }
 
   joinRoom(data: { roomId?: string, myBroadcast?: boolean, allowAnonymous?: boolean }): Observable<string> {
-    this.myBroadcast = !(data?.roomId) || !!data.myBroadcast; // If we do not have a room ID, we are creating a broadcast
+    this.myBroadcast = data?.myBroadcast ?? !(data?.roomId); // If we do not have a room ID, we are creating a broadcast
     if (!data.roomId && !data.myBroadcast) {
       const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
       if (fromCache?.room) {
