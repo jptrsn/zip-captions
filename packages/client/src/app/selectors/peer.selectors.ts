@@ -75,3 +75,8 @@ export const selectMyBroadcastRooms = createSelector(
   selectPeerState,
   (state) => state.myUserRooms
 )
+
+export const selectAllowAnonymous = createSelector(
+  selectPeerState,
+  (state) => state.allowAnonymous
+)

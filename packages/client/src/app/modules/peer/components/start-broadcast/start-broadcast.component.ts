@@ -78,7 +78,7 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
       allowAnonymous: !this.formGroup.controls['useAuthentication'].value,
     }
     if (this.formGroup.controls['room'].value) {
-      console.log('room id', this.formGroup.controls['room'].value)
+      console.log('room', this.formGroup.controls['room'].value)
       request.roomId = this.formGroup.controls['room'].value.roomId;
     }
     this.store.dispatch(PeerActions.createBroadcastRoom(request));

@@ -13,7 +13,7 @@ export const PeerActions = {
   socketServerMessageReceived: createAction('[Peer] Server Message Received', props<{data: any}>()),
   socketServerError: createAction('[Peer] Socket Server Error Recieved', props<{error: string}>()),
 
-  createBroadcastRoom: createAction('[Peer] Create Broadcast Room', props<{ roomId?: string, myBrodcast?: boolean, allowAnonymous: boolean}>()),
+  createBroadcastRoom: createAction('[Peer] Create Broadcast Room', props<{ roomId?: string, myBroadcast?: boolean, allowAnonymous: boolean}>()),
   createBroadcastRoomSuccess: createAction('[Peer] Create Broadcast Room Success', props<{id:string}>()),
   createBroadcastRoomFailure: createAction('[Peer] Create Broadcast Room Failure', props<{error: string}>()),
 

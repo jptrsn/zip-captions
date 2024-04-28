@@ -41,7 +41,7 @@ export class SessionService {
     }
   }
 
-  async getBroadcastSession(clientId: string, payload: { room?: string, myBroadcast?: boolean}): Promise<BroadcastSession> {
+  async getBroadcastSession(clientId: string, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<BroadcastSession> {
     const userId = await this._getClientUserId(clientId);
     if (!userId) {
       throw new Error(`Cannot determine client user ${clientId}`);
@@ -65,7 +65,7 @@ export class SessionService {
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
       // The user is hosting, do we have an existing room for them?
-      broadcast = await this.broadcasts.findOne({ hostUserId: userId, endTime: undefined })
+      broadcast = await this.broadcasts.findOne({ hostUserId: userId, endTime: undefined, allowAnonymous: payload.allowAnonymous })
       if (broadcast) {
         room = await this.rooms.findOne({ userId });
       }
@@ -83,10 +83,11 @@ export class SessionService {
     // Create the broadcast if not found
     if (!broadcast) {
       // console.log('creating new broadcast entry')
-      broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date() })
+      broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date(), allowAnonymous: payload.allowAnonymous })
     } else if (broadcast.hostClientId !== clientId) {
       // console.log('updating broadcast host client ID')
       broadcast.hostClientId = clientId;
+      broadcast.allowAnonymous = payload.allowAnonymous;
     }
     await broadcast.save();
 

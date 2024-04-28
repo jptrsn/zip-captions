@@ -15,6 +15,7 @@ export interface PeerState {
   broadcastEndedTimestamp?: number;
   broadcastPaused?: boolean;
   joinCode?: string;
+  allowAnonymous?: boolean;
   isViewingBroadcast?: boolean;
   hostOnline?: boolean;
   error?: string;
@@ -40,6 +41,7 @@ export const peerReducers = createReducer(
   on(PeerActions.peerServerDisconnected, (state: PeerState) => ({...state, peerConnected: false})),
   on(PeerActions.peerServerError, (state: PeerState, action: { error: string}) => ({...state, peerConnected: false, error: action.error })),
 
+  on(PeerActions.createBroadcastRoom, (state: PeerState, action: {roomId?: string, myBroadcast?: boolean, allowAnonymous: boolean }) => ({...state, allowAnonymous: action.allowAnonymous })),
   on(PeerActions.createBroadcastRoomSuccess, (state: PeerState, action: { id: string}) => ({...state, roomId: action.id, isBroadcasting: true})),
   on(PeerActions.createBroadcastRoomFailure, (state: PeerState, action: { error: string}) => ({...state, error: action.error})),
 

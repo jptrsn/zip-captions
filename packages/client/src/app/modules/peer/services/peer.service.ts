@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, 
 import { PeerActions } from '../../../actions/peer.actions';
 import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
-import { selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
+import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
 import { selectUserId } from '../../../selectors/user.selector';
 
@@ -31,6 +31,7 @@ export class PeerService {
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private sessionJoinCode: Signal<string | undefined>;
+  private allowAnonymous: Signal<boolean | undefined>;
   private socket!: Socket;
   private peer?: Peer;
   private peerMap: Map<string, DataConnection> = new Map();
@@ -70,32 +71,24 @@ export class PeerService {
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
     this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
-
+    this.allowAnonymous = toSignal(this.store.select(selectAllowAnonymous));
     this.userId = toSignal(this.store.select(selectUserId))
 
     effect(() => {
       if (this.userId()) {
-        console.log('authed user ID')
         this.myId = this.userId();
         this.cache.save({key: 'userId', data: { id: this.myId }, expirationMins: this.CACHE_PERSIST_MINS})
       }
     })
 
-    // const cached = this.cache.load<{id: string}>('userId')
-    // if (cached?.id) {
-    //   this.myId = cached.id;
-    // }
-    
   }
 
   connectSocket(): Observable<string> {
     console.log('connect socket')
-    // console.log(`Socket Server: ${this.SOCKET_CONFIG.url}`);
-    // console.log(`Peer connect opts`, this.CONNECT_OPTS)
     
     if (this.socket) {
       throw new Error("Socket already exists")
-      this.socket.removeAllListeners();
+      // this.socket.removeAllListeners();
     }
     this.socket = new Socket(this.SOCKET_CONFIG);
     
@@ -126,7 +119,7 @@ export class PeerService {
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
-            console.log('nexting room id', data.room);
+            // console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
           }
@@ -237,7 +230,7 @@ export class PeerService {
         this.myBroadcast = fromCache.myBroadcast;
       }
     }
-    console.log('join room', data)
+
     if (this.myBroadcast && !data.allowAnonymous) {
       const fromCache = this.cache.load<{joinCode: string}>('joinCode');
       let joinCode: string;
@@ -423,10 +416,14 @@ export class PeerService {
     });
     
     connection.on('open', () => {
-      console.log('peer connection opened', this.myBroadcast);
+      console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
-        console.log('must validate join code', this.sessionJoinCode());
-        connection.send({request: 'joinCode'})
+        console.log('must validate viewer connection', this.sessionJoinCode());
+        if (this.allowAnonymous()) {
+          connection.send({response: 'valid'})
+        } else {
+          connection.send({request: 'joinCode'})
+        }
       }
     });
     
