@@ -47,8 +47,8 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     const isHosting = payload.myBroadcast && broadcast.hostClientId === client.id;
     // Check if the broadcast is over
     if (broadcast.endTime) {
-      // this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
-      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime.getTime()});
+      this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
+      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime.getTime(), allowAnonymous: broadcast.allowAnonymous });
       return;
     }
     

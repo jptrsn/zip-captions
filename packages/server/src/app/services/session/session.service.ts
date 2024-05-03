@@ -59,9 +59,17 @@ export class SessionService {
         broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
-        console.log('joining as viewer', userId, payload.room)
+        console.log('joining as viewer', userId, payload.room);
         room = await this.rooms.findOne({ roomId: payload.room });
-        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined })
+        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
+        if (!broadcast) {
+          console.log('searching for ended broadcast')
+          broadcast = await this.broadcasts.findOne({roomId: payload.room}, null, { sort: { endTime: -1 } });
+        }
+        if (!broadcast) {
+          throw new HttpException('Broadcast not found', HttpStatus.NOT_FOUND)
+        }
+        return broadcast.toObject();
       }
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
@@ -100,7 +108,7 @@ export class SessionService {
     if (!userId) {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
-    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room});
+    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
     broadcast.endTime = new Date();
     await broadcast.save();
     return broadcast.toObject();

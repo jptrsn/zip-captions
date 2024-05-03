@@ -185,8 +185,9 @@ export class PeerService {
         }
         case 'broadcast expired':
         case 'broadcast ended': {
+          console.log('broadcast ended', data)
           if (data.expiredAt) {
-            this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt}))
+            this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt, allowAnonymous: data.allowAnonymous}))
           }
           break;
         }

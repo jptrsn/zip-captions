@@ -28,7 +28,7 @@ export const PeerActions = {
   setJoinCode: createAction('[Peer] Set Join Code', props<{joinCode: string}>()),
   clearJoinCode: createAction('[Peer] Clear Join Code'),
 
-  setBroadcastEndedAt: createAction('[Peer] Set Broadcast Ended At', props<{endedAt: number}>()),
+  setBroadcastEndedAt: createAction('[Peer] Set Broadcast Ended At', props<{endedAt: number, allowAnonymous?: boolean}>()),
   clearBroadcastEndedAt: createAction('[Peer] Clear Broadcast Ended At'),
 
   setHostStatus: createAction('[Peer] Set Host Status', props<{hostOnline: boolean}>()),
