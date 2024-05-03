@@ -67,7 +67,7 @@ export class SessionService {
           broadcast = await this.broadcasts.findOne({roomId: payload.room}, null, { sort: { endTime: -1 } });
         }
         if (!broadcast) {
-          throw new HttpException('Broadcast not found', HttpStatus.NOT_FOUND)
+          return null;
         }
         return broadcast.toObject();
       }

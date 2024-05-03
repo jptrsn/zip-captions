@@ -44,6 +44,11 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<void> {
     console.log('join room', payload)
     const broadcast = await this.sessionService.getBroadcastSession(client.id, payload);
+    if (!broadcast) {
+      console.log('no broadcast exists')
+      client.send({message: 'broadcast expired', expiredAt: 1 });
+      return;
+    }
     const isHosting = payload.myBroadcast && broadcast.hostClientId === client.id;
     // Check if the broadcast is over
     if (broadcast.endTime) {

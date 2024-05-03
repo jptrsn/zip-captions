@@ -1,41 +1,45 @@
 <div class="flex flex-col w-full h-full">
   <ng-container *ngIf="connected(); else connectingToServer">
-    <ng-container *ngIf="joinCode() as code; else setJoinCode">
-      <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
-        <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
-        <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
-        <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
+    <div class="flex flex-row items-center justify-end p-3" *ngIf="broadcastEndedTimestamp()">
+      <button class="btn btn-primary" [routerLink]="['..']" translate>BUTTONS.goBack</button>
+    </div>
+    <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="broadcastEndedTimestamp() as ts; else connectionRender">
+      <div *ngIf="ts > 1; else noRoomFound">
+        {{ 'STREAM.broadcastEnded' | translate }} {{ ts | timeago }}.
       </div>
-
-      <div class="flex flex-row items-center justify-end p-3" *ngIf="broadcastEndedTimestamp()">
-        <button class="btn btn-primary" [routerLink]="['..']" translate>BUTTONS.goBack</button>
-      </div>
-
-      <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="broadcastEndedTimestamp() as ts">
-        <div *ngIf="ts > 1; else noRoomFound">
-          {{ 'STREAM.broadcastEnded' | translate }} {{ ts | timeago }}.
+      <ng-template #noRoomFound>
+        <div translate>STREAM.noSessionForRoom</div>
+      </ng-template>
+    </div>
+    <ng-template #connectionRender>
+      <ng-container *ngIf="joinCode() as code; else setJoinCode">
+        <div class="flex flex-row items-center justify-between p-3" *ngIf="isViewing()">
+          <div class="badge h-auto" [ngClass]="{'badge-success': hostOnline(), 'badge-info': !hostOnline()}">{{(hostOnline() ? 'STREAM.connected' : 'HINTS.verifyingConnection') | translate}}</div>
+          <div class="text-sm text-accent flex flex-row text-center" *ngIf="!hostOnline()" translate>HINTS.hostConnecting</div>
+          <app-leave-session [showDialog]="showLeaveBroadcastDialog()" (dialogClosed)="leaveSessionDialogClosed($event)"></app-leave-session>
         </div>
-        <ng-template #noRoomFound>
-          <div translate>STREAM.noSessionForRoom</div>
-        </ng-template>
-      </div>
   
-      <app-broadcast-render *ngIf="hostOnline()" class="flex basis-full overflow-y-hidden"></app-broadcast-render>
-
-      <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="!broadcastEndedTimestamp() && !hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
-        <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">
-          <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
-          <ng-template #timedOut>
-            <span translate>STREAM.noSessionForRoom</span>
+        <div class="flex flex-row items-center justify-end p-3" *ngIf="broadcastEndedTimestamp()">
+          <button class="btn btn-primary" [routerLink]="['..']" translate>BUTTONS.goBack</button>
+        </div>
+    
+        <app-broadcast-render *ngIf="hostOnline()" class="flex basis-full overflow-y-hidden"></app-broadcast-render>
+  
+        <div class="flex flex-col basis-full self-center justify-center px-3 text-center" *ngIf="!broadcastEndedTimestamp() && !hostOnline() && verifyJoinCodeTimer && (verifyJoinCodeTimer | async) as elapsed">
+          <ng-container *ngIf="hostOnline() === undefined; else hostDisconnected">
+            <span *ngIf="elapsed < HOST_ONLINE_TIMEOUT_SECONDS; else timedOut">Time left: {{(HOST_ONLINE_TIMEOUT_SECONDS - elapsed)}}</span>
+            <ng-template #timedOut>
+              <span translate>STREAM.noSessionForRoom</span>
+            </ng-template>
+          </ng-container>
+  
+          <ng-template #hostDisconnected>
+            <span translate>STREAM.hostOffline</span>
           </ng-template>
-        </ng-container>
-
-        <ng-template #hostDisconnected>
-          <span translate>STREAM.hostOffline</span>
-        </ng-template>
-      </div>
-      
-    </ng-container>
+        </div>
+        
+      </ng-container>
+    </ng-template>
   </ng-container>
   <ng-template #connectingToServer>
     <div class="flex flex-col basis-full justify-center items-center gap-12">

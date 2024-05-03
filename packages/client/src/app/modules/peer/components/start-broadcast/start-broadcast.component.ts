@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, Signal, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -15,7 +15,7 @@ import { selectUserId } from '../../../../selectors/user.selector';
   templateUrl: './start-broadcast.component.html',
   styleUrls: ['./start-broadcast.component.scss'],
 })
-export class StartBroadcastComponent implements OnInit, OnChanges {
+export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() acceptedPeerConnections!: Signal<boolean | undefined>;
   @Input() isMobileDevice!: Signal<boolean | undefined>;
   @Input() isIncompatibleBrowser!: Signal<boolean | undefined>;
@@ -39,6 +39,15 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
     this.userId$ = this.store.select(selectUserId).pipe(takeUntilDestroyed());
     this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
 
+    if (this.isLoggedIn()) {
+      this._listUserRooms();
+    } else {
+      this.userId$.pipe(
+        filter((id) => !!id),
+        take(1)
+      ).subscribe(() => this._listUserRooms())
+    }
+
     this.formGroup.controls['room'].valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe((roomId) => {
@@ -53,14 +62,10 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (this.isLoggedIn()) {
-      this._listUserRooms();
-    } else {
-      this.userId$.pipe(
-        filter((id) => !!id),
-        take(1)
-      ).subscribe(() => this._listUserRooms())
-    }
+    console.log('init')
+  }
+
+  ngAfterViewInit(): void {
     this.broadcastRooms$.pipe(
       filter((rooms) => !!rooms),
       take(1))
@@ -68,7 +73,7 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
       const staticRoom = rooms?.find((r: UserRoom) => r.isStatic);
       if (staticRoom) {
         console.log('updating form controls', staticRoom.roomId)
-        this.formGroup.controls['room'].setValue(staticRoom.roomId, { emitEvent: true });
+        this.formGroup.controls['room'].setValue(staticRoom.roomId);
       }
     });
   }
