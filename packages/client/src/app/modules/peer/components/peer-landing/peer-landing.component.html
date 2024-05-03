@@ -50,7 +50,7 @@
           [acceptedPeerConnections]="acceptedPeerConnections" 
           [isMobileDevice]="isMobileDevice" 
           [isIncompatibleBrowser]="isIncompatibleBrowser"
-          [disabled]="!!(serverOffline() || serverError())"
+          [disabled]="!!(serverOffline() || serverError() || isIncompatibleBrowser())"
           *ngSwitchCase="'broadcast'">
         </app-start-broadcast>
         <app-join-broadcast 

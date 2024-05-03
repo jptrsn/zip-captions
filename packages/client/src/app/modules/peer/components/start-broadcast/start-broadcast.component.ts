@@ -33,7 +33,7 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
     this.broadcastRooms$ = this.store.select(selectMyBroadcastRooms);
     this.userRooms = toSignal(this.broadcastRooms$);
     this.formGroup = this.fb.group({
-      room: this.fb.control<UserRoom | null>(null, [Validators.required]),
+      room: this.fb.control<UserRoom | null>(null),
       useAuthentication: this.fb.control<boolean>(true, [Validators.required])
     });
     this.userId$ = this.store.select(selectUserId).pipe(takeUntilDestroyed());

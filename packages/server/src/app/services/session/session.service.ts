@@ -59,7 +59,8 @@ export class SessionService {
         broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
-        room = await this.rooms.findOne({ roomId: payload.room});
+        console.log('joining as viewer', userId, payload.room)
+        room = await this.rooms.findOne({ roomId: payload.room });
         broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined })
       }
     // If we don't know what room, check if user is hosting
@@ -84,7 +85,7 @@ export class SessionService {
     if (!broadcast) {
       // console.log('creating new broadcast entry')
       broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date(), allowAnonymous: payload.allowAnonymous })
-    } else if (broadcast.hostClientId !== clientId) {
+    } else if (broadcast.hostClientId !== clientId && broadcast.hostUserId == userId) {
       // console.log('updating broadcast host client ID')
       broadcast.hostClientId = clientId;
       broadcast.allowAnonymous = payload.allowAnonymous;
@@ -186,6 +187,7 @@ export class SessionService {
     }
 
     let roomModel: OwnerRoomDocument = await this.rooms.findOne({userId, roomId: room.roomId});
+    
     if (!roomModel) {
       roomModel = new this.rooms({
         userId,

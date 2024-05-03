@@ -44,7 +44,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<void> {
     console.log('join room', payload)
     const broadcast = await this.sessionService.getBroadcastSession(client.id, payload);
-    const isHosting = broadcast.hostClientId === client.id;
+    const isHosting = payload.myBroadcast && broadcast.hostClientId === client.id;
     // Check if the broadcast is over
     if (broadcast.endTime) {
       // this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
@@ -61,7 +61,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
-      console.log('we are the host, look to reconnect', room)
+      console.log('we are the host, look to reconnect', room, clientUserId)
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
       const clients: string[] = [];
       console.log(`room has ${clientIds.length} other clients connected`)
@@ -80,6 +80,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     } else {
       const ownerClientId = broadcast.hostClientId;
       if (ownerClientId) {
+        console.log(`sending owner ${ownerClientId} message`)
         this.server.to(ownerClientId).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false });
       } else {
         this.logger.warn(`Failed to determine owner for room ${room}. Falling back to room broadcast about member join`);
