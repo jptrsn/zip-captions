@@ -8,19 +8,21 @@ export type BroadcastSessionDocument = HydratedDocument<BroadcastSession>;
 export class BroadcastSession {
   @Prop({
     type: String,
-    required: true
+    required: true,
+    index: true
   })
   roomId: string;
 
   @Prop({
     type: String,
-    required: true
+    required: true,
+    index: true
   })
   hostClientId: string;
 
   @Prop({
     type: String,
-    required: true
+    required: true,
   })
   hostUserId: string;
 
@@ -31,7 +33,8 @@ export class BroadcastSession {
   startTime?: Date;
 
   @Prop({
-    type: Date
+    type: Date,
+    index: true
   })
   endTime?: Date;
 
