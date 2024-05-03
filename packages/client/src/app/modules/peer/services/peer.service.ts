@@ -278,7 +278,7 @@ export class PeerService {
       this._reconnectPeerServer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
-      console.log('incoming connection!', connection);
+      // console.log('incoming connection!', connection);
       this.peerMap.set(connection.connectionId, connection);
       this._handlePeerData(connection);
     })
