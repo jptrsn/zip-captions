@@ -59,6 +59,8 @@ export const PeerActions = {
 
   setBroadcastPausedState: createAction('[Peer] Set Broadcast Paused State', props<{paused: boolean}>()),
   
+  getBroadcastRooms: createAction('[Peer] Get Broadcast Rooms'),
+  getBroadcastRoomsRequested: createAction('[Peer] Get Broadcast Rooms Requested'),
   setBroadcastRooms: createAction('[Peer] Set Broadcast Rooms', props<{ rooms: UserRoom[] }>()),
   clearBroadcastRooms: createAction('[Peer] Clear Broadcast Rooms'),
 }

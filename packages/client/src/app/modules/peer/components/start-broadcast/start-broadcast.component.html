@@ -11,7 +11,7 @@
     </label>
     <select class="select select-lg select-bordered" formControlName="room">
       <option [value]="null">Create Anonymous Broadcast</option>
-      <option *ngFor="let room of userRooms()" [value]="room">
+      <option *ngFor="let room of userRooms()" [value]="room.roomId">
         <span>{{room.roomId | uppercase }} {{ room.isStatic ? '&nbsp;(static)' : ''}}</span>
       </option>
     </select>

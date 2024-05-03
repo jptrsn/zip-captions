@@ -28,17 +28,17 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
   }
   
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: any): WsResponse<string> {
-    console.log('message payload', payload);
-    if (payload.user && payload.message && payload.room) {
-      console.log(`broadcast to ${payload.room}`, payload.message);
-      this.server.in(payload.room).emit('message', { user: payload.user, message: payload.message, room: payload.room })
-    } else {
-      console.warn('Unhandled message payload with keys: ', Object.keys(payload).toString())
+  @SubscribeMessage('refreshRooms')
+  async handleRefreshRooms(client: Socket, payload: { userId: string }) {
+    console.log('refresh rooms', payload.userId);
+    const clientUserId = await this.sessionService.getUserFromClientId(client.id);
+    if (clientUserId === payload.userId) {
+      console.log('validated client request');
+      const userRooms = await this.sessionService.findUserRooms(payload.userId);
+      client.send({message: 'set rooms', rooms: userRooms });
     }
-    return { event: 'message', data: 'Hello World' };
   }
+  
 
   @SubscribeMessage('join')
   async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<void> {

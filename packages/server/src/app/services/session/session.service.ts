@@ -85,7 +85,7 @@ export class SessionService {
 
     // We are creating an ephemeral room for this session
     if (!room) {
-      room = new this.rooms({ userId, roomId: this.generateRandomRoomId(false)});
+      room = new this.rooms({ userId, roomId: this.generateRandomRoomId(false), allowAnonymous: payload.allowAnonymous });
       await room.save();
     }
 
@@ -156,7 +156,7 @@ export class SessionService {
   }
 
   async findUserRooms(userId: string, query?: Partial<OwnerRoom>): Promise<OwnerRoom[]> {
-    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]])
+    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]]).select({ _id: 0})
   }
 
   async updateUserRooms(userId: string, rooms: OwnerRoomUpdate[]): Promise<OwnerRoom[]> {

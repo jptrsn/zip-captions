@@ -87,11 +87,11 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     this.tabsControl = this.fb.control(initialTabIndex)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
       takeUntilDestroyed(), 
-      startWith(initialTabIndex),
       tap((index) => {
         const params = { tabIndex: index };
         this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
-      })
+      }),
+      startWith(initialTabIndex)
     )) as Signal<number>;
 
   }

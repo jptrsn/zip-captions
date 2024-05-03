@@ -246,8 +246,8 @@ export class PeerService {
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 
-  sendServerMessage(data: any) {
-    this.socket.volatile().emit('message', data);
+  refreshUserRooms(): void {
+    this.socket.volatile().emit('refreshRooms', { userId: this.myId });
   }
 
   connectPeerServer(): Observable<string> {
