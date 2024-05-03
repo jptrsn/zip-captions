@@ -63,7 +63,6 @@ export class SessionService {
         room = await this.rooms.findOne({ roomId: payload.room });
         broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
         if (!broadcast) {
-          console.log('searching for ended broadcast')
           broadcast = await this.broadcasts.findOne({roomId: payload.room}, null, { sort: { endTime: -1 } });
         }
         if (!broadcast) {

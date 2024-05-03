@@ -30,10 +30,8 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   
   @SubscribeMessage('refreshRooms')
   async handleRefreshRooms(client: Socket, payload: { userId: string }) {
-    console.log('refresh rooms', payload.userId);
     const clientUserId = await this.sessionService.getUserFromClientId(client.id);
     if (clientUserId === payload.userId) {
-      console.log('validated client request');
       const userRooms = await this.sessionService.findUserRooms(payload.userId);
       client.send({message: 'set rooms', rooms: userRooms });
     }
@@ -45,8 +43,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     console.log('join room', payload)
     const broadcast = await this.sessionService.getBroadcastSession(client.id, payload);
     if (!broadcast) {
-      console.log('no broadcast exists')
-      client.send({message: 'broadcast expired', expiredAt: 1 });
+      client.send({message: 'broadcast expired', expiredAt: -1 });
       return;
     }
     const isHosting = payload.myBroadcast && broadcast.hostClientId === client.id;
@@ -66,10 +63,10 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
-      console.log('we are the host, look to reconnect', room, clientUserId)
+      // console.log('we are the host, look to reconnect', room, clientUserId)
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
       const clients: string[] = [];
-      console.log(`room has ${clientIds.length} other clients connected`)
+      // console.log(`room has ${clientIds.length} other clients connected`)
       for (const id of clientIds) {
         // Looks like the host is reconnecting to an active broadcast. Tell it to reconnect to viewer peers
         const peerUserId = await this.sessionService.getUserFromClientId(id);
