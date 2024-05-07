@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, startWith, take } from 'rxjs';
+import { Observable, filter, map, startWith, take, tap } from 'rxjs';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
@@ -43,10 +43,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   public tabsControl: FormControl;
   public tabIndex: Signal<number>;
 
-  public tabNames = [
-    'broadcast',
-    'view',
-  ];
+  public tabNames: string[];
 
   constructor(private store: Store<AppState>,
               private fb: FormBuilder,
@@ -75,11 +72,27 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
       }
     }, { allowSignalWrites: true});
 
+    // Mobile devices cannot broadcast to peers
+    this.tabNames = [
+      'view',
+      'broadcast',
+    ];
+
     if (this.isMobileDevice()) {
       this.tabNames = ['view']
     }
-    this.tabsControl = this.fb.control(0)
-    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(takeUntilDestroyed(), startWith(0))) as Signal<number>;
+
+    // The modulus operator here makes sure that the index is always less than the length of the array of tab names
+    const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
+    this.tabsControl = this.fb.control(initialTabIndex)
+    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
+      takeUntilDestroyed(), 
+      tap((index) => {
+        const params = { tabIndex: index };
+        this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
+      }),
+      startWith(initialTabIndex)
+    )) as Signal<number>;
 
   }
 

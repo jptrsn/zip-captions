@@ -13,14 +13,16 @@ export type OwnerRoomDocument = HydratedDocument<OwnerRoom>;
 export class OwnerRoom {
   @Prop({
     type: String,
-    required: true
+    required: true,
+    index: true
   })
   userId: string;
 
   @Prop({
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true
   })
   roomId: string;
 

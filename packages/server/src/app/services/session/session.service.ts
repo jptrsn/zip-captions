@@ -59,8 +59,16 @@ export class SessionService {
         broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
-        room = await this.rooms.findOne({ roomId: payload.room});
-        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined })
+        console.log('joining as viewer', userId, payload.room);
+        room = await this.rooms.findOne({ roomId: payload.room });
+        broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
+        if (!broadcast) {
+          broadcast = await this.broadcasts.findOne({roomId: payload.room}, null, { sort: { endTime: -1 } });
+        }
+        if (!broadcast) {
+          return null;
+        }
+        return broadcast.toObject();
       }
     // If we don't know what room, check if user is hosting
     } else if (payload.myBroadcast) {
@@ -76,7 +84,7 @@ export class SessionService {
 
     // We are creating an ephemeral room for this session
     if (!room) {
-      room = new this.rooms({ userId, roomId: this.generateRandomRoomId(false)});
+      room = new this.rooms({ userId, roomId: this.generateRandomRoomId(false), allowAnonymous: payload.allowAnonymous });
       await room.save();
     }
 
@@ -84,7 +92,7 @@ export class SessionService {
     if (!broadcast) {
       // console.log('creating new broadcast entry')
       broadcast = new this.broadcasts({ hostUserId: userId, hostClientId: clientId, roomId: room.roomId, startTime: new Date(), allowAnonymous: payload.allowAnonymous })
-    } else if (broadcast.hostClientId !== clientId) {
+    } else if (broadcast.hostClientId !== clientId && broadcast.hostUserId == userId) {
       // console.log('updating broadcast host client ID')
       broadcast.hostClientId = clientId;
       broadcast.allowAnonymous = payload.allowAnonymous;
@@ -99,7 +107,7 @@ export class SessionService {
     if (!userId) {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
-    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room});
+    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
     broadcast.endTime = new Date();
     await broadcast.save();
     return broadcast.toObject();
@@ -147,7 +155,7 @@ export class SessionService {
   }
 
   async findUserRooms(userId: string, query?: Partial<OwnerRoom>): Promise<OwnerRoom[]> {
-    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]])
+    return await this.rooms.find(query ? {...query, userId} : {userId}).sort([['isStatic', -1], ['createdAt', -1]]).select({ _id: 0})
   }
 
   async updateUserRooms(userId: string, rooms: OwnerRoomUpdate[]): Promise<OwnerRoom[]> {
@@ -186,6 +194,7 @@ export class SessionService {
     }
 
     let roomModel: OwnerRoomDocument = await this.rooms.findOne({userId, roomId: room.roomId});
+    
     if (!roomModel) {
       roomModel = new this.rooms({
         userId,

@@ -84,7 +84,7 @@ export class PeerService {
   }
 
   connectSocket(): Observable<string> {
-    console.log('connect socket')
+    // console.log('connect socket')
     
     if (this.socket) {
       throw new Error("Socket already exists")
@@ -94,13 +94,13 @@ export class PeerService {
     
     const sub = new Subject<string>();
     this.socket.on('connect', () => {
-      console.log('socket connected, setting id', this.myId);
+      // console.log('socket connected, setting id', this.myId);
       this.socket.emit('setId', { id: this.myId });
       this.store.dispatch(PeerActions.socketServerConnected())
       if (this.myId) {
         sub.next(this.myId);
         if (!this.peerServerConnected()) {
-          console.log('connect peer server', this.myId);
+          // console.log('connect peer server', this.myId);
           this.store.dispatch(PeerActions.connectPeerServer());
         }
       }
@@ -115,7 +115,7 @@ export class PeerService {
     })
     this.socket.on('endBroadcast', () => this._disconnectAllPeers());
     this.socket.on('message', (data: any) => {
-      console.log('socket message', data);
+      // console.log('socket message', data, this.allowAnonymous());
       switch (data.message) {
         case 'room joined': {
           if (data.room) {
@@ -126,7 +126,6 @@ export class PeerService {
           break;
         }
         case 'set user id': {
-          console.log('set user id', data.id, this.myId)
           if (this.myId && this.myId !== data.id) {
             this.socket.emit('setId', { id: this.myId })
             if (data.id === this.myId) {
@@ -135,13 +134,12 @@ export class PeerService {
           } else if (data.id) {
             if (!this.userId() || data.id !== this.userId()) {
               this.myId = data.id;
-              console.log('SAVING USER ID', data.id)
               this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             }
             sub.next(data.id);  
           }
           if (!this.peerServerConnected() && this.myId) {
-            console.log('connect peer server', this.myId)
+            // console.log('connect peer server', this.myId)
             this.store.dispatch(PeerActions.connectPeerServer());
           }
           break;
@@ -161,11 +159,11 @@ export class PeerService {
         }
         case 'user left room': {
           if (data.user) {
-            console.log('disconnect from peer!', data)
+            // console.log('disconnect from peer!', data)
             const connection: DataConnection | undefined = this.peerMap.get(data.user);
             if (connection) {
               connection.addListener('close', () => {
-                console.log('closed!');
+                // console.log('closed!');
                 this.peerMap.delete(data.user);
               })
               connection.close();
@@ -176,7 +174,7 @@ export class PeerService {
         case 'connect clients': {
           if (data.clients) {
             const clientIds: string[] = data.clients;
-            console.log('clientIds', clientIds, this.myId);
+            // console.log('clientIds', clientIds, this.myId);
             for (const id of clientIds) {
               if (id !== this.myId) {
                 this._connectToPeer(id);
@@ -187,8 +185,9 @@ export class PeerService {
         }
         case 'broadcast expired':
         case 'broadcast ended': {
+          console.log('broadcast ended', data)
           if (data.expiredAt) {
-            this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt}))
+            this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt, allowAnonymous: data.allowAnonymous}))
           }
           break;
         }
@@ -247,8 +246,8 @@ export class PeerService {
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
 
-  sendServerMessage(data: any) {
-    this.socket.volatile().emit('message', data);
+  refreshUserRooms(): void {
+    this.socket.volatile().emit('refreshRooms', { userId: this.myId });
   }
 
   connectPeerServer(): Observable<string> {
@@ -279,7 +278,7 @@ export class PeerService {
       this._reconnectPeerServer();
     })
     this.peer.addListener('connection', (connection: DataConnection) => {
-      console.log('incoming connection!', connection);
+      // console.log('incoming connection!', connection);
       this.peerMap.set(connection.connectionId, connection);
       this._handlePeerData(connection);
     })
@@ -418,9 +417,9 @@ export class PeerService {
     connection.on('open', () => {
       console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
-        console.log('must validate viewer connection', this.sessionJoinCode());
+        console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
         if (this.allowAnonymous()) {
-          connection.send({response: 'valid'})
+          connection.send({request: 'anonJoinCode'})
         } else {
           connection.send({request: 'joinCode'})
         }
@@ -429,33 +428,45 @@ export class PeerService {
     
     connection.on('data', (data: any) => {
       if (data?.request) {
+        // console.log('connection data', data)
         switch (data.request) {
           case 'joinCode':
             connection.send({request: 'validateJoinCode', joinCode: this.sessionJoinCode()});
             break;
+          case 'anonJoinCode':
+            this.store.dispatch(PeerActions.setJoinCode({joinCode: 'anon'}))
+            connection.send({request: 'validateAnonJoinCode'});
+            break;
           case 'validateJoinCode':
             if (this._verifyJoinCode(data.joinCode)) {
-              console.log('join code verified')
+              // console.log('join code verified')
               connection.send({response: 'valid'})
             } else {
-              console.log('closing connection');
-              connection.send({response: 'invalid'})
+              // console.log('closing connection');
+              connection.send({response: 'invalid'});
+            }
+            break;
+          case 'validateAnonJoinCode':
+            if (this.allowAnonymous()) {
+              connection.send({response: 'valid'});
+            } else {
+              connection.send({response: 'invalid'});
             }
             break;
           case 'disconnect':
-            console.log('disconnect requested');
+            // console.log('disconnect requested');
             connection.close();
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
           case 'hostOffline':
-            console.log('host offline');
+            // console.log('host offline');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
             break;
         }
       } else if (data?.response) {
         switch (data.response) {
           case 'valid':
-            console.log('join code valid!');
+            // console.log('join code valid!');
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':

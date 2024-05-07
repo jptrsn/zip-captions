@@ -28,27 +28,29 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
   }
   
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: any): WsResponse<string> {
-    console.log('message payload', payload);
-    if (payload.user && payload.message && payload.room) {
-      console.log(`broadcast to ${payload.room}`, payload.message);
-      this.server.in(payload.room).emit('message', { user: payload.user, message: payload.message, room: payload.room })
-    } else {
-      console.warn('Unhandled message payload with keys: ', Object.keys(payload).toString())
+  @SubscribeMessage('refreshRooms')
+  async handleRefreshRooms(client: Socket, payload: { userId: string }) {
+    const clientUserId = await this.sessionService.getUserFromClientId(client.id);
+    if (clientUserId === payload.userId) {
+      const userRooms = await this.sessionService.findUserRooms(payload.userId);
+      client.send({message: 'set rooms', rooms: userRooms });
     }
-    return { event: 'message', data: 'Hello World' };
   }
+  
 
   @SubscribeMessage('join')
   async handleJoin(client: Socket, payload: { room?: string, myBroadcast?: boolean, allowAnonymous?: boolean}): Promise<void> {
     console.log('join room', payload)
     const broadcast = await this.sessionService.getBroadcastSession(client.id, payload);
-    const isHosting = broadcast.hostClientId === client.id;
+    if (!broadcast) {
+      client.send({message: 'broadcast expired', expiredAt: -1 });
+      return;
+    }
+    const isHosting = payload.myBroadcast && broadcast.hostClientId === client.id;
     // Check if the broadcast is over
     if (broadcast.endTime) {
-      // this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
-      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime.getTime()});
+      this.logger.log(`room ${payload.room} expired at ${broadcast.endTime.toISOString()}`);
+      client.send({message: 'broadcast expired', expiredAt: broadcast.endTime.getTime(), allowAnonymous: broadcast.allowAnonymous });
       return;
     }
     
@@ -61,10 +63,10 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     // Is this client starting or resuming their own broadcast?
     if (isHosting) {
-      console.log('we are the host, look to reconnect', room)
+      // console.log('we are the host, look to reconnect', room, clientUserId)
       const clientIds = Array.from(this.server.sockets.adapter.rooms.get(room)).filter((id) => id !== client.id).map((id) => { const socket = this.server.sockets.sockets.get(id); return socket.id})
       const clients: string[] = [];
-      console.log(`room has ${clientIds.length} other clients connected`)
+      // console.log(`room has ${clientIds.length} other clients connected`)
       for (const id of clientIds) {
         // Looks like the host is reconnecting to an active broadcast. Tell it to reconnect to viewer peers
         const peerUserId = await this.sessionService.getUserFromClientId(id);
@@ -80,6 +82,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     } else {
       const ownerClientId = broadcast.hostClientId;
       if (ownerClientId) {
+        console.log(`sending owner ${ownerClientId} message`)
         this.server.to(ownerClientId).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false });
       } else {
         this.logger.warn(`Failed to determine owner for room ${room}. Falling back to room broadcast about member join`);

@@ -56,7 +56,13 @@ export const peerReducers = createReducer(
 
   on(PeerActions.leaveBroadcastRoom, (state: PeerState) => ({...state, roomId: undefined, joinCode: undefined, isViewingBroadcast: false, broadcastEndedTimestamp: undefined})),
   
-  on(PeerActions.setBroadcastEndedAt, (state: PeerState, action: { endedAt: number}) => ({...state, broadcastEndedTimestamp: action.endedAt, isViewingBroadcast: false})),
+  on(PeerActions.setBroadcastEndedAt, (state: PeerState, action: { endedAt: number, allowAnonymous?: boolean }) => {
+    const rtn = {...state, broadcastEndedTimestamp: action.endedAt, isViewingBroadcast: false};
+    if (action.allowAnonymous && !state.joinCode) {
+      rtn.joinCode = 'anon'
+    }
+    return rtn;
+  }),
   on(PeerActions.clearBroadcastEndedAt, (state: PeerState) => ({...state, broadcastEndedTimestamp: undefined})),
 
   on(PeerActions.endBroadcastSuccess, (state: PeerState) => ({...state, isBroadcasting: false, roomId: undefined, joinCode: undefined})),

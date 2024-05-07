@@ -80,4 +80,12 @@ export class PeerEffects {
     )
   )
 
+  getBroadcastRooms$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(PeerActions.getBroadcastRooms),
+      map(() => this.peerService.refreshUserRooms()),
+      map(() => PeerActions.getBroadcastRoomsRequested())
+    )
+  )
+
 }

@@ -37,7 +37,7 @@ import { obsReducers } from './reducers/obs.reducer';
 import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 import { DetectPwaInstallComponent } from './components/detect-pwa-install/detect-pwa-install.component';
 import { ObsConnectionStatusComponent } from './components/obs-connection-status/obs-connection-status.component';
-import { jwtInterceptor } from './interceptors/jwt.interceptor';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { authReducer } from './reducers/auth.reducer';
 import { userReducer } from './reducers/user.reducer';
 import { PeerEffects } from './effects/peer.effects';
@@ -111,7 +111,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     provideHttpClient(withInterceptors([
-      jwtInterceptor
+      JwtInterceptor
     ])),
 
   ],

@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges, OnInit, Signal, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, filter, take } from 'rxjs';
+import { Observable, filter, take, tap } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
 import { UserRoom } from '../../../../reducers/user.reducer';
@@ -15,7 +15,7 @@ import { selectUserId } from '../../../../selectors/user.selector';
   templateUrl: './start-broadcast.component.html',
   styleUrls: ['./start-broadcast.component.scss'],
 })
-export class StartBroadcastComponent implements OnInit, OnChanges {
+export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() acceptedPeerConnections!: Signal<boolean | undefined>;
   @Input() isMobileDevice!: Signal<boolean | undefined>;
   @Input() isIncompatibleBrowser!: Signal<boolean | undefined>;
@@ -33,14 +33,12 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
     this.broadcastRooms$ = this.store.select(selectMyBroadcastRooms);
     this.userRooms = toSignal(this.broadcastRooms$);
     this.formGroup = this.fb.group({
-      room: this.fb.control<UserRoom | null>(null, [Validators.required]),
+      room: this.fb.control<string | null>(null),
       useAuthentication: this.fb.control<boolean>(true, [Validators.required])
     });
     this.userId$ = this.store.select(selectUserId).pipe(takeUntilDestroyed());
     this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
-  }
 
-  ngOnInit(): void {
     if (this.isLoggedIn()) {
       this._listUserRooms();
     } else {
@@ -49,25 +47,43 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
         take(1)
       ).subscribe(() => this._listUserRooms())
     }
-    this.broadcastRooms$.pipe(filter((rooms) => !!rooms),take(1)).subscribe((rooms) => {
-      console.log('rooms init', rooms);
+
+    this.formGroup.controls['room'].valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((roomId) => {
+        if (roomId) {
+          const id = roomId.toLowerCase()
+          const room = this.userRooms()?.find((room) => room.roomId.toLowerCase() === id)
+          if (room) {
+            this.formGroup.controls['useAuthentication'].setValue(!room.allowAnonymous)
+          }
+        }
+      })
+  }
+
+  ngOnInit(): void {
+    console.log('init')
+  }
+
+  ngAfterViewInit(): void {
+    this.broadcastRooms$.pipe(
+      filter((rooms) => !!rooms),
+      take(1))
+    .subscribe((rooms) => {
       const staticRoom = rooms?.find((r: UserRoom) => r.isStatic);
       if (staticRoom) {
-        this.formGroup.controls['room'].setValue(staticRoom);
-        this.formGroup.controls['useAuthentication'].setValue(!staticRoom.allowAnonymous)
+        console.log('updating form controls', staticRoom.roomId)
+        this.formGroup.controls['room'].setValue(staticRoom.roomId);
       }
-    })
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['disabled']) {
-      console.log('disabled changed', changes['disabled'].currentValue)
       if (changes['disabled'].currentValue === false) {
-        console.log('enabling form group')
         this.formGroup.enable();
       } else if (changes['disabled'].currentValue && !this.formGroup.disabled) {
-        console.log('disabling form group')
-        this.formGroup.disable()
+        this.formGroup.disable();
       }
     }
   }
@@ -78,15 +94,14 @@ export class StartBroadcastComponent implements OnInit, OnChanges {
       allowAnonymous: !this.formGroup.controls['useAuthentication'].value,
     }
     if (this.formGroup.controls['room'].value) {
-      console.log('room', this.formGroup.controls['room'].value)
-      request.roomId = this.formGroup.controls['room'].value.roomId;
+      request.roomId = this.formGroup.controls['room'].value;
     }
+    console.log('createBroadcastRoom', request)
     this.store.dispatch(PeerActions.createBroadcastRoom(request));
   }
 
   private _listUserRooms(): void {
-    console.log('Refresh peer rooms')
-    // TODO: Refactor to refresh peer rooms via websocket message
-    // this.store.dispatch(UserActions.getRooms())
+    console.log('refresh rooms')
+    this.store.dispatch(PeerActions.getBroadcastRooms())
   }
 }
