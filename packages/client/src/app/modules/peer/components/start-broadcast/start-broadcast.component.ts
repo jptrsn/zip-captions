@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, Signal, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, filter, take, tap } from 'rxjs';
+import { Observable, filter, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
 import { UserRoom } from '../../../../reducers/user.reducer';
@@ -15,7 +15,7 @@ import { selectUserId } from '../../../../selectors/user.selector';
   templateUrl: './start-broadcast.component.html',
   styleUrls: ['./start-broadcast.component.scss'],
 })
-export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges {
+export class StartBroadcastComponent implements AfterViewInit, OnChanges {
   @Input() acceptedPeerConnections!: Signal<boolean | undefined>;
   @Input() isMobileDevice!: Signal<boolean | undefined>;
   @Input() isIncompatibleBrowser!: Signal<boolean | undefined>;
@@ -61,10 +61,6 @@ export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges
       })
   }
 
-  ngOnInit(): void {
-    console.log('init')
-  }
-
   ngAfterViewInit(): void {
     this.broadcastRooms$.pipe(
       filter((rooms) => !!rooms),
@@ -72,7 +68,7 @@ export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges
     .subscribe((rooms) => {
       const staticRoom = rooms?.find((r: UserRoom) => r.isStatic);
       if (staticRoom) {
-        console.log('updating form controls', staticRoom.roomId)
+        // console.log('updating form controls', staticRoom.roomId)
         this.formGroup.controls['room'].setValue(staticRoom.roomId);
       }
     });
@@ -96,12 +92,10 @@ export class StartBroadcastComponent implements OnInit, AfterViewInit, OnChanges
     if (this.formGroup.controls['room'].value) {
       request.roomId = this.formGroup.controls['room'].value;
     }
-    console.log('createBroadcastRoom', request)
     this.store.dispatch(PeerActions.createBroadcastRoom(request));
   }
 
   private _listUserRooms(): void {
-    console.log('refresh rooms')
     this.store.dispatch(PeerActions.getBroadcastRooms())
   }
 }

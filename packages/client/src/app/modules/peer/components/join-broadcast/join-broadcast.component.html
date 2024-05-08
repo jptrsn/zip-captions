@@ -1,4 +1,4 @@
-<form class="flex flex-col items-center align-start max-w-xl sm:gap-12 gap-6 p-3" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
+<form class="flex flex-col items-center align-start max-w-xl sm:gap-6 gap-3 p-3" [formGroup]="joinSessionFormGroup" (submit)="joinSession()">
   
   <div class="flex flex-col text-center gap-3">
     <div class="text-xl font-medium" translate>STREAM.joinSession</div>
@@ -19,3 +19,12 @@
   <button class="w-64 btn btn-primary btn-lg mt-3" [disabled]="disabled" translate>BUTTONS.connect</button>
 
 </form>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showToast()">
+  <div class="alert alert-info flex flex-row">
+    <span class="text-sm whitespace-pre-wrap" translate>
+      STREAM.broadcastDetected
+    </span>
+    <button class="btn btn-sm" (click)="dismissToast()" translate>BUTTONS.ok</button>
+  </div>
+</div>

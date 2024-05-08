@@ -32,6 +32,7 @@ import { SharedUiModule } from 'shared-ui';
 import { StreamCaptionsComponent } from './components/stream-captions/stream-captions.component';
 import { StartBroadcastComponent } from './components/start-broadcast/start-broadcast.component';
 import { JoinBroadcastComponent } from './components/join-broadcast/join-broadcast.component';
+import { PeerHomeComponent } from './components/peer-home/peer-home.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { JoinBroadcastComponent } from './components/join-broadcast/join-broadca
     StreamCaptionsComponent,
     StartBroadcastComponent,
     JoinBroadcastComponent,
+    PeerHomeComponent,
   ],
   imports: [
     CommonModule,
