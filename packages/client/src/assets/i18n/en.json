@@ -255,7 +255,8 @@
     "TABS": {
       "appearance": "Look & Feel",
       "sync": "Sync",
-      "sharing": "Sharing"
+      "sharing": "Sharing",
+      "obs": "OBS Studio"
     },
     "UI": {
       "t1": "Preview",
