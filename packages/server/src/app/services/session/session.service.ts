@@ -113,6 +113,21 @@ export class SessionService {
     return broadcast.toObject();
   }
 
+  async findClientIdsByUserId(userId: string): Promise<string[]> {
+    const connections = await this.socketConnections.find({ userId }, { clientIds: true });
+    const ids: string[] = [];
+    for (const conn of connections) {
+      if (conn.clientIds?.length) {
+        ids.push(...conn.clientIds);
+      }
+    }
+    return ids;
+  }
+
+  async findBroadcastSessionsByClientId(clientId: string, active?: boolean): Promise<BroadcastSessionDocument> {
+    return active ? this.broadcasts.findOne({ hostClientId: clientId, endTime: undefined }) : this.broadcasts.findOne({ hostClientId: clientId })
+  }
+
   async setUserId(clientId: string, id?: string): Promise<string> {
     let connection: SocketConnectionDocument | undefined;
     let userId: string | undefined;

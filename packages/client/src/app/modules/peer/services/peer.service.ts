@@ -87,8 +87,9 @@ export class PeerService {
     // console.log('connect socket')
     
     if (this.socket) {
-      throw new Error("Socket already exists")
-      // this.socket.removeAllListeners();
+      console.log('connect with existing socket')
+      // throw new Error("Socket already exists")
+      this.socket.removeAllListeners();
     }
     this.socket = new Socket(this.SOCKET_CONFIG);
     
@@ -96,14 +97,7 @@ export class PeerService {
     this.socket.on('connect', () => {
       // console.log('socket connected, setting id', this.myId);
       this.socket.emit('setId', { id: this.myId });
-      this.store.dispatch(PeerActions.socketServerConnected())
-      if (this.myId) {
-        sub.next(this.myId);
-        if (!this.peerServerConnected()) {
-          // console.log('connect peer server', this.myId);
-          this.store.dispatch(PeerActions.connectPeerServer());
-        }
-      }
+      this.store.dispatch(PeerActions.socketServerConnected());
     });
     this.socket.on('disconnect', () => {
       this.store.dispatch(PeerActions.socketServerDisconnected());
@@ -128,19 +122,21 @@ export class PeerService {
         case 'set user id': {
           if (this.myId && this.myId !== data.id) {
             this.socket.emit('setId', { id: this.myId })
-            if (data.id === this.myId) {
-              sub.next(this.myId);
-            }
-          } else if (data.id) {
+          }
+          break;
+        }
+        case 'set user id success': {
+          console.log('set user id success', data.id)
+          if (data.id) {
             if (!this.userId() || data.id !== this.userId()) {
               this.myId = data.id;
               this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
             }
-            sub.next(data.id);  
-          }
-          if (!this.peerServerConnected() && this.myId) {
-            // console.log('connect peer server', this.myId)
-            this.store.dispatch(PeerActions.connectPeerServer());
+            sub.next(data.id);
+            if (!this.peerServerConnected() && this.myId) {
+              // console.log('connect peer server', this.myId)
+              this.store.dispatch(PeerActions.connectPeerServer());
+            }
           }
           break;
         }
@@ -254,6 +250,7 @@ export class PeerService {
     if (!this.myId) {
       throw new Error('Must obtain ID from socket server');
     }
+    console.log('connect peer server', this.myId)
     if (this.peer?.id === this.myId && !this.peer.disconnected) {
       console.log('peer server connection already exists and appears to be connected!!!');
       return of(this.myId);
@@ -348,6 +345,7 @@ export class PeerService {
   }
 
   private _reconnectPeerServer(tryNumber?: number): void {
+    console.log('reconnect peer server', tryNumber);
     let thisTry = tryNumber || 0;
     const timerId = setTimeout(() => {
       if (this.peer?.disconnected && thisTry < 5) {

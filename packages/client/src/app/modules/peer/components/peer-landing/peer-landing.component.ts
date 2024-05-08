@@ -97,6 +97,12 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   }
 
   ngOnDestroy(): void {
+    if (this.peerServerConnected()) {
+      this.store.dispatch(PeerActions.disconnectPeerServer());
+    }
+    if (this.socketServerConnected()) {
+      this.store.dispatch(PeerActions.disconnectSocketServer());
+    }
     this.store.dispatch(RecognitionActions.resetRecogntionState());
   }
 

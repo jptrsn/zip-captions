@@ -42,6 +42,11 @@ export const PeerActions = {
   connectPeerServerFailure: createAction('[Peer] Connect Peer Server Error', props<{error: string}>()),
   
   peerServerError: createAction('[Peer] Peer Server Error Recieved', props<{error: string}>()),
+
+  userIdConflictDetected: createAction('[Peer] User ID Conflict Detected'),
+  userIdConflictResolution: createAction('[Peer] User ID Conflict Resolution Requested'),
+  userIdConflictResolved: createAction('[Peer] User ID Conflict Resolved'),
+  userIdConflictRejected: createAction('[Peer] User ID Conflict Rejected', props<{error: string}>()),
   
   disconnectPeerServer: createAction('[Peer] Disconnect Peer Server'),
   peerServerDisconnected: createAction('[Peer] Peer Server Disconnected'), 

@@ -94,10 +94,24 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('setId')
   async handleSetUserId(client: Socket, payload: { id?: string }): Promise<void> {
-    const userId = await this.sessionService.setUserId(client.id, payload.id);
-    if (!payload.id) {
-      client.send({message: 'set user id', id: userId})
+    console.log('set ID', payload.id)
+    const existingClientIds = await this.sessionService.findClientIdsByUserId(payload.id);
+    if (existingClientIds.length) {
+      console.log(`found ${existingClientIds.length} existing client IDs`);
+      for (const id of existingClientIds) {
+        const socket = this.server.sockets.sockets.get(id);
+        if (socket?.connected) {
+          console.log(`socket ${id} is connected!`);
+          const broadcastSession = await this.sessionService.findBroadcastSessionsByClientId(id, true);
+          client.send({message: 'set user id failure', error: 'User ID already in use', sessionId: broadcastSession.roomId })
+          return;
+        }
+      }
     }
+    const userId = await this.sessionService.setUserId(client.id, payload.id);
+    console.log('set user id success', userId);
+    client.send({message: 'set user id success', id: userId})
+    
     const userRooms = await this.sessionService.findUserRooms(userId);
     if (userRooms.length) {
       client.send({message: 'set rooms', rooms: userRooms })
