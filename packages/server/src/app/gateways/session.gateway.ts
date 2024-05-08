@@ -105,7 +105,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
           console.log(`socket ${id} is connected!`);
           const broadcastSession = await this.sessionService.findBroadcastSessionsByClientId(id, true);
           const userId = await this.sessionService.setUserId(client.id);
-          client.send({message: 'set user id success', id: userId, isAnonymized: true, roomId: broadcastSession.roomId })
+          client.send({message: 'set user id success', id: userId, isAnonymized: true, roomId: broadcastSession?.roomId })
           return;
         }
       }

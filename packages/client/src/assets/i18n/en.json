@@ -297,7 +297,8 @@
     "sessionIdCopied": "Copied session ID to your clipboard",
     "copyJoinCodeTip": "Copy join code",
     "joinCodeCopied": "Copied join code to your clipboard",
-    "connectionPendingHint": "Hang on while we connect to the signaling server so you can connect to other devices..."
+    "connectionPendingHint": "Hang on while we connect to the signaling server so you can connect to other devices...",
+    "broadcastDetected": "It looks like you are hosting a broadcast in another session! We have auto-filled the room ID for you."
   },
   "MODAL": {
     "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers.",
@@ -351,7 +352,8 @@
     "start": "Start",
     "stop": "Stop",
     "logout": "Log Out",
-    "login": "Login"
+    "login": "Login",
+    "ok": "Okay"
   },
   "LABELS": {
     "menu": "Menu",

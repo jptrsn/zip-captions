@@ -87,7 +87,6 @@ export class PeerService {
     // console.log('connect socket')
     
     if (this.socket) {
-      console.log('connect with existing socket')
       // throw new Error("Socket already exists")
       this.socket.removeAllListeners();
     }
@@ -126,7 +125,6 @@ export class PeerService {
           break;
         }
         case 'set user id success': {
-          console.log('set user id success', data)
           if (data.id) {
             if (!this.userId() || data.id !== this.userId()) {
               this.myId = data.id;
@@ -153,7 +151,7 @@ export class PeerService {
             if (this.myBroadcast) {
               this._connectToPeer(data.user);
             } else {
-              console.log('not my broadcast, peer connected', data.user)
+              // console.log('not my broadcast, peer connected', data.user)
             }
           }
           break;
@@ -186,7 +184,7 @@ export class PeerService {
         }
         case 'broadcast expired':
         case 'broadcast ended': {
-          console.log('broadcast ended', data)
+          // console.log('broadcast ended', data)
           if (data.expiredAt) {
             this.store.dispatch(PeerActions.setBroadcastEndedAt({endedAt: data.expiredAt, allowAnonymous: data.allowAnonymous}))
           }
@@ -255,7 +253,7 @@ export class PeerService {
     if (!this.myId) {
       throw new Error('Must obtain ID from socket server');
     }
-    console.log('connect peer server', this.myId)
+    // console.log('connect peer server', this.myId)
     if (this.peer?.id === this.myId && !this.peer.disconnected) {
       console.log('peer server connection already exists and appears to be connected!!!');
       return of(this.myId);
@@ -264,12 +262,12 @@ export class PeerService {
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
     this.peer = new Peer(this.myId, this.CONNECT_OPTS);
     this.peer.addListener('open', () => {
-      console.log('peer server connection opened')
+      // console.log('peer server connection opened')
       this.store.dispatch(PeerActions.peerServerConnected());
       sub.next(this.myId as string);
     });
     this.peer.addListener('disconnected', () => {
-      console.log('peer server disconnected')
+      // console.log('peer server disconnected')
       if (this.peerServerConnected()) {
         this.store.dispatch(PeerActions.peerServerDisconnected());
       }
@@ -298,7 +296,7 @@ export class PeerService {
     });
     setTimeout(() => {
       this.peer!.disconnect();
-      console.log('peer disconnected');
+      // console.log('peer disconnected');
     }, 1);
     return sub.asObservable().pipe(take(1));
   }
@@ -328,7 +326,7 @@ export class PeerService {
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.socket.once('endBroadcast', () => {
-      console.log('endbroadcast response recieved');
+      // console.log('endbroadcast response recieved');
       sub.next();
       sub.complete();
     });
@@ -337,11 +335,11 @@ export class PeerService {
   }
 
   leaveSession(): void {
-    console.log('leaveSession', this.peerMap.size);
+    // console.log('leaveSession', this.peerMap.size);
     this.cache.remove('roomId');
     this.cache.remove('joinCode');
     this.peerMap.forEach((connection: DataConnection) => {
-      console.log('peer', connection.connectionId);
+      // console.log('peer', connection.connectionId);
       connection.close();
     });
     this.textOutput$.next([]);
@@ -350,7 +348,7 @@ export class PeerService {
   }
 
   private _reconnectPeerServer(tryNumber?: number): void {
-    console.log('reconnect peer server', tryNumber);
+    // console.log('reconnect peer server', tryNumber);
     let thisTry = tryNumber || 0;
     const timerId = setTimeout(() => {
       if (this.peer?.disconnected && thisTry < 5) {
@@ -378,7 +376,7 @@ export class PeerService {
     this.peerMap.set(peerId, connection);
     this._updateConnectedPeerCount();
     connection.on('close', () => {
-      console.log('connection closed', peerId)
+      // console.log('connection closed', peerId)
       this.peerMap.delete(peerId);
       this._updateConnectedPeerCount();
     })
@@ -410,7 +408,7 @@ export class PeerService {
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
-      console.log('connection closed');
+      // console.log('connection closed');
       if (!this.myBroadcast) {
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       }
@@ -418,9 +416,9 @@ export class PeerService {
     });
     
     connection.on('open', () => {
-      console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
+      // console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
-        console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
+        // console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
         if (this.allowAnonymous()) {
           connection.send({request: 'anonJoinCode'})
         } else {
