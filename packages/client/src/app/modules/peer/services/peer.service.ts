@@ -126,17 +126,22 @@ export class PeerService {
           break;
         }
         case 'set user id success': {
-          console.log('set user id success', data.id)
+          console.log('set user id success', data)
           if (data.id) {
             if (!this.userId() || data.id !== this.userId()) {
               this.myId = data.id;
-              this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS})
+              if (!data.isAnonymized) {
+                this.cache.save({key: 'userId', data: { id: data.id }, expirationMins: this.CACHE_PERSIST_MINS});
+              }
             }
             sub.next(data.id);
             if (!this.peerServerConnected() && this.myId) {
               // console.log('connect peer server', this.myId)
               this.store.dispatch(PeerActions.connectPeerServer());
             }
+          }
+          if (data.roomId) {
+            this.store.dispatch(PeerActions.setRoomId({ id: data.roomId }));
           }
           break;
         }

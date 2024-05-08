@@ -20,6 +20,8 @@ export const PeerActions = {
   endBroadcast: createAction('[Peer] End Broadcast'),
   endBroadcastSuccess: createAction('[Peer] End Broadcast Success'),
   endBroadcastFailure: createAction('[Peer] End Broadcast Failure', props<{error: string}>()),
+
+  setRoomId: createAction('[Peer] Set Room ID', props<{id: string}>()),
   
   joinBroadcastRoom: createAction('[Peer] Join Broadcast Room', props<{id: string}>()),
   joinBroadcastRoomSuccess: createAction('[Peer] Join Broadcast Room Success'),
@@ -43,11 +45,6 @@ export const PeerActions = {
   
   peerServerError: createAction('[Peer] Peer Server Error Recieved', props<{error: string}>()),
 
-  userIdConflictDetected: createAction('[Peer] User ID Conflict Detected'),
-  userIdConflictResolution: createAction('[Peer] User ID Conflict Resolution Requested'),
-  userIdConflictResolved: createAction('[Peer] User ID Conflict Resolved'),
-  userIdConflictRejected: createAction('[Peer] User ID Conflict Rejected', props<{error: string}>()),
-  
   disconnectPeerServer: createAction('[Peer] Disconnect Peer Server'),
   peerServerDisconnected: createAction('[Peer] Peer Server Disconnected'), 
 

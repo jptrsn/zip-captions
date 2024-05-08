@@ -1,7 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, Input, effect } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../models/app.model';
+import { selectRoomId } from '../../../../selectors/peer.selectors';
 
 @Component({
   selector: 'app-join-broadcast',
@@ -16,8 +19,16 @@ export class JoinBroadcastComponent {
 
   constructor(private fb: FormBuilder,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private store: Store<AppState>) {
     this._injectDashIfRequired();
+    const roomId = toSignal(this.store.select(selectRoomId));
+    effect(() => {
+      const newRoomId = roomId();
+      if (newRoomId) {
+        this.joinSessionFormGroup.controls['room'].setValue(newRoomId.toUpperCase());
+      }
+    })
   }
 
   joinSession(): boolean {
