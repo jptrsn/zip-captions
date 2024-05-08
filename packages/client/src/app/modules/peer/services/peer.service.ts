@@ -419,11 +419,8 @@ export class PeerService {
       // console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
         // console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
-        if (this.allowAnonymous()) {
-          connection.send({request: 'anonJoinCode'})
-        } else {
-          connection.send({request: 'joinCode'})
-        }
+        const requestType = this.allowAnonymous() ? 'anonJoinCode' : 'joinCode';
+        connection.send({request: requestType});
       }
     });
     
