@@ -52,7 +52,7 @@ export class ObsConnectionStatusComponent {
     this.router.navigate(['']).then(() => 
       {
         if (this.isDesktop()) {
-          this.store.dispatch(AudioStreamActions.connectStream({ id: 'deafult'}));
+          this.store.dispatch(AudioStreamActions.connectStream({ id: 'default'}));
         } else {
           this.store.dispatch(RecognitionActions.connectRecognition({ id: 'default' }))
         }
@@ -66,9 +66,9 @@ export class ObsConnectionStatusComponent {
     this._closeMenu();
   }
 
-  navToObs(): void {
+  reconnect(): void {
+    this.store.dispatch(ObsActions.reconnect());
     this._closeMenu();
-    this.router.navigate(['stream'])
   }
 
   private _closeMenu(): void {

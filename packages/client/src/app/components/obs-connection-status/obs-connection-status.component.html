@@ -17,7 +17,7 @@
     <ul>
       <li *ngIf="!recognitionActive() && state() === ConnectionStates.connected && currentUrl() !== '/'"><a (click)="startRecognition()">{{'LABELS.listen' | translate}}</a></li>
       <li *ngIf="state() === ConnectionStates.connected && !recognitionActive()"><a (click)="disconnect()">{{'BUTTONS.disconnect' | translate}}</a></li>
-      <li *ngIf="state() === ConnectionStates.disconnected && currentUrl() !== '/stream'"><a (click)="navToObs()">{{'BUTTONS.reconnect' | translate}}</a></li>
+      <li *ngIf="state() === ConnectionStates.disconnected && currentUrl() !== '/stream'"><a (click)="reconnect()">{{'BUTTONS.reconnect' | translate}}</a></li>
     </ul>
   </div>
 </details>

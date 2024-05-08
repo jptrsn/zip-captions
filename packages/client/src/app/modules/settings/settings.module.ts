@@ -26,6 +26,7 @@ import { WakeLockEnabledComponent } from './components/wake-lock-enabled/wake-lo
 import { routes } from './settings.routes';
 import { NgIconsModule } from '@ng-icons/core';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs-studio-settings.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     UserSavedSettingsComponent,
     BroadcastSettingsComponent,
     RoomCardComponent,
+    ObsStudioSettingsComponent,
   ],
   imports: [
     CommonModule,

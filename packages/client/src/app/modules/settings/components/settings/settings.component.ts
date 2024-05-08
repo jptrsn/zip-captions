@@ -1,9 +1,7 @@
-import { Component, ElementRef, Renderer2, Signal } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { TranslateService } from '@ngx-translate/core';
 import { fadeInAnimation, fadeInOnEnterAnimation, fadeOutAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 import { Observable, Subject, map, startWith } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
@@ -32,6 +30,7 @@ export class SettingsComponent {
     'appearance',
     'sync',
     'sharing',
+    'obs',
   ];
   
   constructor(private fb: FormBuilder,
