@@ -16,8 +16,8 @@
     </label>
     <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
     <label class="label no-height">
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('invalid') && formGroup.touched">Invalid URL</span>
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('required') && formGroup.touched">Required</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('invalid') && formGroup.touched" translate>ERRORS.invalidUrl</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
     </label>
   </div>
 
@@ -27,8 +27,8 @@
     </label>
     <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="4455" formControlName="port" />
     <label class="label no-height">
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('invalid') && formGroup.touched">Invalid URL</span>
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('required') && formGroup.touched">Required</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('invalid') && formGroup.touched" translate>ERRORS.invalidUrl</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
     </label>
   </div>
 

@@ -10,23 +10,23 @@
       <span class="label-text" [ngClass]="{'text-error': formGroup.controls['room'].invalid && formGroup.controls['room'].touched}" translate>STREAM.sessionId</span>
     </label>
     <select class="select select-lg select-bordered" formControlName="room">
-      <option [value]="null">Create Anonymous Broadcast</option>
+      <option [value]="null" translate>STREAM.createAnonymousBroadcast</option>
       <option *ngFor="let room of userRooms()" [value]="room.roomId">
-        <span>{{room.roomId | uppercase }} {{ room.isStatic ? '&nbsp;(static)' : ''}}</span>
+        <span>{{room.roomId | uppercase }} {{ (room.isStatic ? '&nbsp;(static)' : '') | translate}}</span>
       </option>
     </select>
     <label class="label">
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('invalid') && formGroup.controls['room'].touched">Invalid ID</span>
-      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('required') && formGroup.controls['room'].touched">Required</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('invalid') && formGroup.controls['room'].touched" translate>ERRORS.invalidId</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('required') && formGroup.controls['room'].touched" translate>ERRORS.required</span>
     </label>
   </div>
 
   <div class="form-control sm:w-96 w-full">
       <label class="label">
-        <span class="label-text">Authentication</span>
+        <span class="label-text" translate>STREAM.authentication</span>
       </label>
       <label class="label gap-2">
-        <span class="label-text text-xs">Require viewers to enter join code</span>
+        <span class="label-text text-xs" translate>STREAM.authDescription</span>
         <input type="checkbox" class="checkbox checkbox-primary" formControlName="useAuthentication">
       </label>
   </div>
