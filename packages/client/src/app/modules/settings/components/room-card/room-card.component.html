@@ -1,7 +1,7 @@
 <div *ngIf="room && !editMode(); else editRoom" class="collapse collapse-arrow bg-base-100 shadow-lg">
   <input type="checkbox" #expanded [checked]="room.isStatic"/>
   <div class="collapse-title inline-flex items-center gap-6 justify-between" [ngClass]="{'bg-primary': room.isStatic, 'bg-neutral': !room.isStatic}" (click)="expanded.checked = !expanded.checked">
-    <span class="text-lg"><span class="hidden md:inline-block" translate>STREAM.ROOMCARD.broadcastId</span> {{room.roomId | uppercase}}</span>
+    <span class="text-lg inline-flex gap-3"><span class="hidden md:inline-block" translate>STREAM.ROOMCARD.broadcastId</span> <span>{{room.roomId | uppercase}}</span></span>
     <div *ngIf="room.allowAnonymous" class="badge shadow-md badge-accent p-3">
       <ng-icon name="heroLockOpen"></ng-icon>
     </div>

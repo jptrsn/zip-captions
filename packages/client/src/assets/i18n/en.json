@@ -272,6 +272,17 @@
       "staticRoomView": "My Broadcast",
       "dynamicRoomView": "Recent Randomized Broadcasts",
       "loginRequired": "You must log in before you can save custom broadcast settings."
+    },
+    "SYNC": {
+      "header": "Appearance Settings Sync",
+      "subheader": "Synchronize the appearance of the application",
+      "noneSaved": "You have not yet saved appearance settings",
+      "inSync": "Your appearance settings are in sync",
+      "applyGlobally": "Use these settings everywhere I log in",
+      "viewFor": "View settings for",
+      "local": "Local",
+      "server": "Server",
+      "loginRequired": "You must log in before you can save custom broadcast settings."
     }
   },
   "STREAM": {
@@ -384,7 +395,9 @@
     "ok": "Okay",
     "createRoom": "Create a Room",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "saveCurrent": "Save Current",
+    "applySaved": "Apply Saved"
   },
   "LABELS": {
     "menu": "Menu",
