@@ -1,5 +1,5 @@
 import { CacheKey } from '@nestjs/cache-manager';
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { NoCache } from '../../decorators/no-cache.decorator';
@@ -94,8 +94,16 @@ export class UserController {
   async saveRoom(@Req() req, @Param() params: { id: string, roomId: string }, @Body() body: { room: OwnerRoomUpdate }): Promise<OwnerRoom> {
     this._validateParam(req, params);
     console.log('save room', body.room);
-    return await this.sessionService.updateUserRoom(params.id, body.room);
-    
+    return await this.sessionService.updateUserRoom(params.id, body.room); 
+  }
+
+  @Delete('profile/:id/rooms/:roomId')
+  @UseGuards(JwtAuthGuard)
+  async deleteRoom(@Req() req, @Param() params: { id: string, roomId: string }): Promise<{ success: boolean }> {
+    this._validateParam(req, params);
+    console.log('delete room', params.roomId);
+    await this.sessionService.deleteUserRoom(params.id, params.roomId); 
+    return { success: true };
   }
 
   @Post('profile/:id/settings')

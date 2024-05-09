@@ -38,7 +38,7 @@
     </div>
   </div>
   <div class="flex flex-row justify-center items-center p-1">
-    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied($event)" [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
+    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied()" [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
   </div>
 </div>
 

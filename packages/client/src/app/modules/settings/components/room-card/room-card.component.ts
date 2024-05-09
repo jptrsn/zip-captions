@@ -20,7 +20,7 @@ export class RoomCardComponent implements AfterViewInit {
   @Input({ required: false }) set showEdit(visible: boolean) {
     this.editMode.set(visible);
   }
-  @Output() editClosed: EventEmitter<void> = new EventEmitter<void>();
+  @Output() editClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
   
   public roomFormGroup: FormGroup;
   public editMode: WritableSignal<boolean> = signal(false);
@@ -58,7 +58,7 @@ export class RoomCardComponent implements AfterViewInit {
 
   closeEditMode(): void {
     this.editMode.set(false);
-    this.editClosed.next();
+    this.editClosed.next(false);
   }
 
   deleteRoom(roomId: string): void {
@@ -67,7 +67,7 @@ export class RoomCardComponent implements AfterViewInit {
     }
     this.userService.deleteUserRoom(roomId).subscribe(() => {
       this.room = undefined;
-      this.closeEditMode();
+      this.editClosed.next(true);
     })
   }
 
@@ -100,10 +100,9 @@ export class RoomCardComponent implements AfterViewInit {
     }
   }
 
-  copied(event: IClipboardResponse) {
-    console.log('copied',event);
+  copied() {
     this.showCopied.set(true);
-    // setTimeout(() => this.showCopied.set(false), 1500);
+    setTimeout(() => this.showCopied.set(false), 1500);
   }
 
   dismissToast() {

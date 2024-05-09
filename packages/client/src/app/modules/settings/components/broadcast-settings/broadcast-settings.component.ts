@@ -65,9 +65,14 @@ export class BroadcastSettingsComponent implements OnInit {
   }
 
   hideModal(): void {
-    console.log('edit mmodal closed');
     this._listUserRooms();
     this.modalOpen.set(false);
+  }
+
+  editClosed(refreshRequired: boolean): void {
+    if (refreshRequired) {
+      this._listUserRooms();
+    }
   }
 
   private _listUserRooms(): void {

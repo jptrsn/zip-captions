@@ -13,7 +13,7 @@
     <div class="text-lg text-center" translate>
       SETTINGS.SHARING.staticRoomView
     </div>
-    <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>  
+    <app-room-card *ngFor="let room of rooms" [room]="room" (editClosed)="editClosed($event)"></app-room-card>  
   </ng-container>
   <ng-container *ngIf="dynamicRooms() as rooms">
     <div class="divider divider-secondary"></div>
@@ -21,7 +21,7 @@
       SETTINGS.SHARING.dynamicRoomView
     </div>
   
-    <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>  
+    <app-room-card *ngFor="let room of rooms" [room]="room" (editClosed)="editClosed($event)"></app-room-card>  
   </ng-container>
 </div>
         
