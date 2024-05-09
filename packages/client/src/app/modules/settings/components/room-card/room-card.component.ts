@@ -2,11 +2,17 @@ import { AfterViewInit, Component, EventEmitter, Input, Output, WritableSignal, 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserRoom } from '../../../../reducers/user.reducer';
 import { UserService } from '../../../user/services/user.service';
+import { IClipboardResponse } from 'ngx-clipboard';
+import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-room-card',
   templateUrl: './room-card.component.html',
   styleUrls: ['./room-card.component.scss'],
+  animations: [
+    slideInUpOnEnterAnimation(),
+    fadeOutOnLeaveAnimation(),
+  ]
 })
 export class RoomCardComponent implements AfterViewInit {
   @Input({ required: false }) room?: UserRoom;
@@ -18,6 +24,7 @@ export class RoomCardComponent implements AfterViewInit {
   
   public roomFormGroup: FormGroup;
   public editMode: WritableSignal<boolean> = signal(false);
+  public showCopied: WritableSignal<boolean> = signal(false);
   public roomIdsList: WritableSignal<string[] | undefined> = signal(undefined);
   public loading: WritableSignal<boolean> = signal(false);
 
@@ -93,4 +100,13 @@ export class RoomCardComponent implements AfterViewInit {
     }
   }
 
+  copied(event: IClipboardResponse) {
+    console.log('copied',event);
+    this.showCopied.set(true);
+    // setTimeout(() => this.showCopied.set(false), 1500);
+  }
+
+  dismissToast() {
+    this.showCopied.set(false);
+  }
 }

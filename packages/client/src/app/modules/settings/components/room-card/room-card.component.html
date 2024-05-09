@@ -38,7 +38,7 @@
     </div>
   </div>
   <div class="flex flex-row justify-center items-center p-1">
-    <div class="text-xs tooltip tooltip-secondary" ngxClipboard [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'Click to copy.'">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
+    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied($event)" [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
   </div>
 </div>
 
@@ -79,3 +79,12 @@
     </div>
   </form>
 </ng-template>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showCopied()">
+  <div role="alert" class="alert alert-info flex flex-row p-1">
+    <span class="text-sm whitespace-pre-wrap" translate>
+      STREAM.sessionIdCopied
+    </span>
+    <button class="btn btn-sm btn-secondary" (click)="dismissToast()" translate>BUTTONS.ok</button>
+  </div>
+</div>
