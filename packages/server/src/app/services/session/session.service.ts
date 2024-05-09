@@ -223,7 +223,7 @@ export class SessionService {
   async deleteUserRoom(userId: string, roomId: string): Promise<void> {
     const broadcastingRooms = await this.broadcasts.find({roomId, endTime: undefined })
     if (broadcastingRooms.length) {
-      throw new HttpException(`Unable to update room with broadcast in progress.`, HttpStatus.CONFLICT);
+      throw new HttpException(`Unable to delete room with broadcast in progress.`, HttpStatus.FORBIDDEN);
     }
 
     const roomModel: OwnerRoomDocument = await this.rooms.findOne({userId, roomId });
