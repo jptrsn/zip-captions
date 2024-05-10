@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-CA"
+early_access: false
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false
+  path_instructions:
+    - path: "packages/client/**/*.spec.ts"
+      instructions: 
+        "Assess the unit test code employing the Jest testing framework. Test descriptions must be sufficiently detailed to clarify the purpose of each test."
+      
+chat:
+  auto_reply: true
