@@ -59,7 +59,6 @@ export class SessionService {
         broadcast = await this.broadcasts.findOne({ roomId: payload.room, hostUserId: userId, endTime: undefined })
       } else {
         // Joining a room as a viewer
-        console.log('joining as viewer', userId, payload.room);
         room = await this.rooms.findOne({ roomId: payload.room });
         broadcast = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
         if (!broadcast) {
@@ -85,6 +84,9 @@ export class SessionService {
     // We are creating an ephemeral room for this session
     if (!room) {
       room = new this.rooms({ userId, roomId: this.generateRandomRoomId(false), allowAnonymous: payload.allowAnonymous });
+      await room.save();
+    } else if (room.allowAnonymous !== payload.allowAnonymous && payload.myBroadcast) {
+      room.allowAnonymous = payload.allowAnonymous;
       await room.save();
     }
 
