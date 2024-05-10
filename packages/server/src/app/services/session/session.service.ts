@@ -220,6 +220,19 @@ export class SessionService {
     return roomModel.toObject();
   }
 
+  async deleteUserRoom(userId: string, roomId: string): Promise<void> {
+    const broadcastingRooms = await this.broadcasts.find({roomId, endTime: undefined })
+    if (broadcastingRooms.length) {
+      throw new HttpException(`Unable to delete room with broadcast in progress.`, HttpStatus.FORBIDDEN);
+    }
+
+    const roomModel: OwnerRoomDocument = await this.rooms.findOne({userId, roomId });
+    if (!roomModel) {
+      throw new HttpException(`Room not found`, HttpStatus.NOT_FOUND);
+    }
+    await roomModel.deleteOne()
+  }
+
   async getUserFromClientId(clientId: string): Promise<string | undefined> {
     const userId = await this._getClientUserId(clientId);
     if (userId) {

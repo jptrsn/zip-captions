@@ -2,11 +2,17 @@ import { AfterViewInit, Component, EventEmitter, Input, Output, WritableSignal, 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserRoom } from '../../../../reducers/user.reducer';
 import { UserService } from '../../../user/services/user.service';
+import { IClipboardResponse } from 'ngx-clipboard';
+import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-room-card',
   templateUrl: './room-card.component.html',
   styleUrls: ['./room-card.component.scss'],
+  animations: [
+    slideInUpOnEnterAnimation(),
+    fadeOutOnLeaveAnimation(),
+  ]
 })
 export class RoomCardComponent implements AfterViewInit {
   @Input({ required: false }) room?: UserRoom;
@@ -14,10 +20,11 @@ export class RoomCardComponent implements AfterViewInit {
   @Input({ required: false }) set showEdit(visible: boolean) {
     this.editMode.set(visible);
   }
-  @Output() editClosed: EventEmitter<void> = new EventEmitter<void>();
+  @Output() editClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
   
   public roomFormGroup: FormGroup;
   public editMode: WritableSignal<boolean> = signal(false);
+  public showCopied: WritableSignal<boolean> = signal(false);
   public roomIdsList: WritableSignal<string[] | undefined> = signal(undefined);
   public loading: WritableSignal<boolean> = signal(false);
 
@@ -51,7 +58,7 @@ export class RoomCardComponent implements AfterViewInit {
 
   closeEditMode(): void {
     this.editMode.set(false);
-    this.editClosed.next();
+    this.editClosed.next(false);
   }
 
   deleteRoom(roomId: string): void {
@@ -60,7 +67,7 @@ export class RoomCardComponent implements AfterViewInit {
     }
     this.userService.deleteUserRoom(roomId).subscribe(() => {
       this.room = undefined;
-      this.closeEditMode();
+      this.editClosed.next(true);
     })
   }
 
@@ -93,4 +100,12 @@ export class RoomCardComponent implements AfterViewInit {
     }
   }
 
+  copied() {
+    this.showCopied.set(true);
+    setTimeout(() => this.showCopied.set(false), 1500);
+  }
+
+  dismissToast() {
+    this.showCopied.set(false);
+  }
 }
