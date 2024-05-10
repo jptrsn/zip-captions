@@ -252,38 +252,92 @@
     "warning": "Per ottenere risultati ottimali, si consiglia di utilizzare Chrome o Safari su desktop."
   },
   "SETTINGS": {
-    "t1": "Anteprima",
-    "p1": "Ogni segmento di testo riconosciuto in precedenza apparirà così",
-    "p2": "Scorrendo dal basso verso l'alto",
-    "p3": "Con ogni nuovo risultato che appare sotto il precedente",
-    "p4": "Il testo in tempo reale viene visualizzato in questo modo"
+    "TABS": {
+      "appearance": "Guarda e senti",
+      "sync": "Sincronizza",
+      "sharing": "Condivisione",
+      "obs": "Studio OBS"
+    },
+    "UI": {
+      "t1": "Anteprima",
+      "p1": "Ogni segmento di testo precedentemente riconosciuto apparirà così.",
+      "p2": "Scorrendo verso l'alto dal basso.",
+      "p3": "Con ogni nuovo risultato visualizzato sotto il precedente.",
+      "p4": "Il testo live viene visualizzato in questo modo"
+    },
+    "SHARING": {
+      "staticRoomHeader": "ID trasmissione statico",
+      "staticRoomP1": "Richiedi il tuo ID di trasmissione statico, in modo da poter utilizzare lo stesso indirizzo per ogni streaming.",
+      "staticRoomP2": "Puoi anche impostare lo streaming come pubblico, in modo che chiunque possa visualizzarlo senza un codice di accesso.",
+      "staticRoomView": "La mia trasmissione",
+      "dynamicRoomView": "Trasmissioni casuali recenti",
+      "loginRequired": "Devi accedere prima di poter salvare le impostazioni di trasmissione personalizzate."
+    },
+    "SYNC": {
+      "header": "Sincronizzazione delle impostazioni di aspetto",
+      "subheader": "Sincronizza l'aspetto dell'applicazione",
+      "noneSaved": "Non hai ancora salvato le impostazioni dell'aspetto",
+      "inSync": "Le tue impostazioni di aspetto sono sincronizzate",
+      "applyGlobally": "Utilizza queste impostazioni ovunque accedo",
+      "viewFor": "Visualizza impostazioni per",
+      "local": "Locale",
+      "server": "Server",
+      "loginRequired": "Devi accedere prima di poter salvare le impostazioni di trasmissione personalizzate."
+    }
   },
   "STREAM": {
+    "TABS": {
+      "broadcast": "Condividere",
+      "view": "Orologio"
+    },
     "serverStatus": "Server di trasmissione",
     "peerStatus": "Connessioni tra pari",
     "sessionId": "ID sessione",
-    "joinCode": "Codice di partecipazione",
+    "joinCode": "Iscriviti al codice",
     "online": "In linea",
-    "offline": "Non in linea",
+    "offline": "Disconnesso",
     "connecting": "Connessione...",
     "connectedPeers": "Spettatori",
     "connected": "Collegato",
-    "createBroadcast": "Inizio trasmissione",
-    "endBroadcast": "Fine trasmissione",
-    "broadcastExplanantion": "Creare una sessione in cui gli utenti possano connettersi e visualizzare le didascalie chiuse, unendosi al proprio dispositivo utilizzando l'ID di sessione e il codice di adesione.",
-    "joinSession": "Unirsi a una sessione",
-    "joinSessionExplanation": "Visualizza le didascalie chiuse di una trasmissione esistente",
-    "joinCodeRequired": "Inserire il codice di adesione corretto per visualizzare la sessione",
-    "noSessionForRoom": "Sembra che non vi sia alcuna sessione ospitata per questo ID.",
+    "createBroadcast": "Avvia trasmissione",
+    "endBroadcast": "Termina trasmissione",
+    "broadcastExplanantion": "Crea una sessione in cui gli utenti possono connettersi e visualizzare i sottotitoli unendosi sul proprio dispositivo utilizzando l'ID sessione e il codice di partecipazione.",
+    "joinSession": "Partecipa a una sessione",
+    "joinSessionExplanation": "Visualizza sottotitoli da una trasmissione esistente",
+    "joinCodeRequired": "Inserisci il codice di accesso corretto per visualizzare la sessione",
+    "noSessionForRoom": "Sembra che non sia ospitata alcuna sessione per questo ID.",
     "hostOffline": "Sembra che l'host della sessione non sia attualmente connesso.",
     "broadcastEnded": "Sembra che questa trasmissione sia terminata",
-    "leaveSession": "Lasciare la sessione",
-    "permissionRequired": "È necessario accettare i rischi della connessione ai peer prima di poter trasmettere o visualizzare.",
-    "copyIdTip": "Copia dell'ID di sessione",
-    "sessionIdCopied": "Copia l'ID della sessione negli appunti",
-    "copyJoinCodeTip": "Copia del codice di adesione",
-    "joinCodeCopied": "Copia del codice di adesione negli appunti",
-    "connectionPendingHint": "Rimanete in attesa mentre ci connettiamo al server di segnalazione in modo che possiate connettervi ad altri dispositivi...."
+    "leaveSession": "Abbandona la sessione",
+    "permissionRequired": "Devi accettare i rischi legati alla connessione ai colleghi prima di poter trasmettere o visualizzare.",
+    "copyIdTip": "Copia ID sessione",
+    "sessionIdCopied": "ID sessione copiato negli appunti",
+    "copyJoinCodeTip": "Copia codice di iscrizione",
+    "joinCodeCopied": "Codice di partecipazione copiato negli appunti",
+    "connectionPendingHint": "Aspetta mentre ci connettiamo al server di segnalazione così potrai connetterti ad altri dispositivi...",
+    "broadcastDetected": "Sembra che tu stia ospitando una trasmissione in un'altra sessione! Abbiamo compilato automaticamente l'ID della stanza per te.",
+    "createAnonymousBroadcast": "Crea trasmissione anonima",
+    "authentication": "Autenticazione",
+    "authDescription": "Richiedi agli spettatori di inserire il codice di iscrizione",
+    "countdown": "Tempo rimanente",
+    "ROOMCARD": {
+    "broadcastId": "ID trasmissione",
+    "broadcastType": "Tipo di trasmissione",
+    "static": "statico",
+    "random": "randomizzato",
+    "authentication": "Autenticazione",
+    "anonymous": "Anonimo",
+    "allowAnonymous": "Consenti anonimo",
+    "joinCode": "Iscriviti al codice",
+    "requireJoinCode": "Richiedi codice di iscrizione",
+    "created": "Creato",
+    "expires": "Scade",
+    "link": "Collegamento diretto a questa trasmissione",
+    "clickToCopy": "Fai clic per copiare",
+    "copied": "Link copiato negli appunti",
+    "create": "Creane uno nuovo",
+    "changeWarning": "L'ID trasmissione non può essere modificato dopo il salvataggio."
+    }
   },
   "MODAL": {
     "confirmEndBroadcast": "Questo terminerà la trasmissione corrente e disconnetterà tutti i peer",
@@ -337,7 +391,13 @@
     "start": "Avvio",
     "stop": "Stop",
     "logout": "Disconnettersi",
-    "login": "Registrazione"
+    "login": "Registrazione",
+    "ok": "Va bene",
+    "createRoom": "Crea una sessione",
+    "edit": "Modificare",
+    "delete": "Eliminare",
+    "saveCurrent": "Salva corrente",
+    "applySaved": "Applica salvato"
   },
   "LABELS": {
     "menu": "Menu",
@@ -385,6 +445,9 @@
     "liveTextMissing": "Sembra che i risultati del live streaming non siano ancora supportati sulla tua piattaforma.",
     "mobileBroadcast": "La trasmissione non è disponibile da un dispositivo mobile",
     "unsupportedBrowserBroadcast": "La trasmissione non è supportata da questo browser",
+    "required": "Necessario",
+    "invalidUrl": "URL non valido",
+    "invalidId": "ID non valido",
     "RECOGNITION": {
       "no-speech": "Errore di riconoscimento vocale: Non è stato rilevato alcun parlato",
       "aborted": "Errore di riconoscimento vocale: L'input vocale è stato interrotto in qualche modo",
