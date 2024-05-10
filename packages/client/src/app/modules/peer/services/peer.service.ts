@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, 
 import { PeerActions } from '../../../actions/peer.actions';
 import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
-import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected } from '../../../selectors/peer.selectors';
+import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected, selectRoomId } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
 import { selectUserId } from '../../../selectors/user.selector';
 
@@ -30,6 +30,7 @@ export class PeerService {
   private myBroadcast = false;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
+  private roomIdSignal: Signal<string | undefined>;
   private sessionJoinCode: Signal<string | undefined>;
   private allowAnonymous: Signal<boolean | undefined>;
   private socket!: Socket;
@@ -69,7 +70,8 @@ export class PeerService {
       }
     }
     this.peerServerConnected = toSignal(this.store.select(selectPeerServerConnected));
-    this.sessionJoinCode = toSignal(this.store.select(selectJoinCode))
+    this.sessionJoinCode = toSignal(this.store.select(selectJoinCode));
+    this.roomIdSignal = toSignal(this.store.select(selectRoomId));
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
     this.allowAnonymous = toSignal(this.store.select(selectAllowAnonymous));
     this.userId = toSignal(this.store.select(selectUserId))
@@ -115,6 +117,7 @@ export class PeerService {
             // console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
             this.roomId.next(data.room);
+            this.store.dispatch(PeerActions.setRoomId({ id: data.room }));
           }
           break;
         }
@@ -240,7 +243,7 @@ export class PeerService {
       }
       this.store.dispatch(PeerActions.setJoinCode({joinCode}));
     }
-    // TODO: Allow no join code by dispatching anonymous state
+    
     this.socket.volatile().emit('join', { room: data?.roomId, myBroadcast: this.myBroadcast, allowAnonymous: data.allowAnonymous });
     return this.roomId.asObservable().pipe(filter((v) => !!v)) as Observable<string>;
   }
@@ -319,7 +322,7 @@ export class PeerService {
   endBroadcast(): Observable<void> {
     const sub = new ReplaySubject<void>();
     const fromCache = this.cache.load<{room: string; myBroadcast?: boolean}>('roomId');
-    const room: string | undefined = fromCache?.room;
+    const room: string | undefined = this.roomIdSignal() || fromCache?.room;
     if (!room) {
       throw new Error('No room defined for broadcast');
     }
