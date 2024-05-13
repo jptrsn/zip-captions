@@ -252,38 +252,92 @@
     "warning": "Um optimale Ergebnisse zu erzielen, empfehlen wir die Verwendung von Chrome oder Safari auf dem Desktop."
   },
   "SETTINGS": {
-    "t1": "Vorschau",
-    "p1": "Jedes Segment des zuvor erkannten Textes wird wie folgt aussehen.",
-    "p2": "Von unten nach oben blättern.",
-    "p3": "Jedes neue Ergebnis erscheint unterhalb des vorherigen.",
-    "p4": "Live-Ergebnisse sehen so aus"
+    "TABS": {
+      "appearance": "Sehen und fühlen",
+      "sync": "Synchronisieren",
+      "sharing": "Teilen",
+      "obs": "OBS Studio"
+    },
+    "UI": {
+      "t1": "Vorschau",
+      "p1": "Jedes Segment des zuvor erkannten Textes wird so angezeigt.",
+      "p2": "Von unten nach oben scrollen.",
+      "p3": "Jedes neue Ergebnis erscheint unter dem vorherigen.",
+      "p4": "Live-Textsendungen wie diese"
+    },
+    "SHARING": {
+      "staticRoomHeader": "Statische Broadcast-ID",
+      "staticRoomP1": "Fordern Sie Ihre eigene statische Broadcast-ID an, damit Sie für jeden Stream dieselbe Adresse verwenden können.",
+      "staticRoomP2": "Sie können den Stream auch auf öffentlich einstellen, sodass jeder ihn ohne Beitrittscode ansehen kann.",
+      "staticRoomView": "Meine Sendung",
+      "dynamicRoomView": "Neueste randomisierte Sendungen",
+      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte Broadcast-Einstellungen speichern können."
+    },
+    "SYNC": {
+      "header": "Synchronisierung der Darstellungseinstellungen",
+      "subheader": "Das Erscheinungsbild der Anwendung synchronisieren",
+      "noneSaved": "Sie haben die Darstellungseinstellungen noch nicht gespeichert",
+      "inSync": "Ihre Darstellungseinstellungen sind synchronisiert",
+      "applyGlobally": "Verwenden Sie diese Einstellungen überall dort, wo ich mich anmelde",
+      "viewFor": "Einstellungen anzeigen für",
+      "local": "Lokal",
+      "server": "Server",
+      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte Broadcast-Einstellungen speichern können."
+    }
   },
   "STREAM": {
+    "TABS": {
+      "broadcast": "Aktie",
+      "view": "Betrachten"
+      },
     "serverStatus": "Broadcast-Server",
     "peerStatus": "Peer-Verbindungen",
-    "sessionId": "Sitzungs-ID",
-    "joinCode": "Beitritts-Code",
+    "sessionId": "Session-ID",
+    "joinCode": "Beitrittscode",
     "online": "Online",
     "offline": "Offline",
-    "connecting": "Verbinden...",
-    "connectedPeers": "Betrachter",
-    "connected": "Verbunden",
-    "createBroadcast": "Sendung starten",
-    "endBroadcast": "Sendung beenden",
-    "broadcastExplanantion": "Erstellen Sie eine Sitzung, in der Benutzer eine Verbindung herstellen und Untertitel anzeigen können, indem sie mit ihrem eigenen Gerät unter Verwendung der Sitzungs-ID und des Beitrittscodes beitreten.",
+    "connecting": "Verbinden…",
+    "connectedPeers": "Zuschauer",
+    "connected": "In Verbindung gebracht",
+    "createBroadcast": "Übertragung starten",
+    "endBroadcast": "Übertragung beenden",
+    "broadcastExplanantion": "Erstellen Sie eine Sitzung, in der Benutzer eine Verbindung herstellen und Untertitel ansehen können, indem sie auf ihrem eigenen Gerät mit der Sitzungs-ID und dem Beitrittscode beitreten.",
     "joinSession": "An einer Sitzung teilnehmen",
-    "joinSessionExplanation": "Anzeigen von Untertiteln einer bestehenden Sendung",
-    "joinCodeRequired": "Bitte geben Sie den richtigen Beitrittscode ein, um die Sitzung anzuzeigen",
+    "joinSessionExplanation": "Untertitel einer vorhandenen Sendung anzeigen",
+    "joinCodeRequired": "Bitte geben Sie den richtigen Beitrittscode ein, um die Sitzung anzusehen",
     "noSessionForRoom": "Es sieht so aus, als ob für diese ID keine Sitzung gehostet wird.",
     "hostOffline": "Es sieht so aus, als ob der Sitzungshost derzeit nicht verbunden ist.",
-    "broadcastEnded": "Es sieht so aus, als ob diese Sendung beendet wurde.",
+    "broadcastEnded": "Es sieht so aus, als wäre diese Sendung zu Ende",
     "leaveSession": "Sitzung verlassen",
-    "permissionRequired": "Sie müssen die Risiken einer Verbindung zu Peers akzeptieren, bevor Sie senden oder anzeigen können.",
+    "permissionRequired": "Sie müssen die Risiken akzeptieren, die mit der Verbindung zu Gleichgesinnten einhergehen, bevor Sie etwas senden oder ansehen können.",
     "copyIdTip": "Sitzungs-ID kopieren",
-    "sessionIdCopied": "Kopieren Sie die Sitzungs-ID in Ihre Zwischenablage",
-    "copyJoinCodeTip": "Verbindungscode kopieren",
-    "joinCodeCopied": "Kopiert den Beitrittscode in die Zwischenablage",
-    "connectionPendingHint": "Bleiben Sie dran, während wir eine Verbindung zum Signalisierungsserver herstellen, damit Sie sich mit anderen Geräten verbinden können..."
+    "sessionIdCopied": "Sitzungs-ID in Ihre Zwischenablage kopiert",
+    "copyJoinCodeTip": "Beitrittscode kopieren",
+    "joinCodeCopied": "Beitrittscode in Ihre Zwischenablage kopiert",
+    "connectionPendingHint": "Warten Sie, während wir uns mit dem Signalisierungsserver verbinden, damit Sie sich mit anderen Geräten verbinden können ...",
+    "broadcastDetected": "Es sieht so aus, als würden Sie eine Übertragung in einer anderen Sitzung moderieren! Wir haben die Raum-ID automatisch für Sie ausgefüllt.",
+    "createAnonymousBroadcast": "Anonyme Übertragung erstellen",
+    "authentication": "Authentifizierung",
+    "authDescription": "Zuschauer müssen einen Beitrittscode eingeben",
+    "countdown": "Verbleibende Zeit",
+    "ROOMCARD": {
+      "broadcastId": "Broadcast-ID",
+      "broadcastType": "Broadcast-Typ",
+      "static": "statisch",
+      "random": "zufällig",
+      "authentication": "Authentifizierung",
+      "anonymous": "Anonym",
+      "allowAnonymous": "Anonym zulassen",
+      "joinCode": "Beitrittscode",
+      "requireJoinCode": "Beitrittscode erforderlich",
+      "created": "Erstellt",
+      "expires": "Läuft ab",
+      "link": "Direkter Link zu dieser Sendung",
+      "clickToCopy": "Zum Kopieren klicken",
+      "copied": "Link in die Zwischenablage kopiert",
+      "create": "Erstelle eine neue",
+      "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden."
+    }
   },
   "MODAL": {
     "confirmEndBroadcast": "Dadurch wird die aktuelle Übertragung beendet und die Verbindung zu allen Teilnehmern getrennt.",
@@ -337,7 +391,13 @@
     "start": "Start",
     "stop": "Stopp",
     "logout": "Ausloggen",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "ok": "Okay",
+    "createRoom": "Eine Sitzung erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "saveCurrent": "Aktuell speichern",
+    "applySaved": "Gespeichert anwenden"
   },
   "LABELS": {
     "menu": "Menü",
@@ -385,6 +445,9 @@
     "liveTextMissing": "Es scheint, dass Live-Streaming-Ergebnisse auf Ihrer Plattform noch nicht unterstützt werden",
     "mobileBroadcast": "Die Übertragung ist von einem mobilen Gerät aus nicht verfügbar",
     "unsupportedBrowserBroadcast": "Broadcasting wird von diesem Browser nicht unterstützt.",
+    "required": "Erforderlich",
+    "invalidUrl": "Ungültige URL",
+    "invalidId": "Ungültige ID",
     "RECOGNITION": {
       "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
       "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",

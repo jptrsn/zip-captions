@@ -252,13 +252,44 @@
     "warning": "Para obtener resultados óptimos, recomendamos utilizar Chrome o Safari en Desktop."
   },
   "SETTINGS": {
-    "t1": "Vista previa",
-    "p1": "Cada segmento de texto reconocido previamente aparecerá así",
-    "p2": "Desplazándose hacia arriba desde abajo",
-    "p3": "Con cada nuevo resultado apareciendo debajo del anterior",
-    "p4": "Texto en directo se muestra así"
+    "TABS": {
+      "appearance": "Mira y siente",
+      "sync": "Sincronización",
+      "sharing": "Intercambio",
+      "obs": "Estudio OBS"
+    },
+    "UI": {
+      "t1": "Avance",
+      "p1": "Cada segmento de texto previamente reconocido aparecerá así.",
+      "p2": "Desplazándose hacia arriba desde abajo.",
+      "p3": "Con cada nuevo resultado apareciendo debajo del anterior.",
+      "p4": "El texto en vivo se muestra así"
+    },
+    "SHARING": {
+      "staticRoomHeader": "ID de transmisión estática",
+      "staticRoomP1": "Reclama tu propia ID de transmisión estática, para que puedas usar la misma dirección para cada transmisión.",
+      "staticRoomP2": "También puedes configurar la transmisión como pública, para que cualquiera pueda verla sin un código de inscripción.",
+      "staticRoomView": "Mi transmisión",
+      "dynamicRoomView": "Transmisiones aleatorias recientes",
+      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración de transmisión personalizada"
+    },
+    "SYNC": {
+      "header": "Sincronización de configuración de apariencia",
+      "subheader": "Sincronizar la apariencia de la aplicación",
+      "noneSaved": "Aún no has guardado la configuración de apariencia",
+      "inSync": "Tus configuraciones de apariencia están sincronizadas",
+      "applyGlobally": "Usar esta configuración en todos los lugares donde inicio sesión",
+      "viewFor": "Ver configuración para",
+      "local": "Local",
+      "server": "Servidor",
+      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración de transmisión personalizada"
+    }
   },
   "STREAM": {
+    "TABS": {
+      "broadcast": "Share",
+      "view": "Watch"
+    },
     "serverStatus": "Servidor de difusión",
     "peerStatus": "Conexiones de pares",
     "sessionId": "ID de sesión",
@@ -283,7 +314,30 @@
     "sessionIdCopied": "Copia el ID de sesión en el portapapeles",
     "copyJoinCodeTip": "Copiar código de unión",
     "joinCodeCopied": "Copiar código de conexión al portapapeles",
-    "connectionPendingHint": "Espere mientras nos conectamos al servidor de señalización para que pueda conectarse a otros dispositivos..."
+    "connectionPendingHint": "Espere mientras nos conectamos al servidor de señalización para que pueda conectarse a otros dispositivos...",
+    "broadcastDetected": "¡Parece que estás presentando una transmisión en otra sesión! Hemos completado automáticamente el ID de la sala para ti.",
+    "createAnonymousBroadcast": "Crear transmisión anónima",
+    "authentication": "Autenticación",
+    "authDescription": "Requerir que los espectadores ingresen el código para unirse",
+    "countdown": "Tiempo restante",
+    "ROOMCARD": {
+      "broadcastId": "ID de transmisión",
+      "broadcastType": "Tipo de transmisión",
+      "static": "estático",
+      "random": "aleatorizado",
+      "authentication": "Autenticación",
+      "anonymous": "Anónimo",
+      "allowAnonymous": "Permitir anónimos",
+      "joinCode": "Código de unión",
+      "requireJoinCode": "Requerir código de unión",
+      "created": "Creado",
+      "expires": "Expira",
+      "link": "Enlace directo a esta transmisión",
+      "clickToCopy": "Haga clic para copiar",
+      "copied": "Enlace copiado al portapapeles",
+      "create": "Crear un nuevo",
+      "changeWarning": "La ID de transmisión no se puede cambiar después de guardar"
+    }
   },
   "MODAL": {
     "confirmEndBroadcast": "Esto terminará la transmisión actual y desconectará a todos los pares",
@@ -337,7 +391,13 @@
     "start": "Start",
     "stop": "Parar",
     "logout": "Cerrar Sesión",
-    "login": "Iniciar Sesión"
+    "login": "Iniciar Sesión",
+    "ok": "Bueno",
+    "createRoom": "Crear una Sesión",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "saveCurrent": "Guardar Actual",
+    "applySaved": "Aplicar Guardado"
   },
   "LABELS": {
     "menu": "Menu",
@@ -385,6 +445,9 @@
     "liveTextMissing": "Parece que los resultados de transmisión en vivo aún no son compatibles con su plataforma",
     "mobileBroadcast": "La emisión no está disponible desde un dispositivo móvil",
     "unsupportedBrowserBroadcast": "La emisión no es compatible con este navegador",
+    "required": "Requerido",
+    "invalidUrl": "URL invalida",
+    "invalidId": "Identificación invalida",
     "RECOGNITION": {
       "no-speech": "Error de reconocimiento de voz: No se detectó habla",
       "aborted": "Error de reconocimiento de voz: La entrada de voz se abortó de alguna manera",

@@ -19,9 +19,9 @@ export const selectUserSavedSettings = createSelector(
   (state) => state.uiSettings
 )
 
-export const selectUserMetadata = createSelector(
+export const selectUserRooms = createSelector(
   selectUserState,
-  (state) => state.metadata
+  (state) => state.rooms
 )
 
 export const selectUserSettingsSync = createSelector(

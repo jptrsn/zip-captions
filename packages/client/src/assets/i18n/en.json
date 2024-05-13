@@ -252,13 +252,44 @@
     "warning": "For optimal results, we recommend using Chrome or Safari on Desktop."
   },
   "SETTINGS": {
-    "t1": "Preview",
-    "p1": "Each segment of previously-recognized text will appear like this.",
-    "p2": "Scrolling up from the bottom.",
-    "p3": "With each new result appearing underneath the previous.",
-    "p4": "Live text shows like this"
+    "TABS": {
+      "appearance": "Look & Feel",
+      "sync": "Sync",
+      "sharing": "Sharing",
+      "obs": "OBS Studio"
+    },
+    "UI": {
+      "t1": "Preview",
+      "p1": "Each segment of previously-recognized text will appear like this.",
+      "p2": "Scrolling up from the bottom.",
+      "p3": "With each new result appearing underneath the previous.",
+      "p4": "Live text shows like this"
+    },
+    "SHARING": {
+      "staticRoomHeader": "Static Broadcast ID",
+      "staticRoomP1": "Claim your own static broadcast ID, so you can use the same address for every stream.",
+      "staticRoomP2": "You can also set the stream to public, so anyone can view without a join code.",
+      "staticRoomView": "My Broadcast",
+      "dynamicRoomView": "Recent Randomized Broadcasts",
+      "loginRequired": "You must log in before you can save custom broadcast settings."
+    },
+    "SYNC": {
+      "header": "Appearance Settings Sync",
+      "subheader": "Synchronize the appearance of the application",
+      "noneSaved": "You have not yet saved appearance settings",
+      "inSync": "Your appearance settings are in sync",
+      "applyGlobally": "Use these settings everywhere I log in",
+      "viewFor": "View settings for",
+      "local": "Local",
+      "server": "Server",
+      "loginRequired": "You must log in before you can save custom broadcast settings."
+    }
   },
   "STREAM": {
+    "TABS": {
+      "broadcast": "Share",
+      "view": "Watch"
+    },
     "serverStatus": "Broadcast Server",
     "peerStatus": "Peer Connections",
     "sessionId": "Session ID",
@@ -283,7 +314,30 @@
     "sessionIdCopied": "Copied session ID to your clipboard",
     "copyJoinCodeTip": "Copy join code",
     "joinCodeCopied": "Copied join code to your clipboard",
-    "connectionPendingHint": "Hang on while we connect to the signaling server so you can connect to other devices..."
+    "connectionPendingHint": "Hang on while we connect to the signaling server so you can connect to other devices...",
+    "broadcastDetected": "It looks like you are hosting a broadcast in another session! We have automatically filled the room ID for you.",
+    "createAnonymousBroadcast": "Create Anonymous Broadcast",
+    "authentication": "Authentication",
+    "authDescription": "Require viewers to enter join code",
+    "countdown": "Time remaining",
+    "ROOMCARD": {
+      "broadcastId": "Broadcast ID",
+      "broadcastType": "Broadcast Type",
+      "static": "static",
+      "random": "randomized",
+      "authentication": "Authentication",
+      "anonymous": "Anonymous",
+      "allowAnonymous": "Allow Anonymous",
+      "joinCode": "Join Code",
+      "requireJoinCode": "Require Join Code",
+      "created": "Created",
+      "expires": "Expires",
+      "link": "Direct link to this broadcast",
+      "clickToCopy": "Click to copy",
+      "copied": "Link copied to clipboard",
+      "create": "Create a new",
+      "changeWarning": "The broadcast ID cannot be changed after saving."
+    }
   },
   "MODAL": {
     "confirmEndBroadcast": "This will end the current broadcast and disconnect all peers.",
@@ -337,7 +391,13 @@
     "start": "Start",
     "stop": "Stop",
     "logout": "Log Out",
-    "login": "Login"
+    "login": "Login",
+    "ok": "Okay",
+    "createRoom": "Create a Session",
+    "edit": "Edit",
+    "delete": "Delete",
+    "saveCurrent": "Save Current",
+    "applySaved": "Apply Saved"
   },
   "LABELS": {
     "menu": "Menu",
@@ -385,6 +445,9 @@
     "liveTextMissing": "It appears that live streaming results are not yet supported on your platform.",
     "mobileBroadcast": "Broadcasting is not available from a mobile device.",
     "unsupportedBrowserBroadcast": "Broadcasting is not supported from this browser.",
+    "required": "Required",
+    "invalidUrl": "Invalid URL",
+    "invalidId": "Invalid ID",
     "RECOGNITION": {
       "no-speech": "Speech recognition error: No speech was detected.",
       "aborted": "Speech recognition error: Speech input was aborted in some manner.",

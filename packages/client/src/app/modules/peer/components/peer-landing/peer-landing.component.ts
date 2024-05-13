@@ -1,9 +1,9 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, Signal, ViewChild, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, take } from 'rxjs';
+import { Observable, filter, map, startWith, take, tap } from 'rxjs';
 import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
@@ -21,7 +21,6 @@ import { recognitionActiveSelector } from '../../../../selectors/recognition.sel
   styleUrls: ['./peer-landing.component.scss'],
 })
 export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
-  @HostListener('window:beforeunload')
   @ViewChild('broadcastOpen') broadcastCheckbox!: ElementRef<HTMLInputElement>;
   public acceptedPeerConnections: Signal<boolean | undefined>;
   public socketServerConnected: Signal<boolean | undefined>;
@@ -39,7 +38,12 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
   public joinSessionFormGroup = this.fb.group({
     session: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateSessionId(ctrl)]),
     joinCode: this.fb.control<string>('', [Validators.required, (ctrl) => this._validateJoinCode(ctrl)])
-  })
+  });
+
+  public tabsControl: FormControl;
+  public tabIndex: Signal<number>;
+
+  public tabNames: string[];
 
   constructor(private store: Store<AppState>,
               private fb: FormBuilder,
@@ -66,7 +70,30 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
       if (this.acceptedPeerConnections() && !this.socketServerConnected()) {
         this.store.dispatch(PeerActions.connectSocketServer())
       }
-    }, { allowSignalWrites: true})
+    }, { allowSignalWrites: true});
+
+    // Mobile devices cannot broadcast to peers
+    this.tabNames = [
+      'view',
+      'broadcast',
+    ];
+
+    if (this.isMobileDevice()) {
+      this.tabNames = ['view']
+    }
+
+    // The modulus operator here makes sure that the index is always less than the length of the array of tab names
+    const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
+    this.tabsControl = this.fb.control(initialTabIndex)
+    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
+      takeUntilDestroyed(), 
+      tap((index) => {
+        const params = { tabIndex: index };
+        this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
+      }),
+      startWith(initialTabIndex)
+    )) as Signal<number>;
+
   }
 
   ngOnDestroy(): void {
@@ -81,12 +108,11 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     ).subscribe(() => this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'})))
   }
 
+  @HostListener('window:beforeunload')
   canDeactivate(): boolean | Observable<boolean> {
-    return !toSignal(this.store.select(selectIsBroadcasting))();
-  }
-
-  createRoom() {
-    this.store.dispatch(PeerActions.createBroadcastRoom());
+    const isBusy = this.isBroadcasting();
+    console.log('isBusy', isBusy)
+    return !isBusy;
   }
 
   joinSession(): boolean {
@@ -104,7 +130,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
 
   private _validateSessionId(control: AbstractControl): ValidationErrors | null {
     if (control.value) {
-      const exp = new RegExp(/^([acdefghjkmnpqrstuvwxyz2345679]{4})-([acdefghjkmnpqrstuvwxyz2345679]{4})$/i)
+      const exp = new RegExp(/^([acdefghjkmnpqrstuvwxyz2345679]{2})-([acdefghjkmnpqrstuvwxyz2345679]{4})-([acdefghjkmnpqrstuvwxyz2345679]{4})$/i)
       if (!exp.test(control.value)) {
         return { invalid: true }
       }
@@ -124,15 +150,18 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
 
   private _injectDashIfRequired(): void {
     const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
-
+    const dashIndexes = [2, 7]
     sessionControl.valueChanges.pipe(
       takeUntilDestroyed(),
     ).subscribe((value) => {
-      if (value && value.length > 4) {
-        if (value[4] !== '-') {
-          sessionControl.setValue(value.slice(0,4) + '-' + value.slice(4, value.length))
+      for (const i of dashIndexes) {
+        if (value && value.length > i) {
+          if (value[i] !== '-') {
+            sessionControl.setValue(value.slice(0,i) + '-' + value.slice(i, value.length))
+          }
         }
       }
+      
     })
   }
 }

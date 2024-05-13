@@ -252,38 +252,92 @@
     "warning": "Untuk hasil yang optimal, kami sarankan menggunakan Chrome atau Safari di Desktop."
   },
   "SETTINGS": {
-    "t1": "Pratinjau",
-    "p1": "Setiap segmen teks yang sebelumnya diakui akan muncul seperti ini.",
-    "p2": "Menggulir dari bawah.",
-    "p3": "Dengan setiap hasil baru muncul di bawah yang sebelumnya.",
-    "p4": "Teks Langsung Pertunjukan Seperti Ini"
+    "TABS": {
+      "appearance": "Lihat & Rasakan",
+      "sync": "Sinkronisasi",
+      "sharing": "Membagikan",
+      "obs": "OBS Studio"
+    },
+    "UI": {
+      "t1": "Pratinjau",
+      "p1": "Setiap segmen teks yang dikenali sebelumnya akan muncul seperti ini.",
+      "p2": "Gulir ke atas dari bawah.",
+      "p3": "Dengan setiap hasil baru muncul di bawah hasil sebelumnya.",
+      "p4": "Teks langsung ditampilkan seperti ini"
+    },
+    "SHARING": {
+      "staticRoomHeader": "ID Siaran Statis",
+      "staticRoomP1": "Klaim ID siaran statis Anda sendiri, sehingga Anda dapat menggunakan alamat yang sama untuk setiap streaming.",
+      "staticRoomP2": "Anda juga dapat mengatur streaming ke publik, sehingga siapa pun dapat melihat tanpa kode bergabung.",
+      "staticRoomView": "Siaran Saya",
+      "dynamicRoomView": "Siaran Acak Terbaru",
+      "loginRequired": "Anda harus masuk sebelum dapat menyimpan pengaturan siaran khusus."
+    },
+    "SYNC": {
+      "header": "Sinkronisasi Pengaturan Penampilan",
+      "subheader": "Sinkronkan tampilan aplikasi",
+      "noneSaved": "Anda belum menyimpan pengaturan tampilan",
+      "inSync": "Pengaturan penampilanmu sudah sinkron",
+      "applyGlobally": "Gunakan pengaturan ini di mana pun saya masuk",
+      "viewFor": "Lihat pengaturan untuk",
+      "local": "Lokal",
+      "server": "Pelayanan",
+      "loginRequired": "Anda harus masuk sebelum dapat menyimpan pengaturan siaran khusus."
+    }
   },
   "STREAM": {
-    "serverStatus": "Server siaran",
-    "peerStatus": "Koneksi Peer",
-    "sessionId": "ID sesi",
-    "joinCode": "Bergabunglah dengan kode",
+    "TABS": {
+      "broadcast": "Membagikan",
+      "view": "Jam tangan"
+    },
+    "serverStatus": "Server Penyiaran",
+    "peerStatus": "Koneksi Rekan",
+    "sessionId": "ID Sesi",
+    "joinCode": "Gabung Kode",
     "online": "On line",
-    "offline": "Offline",
-    "connecting": "Menghubungkan ...",
+    "offline": "Luring",
+    "connecting": "Menghubungkan...",
     "connectedPeers": "Pemirsa",
     "connected": "Terhubung",
-    "createBroadcast": "Mulai siarkan",
-    "endBroadcast": "Akhiri siaran",
-    "broadcastExplanantion": "Buat sesi di mana pengguna dapat menghubungkan dan melihat penutupan tertutup dengan bergabung di perangkat mereka sendiri menggunakan ID sesi dan bergabung dengan kode.",
-    "joinSession": "Bergabunglah dengan sesi",
-    "joinSessionExplanation": "Lihat keterangan tertutup dari siaran yang ada",
-    "joinCodeRequired": "Harap masukkan kode gabungan yang benar untuk melihat sesi",
-    "noSessionForRoom": "Sepertinya tidak ada sesi yang di -host untuk ID ini.",
+    "createBroadcast": "Mulai Siaran",
+    "endBroadcast": "Akhiri Siaran",
+    "broadcastExplanantion": "Buat sesi di mana pengguna dapat terhubung dan melihat teks dengan bergabung di perangkat mereka sendiri menggunakan ID sesi dan kode bergabung.",
+    "joinSession": "Bergabunglah dalam sesi",
+    "joinSessionExplanation": "Melihat teks dari siaran yang ada",
+    "joinCodeRequired": "Silakan masukkan kode bergabung yang benar untuk melihat sesi",
+    "noSessionForRoom": "Sepertinya tidak ada sesi yang diselenggarakan untuk ID ini.",
     "hostOffline": "Sepertinya host sesi saat ini tidak terhubung.",
-    "broadcastEnded": "Sepertinya siaran ini berakhir",
+    "broadcastEnded": "Sepertinya siaran ini sudah berakhir",
     "leaveSession": "Tinggalkan sesi",
-    "permissionRequired": "Anda harus menerima risiko terhubung ke rekan sebelum Anda dapat menyiarkan atau melihat.",
-    "copyIdTip": "Salin ID Sesi",
-    "sessionIdCopied": "ID sesi yang disalin ke clipboard Anda",
-    "copyJoinCodeTip": "Salin Kode Bergabung",
-    "joinCodeCopied": "Disalin Kode Bergabung ke Clipboard Anda",
-    "connectionPendingHint": "Tunggu saat kami terhubung ke server pensinyalan sehingga Anda dapat terhubung ke perangkat lain ..."
+    "permissionRequired": "Anda harus menerima risiko terhubung dengan rekan-rekan sebelum Anda dapat menyiarkan atau menonton.",
+    "copyIdTip": "Salin ID sesi",
+    "sessionIdCopied": "Menyalin ID sesi ke clipboard Anda",
+    "copyJoinCodeTip": "Salin kode gabung",
+    "joinCodeCopied": "Menyalin kode gabung ke clipboard Anda",
+    "connectionPendingHint": "Tunggu sementara kita terhubung ke server sinyal sehingga Anda dapat terhubung ke perangkat lain...",
+    "broadcastDetected": "Sepertinya Anda mengadakan siaran di sesi lain! Otomatis kami sudah mengisi ID ruangan untuk Anda.",
+    "createAnonymousBroadcast": "Buat Siaran Anonim",
+    "authentication": "Autentikasi",
+    "authDescription": "Wajibkan pemirsa untuk memasukkan kode bergabung",
+    "countdown": "Waktu yang tersisa",
+    "ROOMCARD": {
+    "broadcastId": "ID Siaran",
+    "broadcastType": "Jenis Siaran",
+    "static": "statis",
+    "random": "acak",
+    "authentication": "Autentikasi",
+    "anonymous": "Anonim",
+    "allowAnonymous": "Izinkan Anonim",
+    "joinCode": "Gabung Kode",
+    "requireJoinCode": "Memerlukan Kode Gabung",
+    "created": "Dibuat",
+    "expires": "Kedaluwarsa",
+    "link": "Tautan langsung ke siaran ini",
+    "clickToCopy": "Klik untuk menyalin",
+    "copied": "Tautan disalin ke papan klip",
+    "create": "Buat yang baru",
+    "changeWarning": "ID siaran tidak dapat diubah setelah disimpan."
+    }
   },
   "MODAL": {
     "confirmEndBroadcast": "Ini akan mengakhiri siaran saat ini dan memutuskan semua rekan.",
@@ -313,9 +367,7 @@
     "donate": "Menyumbangkan",
     "stream": "Membagikan",
     "forum": "Forum",
-    "auth": "Akun Saya",
-    "logout": "Keluar",
-    "login": "Masuk"
+    "auth": "Akun Saya"
   },
   "FOOTER": {
     "copyright": "Hak cipta"
@@ -337,7 +389,15 @@
     "reconnect": "Hubungkan kembali",
     "goBack": "Kembali",
     "start": "Awal",
-    "stop": "Berhenti"
+    "stop": "Berhenti",
+    "logout": "Keluar",
+    "login": "Gabung",
+    "ok": "Oke",
+    "createRoom": "Buat Sesi",
+    "edit": "Sunting",
+    "delete": "Menghapus",
+    "saveCurrent": "Hemat Saat Ini",
+    "applySaved": "Terapkan Disimpan"
   },
   "LABELS": {
     "menu": "Menu",
@@ -385,6 +445,9 @@
     "liveTextMissing": "Tampaknya hasil streaming langsung belum didukung di platform Anda.",
     "mobileBroadcast": "Penyiaran tidak tersedia dari perangkat seluler.",
     "unsupportedBrowserBroadcast": "Penyiaran tidak didukung dari browser ini.",
+    "required": "Diperlukan",
+    "invalidUrl": "URL tidak valid",
+    "invalidId": "ID tidak valid",
     "RECOGNITION": {
       "no-speech": "Kesalahan Pengenalan Pidato: Tidak ada pidato yang terdeteksi.",
       "aborted": "Kesalahan Pengenalan Pidato: Input ucapan dibatalkan dalam beberapa cara.",

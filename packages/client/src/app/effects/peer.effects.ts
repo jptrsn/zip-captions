@@ -47,7 +47,7 @@ export class PeerEffects {
   createRoom$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PeerActions.createBroadcastRoom),
-      switchMap(() => this.peerService.joinRoom()),
+      switchMap((value: { allowAnonymous: boolean, myBroadcast?: boolean, roomId?: string }) => this.peerService.joinRoom(value)),
       map((id) => PeerActions.createBroadcastRoomSuccess({id})),
       catchError((err: any) => of(PeerActions.createBroadcastRoomFailure({error: err.message})))
     )
@@ -56,7 +56,7 @@ export class PeerEffects {
   joinRoom$ = createEffect(() => 
     this.actions$.pipe(
       ofType(PeerActions.joinBroadcastRoom),
-      switchMap(({id}) => this.peerService.joinRoom({room: id})),
+      switchMap(({id}) => this.peerService.joinRoom({roomId: id})),
       map(() => PeerActions.joinBroadcastRoomSuccess()),
       catchError((error: any) => of(PeerActions.joinBroadcastRoomFailure({error: error.message})))
     )
@@ -77,6 +77,14 @@ export class PeerEffects {
       switchMap(() => this.peerService.endBroadcast()),
       map(() => PeerActions.endBroadcastSuccess()),
       catchError((error: any) => of(PeerActions.endBroadcastFailure({error: error.message})))
+    )
+  )
+
+  getBroadcastRooms$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(PeerActions.getBroadcastRooms),
+      map(() => this.peerService.refreshUserRooms()),
+      map(() => PeerActions.getBroadcastRoomsRequested())
     )
   )
 

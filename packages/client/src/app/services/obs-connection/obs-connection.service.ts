@@ -15,6 +15,8 @@ export class ObsConnectionService {
 
   private obs: OBSWebSocket;
   private isStreaming: Signal<boolean | undefined>;
+  private url?: string;
+  private pass?: string;
   constructor(private store: Store<AppState>) { 
     this.obs = new OBSWebSocket();
     this.obs.on('ConnectionClosed', () => this.store.dispatch(ObsActions.disconnectSuccess()))
@@ -24,15 +26,19 @@ export class ObsConnectionService {
   }
 
   connect({ip, port, password}: {ip: string, port: number, password: string | null}): Observable<any> {
-    const url = `ws://${ip}:${port}`;
-    const pass: string | undefined = password ? password : undefined;
-    return from(this.obs.connect(url, pass)).pipe(timeout(5000))
+    this.url = `ws://${ip}:${port}`;
+    this.pass = password ? password : undefined;
+    return from(this.obs.connect(this.url, this.pass)).pipe(timeout(5000))
   }
 
   disconnect(): Observable<void> {
     this.obs.removeListener('ConnectionClosed');
     this.obs.removeListener('ConnectionError');
     return from(this.obs.disconnect());
+  }
+
+  reconnect(): Observable<any> {
+    return from(this.obs.connect(this.url, this.pass)).pipe(timeout(5000))
   }
 
   async sendCaption(captionText: string): Promise<void> {

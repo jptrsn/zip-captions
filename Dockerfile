@@ -13,10 +13,10 @@ CMD [""]
 
 # STAGING
 FROM dev as staging_build_client
-ENV ZIP_SOCKET_SERVER=wss://api.zipcaptions.app
-ENV ZIP_PEER_SERVER=https://api.zipcaptions.app
+ENV ZIP_SOCKET_SERVER=wss://next-api.zipcaptions.app
+ENV ZIP_PEER_SERVER=https://next-api.zipcaptions.app
 ENV ZIP_PEER_PORT=3000
-ENV ZIP_AUTH_API_URL=https://api.zipcaptions.app
+ENV ZIP_AUTH_API_URL=https://next-api.zipcaptions.app
 ENV ZIP_AUTH_API_VERSION=v1
 RUN npm run build:client:staging
 

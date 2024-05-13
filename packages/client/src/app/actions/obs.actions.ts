@@ -4,6 +4,7 @@ export const ObsActions = createActionGroup({
   source: 'Obs',
   events: {
     'Connect': props<{ip: string, port: number, password: string | null}>(),
+    'Reconnect': emptyProps(),
     'Connect Success': emptyProps(),
     'Connect Failure': props<{error: string}>(),
     'Disconnect': emptyProps(),

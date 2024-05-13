@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable, map, tap } from 'rxjs';
 import { UserActions } from '../../../actions/user.actions';
 import { AppState } from '../../../models/app.model';
-import { UserProfile } from '../../../reducers/user.reducer';
+import { UserProfile, UserRoom } from '../../../reducers/user.reducer';
 import { selectUserId } from '../../../selectors/user.selector';
 import { SettingsState } from '../../settings/models/settings.model';
 
@@ -58,6 +58,51 @@ export class UserService {
       throw new Error('No user ID set')
     }
     return this.http.post<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`, { settings })
+  }
+
+  getUserRooms(): Observable<UserRoom[]> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.get<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`)
+  }
+
+  saveUserRooms(rooms: UserRoom[], upsert?: boolean): Observable<UserRoom[]> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.patch<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`, { rooms, upsert })
+  }
+
+  getCandidateRoomIdList(isStatic?: boolean): Observable<string[]> {
+    return this.http.get<string[]>(`${this.userEndpoint}/rooms/ids?isStatic=${isStatic}`)
+  }
+
+  getUserRoom(roomId: string): Observable<UserRoom> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.get<UserRoom>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`)
+  }
+
+  saveUserRoom(room: Partial<UserRoom>): Observable<UserRoom> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    console.log('save room', room);
+    return this.http.patch<UserRoom>(`${this.userEndpoint}/profile/${id}/rooms/${room.roomId}`, { room });
+  }
+
+  deleteUserRoom(roomId: string): Observable<void> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set')
+    }
+    return this.http.delete<void>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`)
   }
 
 }

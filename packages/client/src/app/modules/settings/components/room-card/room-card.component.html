@@ -1,0 +1,90 @@
+<div *ngIf="room && !editMode(); else editRoom" class="collapse collapse-arrow bg-base-100 shadow-lg">
+  <input type="checkbox" #expanded [checked]="room.isStatic"/>
+  <div class="collapse-title inline-flex items-center gap-6 justify-between" [ngClass]="{'bg-primary': room.isStatic, 'bg-neutral': !room.isStatic}" (click)="expanded.checked = !expanded.checked">
+    <span class="text-lg inline-flex gap-3"><span class="hidden md:inline-block" translate>STREAM.ROOMCARD.broadcastId</span> <span>{{room.roomId | uppercase}}</span></span>
+    <div *ngIf="room.allowAnonymous" class="badge shadow-md badge-accent p-3">
+      <ng-icon name="heroLockOpen"></ng-icon>
+    </div>
+    <div *ngIf="!room.allowAnonymous" class="badge shadow-md badge-secondary p-3">
+      <ng-icon name="heroLockClosed"></ng-icon>
+    </div>
+    
+  </div>
+  <div class="collapse-content text-sm">
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span translate>STREAM.ROOMCARD.broadcastType</span>
+      <span>{{(room.isStatic ? 'STREAM.ROOMCARD.static' : 'STREAM.ROOMCARD.random') | translate | titlecase}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span><span translate>STREAM.ROOMCARD.authentication</span>:</span>
+      <span translate>{{room.allowAnonymous ? 'STREAM.ROOMCARD.anonymous' : 'STREAM.ROOMCARD.joinCode'}}</span>
+    </div>
+    <div class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span><span translate>STREAM.ROOMCARD.created</span>:</span>
+      <span>{{ room.createdAt | timeago }}</span>
+    </div>
+    <div *ngIf="room.expires" class="flex flex-row justify-between items-center gap-1 mt-3">
+      <span><span translate>STREAM.ROOMCARD.expires</span>:</span>
+      <span>{{ room.expires | timeago }}</span>
+    </div>
+    <div class="flex flex-row justify-end items-center gap-1 mt-3">
+      <button class="btn btn-secondary btn-sm" (click)="showEditMode()">
+        <ng-icon name="heroPencilSquare"></ng-icon>
+        <span translate>BUTTONS.edit</span>
+      </button>
+    </div>
+    <div class="mt-3 -mb-4 flex flex-row justify-center">
+      <span><span translate>STREAM.ROOMCARD.link</span><span>:</span></span>
+    </div>
+  </div>
+  <div class="flex flex-row justify-center items-center p-1">
+    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied()" [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
+  </div>
+</div>
+
+<ng-template #editRoom>
+  <form [formGroup]="roomFormGroup" class="collapse collapse-open bg-base-100 shadow-lg">
+    <div class="inline-flex justify-between items-center p-3 gap-6" [ngClass]="{'bg-primary': isStatic || room && room.isStatic}">
+      <div class="inline-flex flex-col">
+        <span class="text-xs" *ngIf="!room"><span translate>STREAM.ROOMCARD.create</span> <span *ngIf="isStatic" translate>STREAM.ROOMCARD.static</span></span>
+        <span class="text-lg" translate>STREAM.ROOMCARD.broadcastId</span>
+      </div>
+      
+      <select class="select" formControlName="roomId" *ngIf="roomIdsList() as ids">
+        <option *ngFor="let id of ids" [value]="id">{{id | uppercase}}</option>
+      </select>
+      <span class="text-lg" *ngIf="room && room.roomId">{{room.roomId | uppercase}}</span>
+
+    </div>
+    <div class="collapse-content text-sm">
+      <p *ngIf="isStatic" class="text-warning mt-3" translate>
+        STREAM.ROOMCARD.changeWarning
+      </p>
+      <div class="flex flex-row justify-between items-center gap-1 mt-3">
+        <span><span translate>STREAM.ROOMCARD.broadcastType</span>:</span>
+        <span translate>{{isStatic ? 'STREAM.ROOMCARD.static' : 'STREAM.ROOMCARD.random'}}</span>
+      </div>
+      <div class="flex flex-row justify-between items-center gap-1">
+        <span translate>STREAM.ROOMCARD.authentication</span>
+        <select class="select" formControlName="allowAnonymous">
+          <option [value]="false" translate>STREAM.ROOMCARD.requireJoinCode</option>
+          <option [value]="true" translate>STREAM.ROOMCARD.allowAnonymous</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-3 flex items-center justify-end gap-6">
+      <button type="button" class="btn btn-sm btn-accent" *ngIf="room && room.roomId" (click)="deleteRoom(room.roomId)" [disabled]="loading()" translate>BUTTONS.delete</button>
+      <button type="button" class="btn btn-sm" translate (click)="closeEditMode()" [disabled]="loading()">BUTTONS.cancel</button>
+      <button type="submit" class="btn btn-sm btn-primary" translate (click)="saveAndClose()" [disabled]="loading()">BUTTONS.saveAndClose</button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showCopied()">
+  <div role="alert" class="alert alert-info flex flex-row p-1">
+    <span class="text-sm whitespace-pre-wrap" translate>
+      STREAM.sessionIdCopied
+    </span>
+    <button class="btn btn-sm btn-secondary" (click)="dismissToast()" translate>BUTTONS.ok</button>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="flex flex-col basis-full py-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
+  
+  <div class="flex flex-col gap-3 max-w-sm text-center mb-3" *ngIf="canAddRooms() && !modalOpen()">
+    <div class="text-lg" translate>SETTINGS.SHARING.staticRoomHeader</div>
+    <p translate>SETTINGS.SHARING.staticRoomP1</p>
+    <p translate>SETTINGS.SHARING.staticRoomP2</p>
+    <button class="btn btn-primary" (click)="openModal()" translate>BUTTONS.createRoom</button>
+  </div>
+  
+  <app-room-card [isStatic]="true" *ngIf="modalOpen()" class="mb-6" (editClosed)="hideModal()"></app-room-card>
+  
+  <ng-container *ngIf="staticRooms() as rooms">
+    <div class="text-lg text-center" translate>
+      SETTINGS.SHARING.staticRoomView
+    </div>
+    <app-room-card *ngFor="let room of rooms" [room]="room" (editClosed)="editClosed($event)"></app-room-card>  
+  </ng-container>
+  <ng-container *ngIf="dynamicRooms() as rooms">
+    <div class="divider divider-secondary"></div>
+    <div class="text-lg text-center mb-3" translate>
+      SETTINGS.SHARING.dynamicRoomView
+    </div>
+  
+    <app-room-card *ngFor="let room of rooms" [room]="room" (editClosed)="editClosed($event)"></app-room-card>  
+  </ng-container>
+</div>
+        
+<ng-template #loginRequired>
+  <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']" translate>SETTINGS.SHARING.loginRequired</div>
+</ng-template>

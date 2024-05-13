@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { PeerActions } from '../actions/peer.actions';
+import { UserRoom } from './user.reducer';
 
 export const peerFeatureKey = 'peer';
 
@@ -14,9 +15,11 @@ export interface PeerState {
   broadcastEndedTimestamp?: number;
   broadcastPaused?: boolean;
   joinCode?: string;
+  allowAnonymous?: boolean;
   isViewingBroadcast?: boolean;
   hostOnline?: boolean;
   error?: string;
+  myUserRooms?: UserRoom[]; // This is different from the user state property, as this is via socket connection rather than http
 }
 
 export const defaultPeerState: PeerState = {
@@ -38,9 +41,11 @@ export const peerReducers = createReducer(
   on(PeerActions.peerServerDisconnected, (state: PeerState) => ({...state, peerConnected: false})),
   on(PeerActions.peerServerError, (state: PeerState, action: { error: string}) => ({...state, peerConnected: false, error: action.error })),
 
+  on(PeerActions.createBroadcastRoom, (state: PeerState, action: {roomId?: string, myBroadcast?: boolean, allowAnonymous: boolean }) => ({...state, allowAnonymous: action.allowAnonymous })),
   on(PeerActions.createBroadcastRoomSuccess, (state: PeerState, action: { id: string}) => ({...state, roomId: action.id, isBroadcasting: true})),
   on(PeerActions.createBroadcastRoomFailure, (state: PeerState, action: { error: string}) => ({...state, error: action.error})),
 
+  on(PeerActions.setRoomId, (state: PeerState, action: { id: string }) => ({...state, roomId: action.id })),
   on(PeerActions.setJoinCode, (state: PeerState, action: { joinCode: string}) => ({...state, joinCode: action.joinCode})),
   on(PeerActions.clearJoinCode, (state: PeerState) => ({...state, joinCode: undefined, isViewingBroadcast: undefined})),
 
@@ -52,7 +57,13 @@ export const peerReducers = createReducer(
 
   on(PeerActions.leaveBroadcastRoom, (state: PeerState) => ({...state, roomId: undefined, joinCode: undefined, isViewingBroadcast: false, broadcastEndedTimestamp: undefined})),
   
-  on(PeerActions.setBroadcastEndedAt, (state: PeerState, action: { endedAt: number}) => ({...state, broadcastEndedTimestamp: action.endedAt, isViewingBroadcast: false})),
+  on(PeerActions.setBroadcastEndedAt, (state: PeerState, action: { endedAt: number, allowAnonymous?: boolean }) => {
+    const rtn = {...state, broadcastEndedTimestamp: action.endedAt, isViewingBroadcast: false};
+    if (action.allowAnonymous && !state.joinCode) {
+      rtn.joinCode = 'anon'
+    }
+    return rtn;
+  }),
   on(PeerActions.clearBroadcastEndedAt, (state: PeerState) => ({...state, broadcastEndedTimestamp: undefined})),
 
   on(PeerActions.endBroadcastSuccess, (state: PeerState) => ({...state, isBroadcasting: false, roomId: undefined, joinCode: undefined})),
@@ -61,5 +72,8 @@ export const peerReducers = createReducer(
   on(PeerActions.updateConnectedPeerCount, (state: PeerState, action: { count: number}) => ({...state, peerConnectionCount: action.count})),
 
   on(PeerActions.setBroadcastPausedState, (state: PeerState, action: { paused: boolean}) => ({...state, broadcastPaused: action.paused})),
+
+  on(PeerActions.setBroadcastRooms, (state: PeerState, action: { rooms: UserRoom[] }) => ({...state, myUserRooms: action.rooms })),
+  on(PeerActions.clearBroadcastRooms, (state: PeerState) => ({...state, myUserRooms: undefined })),
 );
 

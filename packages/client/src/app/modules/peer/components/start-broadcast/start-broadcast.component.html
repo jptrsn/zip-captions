@@ -1,0 +1,43 @@
+<form class="flex flex-col items-center align-start max-w-xl gap-3 p-3" [formGroup]="formGroup" (submit)="createRoom()">
+  
+  <div class="flex flex-col text-center gap-3" *ngIf="!(isMobileDevice() || isIncompatibleBrowser()); else broadcastingNotAvailable">
+    <div class="text-xl font-medium" translate>STREAM.createBroadcast</div>
+    <div translate>STREAM.broadcastExplanantion</div>
+  </div>
+
+  <div class="form-control sm:w-96 w-full">
+    <label class="label">
+      <span class="label-text" [ngClass]="{'text-error': formGroup.controls['room'].invalid && formGroup.controls['room'].touched}" translate>STREAM.sessionId</span>
+    </label>
+    <select class="select select-lg select-bordered" formControlName="room">
+      <option [value]="null" translate>STREAM.createAnonymousBroadcast</option>
+      <option *ngFor="let room of userRooms()" [value]="room.roomId">
+        <span>{{room.roomId | uppercase }} {{ (room.isStatic ? '&nbsp;(static)' : '') | translate}}</span>
+      </option>
+    </select>
+    <label class="label">
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('invalid') && formGroup.controls['room'].touched" translate>ERRORS.invalidId</span>
+      <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['room'].hasError('required') && formGroup.controls['room'].touched" translate>ERRORS.required</span>
+    </label>
+  </div>
+
+  <div class="form-control sm:w-96 w-full">
+      <label class="label">
+        <span class="label-text" translate>STREAM.authentication</span>
+      </label>
+      <label class="label gap-2">
+        <span class="label-text text-xs" translate>STREAM.authDescription</span>
+        <input type="checkbox" class="checkbox checkbox-primary" formControlName="useAuthentication">
+      </label>
+  </div>
+
+  <button class="btn btn-primary mt-5 w-96" [disabled]="disabled" type="submit" translate>STREAM.createBroadcast</button>
+
+</form>
+
+<ng-template #broadcastingNotAvailable>
+  <ng-container *ngIf="acceptedPeerConnections()">
+    <div *ngIf="isMobileDevice()" class="text-warning text-center" translate>ERRORS.mobileBroadcast</div>
+    <div *ngIf="isIncompatibleBrowser()" class="text-warning text-center" translate>ERRORS.unsupportedBrowserBroadcast</div>
+  </ng-container>
+</ng-template>

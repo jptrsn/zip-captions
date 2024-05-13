@@ -15,7 +15,8 @@ export class ObsEffects {
       switchMap((props) => this.obsService.connect(props).pipe(
         // Response handling must be piped from the observable emitted by the service, or failures will result in the effect not be triggered subsequently
         map(() => ObsActions.connectSuccess()),
-        catchError((err:any) => of(ObsActions.connectFailure({error: err.message || 'Connection Failed for unknown reason'}))))
+        catchError((err:any) => of(ObsActions.connectFailure({error: err.message || 'Connection Failed for unknown reason'})
+      )))
       )
     )
   )
@@ -28,6 +29,16 @@ export class ObsEffects {
         map(() => ObsActions.disconnectSuccess()),
         catchError((err: any) => of(ObsActions.disconnectFailure({error: err.message || 'Disconnect Failed for unknown reason'}))),
       )),
+    )
+  )
+
+  reconnectServer$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(ObsActions.reconnect),
+      switchMap(() => this.obsService.reconnect().pipe(
+        map(() => ObsActions.connectSuccess()),
+        catchError((err:any) => of(ObsActions.connectFailure({error: err.message || 'Connection Failed for unknown reason'}))
+      )))
     )
   )
 
