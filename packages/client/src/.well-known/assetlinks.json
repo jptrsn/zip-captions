@@ -1,8 +1,14 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.zipcaptions.twa",
-    "sha256_cert_fingerprints": ["F0:5D:EE:59:E2:9B:65:AB:85:BE:8C:0E:F3:1B:32:64:7C:30:01:25:89:63:56:CD:A2:61:1A:0A:FD:0F:0C:AE"]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.zipcaptions.twa",
+      "sha256_cert_fingerprints": [
+        "F0:5D:EE:59:E2:9B:65:AB:85:BE:8C:0E:F3:1B:32:64:7C:30:01:25:89:63:56:CD:A2:61:1A:0A:FD:0F:0C:AE"
+      ]
+    }
   }
-}]
+]
