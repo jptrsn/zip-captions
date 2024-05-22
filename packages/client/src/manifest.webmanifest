@@ -21,6 +21,11 @@
     {
       "platform": "webapp",
       "url": "https://zipcaptions.app/manifest.webmanifest"
+    },
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=app.zipcaptions.twa",
+      "id": "app.zipcaptions.twa"
     }
   ],
   "handle_links": "preferred",
