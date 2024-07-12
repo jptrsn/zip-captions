@@ -6,7 +6,7 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "fullscreen",
-  "scope": "./",
+  "scope": ".",
   "start_url": "./",
   "dir": "ltr",
   "lang": "en",
