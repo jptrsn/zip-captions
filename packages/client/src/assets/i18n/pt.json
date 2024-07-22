@@ -263,7 +263,8 @@
       "p1": "Cada segmento de texto previamente reconhecido aparecerá assim.",
       "p2": "Rolando de baixo para cima.",
       "p3": "Com cada novo resultado aparecendo abaixo do anterior.",
-      "p4": "O texto ao vivo é exibido assim"
+      "p4": "O texto ao vivo é exibido assim",
+      "cookieWarning": "Você deve aceitar cookies antes de salvar as configurações"
     },
     "SHARING": {
       "staticRoomHeader": "ID de transmissão estática",
@@ -282,7 +283,7 @@
       "viewFor": "Ver configurações para",
       "local": "Local",
       "server": "Servidor",
-      "loginRequired": "Você deve fazer login antes de salvar as configurações de transmissão personalizadas."
+      "loginRequired": "Você deve fazer login antes de salvar as configurações personalizadas da IU"
     }
   },
   "STREAM": {

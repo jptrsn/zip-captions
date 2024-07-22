@@ -263,7 +263,8 @@
       "p1": "Each segment of previously-recognized text will appear like this.",
       "p2": "Scrolling up from the bottom.",
       "p3": "With each new result appearing underneath the previous.",
-      "p4": "Live text shows like this"
+      "p4": "Live text shows like this",
+      "cookieWarning": "You must accept cookies before you can save settings"
     },
     "SHARING": {
       "staticRoomHeader": "Static Broadcast ID",
@@ -282,7 +283,7 @@
       "viewFor": "View settings for",
       "local": "Local",
       "server": "Server",
-      "loginRequired": "You must log in before you can save custom broadcast settings."
+      "loginRequired": "You must log in before you can save custom UI settings"
     }
   },
   "STREAM": {

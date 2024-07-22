@@ -263,7 +263,8 @@
       "p1": "Cada segmento de texto previamente reconocido aparecerá así.",
       "p2": "Desplazándose hacia arriba desde abajo.",
       "p3": "Con cada nuevo resultado apareciendo debajo del anterior.",
-      "p4": "El texto en vivo se muestra así"
+      "p4": "El texto en vivo se muestra así",
+      "cookieWarning": "Debes aceptar las cookies antes de poder guardar la configuración."
     },
     "SHARING": {
       "staticRoomHeader": "ID de transmisión estática",
@@ -282,7 +283,7 @@
       "viewFor": "Ver configuración para",
       "local": "Local",
       "server": "Servidor",
-      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración de transmisión personalizada"
+      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración personalizada de la interfaz de usuario."
     }
   },
   "STREAM": {
