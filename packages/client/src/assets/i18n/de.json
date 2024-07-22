@@ -263,7 +263,8 @@
       "p1": "Jedes Segment des zuvor erkannten Textes wird so angezeigt.",
       "p2": "Von unten nach oben scrollen.",
       "p3": "Jedes neue Ergebnis erscheint unter dem vorherigen.",
-      "p4": "Live-Textsendungen wie diese"
+      "p4": "Live-Textsendungen wie diese",
+      "cookieWarning": "Sie müssen Cookies akzeptieren, bevor Sie Einstellungen speichern können"
     },
     "SHARING": {
       "staticRoomHeader": "Statische Broadcast-ID",
@@ -282,7 +283,7 @@
       "viewFor": "Einstellungen anzeigen für",
       "local": "Lokal",
       "server": "Server",
-      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte Broadcast-Einstellungen speichern können."
+      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte UI-Einstellungen speichern können"
     }
   },
   "STREAM": {
