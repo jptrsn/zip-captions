@@ -283,7 +283,7 @@
       "viewFor": "Ver configurações para",
       "local": "Local",
       "server": "Servidor",
-      "loginRequired": "Você deve fazer login antes de salvar as configurações de transmissão personalizadas."
+      "loginRequired": "Você deve fazer login antes de salvar as configurações personalizadas da IU"
     }
   },
   "STREAM": {

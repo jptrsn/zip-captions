@@ -283,7 +283,7 @@
       "viewFor": "Ver configuración para",
       "local": "Local",
       "server": "Servidor",
-      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración de transmisión personalizada"
+      "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración personalizada de la interfaz de usuario."
     }
   },
   "STREAM": {

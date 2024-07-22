@@ -283,7 +283,7 @@
       "viewFor": "Wyświetl ustawienia dla",
       "local": "Lokalny",
       "server": "Serwer",
-      "loginRequired": "Musisz się zalogować, zanim będziesz mógł zapisać niestandardowe ustawienia transmisji."
+      "loginRequired": "Aby zapisać niestandardowe ustawienia interfejsu użytkownika, musisz się zalogować"
     }
   },
   "STREAM": {

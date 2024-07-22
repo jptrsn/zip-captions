@@ -283,7 +283,7 @@
       "viewFor": "Einstellungen anzeigen für",
       "local": "Lokal",
       "server": "Server",
-      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte Broadcast-Einstellungen speichern können."
+      "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte UI-Einstellungen speichern können"
     }
   },
   "STREAM": {

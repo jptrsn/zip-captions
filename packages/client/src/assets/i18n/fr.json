@@ -283,7 +283,7 @@
       "viewFor": "Afficher les paramètres pour",
       "local": "Locale",
       "server": "Serveur",
-      "loginRequired": "Vous devez vous connecter avant de pouvoir enregistrer les paramètres de diffusion personnalisés."
+      "loginRequired": "Vous devez vous connecter avant de pouvoir enregistrer les paramètres personnalisés de l'interface utilisateur"
     }
   },
   "STREAM": {

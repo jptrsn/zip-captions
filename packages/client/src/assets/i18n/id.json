@@ -283,7 +283,7 @@
       "viewFor": "Lihat pengaturan untuk",
       "local": "Lokal",
       "server": "Pelayanan",
-      "loginRequired": "Anda harus masuk sebelum dapat menyimpan pengaturan siaran khusus."
+      "loginRequired": "Anda harus masuk sebelum dapat menyimpan pengaturan UI khusus"
     }
   },
   "STREAM": {
