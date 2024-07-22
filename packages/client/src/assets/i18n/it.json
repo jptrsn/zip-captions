@@ -263,7 +263,8 @@
       "p1": "Ogni segmento di testo precedentemente riconosciuto apparirà così.",
       "p2": "Scorrendo verso l'alto dal basso.",
       "p3": "Con ogni nuovo risultato visualizzato sotto il precedente.",
-      "p4": "Il testo live viene visualizzato in questo modo"
+      "p4": "Il testo live viene visualizzato in questo modo",
+      "cookieWarning": "È necessario accettare i cookie prima di poter salvare le impostazioni"
     },
     "SHARING": {
       "staticRoomHeader": "ID trasmissione statico",

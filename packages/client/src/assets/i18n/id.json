@@ -263,7 +263,8 @@
       "p1": "Setiap segmen teks yang dikenali sebelumnya akan muncul seperti ini.",
       "p2": "Gulir ke atas dari bawah.",
       "p3": "Dengan setiap hasil baru muncul di bawah hasil sebelumnya.",
-      "p4": "Teks langsung ditampilkan seperti ini"
+      "p4": "Teks langsung ditampilkan seperti ini",
+      "cookieWarning": "Anda harus menerima cookie sebelum dapat menyimpan pengaturan"
     },
     "SHARING": {
       "staticRoomHeader": "ID Siaran Statis",

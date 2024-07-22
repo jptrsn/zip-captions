@@ -263,7 +263,8 @@
       "p1": "Each segment of previously-recognized text will appear like this.",
       "p2": "Scrolling up from the bottom.",
       "p3": "With each new result appearing underneath the previous.",
-      "p4": "Live text shows like this"
+      "p4": "Live text shows like this",
+      "cookieWarning": "You must accept cookies before you can save settings"
     },
     "SHARING": {
       "staticRoomHeader": "Static Broadcast ID",

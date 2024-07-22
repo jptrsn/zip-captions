@@ -263,7 +263,8 @@
       "p1": "Chaque segment de texte précédemment reconnu apparaîtra comme ceci.",
       "p2": "Faire défiler vers le haut depuis le bas.",
       "p3": "Chaque nouveau résultat apparaissant sous le précédent.",
-      "p4": "Des émissions de texte en direct comme celle-ci"
+      "p4": "Des émissions de texte en direct comme celle-ci",
+      "cookieWarning": "Vous devez accepter les cookies avant de pouvoir enregistrer les paramètres"
     },
     "SHARING": {
       "staticRoomHeader": "ID de diffusion statique",

@@ -263,7 +263,8 @@
       "p1": "Każdy segment wcześniej rozpoznanego tekstu będzie wyglądał następująco.",
       "p2": "Przewijanie w górę od dołu.",
       "p3": "Każdy nowy wynik pojawia się pod poprzednim.",
-      "p4": "Tekst na żywo wygląda tak"
+      "p4": "Tekst na żywo wygląda tak",
+      "cookieWarning": "Aby zapisać ustawienia, musisz zaakceptować pliki cookie"
     },
     "SHARING": {
       "staticRoomHeader": "Statyczny identyfikator transmisji",
