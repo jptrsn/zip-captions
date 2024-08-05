@@ -213,10 +213,6 @@ export class RecognitionService {
         .map((result: SpeechRecognitionResult) => {
           return result[0];
         })
-        // TODO: Allow adjustment of confidence threshold
-        .filter((result: SpeechRecognitionAlternative) => {
-          return result.transcript.length && result.confidence > 0;
-        })
         .map((result) => result.transcript)
         .join('');
       } else {
