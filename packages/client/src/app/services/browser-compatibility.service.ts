@@ -19,7 +19,7 @@ export class BrowserCompatibilityService {
     const rtn: { platform: AppPlatform, error?: string, warning?: string} = {
       platform: AppPlatform.desktop
     };
-    if (this.platform.FIREFOX || this.platform.EDGE) {
+    if (this.platform.FIREFOX) {
       rtn.platform = AppPlatform.unsupported;
       rtn.error = 'ERRORS.missingApi';
     } else {
