@@ -60,6 +60,7 @@
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/express-session": "^1.17.8",
     "@types/google.accounts": "^0.0.12",
+    "@xenova/transformers": "github:xenova/transformers.js#v3",
     "angular-animations": "^0.11.0",
     "axios": "^1.6.5",
     "bcrypt": "^5.1.1",

@@ -10,7 +10,7 @@ import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
-import { getWorker } from '../../../services/worker.util';
+import { getRecognitionHistoryWorker } from '../../../services/worker.util';
 import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -35,7 +35,7 @@ export class RecognitionService {
   private resultCount: Signal<number | undefined>;
 
   constructor(private store: Store<AppState>) {
-    this.historyWorker = getWorker();
+    this.historyWorker = getRecognitionHistoryWorker();
     this.historyWorker.addEventListener('message', ({data}) => {
       // console.log(data);
     })
@@ -204,7 +204,7 @@ export class RecognitionService {
     });
 
     recognition.addEventListener('result', (e: any) => {
-      // console.log('result')
+      console.log('result')
       debounce$.next(Date.now());
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
