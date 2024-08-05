@@ -6,7 +6,7 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "fullscreen",
-  "scope": "./",
+  "scope": ".",
   "start_url": "./",
   "dir": "ltr",
   "lang": "en",
@@ -51,22 +51,40 @@
     {
       "src": "assets/screenshots/screenshot-landing_411x730.png",
       "sizes": "411x730",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "assets/screenshots/screenshot-render_411x730.png",
       "sizes": "411x730",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "assets/screenshots/screenshot-peer_411x730.png",
       "sizes": "411x730",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "assets/screenshots/screenshot-settings_411x730.png",
       "sizes": "411x730",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "assets/screenshots/screenshot-landing-desktop_1919x934.png",
+      "sizes": "1919x934",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Landing Page"
+    },
+    {
+      "src": "assets/screenshots/screenshot-render-desktop_1919x934.png",
+      "sizes": "1919x934",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Live caption render"
     }
   ],
   "icons": [
