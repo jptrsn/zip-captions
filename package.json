@@ -1,7 +1,7 @@
 {
   "name": "zip-captions",
-  "version": "0.1.1",
-  "license": "MIT",
+  "version": "0.1.2",
+  "license": "GPL-3.0-only",
   "scripts": {
     "ng": "nx",
     "start:client": "nx serve client --host=0.0.0.0 --poll=500",
