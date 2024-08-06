@@ -58,5 +58,8 @@ export const userReducer = createReducer(
   on(UserActions.saveRoomsSuccess, (state: UserState, action: { rooms: UserRoom[] }) => ({...state, rooms: action.rooms })),
   on(UserActions.saveRoomsFailure, (state: UserState, action: { error: string }) => ({...state, rooms: [], error: action.error })),
 
+  on(UserActions.deleteAccountSuccess, (state: UserState) => ({...state, loading: false, profile: undefined })),
+  on(UserActions.deleteAccountFailure, (state: UserState, action: { error: string }) => ({...state, error: action.error}))
+
 );
 
