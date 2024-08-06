@@ -514,7 +514,7 @@
       "organization": "Organizacja",
       "joined": "Dołączył",
       "providers": "Połączeni dostawcy logowania",
-      "notSet": "Nie ustawiony"
+      "notSet": "Nie jesteś zalogowany"
     }
   }
 }

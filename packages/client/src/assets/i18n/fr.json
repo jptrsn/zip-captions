@@ -514,7 +514,7 @@
       "organization": "Organisation",
       "joined": "Rejoint",
       "providers": "Fournisseurs de connexion connectés",
-      "notSet": "Pas encore défini"
+      "notSet": "Vous n'êtes pas connecté"
     }
   }
 }

@@ -514,7 +514,7 @@
       "organization": "Organisation",
       "joined": "Beigetreten",
       "providers": "Anmeldeanbieter angeschlossen",
-      "notSet": "Nicht eingestellt"
+      "notSet": "Sie sind nicht angemeldet"
     }
   }
 }

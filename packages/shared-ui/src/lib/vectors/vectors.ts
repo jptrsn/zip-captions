@@ -27,6 +27,7 @@ export {
   heroLockClosed,
   heroLockOpen,
   heroPencilSquare,
+  heroTrash
 } from '@ng-icons/heroicons/outline';
 
 export {

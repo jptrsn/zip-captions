@@ -75,5 +75,12 @@ export class AuthService {
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
   }
+
+  deleteAccount(): Observable<any> {
+    return this.http.post(`${this.userEndpoint}/delete`, {}, { responseType: 'text' }).pipe(
+      tap((resp) => console.log('delete account resp', resp)),
+      catchError((err) => of(err))
+    )
+  }
   
 }
