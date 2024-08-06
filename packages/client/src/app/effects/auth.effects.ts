@@ -50,16 +50,4 @@ export class AuthEffects {
     )
   )
 
-  deleteAccount$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.deleteAccount),
-      switchMap(() => this.authService.deleteAccount()
-        .pipe(
-          map(() => AuthActions.deleteAccountSuccess()),
-          catchError((err: any) => of(AuthActions.deleteAccountFailure({ error: err.message })))
-        )
-      )
-    )
-  )
-
 }

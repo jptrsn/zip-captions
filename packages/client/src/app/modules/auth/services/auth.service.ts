@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { AppState } from '../../../models/app.model';
-import { StorageService } from '../../../services/storage.service';
 import { selectUserLoggedIn } from '../../../selectors/auth.selectors';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { StorageService } from '../../../services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -74,13 +74,6 @@ export class AuthService {
   
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
-  }
-
-  deleteAccount(): Observable<any> {
-    return this.http.post(`${this.userEndpoint}/delete`, {}, { responseType: 'text' }).pipe(
-      tap((resp) => console.log('delete account resp', resp)),
-      catchError((err) => of(err))
-    )
   }
   
 }

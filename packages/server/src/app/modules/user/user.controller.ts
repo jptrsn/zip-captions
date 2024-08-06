@@ -51,6 +51,20 @@ export class UserController {
     return userProfile;
   }
 
+  @Delete('profile/:id')
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@Req() req, @Param() params: { id: string }): Promise<void> {
+    this._validateParam(req, params);
+    const user = await this.userService.findOne({ id: req.user.id });
+    if (!user) {
+      console.log(`User ${params.id} not found`);
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    await this.uiSettingsService.deleteByOwnerId(user.id);
+    await this.userService.deleteUser(user.id);
+    await this.sessionService.removeUserInformation(user.id);
+  }
+
   @Get('profile/:id/settings')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(CustomCacheInterceptor)

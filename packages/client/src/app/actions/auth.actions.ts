@@ -14,9 +14,5 @@ export const AuthActions = createActionGroup({
     'Logout Failure': props<{ error: string }>(),
 
     'Clear Error': emptyProps(),
-
-    'Delete Account': props<{email: string}>(),
-    'Delete Account Success': emptyProps(),
-    'Delete Account Failure': props<{ error: string }>(),
   }
 });

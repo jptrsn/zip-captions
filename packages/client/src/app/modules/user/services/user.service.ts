@@ -34,6 +34,17 @@ export class UserService {
     return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
   }
 
+  deleteAccount(): Observable<any> {
+    const userId = this.userId();
+    if (!userId) {
+      throw new Error('No user ID set');
+    }
+    // TODO: dispatch appropriate auth event on successful logout
+    return this.http.delete(`${this.userEndpoint}/profile/${userId}`, { responseType: 'text' }).pipe(
+      tap((resp) => console.log('delete account resp', resp))
+    )
+  }
+
   saveSyncSetting(sync: boolean): Observable<boolean> {
     const id = this.userId();
     if (!id) {

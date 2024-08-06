@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthActions } from '../../../../actions/auth.actions';
+import { UserActions } from '../../../../actions/user.actions';
 import { AppState } from '../../../../models/app.model';
 import { UserProfile } from '../../../../reducers/user.reducer';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
@@ -48,7 +48,7 @@ export class UserProfileComponent {
 
   private _removeAccount(email: string): void {
     this.loading.set(true);
-    this.store.dispatch(AuthActions.deleteAccount({ email }));
+    this.store.dispatch(UserActions.deleteAccount({ email }));
     this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
       console.log('is logged in', isLoggedIn);
     })

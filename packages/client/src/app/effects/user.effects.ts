@@ -97,5 +97,17 @@ export class UserEffects {
         )
       )
     )
+
+    deleteAccount$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.deleteAccount),
+        switchMap(() => this.userService.deleteAccount()
+          .pipe(
+            map(() => UserActions.deleteAccountSuccess()),
+            catchError((err: any) => of(UserActions.deleteAccountFailure({ error: err.message })))
+          )
+        )
+      )
+    )
               
 }
