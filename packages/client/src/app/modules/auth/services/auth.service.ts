@@ -32,9 +32,13 @@ export class AuthService {
       return this.login().pipe(
         map((id: string | null) => {
           if (!id) {
-            this.router.navigate(['auth', 'login'])
+            this.router.navigate(['auth', 'login']);
           }
           return !!id;
+        }),
+        catchError(() => {
+          this.router.navigate(['auth', 'login']);
+          return of(false);
         })
       )
     }
