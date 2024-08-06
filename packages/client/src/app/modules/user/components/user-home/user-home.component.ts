@@ -17,11 +17,11 @@ export class UserHomeComponent implements OnInit {
               private router: Router) 
   {
     this.loggedIn = toSignal(this.store.select(selectUserLoggedIn));
-    effect(() => {
-      if (this.loggedIn() === false) {
-        this.router.navigate([''])
-      }
-    })
+    
+    if (this.loggedIn() === false) {
+      this.router.navigate([''])
+    }
+    
   }
 
   ngOnInit(): void {

@@ -514,7 +514,7 @@
       "organization": "Organización",
       "joined": "Unido",
       "providers": "Proveedores de inicio de sesión conectados",
-      "notSet": "No listo"
+      "notSet": "No has iniciado sesión"
     }
   }
 }
