@@ -38,7 +38,8 @@ export class UserProfileComponent {
 
   }
 
-  public deleteAccount(event: MouseEvent): void {
+  // Click handler validates event
+  public deleteAccount(): void {
     this.formGroup.updateValueAndValidity();
     const email = this.profile()?.primaryEmail
     if (this.formGroup.valid && email) {

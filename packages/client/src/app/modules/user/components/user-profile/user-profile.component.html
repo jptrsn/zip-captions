@@ -34,14 +34,16 @@
         </label>
       </div>
       <div class="modal-action">
-        <button class="btn btn-secondary" tabindex="1" type="button" [disabled]="loading()">Cancel</button>
-        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount($event)">Confirm</button>
+        <button class="btn btn-secondary" tabindex="1" [disabled]="loading()">Cancel</button>
+        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()">Confirm</button>
       </div>
     </form>
   </dialog>
 </ng-container>
 <ng-template #notSet>
-  <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
-    <span class="text-lg" translate>USER.PROFILE.notSet</span>
+  <div class="flex flex-col items-center justify-center h-full">
+    <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
+      <span class="text-lg p-6" translate>USER.PROFILE.notSet</span>
+    </div>
   </div>
 </ng-template>
