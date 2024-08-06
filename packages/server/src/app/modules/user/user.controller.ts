@@ -43,8 +43,6 @@ export class UserController {
     const userProfile = {
       id: user.id,
       createdAt: user.createdAt.toString(),
-      familyName: user.familyName,
-      givenName: user.givenName,
       primaryEmail: user.primaryEmail,
       googleConnected: !!user.googleId,
       azureConnected: !!user.msId,
