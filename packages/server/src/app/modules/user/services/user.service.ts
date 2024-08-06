@@ -52,9 +52,6 @@ export class UserService {
     )
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         googleId: userInfo.id
       })
       await this.cache.set(cacheKey, user)
@@ -72,9 +69,6 @@ export class UserService {
     )
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         msId: userInfo.id
       })
       await this.cache.set(cacheKey, user)

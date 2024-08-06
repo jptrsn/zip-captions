@@ -3,11 +3,6 @@
     <div class="card-title"><span translate>USER.PROFILE.title</span> {{profile.givenName}}</div>
     <div class="text-sm mb-3" translate>USER.PROFILE.blurb</div>
     <div><span translate>USER.PROFILE.email</span>: <span class="blurry">{{profile.primaryEmail}}</span></div>
-    <div><span translate>USER.PROFILE.name</span>: <span class="blurry">{{profile.givenName}} {{profile.familyName}}</span></div>
-    <div>
-      <span translate>USER.PROFILE.organization</span>: 
-      <span *ngIf="profile.organizationName; else notSet">{{profile.organizationName}}</span>
-    </div>
     <div *ngIf="joined() as ts"><span translate>USER.PROFILE.joined</span> {{ ts | timeago}}</div>
     <div class="flex flex-row items-center gap-3">
       <span class="text-sm" translate>USER.PROFILE.providers</span>
