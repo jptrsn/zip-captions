@@ -79,7 +79,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       ]},
       { label: 'support', children: [
         { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
-        { label: 'forum', href: 'https://discuss.zipcaptions.app' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
       ]},
@@ -105,5 +104,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.store.dispatch(AuthActions.logout());
+    if (this.menuElement?.nativeElement) {
+      this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
+    }
   }
 }

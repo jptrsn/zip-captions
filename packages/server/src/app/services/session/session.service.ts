@@ -255,18 +255,6 @@ export class SessionService {
     return list;
   }
 
-  private _validateRoomForUser(userId: string, room: OwnerRoom): boolean {
-    if (userId !== room.userId) {
-      console.log(`room ${room.roomId} is not owned by ${userId}`);
-      return false;
-    }
-    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
-      console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
-      return false;
-    }
-    return true;
-  }
-
   generateRandomRoomId(isStatic?: boolean): string {
     let outString: string;
     const outParts: string[] = [];
@@ -281,6 +269,24 @@ export class SessionService {
       outParts.push(outString);
     }
     return outParts.join('-');
+  }
+
+  async removeUserInformation(userId: string): Promise<void> {
+    await this.socketConnections.deleteMany({ userId });
+    await this.rooms.deleteMany({ userId });
+    await this.broadcasts.deleteMany({ hostUserId: userId });
+  }
+
+  private _validateRoomForUser(userId: string, room: OwnerRoom): boolean {
+    if (userId !== room.userId) {
+      // console.log(`room ${room.roomId} is not owned by ${userId}`);
+      return false;
+    }
+    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
+      // console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
+      return false;
+    }
+    return true;
   }
 
   private _generatePrefix(inOptions: string, isStatic?: boolean): string {

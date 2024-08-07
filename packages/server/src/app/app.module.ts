@@ -8,12 +8,13 @@ import { CustomCacheInterceptor } from './interceptors/custom-cache.interceptor'
 import { UserModule } from './modules/user/user.module';
 import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
-import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { SessionService } from './services/session/session.service';
 import { SocketConnection, SocketConnectionSchema } from './models/socket-connection.model';
 import { OwnerRoom, OwnerRoomSchema } from './models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
+import { EventsService } from './services/events/events.service';
+import { AppEvent, AppEventSchema } from './models/event.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -39,7 +40,8 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     MongooseModule.forFeature([
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
-      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
+      { name: BroadcastSession.name, schema: BroadcastSessionSchema },
+      { name: AppEvent.name, schema: AppEventSchema }
     ]),
     HttpModule,
     UserModule,
@@ -49,8 +51,8 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     PeerServerService,
     SessionGateway,
     { provide: APP_INTERCEPTOR, useClass: CustomCacheInterceptor },
-    GoogleStrategy,
     SessionService,
+    EventsService,
   ],
   exports: [],
 })

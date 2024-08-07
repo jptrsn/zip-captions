@@ -514,7 +514,23 @@
       "organization": "Organization",
       "joined": "Joined",
       "providers": "Sign-in providers connected",
-      "notSet": "Not set"
+      "notSet": "You are not signed in",
+      "delete": "Delete my account",
+      "deleted": "Your account has been successfully deleted, and your personal information has been purged from our database.",
+      "deleteWarnP1": "Are you sure you want to delete your account?",
+      "deleteWarnP2": "This action cannot be undone.",
+      "deleteWarnP3": "If you change your mind, you can always create your account again by signing in with a provider.",
+      "confirmLabel": "Confirm account deletion by typing your registered email address below",
+      "emailDeleteError": "The email address must match your registered email",
+      "reasonLabel": "Optionally let us know why you've decided to delete your account",
+      "DELETE_REASONS": {
+        "alternative": "I've found a captioning app that works better for me than Zip Captions",
+        "quality": "Zip Captions isn't generating the captions I need, or the quality is poor",
+        "privacy": "I'm worried about how Zip Captions handles my data",
+        "usage": "I don't need to use captioning as much anymore",
+        "bugs": "Zip Captions is unreliable, or too complicated to figure out",
+        "other": "Something else"
+      }
     }
   }
 }

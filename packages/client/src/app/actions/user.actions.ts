@@ -34,6 +34,10 @@ export const UserActions = createActionGroup({
     'Save Settings State': props<{ settings: SettingsState }>(),
     'Save Settings State Success': props<{ settings: SettingsState }>(),
     'Save Settings State Failure': props<{error: string}>(),
-    'Clear Profile': emptyProps()
+    'Clear Profile': emptyProps(),
+
+    'Delete Account': props<{reason: string | null }>(),
+    'Delete Account Success': emptyProps(),
+    'Delete Account Failure': props<{ error: string }>(),
   }
 });

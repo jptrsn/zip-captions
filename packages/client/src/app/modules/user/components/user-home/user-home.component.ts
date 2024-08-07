@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal, effect } from '@angular/core';
+import { Component, OnInit, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -12,22 +12,21 @@ import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
   styleUrls: ['./user-home.component.scss'],
 })
 export class UserHomeComponent implements OnInit {
-  private loggedIn: Signal<boolean | undefined>
+  public loggedIn: Signal<boolean | undefined>
   constructor(private store: Store<AppState>,
               private router: Router) 
   {
     this.loggedIn = toSignal(this.store.select(selectUserLoggedIn));
-    effect(() => {
-      if (this.loggedIn() === false) {
-        this.router.navigate([''])
-      }
-    })
+    
+    if (this.loggedIn() === false) {
+      this.router.navigate(['..', 'auth', 'login'])
+    }
+    
   }
 
   ngOnInit(): void {
     if (!this.loggedIn()) {
       this.store.dispatch(AuthActions.validate());
     }
-    
   }
 }

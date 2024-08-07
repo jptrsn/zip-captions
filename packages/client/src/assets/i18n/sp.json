@@ -514,7 +514,14 @@
       "organization": "Organización",
       "joined": "Unido",
       "providers": "Proveedores de inicio de sesión conectados",
-      "notSet": "No listo"
+      "notSet": "No has iniciado sesión",
+      "delete": "Borrar mi cuenta",
+      "deleted": "Su cuenta ha sido eliminada exitosamente y su información personal ha sido eliminada de nuestra base de datos.",
+      "deleteWarnP1": "¿Estás seguro de que quieres eliminar tu cuenta?",
+      "deleteWarnP2": "Esta acción no se puede deshacer.",
+      "deleteWarnP3": "Si cambia de opinión, siempre puede volver a crear su cuenta iniciando sesión con un proveedor.",
+      "confirmLabel": "Confirma la eliminación de la cuenta escribiendo tu dirección de correo electrónico registrada a continuación",
+      "emailDeleteError": "La dirección de correo electrónico debe coincidir con su correo electrónico registrado"
     }
   }
 }

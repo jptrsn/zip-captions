@@ -514,7 +514,14 @@
       "organization": "Organizacja",
       "joined": "Dołączył",
       "providers": "Połączeni dostawcy logowania",
-      "notSet": "Nie ustawiony"
+      "notSet": "Nie jesteś zalogowany",
+      "delete": "Usuń moje konto",
+      "deleted": "Twoje konto zostało pomyślnie usunięte, a Twoje dane osobowe zostały usunięte z naszej bazy danych.",
+      "deleteWarnP1": "Czy na pewno chcesz usunąć swoje konto?",
+      "deleteWarnP2": "Tej akcji nie można cofnąć.",
+      "deleteWarnP3": "Jeśli zmienisz zdanie, zawsze możesz utworzyć konto ponownie, logując się u dostawcy.",
+      "confirmLabel": "Potwierdź usunięcie konta wpisując poniżej swój zarejestrowany adres e-mail",
+      "emailDeleteError": "Adres e-mail musi być zgodny z zarejestrowanym adresem e-mail"
     }
   }
 }

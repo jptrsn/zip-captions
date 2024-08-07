@@ -514,7 +514,14 @@
       "organization": "Organisasi",
       "joined": "Bergabung",
       "providers": "Penyedia masuk terhubung",
-      "notSet": "Tidak diatur"
+      "notSet": "Anda belum masuk",
+      "delete": "Hapus akun Saya",
+      "deleted": "Akun Anda telah berhasil dihapus, dan informasi pribadi Anda telah dihapus dari database kami.",
+      "deleteWarnP1": "Kamu yakin ingin menghapus akunmu?",
+      "deleteWarnP2": "Tindakan ini tidak bisa dibatalkan.",
+      "deleteWarnP3": "Jika Anda berubah pikiran, Anda selalu dapat membuat akun lagi dengan masuk menggunakan penyedia.",
+      "confirmLabel": "Konfirmasikan penghapusan akun dengan mengetikkan alamat email Anda yang terdaftar di bawah",
+      "emailDeleteError": "Alamat email harus sesuai dengan email yang Anda daftarkan"
     }
   }
 }

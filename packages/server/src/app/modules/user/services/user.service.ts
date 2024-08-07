@@ -39,6 +39,14 @@ export class UserService {
 
   }
 
+  async deleteUser(id: string): Promise<void> {
+    const user = await this.userModel.findOne({id});
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    await this.userModel.deleteOne({id});
+  }
+
   // Finds or creates the user document and returns it for valid google oauth responses
   async googleLogin(req): Promise<UserDocument> {
     if (!req.user) {
@@ -52,12 +60,9 @@ export class UserService {
     )
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         googleId: userInfo.id
       })
-      await this.cache.set(cacheKey, user)
+      await this.cache.set(cacheKey, user, 1000)
     }
 
     return user;
@@ -72,9 +77,6 @@ export class UserService {
     )
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         msId: userInfo.id
       })
       await this.cache.set(cacheKey, user)

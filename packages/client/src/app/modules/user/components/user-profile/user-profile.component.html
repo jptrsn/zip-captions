@@ -1,22 +1,58 @@
-<div class="card bg-base-100 shadow-xl flex flex-col" *ngIf="profile() as profile;">
-  <div class="card-body">
-    <div class="card-title"><span translate>USER.PROFILE.title</span> {{profile.givenName}}</div>
-    <div class="text-sm mb-3" translate>USER.PROFILE.blurb</div>
-    <div><span translate>USER.PROFILE.email</span>: <span class="blurry">{{profile.primaryEmail}}</span></div>
-    <div><span translate>USER.PROFILE.name</span>: <span class="blurry">{{profile.givenName}} {{profile.familyName}}</span></div>
-    <div>
-      <span translate>USER.PROFILE.organization</span>: 
-      <span *ngIf="profile.organizationName; else notSet">{{profile.organizationName}}</span>
+<ng-container *ngIf="profile() as profile; else noProfile">
+  <div class="card bg-base-100 shadow-xl flex flex-col">
+    <div class="card-body">
+      <div class="card-title"><span translate>USER.PROFILE.title</span></div>
+      <div class="text-sm mb-3" translate>USER.PROFILE.blurb</div>
+      <div><span translate>USER.PROFILE.email</span>: <span class="blurry">{{profile.primaryEmail}}</span></div>
+      <div *ngIf="joined() as ts"><span translate>USER.PROFILE.joined</span> {{ ts | timeago}}</div>
+      <div class="flex flex-row items-center gap-3">
+        <span class="text-sm" translate>USER.PROFILE.providers</span>
+        <span class="flex flex-auto"></span>
+        <img *ngIf="profile.googleConnected" src="assets/brands/google/web_neutral_rd_na.svg">
+        <img *ngIf="profile.azureConnected" src="assets/brands/msft/ms-symbollockup_mssymbol_19.svg">
+      </div>
     </div>
-    <div *ngIf="joined() as ts"><span translate>USER.PROFILE.joined</span> {{ ts | timeago}}</div>
-    <div class="flex flex-row items-center gap-3">
-      <span class="text-sm" translate>USER.PROFILE.providers</span>
-      <span class="flex flex-auto"></span>
-      <img *ngIf="profile.googleConnected" src="assets/brands/google/web_neutral_rd_na.svg">
-      <img *ngIf="profile.azureConnected" src="assets/brands/msft/ms-symbollockup_mssymbol_19.svg">
-    </div>
+    <button #delete class="btn btn-accent" (click)="modal.showModal()">
+      <ng-icon name="heroTrash"></ng-icon>
+      <span translate>USER.PROFILE.delete</span>
+    </button>
   </div>
-</div>
-<ng-template #notSet>
-  <span class="text-xs" translate>USER.PROFILE.notSet</span>
+  <dialog #modal class="modal">
+    <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center" [formGroup]="formGroup">
+      <div *ngIf="loading()" class="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center gap-3 bg-neutral z-10 bg-opacity-20">
+        <div class="loading loading-spinner w-10"></div>
+      </div>
+      <h3 class="font-bold text-xl mb-3"><span translate>USER.PROFILE.delete</span>?</h3>
+      <p class="mb-3"><span translate>USER.PROFILE.deleteWarnP1</span> <span class="font-bold">USER.PROFILE.deleteWarnP2</span></p>
+      <p class="mb-3" translate>USER.PROFILE.deleteWarnP3</p>
+      <div class="form-control">
+        <label class="label text-xs" translate>USER.PROFILE.confirmLabel</label>
+        <input type="text" class="input input-accent input-bordered bg-white" [placeholder]="profile.primaryEmail" formControlName="email">
+        <label class="label no-height">
+          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('invalid') && formGroup.touched" translate>USER.PROFILE.emailDeleteError</span>
+          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
+        </label>
+      </div>
+      <div class="form-control">
+        <label class="label text-xs" translate>USER.PROFILE.reasonLabel</label>
+        <select class="select select-bordered select-accent bg-white" formControlName="reason">
+          <option *ngFor="let reason of reasons" [value]="reason" translate>{{ "USER.PROFILE.DELETE_REASONS." + reason}}</option>
+        </select>
+      </div>
+      <div class="modal-action">
+        <button class="btn btn-secondary" tabindex="1" [disabled]="loading()" translate>BUTTONS.cancel</button>
+        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()" translate>BUTTONS.confirm</button>
+      </div>
+    </form>
+  </dialog>
+</ng-container>
+<ng-template #noProfile>
+  <div class="flex flex-col items-center justify-center h-full">
+    <span *ngIf="accountDeleted(); else notSet" class="badge badge-info h-auto max-w-md text-center p-3" translate>USER.PROFILE.deleted</span>
+    <ng-template #notSet>
+      <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
+        <span class="text-lg p-6" translate>USER.PROFILE.notSet</span>
+      </div>
+    </ng-template>
+  </div>
 </ng-template>

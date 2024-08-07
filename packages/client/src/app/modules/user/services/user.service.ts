@@ -8,6 +8,8 @@ import { AppState } from '../../../models/app.model';
 import { UserProfile, UserRoom } from '../../../reducers/user.reducer';
 import { selectUserId } from '../../../selectors/user.selector';
 import { SettingsState } from '../../settings/models/settings.model';
+import { AuthActions } from '../../../actions/auth.actions';
+import { StorageService } from '../../../services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,7 @@ export class UserService {
   private userEndpoint: string;
   private userId: Signal<string | undefined>;
   constructor(private http: HttpClient,
+              private storage: StorageService,
               private store: Store<AppState>) {
 
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
@@ -32,6 +35,18 @@ export class UserService {
       this.store.dispatch(UserActions.setUserID({ id: userId }))
     }
     return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
+  }
+
+  deleteAccount(reason: string | null): Observable<any> {
+    const userId = this.userId();
+    if (!userId) {
+      throw new Error('No user ID set');
+    }
+    let url = `${this.userEndpoint}/profile/${userId}`;
+    if (reason) {
+      url += `?reason=${reason}`;
+    }
+    return this.http.delete(url, { responseType: 'text' });
   }
 
   saveSyncSetting(sync: boolean): Observable<boolean> {

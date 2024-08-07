@@ -514,7 +514,14 @@
       "organization": "Organisation",
       "joined": "Beigetreten",
       "providers": "Anmeldeanbieter angeschlossen",
-      "notSet": "Nicht eingestellt"
+      "notSet": "Sie sind nicht angemeldet",
+      "delete": "Mein Konto löschen",
+      "deleted": "Ihr Konto wurde erfolgreich gelöscht und Ihre persönlichen Daten wurden aus unserer Datenbank gelöscht.",
+      "deleteWarnP1": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
+      "deleteWarnP2": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteWarnP3": "Wenn Sie Ihre Meinung ändern, können Sie Ihr Konto jederzeit erneut erstellen, indem Sie sich bei einem Anbieter anmelden.",
+      "confirmLabel": "Bestätigen Sie die Löschung des Kontos, indem Sie unten Ihre registrierte E-Mail-Adresse eingeben",
+      "emailDeleteError": "Die E-Mail-Adresse muss mit Ihrer registrierten E-Mail-Adresse übereinstimmen"
     }
   }
 }

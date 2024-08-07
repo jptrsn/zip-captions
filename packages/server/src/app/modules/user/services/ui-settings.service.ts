@@ -26,4 +26,8 @@ export class UiSettingsService {
   async findByOwnerId(id: string): Promise<UiSettingsDocument> {
     return this.uiSettingsModel.findOne({ ownerId: id });
   }
+
+  async deleteByOwnerId(ownerId: string): Promise<void> {
+    await this.uiSettingsModel.deleteMany({ ownerId });
+  }
 }

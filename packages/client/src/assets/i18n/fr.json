@@ -514,7 +514,14 @@
       "organization": "Organisation",
       "joined": "Rejoint",
       "providers": "Fournisseurs de connexion connectés",
-      "notSet": "Pas encore défini"
+      "notSet": "Vous n'êtes pas connecté",
+      "delete": "Supprimer mon compte",
+      "deleted": "Votre compte a été supprimé avec succès et vos informations personnelles ont été purgées de notre base de données.",
+      "deleteWarnP1": "Etes-vous sûr de vouloir supprimer votre compte?",
+      "deleteWarnP2": "Cette action ne peut pas être annulée.",
+      "deleteWarnP3": "Si vous changez d'avis, vous pouvez toujours créer à nouveau votre compte en vous connectant auprès d'un fournisseur.",
+      "confirmLabel": "Confirmez la suppression du compte en saisissant ci-dessous votre adresse e-mail enregistrée",
+      "emailDeleteError": "L'adresse email doit correspondre à votre email enregistré"
     }
   }
 }
