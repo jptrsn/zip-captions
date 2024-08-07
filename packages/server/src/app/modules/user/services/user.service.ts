@@ -7,8 +7,9 @@ import { PassportUserInfo, User, UserDocument } from '../models/user.model';
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>,
-              private cache: CacheService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
+    
+  }
 
   async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
     const model: Partial<User> = { primaryEmail: email.toLowerCase() };
