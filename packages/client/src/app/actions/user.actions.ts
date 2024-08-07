@@ -36,7 +36,7 @@ export const UserActions = createActionGroup({
     'Save Settings State Failure': props<{error: string}>(),
     'Clear Profile': emptyProps(),
 
-    'Delete Account': props<{email: string, reason: string | null }>(),
+    'Delete Account': props<{reason: string | null }>(),
     'Delete Account Success': emptyProps(),
     'Delete Account Failure': props<{ error: string }>(),
   }

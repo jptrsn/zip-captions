@@ -54,17 +54,16 @@ export class UserProfileComponent {
   // Click handler validates event
   public deleteAccount(): void {
     this.formGroup.updateValueAndValidity();
-    const email = this.profile()?.primaryEmail
-    if (this.formGroup.valid && email) {
-      this._removeAccount(email);
+    if (this.formGroup.valid) {
+      this._removeAccount();
     }
   }
 
   // Fires event and subscribes to appropriate event emitter to render UI
-  private _removeAccount(email: string): void {
+  private _removeAccount(): void {
     this.loading.set(true);
     const reason = this.formGroup.get('reason')?.value
-    this.store.dispatch(UserActions.deleteAccount({ email, reason }));
+    this.store.dispatch(UserActions.deleteAccount({ reason }));
     const sub = this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
       if (!isLoggedIn) {
         this.accountDeleted.set(true);
