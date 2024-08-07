@@ -78,6 +78,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "passport-microsoft": "^1.0.0",
+    "passport-patreon": "^1.0.1",
     "peer": "^1.0.1",
     "peerjs": "^1.4.7",
     "reflect-metadata": "^0.1.13",

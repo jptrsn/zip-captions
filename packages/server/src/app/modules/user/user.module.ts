@@ -17,6 +17,7 @@ import { OwnerRoom, OwnerRoomSchema } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast-session.model';
 import { AppEvent, AppEventSchema } from '../../models/event.model';
 import { EventsService } from '../../services/events/events.service';
+import { PatreonStrategy } from '../../strategies/patreon.strategy';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { EventsService } from '../../services/events/events.service';
     AzureStrategy,
     GoogleStrategy,
     JwtStrategy,
+    PatreonStrategy,
     UserService,
     CacheService,
     UiSettingsService,

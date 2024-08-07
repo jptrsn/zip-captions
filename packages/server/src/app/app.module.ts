@@ -15,6 +15,9 @@ import { OwnerRoom, OwnerRoomSchema } from './models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
 import { EventsService } from './services/events/events.service';
 import { AppEvent, AppEventSchema } from './models/event.model';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { Supporter, SupporterSchema } from './models/supporter.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -41,10 +44,14 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
       { name: BroadcastSession.name, schema: BroadcastSessionSchema },
-      { name: AppEvent.name, schema: AppEventSchema }
+      { name: AppEvent.name, schema: AppEventSchema },
+      { name: Supporter.name, schema: SupporterSchema },
     ]),
     HttpModule,
     UserModule,
+  ],
+  controllers: [
+    AppController,
   ],
   providers: [
     CacheService,
@@ -53,6 +60,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     { provide: APP_INTERCEPTOR, useClass: CustomCacheInterceptor },
     SessionService,
     EventsService,
+    AppService,
   ],
   exports: [],
 })

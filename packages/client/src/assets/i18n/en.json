@@ -503,7 +503,8 @@
     "title": "Login to Zip Captions",
     "blurb": "Use your account to enable features that work across all sessions.",
     "loginWithGoogle": "Sign in with Google",
-    "loginWithAzure": "Sign in with Microsoft"
+    "loginWithAzure": "Sign in with Microsoft",
+    "loginWithPatreon": "Sign in with Patreon"
   },
   "USER": {
     "PROFILE": {

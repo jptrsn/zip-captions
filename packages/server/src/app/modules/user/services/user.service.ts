@@ -7,8 +7,9 @@ import { PassportUserInfo, User, UserDocument } from '../models/user.model';
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>,
-              private cache: CacheService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
+    
+  }
 
   async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
     const model: Partial<User> = { primaryEmail: email.toLowerCase() };
@@ -70,6 +71,21 @@ export class UserService {
       user = await this._loginUser(userInfo.email, {
         msId: userInfo.id
       })
+    }
+    return user;
+  }
+
+  async patreonLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
+    console.log('patreonLogin', userInfo);
+    let user = await this.findOne({patreonId: userInfo.id});
+    if (!user) {
+      user = await this._loginUser(userInfo.email, {
+        patreonId: userInfo.id,
+        patreonRefreshToken: userInfo.refreshToken
+      })
+    } else {
+      user.patreonRefreshToken = userInfo.refreshToken;
+      await user.save();
     }
     return user;
   }

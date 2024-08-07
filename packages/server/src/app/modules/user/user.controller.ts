@@ -16,6 +16,7 @@ import { UiSettingsService } from './services/ui-settings.service';
 import { UserService } from './services/user.service';
 import { EventsService } from '../../services/events/events.service';
 import { AppEvent, AppEventType } from '../../models/event.model';
+import { PatreonOAuthGuard } from '../../guards/patreon-oauth.guard';
 
 @Controller('user')
 export class UserController {
@@ -175,6 +176,13 @@ export class UserController {
     console.log('login with azure')
   }
 
+  @Get('patreon-login')
+  @NoCache()
+  @UseGuards(PatreonOAuthGuard)
+  patreonAuth(@Req() req) {
+    console.log('login with patreon')
+  }
+
   @Get('google-redirect')
   @NoCache()
   @UseGuards(GoogleOAuthGuard)
@@ -206,6 +214,34 @@ export class UserController {
         throw new Error('No user from microsoft');
       }
       const user = await this.userService.msLogin(req.user);
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
+      this._sendTokenResponse(user.id, res);
+    } catch(e: any) {
+      console.error(e);
+      res.redirect(`${this.clientUrl}/auth/login?error=${encodeURIComponent(e)}`)
+    }
+  }
+
+  // TODO: Implement code exchange using a different callback route
+  @Get('patreon-redirect')
+  @NoCache()
+  @UseGuards(PatreonOAuthGuard)
+  async patreonAuthRedirect(@Req() req, @Res() res) {
+    try {
+      if (req.authInfo?.message) {
+        throw new Error('No user from patreon');
+      }
+      console.log('patreonAuthRedirect', Object.keys(req));
+      console.log('query', req.query);
+      const user = await this.userService.patreonLogin(req.user);
       const userProfile = {
         id: user.id,
         createdAt: user.createdAt.toString(),
