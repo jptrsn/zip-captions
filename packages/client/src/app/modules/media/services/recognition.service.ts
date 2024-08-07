@@ -49,12 +49,9 @@ export class RecognitionService {
 
   public connectToStream(streamId: string): void {
     if (this.platform() === AppPlatform.mobile) {
-      this.DEBOUNCE_TIME_MS = 750;
-      this.SEGMENTATION_DEBOUNCE_MS = 2500;
-    }
-
-    // console.log('resultCount', this.resultCount())
-    if (this.resultCount() === 0) {
+      this.DEBOUNCE_TIME_MS = 2500;
+      this.SEGMENTATION_DEBOUNCE_MS = 10000;
+    } else if (this.resultCount() === 0) {
       this.DEBOUNCE_TIME_MS = 1000;
       this.SEGMENTATION_DEBOUNCE_MS = 1000;
     }
@@ -270,12 +267,11 @@ export class RecognitionService {
       if (errTimestamp > resultTimestamp) {
         recognition.stop();
         this._handleRecognitionError(streamId, { error: "network"});
-      } else {
-        // console.log('**************************** THROTTLED NETWORK ERROR SUPPRESSED **********************************')
       }
     })
 
     recognition.addEventListener('error', (err: any) => {
+      console.log('recognition error', err)
       if (err.error === 'network') {
         // Use backoff to retry recognition
         networkError$.next(Date.now());
