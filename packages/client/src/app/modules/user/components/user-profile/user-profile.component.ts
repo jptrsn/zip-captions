@@ -53,7 +53,6 @@ export class UserProfileComponent {
     this.loading.set(true);
     this.store.dispatch(UserActions.deleteAccount({ email }));
     this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
-      console.log('is logged in', isLoggedIn);
       if (!isLoggedIn) {
         this.accountDeleted.set(true);
       }
