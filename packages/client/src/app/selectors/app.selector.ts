@@ -28,6 +28,11 @@ export const platformSelector = createSelector(
   (state) => state.platform
 )
 
+export const browserSelector = createSelector(
+  selectAppAppearance,
+  (state) => state.browser
+)
+
 export const peerConnectionsAcceptedSelector = createSelector(
   selectAppAppearance,
   (state) => state.peerConnectionsAccepted
