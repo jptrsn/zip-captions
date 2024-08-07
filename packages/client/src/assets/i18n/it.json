@@ -514,7 +514,14 @@
       "organization": "Organizzazione",
       "joined": "Partecipato",
       "providers": "Fornitori di accesso connessi",
-      "notSet": "Non sei registrato"
+      "notSet": "Non sei registrato",
+      "delete": "Cancella il mio account",
+      "deleted": "Il tuo account è stato eliminato con successo e le tue informazioni personali sono state eliminate dal nostro database.",
+      "deleteWarnP1": "Sei sicuro di voler eliminare il tuo account?",
+      "deleteWarnP2": "Questa azione non può essere annullata.",
+      "deleteWarnP3": "Se cambi idea, puoi sempre creare nuovamente il tuo account accedendo con un provider.",
+      "confirmLabel": "Conferma l'eliminazione dell'account digitando di seguito l'indirizzo email registrato",
+      "emailDeleteError": "L'indirizzo email deve corrispondere a quello registrato"
     }
   }
 }

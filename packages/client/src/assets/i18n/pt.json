@@ -514,7 +514,14 @@
       "organization": "Organização",
       "joined": "Ingressou",
       "providers": "Provedores de inscrição conectados",
-      "notSet": "Você não está conectado"
+      "notSet": "Você não está conectado",
+      "delete": "Deletar minha conta",
+      "deleted": "Sua conta foi excluída com sucesso e suas informações pessoais foram eliminadas de nosso banco de dados.",
+      "deleteWarnP1": "Tem certeza que deseja excluir sua conta?",
+      "deleteWarnP2": "Essa ação não pode ser desfeita.",
+      "deleteWarnP3": "Se mudar de ideia, você poderá criar sua conta novamente entrando com um provedor.",
+      "confirmLabel": "Confirme a exclusão da conta digitando seu endereço de e-mail registrado abaixo",
+      "emailDeleteError": "O endereço de e-mail deve corresponder ao seu e-mail cadastrado"
     }
   }
 }

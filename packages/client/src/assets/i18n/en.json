@@ -514,7 +514,14 @@
       "organization": "Organization",
       "joined": "Joined",
       "providers": "Sign-in providers connected",
-      "notSet": "You are not signed in"
+      "notSet": "You are not signed in",
+      "delete": "Delete my account",
+      "deleted": "Your account has been successfully deleted, and your personal information has been purged from our database.",
+      "deleteWarnP1": "Are you sure you want to delete your account?",
+      "deleteWarnP2": "This action cannot be undone.",
+      "deleteWarnP3": "If you change your mind, you can always create your account again by signing in with a provider.",
+      "confirmLabel": "Confirm account deletion by typing your registered email address below",
+      "emailDeleteError": "The email address must match your registered email"
     }
   }
 }
