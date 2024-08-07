@@ -13,15 +13,10 @@ export class PatreonStrategy extends PassportStrategy(Strategy) {
       callbackUrl: process.env.PATREON_REDIRECT_URI,
       scope: 'identity[email]'
     }, function(accessToken, refreshToken, profile, done) {
-      console.log('patreon callback invovked!!!!!!!!!!!')
+      // TODO: Implement patreon user creation correctly
       this.userService.patreonLogin(profile).then((user) => {
         return done(null, user)
       }).catch((e) => done(e, null))
     })
-  }
-
-  async validate(payload: any): Promise<any> {
-    console.log('patreon strategy validate', payload);
-    throw new UnauthorizedException();
   }
 }

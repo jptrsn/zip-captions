@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Headers, Post, RawBodyRequest, Req } from '@nestjs/common';
-import { createHmac } from 'crypto';
+import { createHmac } from 'node:crypto';
 import { AppService } from './app.service';
 
 @Controller('app')
@@ -30,7 +30,7 @@ export class AppController {
           await this.appService.deletePledge(body);
           break;
         default:
-          console.log('unhanled webhook event', event);
+          console.log('unhandled webhook event', event);
           break;
       }
     } catch(e) {
