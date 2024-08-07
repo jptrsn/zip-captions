@@ -8,6 +8,8 @@ import { AppState } from '../../../models/app.model';
 import { UserProfile, UserRoom } from '../../../reducers/user.reducer';
 import { selectUserId } from '../../../selectors/user.selector';
 import { SettingsState } from '../../settings/models/settings.model';
+import { AuthActions } from '../../../actions/auth.actions';
+import { StorageService } from '../../../services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,7 @@ export class UserService {
   private userEndpoint: string;
   private userId: Signal<string | undefined>;
   constructor(private http: HttpClient,
+              private storage: StorageService,
               private store: Store<AppState>) {
 
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
@@ -40,9 +43,7 @@ export class UserService {
       throw new Error('No user ID set');
     }
     // TODO: dispatch appropriate auth event on successful logout
-    return this.http.delete(`${this.userEndpoint}/profile/${userId}`, { responseType: 'text' }).pipe(
-      tap((resp) => console.log('delete account resp', resp))
-    )
+    return this.http.delete(`${this.userEndpoint}/profile/${userId}`, { responseType: 'text' });
   }
 
   saveSyncSetting(sync: boolean): Observable<boolean> {

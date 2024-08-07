@@ -2,5 +2,6 @@
   <app-user-profile class="sm:basis-auto basis-full"></app-user-profile>
   <div class="flex flex-row gap-3" *ngIf="!loggedIn()">
     <button class="btn btn-primary" [routerLink]="['..']" translate>ROUTES.home</button>
+    <button class="btn btn-secondary" [routerLink]="['..', 'auth', 'login']" translate>BUTTONS.login</button>
   </div>
 </div>

@@ -28,7 +28,7 @@ import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast
     ]
       ),
     JwtModule.registerAsync({
-      useFactory: () => ({ secret: process.env.JWT_SECRET, signOptions: { expiresIn: '60s'} })
+      useFactory: () => ({ secret: process.env.JWT_SECRET, signOptions: { expiresIn: '1d'} })
     })
   ],
   controllers: [

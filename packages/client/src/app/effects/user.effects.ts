@@ -103,7 +103,7 @@ export class UserEffects {
         ofType(UserActions.deleteAccount),
         switchMap(() => this.userService.deleteAccount()
           .pipe(
-            map(() => UserActions.deleteAccountSuccess()),
+            switchMap(() => [UserActions.deleteAccountSuccess(), AuthActions.logout()]),
             catchError((err: any) => of(UserActions.deleteAccountFailure({ error: err.message })))
           )
         )

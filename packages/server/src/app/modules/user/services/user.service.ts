@@ -3,14 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CacheService } from '../../../services/cache/cache.service';
 import { PassportUserInfo, User, UserDocument } from '../models/user.model';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class UserService {
 
   constructor(@InjectModel(User.name) private userModel: Model<User>,
-              private cache: CacheService,
-              private http: HttpService) {}
+              private cache: CacheService) {}
 
   async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
     const model: Partial<User> = { primaryEmail: email.toLowerCase() };
@@ -64,7 +62,7 @@ export class UserService {
       user = await this._loginUser(userInfo.email, {
         googleId: userInfo.id
       })
-      await this.cache.set(cacheKey, user)
+      await this.cache.set(cacheKey, user, 1000)
     }
 
     return user;

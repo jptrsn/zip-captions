@@ -104,5 +104,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.store.dispatch(AuthActions.logout());
+    if (this.menuElement?.nativeElement) {
+      this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
+    }
   }
 }
