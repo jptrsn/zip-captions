@@ -1,13 +1,13 @@
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, ReplaySubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
 import { ObsActions } from '../../../actions/obs.actions';
-import { AppPlatform, AppState } from '../../../models/app.model';
+import { AppPlatform, AppState, BrowserPlatform } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
-import { platformSelector } from '../../../selectors/app.selector';
+import { browserSelector, platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
 import { getWorker } from '../../../services/worker.util';
@@ -25,6 +25,7 @@ export class RecognitionService {
   private recognizedTextMap: Map<string, WritableSignal<string[]>> = new Map();
   private liveOutputMap: Map<string, WritableSignal<string>> = new Map();
   private platform: Signal<AppPlatform | undefined>;
+  private browser: Signal<BrowserPlatform | undefined>;
   private DEBOUNCE_TIME_MS = 250;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private NETWORK_ERROR_DEBOUNCE_MS = 1500;
@@ -41,9 +42,9 @@ export class RecognitionService {
     })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
+    this.browser = toSignal(this.store.select(browserSelector));
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
-
   }
 
   public connectToStream(streamId: string): void {
@@ -213,6 +214,12 @@ export class RecognitionService {
         .map((result: SpeechRecognitionResult) => {
           return result[0];
         })
+        .filter((result: SpeechRecognitionAlternative) => {
+          if (this.platform() === AppPlatform.desktop && this.browser() === BrowserPlatform.blink) {
+            return result.transcript.length && result.confidence > 0;
+          }
+          return result.transcript.length;
+        })
         .map((result) => result.transcript)
         .join('');
       } else {
@@ -282,7 +289,6 @@ export class RecognitionService {
         }
         return;
       }
-
       this._handleRecognitionError(streamId, err);
       recognition.stop();
     });
@@ -290,7 +296,7 @@ export class RecognitionService {
   }
 
   private _handleRecognitionError(streamId: string, err: any) {
-    console.warn('recognition error', err.error);
+    // console.warn('recognition error', err);
     this.activeRecognitionStreams.delete(streamId);
     this.store.dispatch(RecognitionActions.disconnectRecognition({id: streamId}))
     this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))

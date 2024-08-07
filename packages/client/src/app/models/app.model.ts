@@ -17,6 +17,17 @@ export enum Connectivity {
   offline = "OFFLINE"
 }
 
+export enum BrowserPlatform {
+  edge = "EDGE",
+  trident = "TRIDENT",
+  blink = "BLINK",
+  webkit = "WEBKIT",
+  ios = "IOS",
+  firefox = "FIREFOX",
+  android = "ANDROID",
+  safari = "SAFARI"
+}
+
 export interface AppAppearanceState {
   loading: boolean;
   cookiesAccepted: boolean;
@@ -26,6 +37,7 @@ export interface AppAppearanceState {
   cookiesDeclinedTimestamp?: number;
   footerVisible: boolean;
   platform?: AppPlatform;
+  browser?: BrowserPlatform;
   warning?: string;
   error?: string;
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppAppearanceState, AppPlatform, Connectivity } from "../models/app.model";
+import { AppAppearanceState, AppPlatform, BrowserPlatform, Connectivity } from "../models/app.model";
 
 
 export const showFooter = createAction('[App] Show Footer');
@@ -22,7 +22,7 @@ export const releaseWakeLock = createAction('[App] Release WakeLock');
 export const releaseWakeLockSuccess = createAction('[App] Release WakeLock Success');
 export const releaseWakeLockFailure = createAction('[App] Release WakeLock Failure', props<{error: string}>());
 
-export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{platform: AppPlatform, error?: string, warning?: string}>());
+export const checkUserAgentComplete = createAction('[App] Check UserAgent Complete', props<{platform: AppPlatform, browser: BrowserPlatform, error?: string, warning?: string}>());
 export const clearAppError = createAction('[App] Clear Error')
 
 export const initAppearanceComplete = createAction('[App] Init Appearance Complete', props<{appearance: AppAppearanceState}>());
