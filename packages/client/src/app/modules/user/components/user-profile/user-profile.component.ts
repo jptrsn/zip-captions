@@ -20,6 +20,7 @@ export class UserProfileComponent {
   public loggedIn: Observable<boolean | undefined>;
   public formGroup: FormGroup;
   public loading: WritableSignal<boolean> = signal(false);
+  public accountDeleted: WritableSignal<boolean> = signal(false);
   constructor(private store: Store<AppState>,
               private fb: FormBuilder) {
     this.profile = toSignal(this.store.select(selectUserProfile));
@@ -47,11 +48,15 @@ export class UserProfileComponent {
     }
   }
 
+  // Fires event and subscribes to appropriate event emitter to render UI
   private _removeAccount(email: string): void {
     this.loading.set(true);
     this.store.dispatch(UserActions.deleteAccount({ email }));
     this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
       console.log('is logged in', isLoggedIn);
+      if (!isLoggedIn) {
+        this.accountDeleted.set(true);
+      }
     })
   }
 

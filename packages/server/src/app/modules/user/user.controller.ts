@@ -63,6 +63,7 @@ export class UserController {
     await this.uiSettingsService.deleteByOwnerId(user.id);
     await this.userService.deleteUser(user.id);
     await this.sessionService.removeUserInformation(user.id);
+    this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, params);
   }
 
   @Get('profile/:id/settings')

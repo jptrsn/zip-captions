@@ -1,4 +1,4 @@
-<ng-container *ngIf="profile() as profile; else notSet">
+<ng-container *ngIf="profile() as profile; else noProfile">
   <div class="card bg-base-100 shadow-xl flex flex-col">
     <div class="card-body">
       <div class="card-title"><span translate>USER.PROFILE.title</span></div>
@@ -40,10 +40,13 @@
     </form>
   </dialog>
 </ng-container>
-<ng-template #notSet>
+<ng-template #noProfile>
   <div class="flex flex-col items-center justify-center h-full">
-    <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
-      <span class="text-lg p-6" translate>USER.PROFILE.notSet</span>
-    </div>
+    <span *ngIf="accountDeleted(); else notSet" class="badge badge-info h-auto max-w-md text-center p-3">Your account has been successfully deleted, and your personal information has been purged from our database.</span>
+    <ng-template #notSet>
+      <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
+        <span class="text-lg p-6" translate>USER.PROFILE.notSet</span>
+      </div>
+    </ng-template>
   </div>
 </ng-template>
