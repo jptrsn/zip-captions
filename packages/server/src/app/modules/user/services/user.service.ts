@@ -53,16 +53,11 @@ export class UserService {
       throw new Error('No user from google');
     }
     const userInfo: PassportUserInfo = req.user;
-    const cacheKey = `google_user_${userInfo.id}`
-    let user = await this.cache.wrap(
-      cacheKey,
-      () => this.findOne({googleId: userInfo.id})
-    )
+    let user = await this.findOne({googleId: userInfo.id})
     if (!user) {
       user = await this._loginUser(userInfo.email, {
         googleId: userInfo.id
       })
-      await this.cache.set(cacheKey, user, 1000)
     }
 
     return user;
@@ -70,18 +65,12 @@ export class UserService {
 
   // Finds or creates the user document and returns it for valid google oauth responses
   async msLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
-    const cacheKey = `ms_user_${userInfo.id}`
-    let user = await this.cache.wrap(
-      cacheKey,
-      () => this.findOne({msId: userInfo.id})
-    )
+    let user = await this.findOne({msId: userInfo.id});
     if (!user) {
       user = await this._loginUser(userInfo.email, {
         msId: userInfo.id
       })
-      await this.cache.set(cacheKey, user)
     }
-
     return user;
   }
 
