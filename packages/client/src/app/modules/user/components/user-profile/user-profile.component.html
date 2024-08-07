@@ -14,7 +14,7 @@
     </div>
     <button #delete class="btn btn-accent" (click)="modal.showModal()">
       <ng-icon name="heroTrash"></ng-icon>
-      <span>Delete my account</span>
+      <span translate>USER.PROFILE.delete</span>
     </button>
   </div>
   <dialog #modal class="modal">
@@ -22,27 +22,27 @@
       <div *ngIf="loading()" class="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center gap-3 bg-neutral z-10 bg-opacity-20">
         <div class="loading loading-spinner w-10"></div>
       </div>
-      <h3 class="font-bold text-xl mb-3">Delete your account?</h3>
-      <p class="mb-3">Are you sure you want to delete your account? <span class="font-bold">This action cannot be undone.</span></p>
-      <p class="mb-3">If you change your mind, you can always create your account again by signing in with a provider.</p>
+      <h3 class="font-bold text-xl mb-3"><span translate>USER.PROFILE.delete</span>?</h3>
+      <p class="mb-3"><span translate>USER.PROFILE.deleteWarnP1</span> <span class="font-bold">USER.PROFILE.deleteWarnP2</span></p>
+      <p class="mb-3" translate>USER.PROFILE.deleteWarnP3</p>
       <div class="form-control">
-        <label class="label text-xs">Confirm account deletion by typing your registered email address below.</label>
+        <label class="label text-xs" translate>USER.PROFILE.confirmLabel</label>
         <input type="text" class="input input-accent input-bordered bg-white" [placeholder]="profile.primaryEmail" formControlName="email">
         <label class="label no-height">
-          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('invalid') && formGroup.touched" translate>Must match primary email</span>
+          <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('invalid') && formGroup.touched" translate>USER.PROFILE.emailDeleteError</span>
           <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
         </label>
       </div>
       <div class="modal-action">
-        <button class="btn btn-secondary" tabindex="1" [disabled]="loading()">Cancel</button>
-        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()">Confirm</button>
+        <button class="btn btn-secondary" tabindex="1" [disabled]="loading()" translate>BUTTONS.cancel</button>
+        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()" translate>BUTTONS.confirm</button>
       </div>
     </form>
   </dialog>
 </ng-container>
 <ng-template #noProfile>
   <div class="flex flex-col items-center justify-center h-full">
-    <span *ngIf="accountDeleted(); else notSet" class="badge badge-info h-auto max-w-md text-center p-3">Your account has been successfully deleted, and your personal information has been purged from our database.</span>
+    <span *ngIf="accountDeleted(); else notSet" class="badge badge-info h-auto max-w-md text-center p-3" translate>USER.PROFILE.deleted</span>
     <ng-template #notSet>
       <div class="card bg-base-100 shadow-xl flex flex-col items-center justify-center">
         <span class="text-lg p-6" translate>USER.PROFILE.notSet</span>
