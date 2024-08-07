@@ -42,7 +42,6 @@ export class UserService {
     if (!userId) {
       throw new Error('No user ID set');
     }
-    // TODO: dispatch appropriate auth event on successful logout
     return this.http.delete(`${this.userEndpoint}/profile/${userId}`, { responseType: 'text' });
   }
 

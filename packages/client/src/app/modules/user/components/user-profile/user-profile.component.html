@@ -33,6 +33,12 @@
           <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
         </label>
       </div>
+      <div class="form-control">
+        <label class="label text-xs" translate>USER.PROFILE.reasonLabel</label>
+        <select class="select select-bordered" formControlName="reason">
+          <option *ngFor="let reason of reasons" [value]="reason" translate>{{ "USER.PROFILE.DELETE_REASONS." + reason}}</option>
+        </select>
+      </div>
       <div class="modal-action">
         <button class="btn btn-secondary" tabindex="1" [disabled]="loading()" translate>BUTTONS.cancel</button>
         <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()" translate>BUTTONS.confirm</button>
