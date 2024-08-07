@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { Strategy } from "passport-patreon"
+import { Strategy } from "passport-patreon";
 import { UserService } from "../modules/user/services/user.service";
 
 @Injectable()
