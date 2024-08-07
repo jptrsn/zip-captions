@@ -14,6 +14,8 @@ import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
 import { UserProfile } from './models/user.model';
 import { UiSettingsService } from './services/ui-settings.service';
 import { UserService } from './services/user.service';
+import { EventsService } from '../../services/events/events.service';
+import { AppEvent, AppEventType } from '../../models/event.model';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,7 @@ export class UserController {
   constructor(private readonly userService: UserService,
               private readonly uiSettingsService: UiSettingsService,
               private readonly sessionService: SessionService,
+              private readonly eventService: EventsService,
               private cache: CacheService,
               private jwtService: JwtService) 
   {
@@ -53,7 +56,7 @@ export class UserController {
 
   @Delete('profile/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteUser(@Req() req, @Param() params: { id: string }): Promise<void> {
+  async deleteUser(@Req() req, @Param() params: { id: string }, @Query() query?: { reason: string | undefined }): Promise<void> {
     this._validateParam(req, params);
     const user = await this.userService.findOne({ id: req.user.id });
     if (!user) {
@@ -63,7 +66,15 @@ export class UserController {
     await this.uiSettingsService.deleteByOwnerId(user.id);
     await this.userService.deleteUser(user.id);
     await this.sessionService.removeUserInformation(user.id);
+    const ev: Partial<AppEvent> = {
+      type: AppEventType.accountDeleted
+    }
+    if (query.reason) {
+      ev.message = query.reason;
+    }
+    await this.eventService.logEvent(ev);
     this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, params);
+    this._burstCacheForKey(UserController.SETTINGS_CACHE_KEY, params);
   }
 
   @Get('profile/:id/settings')

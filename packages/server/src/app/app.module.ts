@@ -13,6 +13,8 @@ import { SessionService } from './services/session/session.service';
 import { SocketConnection, SocketConnectionSchema } from './models/socket-connection.model';
 import { OwnerRoom, OwnerRoomSchema } from './models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
+import { EventsService } from './services/events/events.service';
+import { AppEvent, AppEventSchema } from './models/event.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -38,7 +40,8 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     MongooseModule.forFeature([
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
-      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
+      { name: BroadcastSession.name, schema: BroadcastSessionSchema },
+      { name: AppEvent.name, schema: AppEventSchema }
     ]),
     HttpModule,
     UserModule,
@@ -49,6 +52,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     SessionGateway,
     { provide: APP_INTERCEPTOR, useClass: CustomCacheInterceptor },
     SessionService,
+    EventsService,
   ],
   exports: [],
 })

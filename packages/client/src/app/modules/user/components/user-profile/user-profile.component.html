@@ -35,7 +35,7 @@
       </div>
       <div class="form-control">
         <label class="label text-xs" translate>USER.PROFILE.reasonLabel</label>
-        <select class="select select-bordered" formControlName="reason">
+        <select class="select select-bordered select-accent bg-white" formControlName="reason">
           <option *ngFor="let reason of reasons" [value]="reason" translate>{{ "USER.PROFILE.DELETE_REASONS." + reason}}</option>
         </select>
       </div>

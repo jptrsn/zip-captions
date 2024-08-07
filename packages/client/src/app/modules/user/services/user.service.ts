@@ -37,12 +37,16 @@ export class UserService {
     return this.http.get<UserProfile>(`${this.userEndpoint}/profile/${userId}`)
   }
 
-  deleteAccount(): Observable<any> {
+  deleteAccount(reason: string | null): Observable<any> {
     const userId = this.userId();
     if (!userId) {
       throw new Error('No user ID set');
     }
-    return this.http.delete(`${this.userEndpoint}/profile/${userId}`, { responseType: 'text' });
+    let url = `${this.userEndpoint}/profile/${userId}`;
+    if (reason) {
+      url += `?reason=${reason}`;
+    }
+    return this.http.delete(url, { responseType: 'text' });
   }
 
   saveSyncSetting(sync: boolean): Observable<boolean> {
