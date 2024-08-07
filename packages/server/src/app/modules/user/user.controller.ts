@@ -143,8 +143,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async validate(@Req() req): Promise<{id: string} | null> {
     if ((req.user?.exp * 1000) > Date.now()) {
-      return {id: req.user.id}
+      const result = await this._getUserFromCache(UserController.PROFILE_CACHE_KEY, { id: req.user.id })
+      return result ? {id: req.user.id} : null;
     }
+    this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, { id: req.user.id })
     return null
   }
 
@@ -168,6 +170,7 @@ export class UserController {
   async googleAuthRedirect(@Req() req, @Res() res) {
     try {
       const user = await this.userService.googleLogin(req);
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, user.toJSON())
       this._sendTokenResponse(user.id, res);
     } catch(e) {
       console.error(e)
@@ -184,6 +187,7 @@ export class UserController {
         throw new Error('No user from microsoft');
       }
       const user = await this.userService.msLogin(req.user);
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, user.toJSON())
       this._sendTokenResponse(user.id, res);
     } catch(e: any) {
       console.error(e);
@@ -220,6 +224,10 @@ export class UserController {
     delete converted.ownerId;
     delete converted._id;
     return converted;
+  }
+
+  private async _getUserFromCache(key: string, params: { id: string }): Promise<string | null> {
+    return this.cache.get(`${key}-${params.id}`)
   }
 
   private _burstCacheForKey(key: string, params: { id: string }): void {

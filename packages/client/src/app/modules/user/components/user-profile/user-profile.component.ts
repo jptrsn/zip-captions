@@ -21,6 +21,17 @@ export class UserProfileComponent {
   public formGroup: FormGroup;
   public loading: WritableSignal<boolean> = signal(false);
   public accountDeleted: WritableSignal<boolean> = signal(false);
+  
+  // These must have keys in the USER.PROFILE.DELETE_REASONS translation files
+  public reasons: string[] = [
+    'alternative',
+    'quality',
+    'privacy',
+    'usage',
+    'bugs',
+    'other'
+  ]
+
   constructor(private store: Store<AppState>,
               private fb: FormBuilder) {
     this.profile = toSignal(this.store.select(selectUserProfile));
@@ -33,8 +44,9 @@ export class UserProfileComponent {
       return undefined;
     });
     
-    this.formGroup = this.fb.group<{email: FormControl<string | null> }>({
-      email: this.fb.control<string | null>('', [(control) => this._validateEmail(control)])
+    this.formGroup = this.fb.group<{email: FormControl<string | null>, reason: FormControl<string | null>}>({
+      email: this.fb.control<string | null>('', [(control) => this._validateEmail(control)]),
+      reason: this.fb.control<string | null>('')
     });
 
   }
@@ -51,10 +63,13 @@ export class UserProfileComponent {
   // Fires event and subscribes to appropriate event emitter to render UI
   private _removeAccount(email: string): void {
     this.loading.set(true);
-    this.store.dispatch(UserActions.deleteAccount({ email }));
-    this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
+    const reason = this.formGroup.get('reason')?.value
+    this.store.dispatch(UserActions.deleteAccount({ email, reason }));
+    const sub = this.loggedIn.subscribe((isLoggedIn: boolean | undefined) => {
       if (!isLoggedIn) {
         this.accountDeleted.set(true);
+        this.loading.set(false);
+        sub.unsubscribe();
       }
     })
   }

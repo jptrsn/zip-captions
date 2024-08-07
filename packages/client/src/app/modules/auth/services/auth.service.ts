@@ -62,6 +62,7 @@ export class AuthService {
       map(({ id }) => {
         return id
       }),
+      catchError(() => of(null))
     );
   }
 
