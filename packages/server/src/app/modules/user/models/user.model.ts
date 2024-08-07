@@ -39,6 +39,16 @@ export class User {
   msId?: string;
 
   @Prop({
+    type: String
+  })
+  patreonId?: string;
+
+  @Prop({
+    type: String
+  })
+  patreonRefreshToken?: string;
+
+  @Prop({
     type: Boolean
   })
   syncUiSettings?: boolean;

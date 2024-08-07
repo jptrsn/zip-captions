@@ -80,5 +80,9 @@ export class AuthService {
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
   }
+
+  getPatreonLoginUrl(): string {
+    return `${this.userEndpoint}/patreon-login`;
+  }
   
 }

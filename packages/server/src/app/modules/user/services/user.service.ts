@@ -74,6 +74,21 @@ export class UserService {
     return user;
   }
 
+  async patreonLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
+    console.log('patreonLogin', userInfo);
+    let user = await this.findOne({patreonId: userInfo.id});
+    if (!user) {
+      user = await this._loginUser(userInfo.email, {
+        patreonId: userInfo.id,
+        patreonRefreshToken: userInfo.refreshToken
+      })
+    } else {
+      user.patreonRefreshToken = userInfo.refreshToken;
+      await user.save();
+    }
+    return user;
+  }
+
   private async _loginUser(email: string, additionalUserInfo: Partial<User>): Promise<UserDocument> {
     const fromDb = await this.findOne({primaryEmail: email})
     if (fromDb) {

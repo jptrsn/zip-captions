@@ -15,12 +15,14 @@ import { MicrosoftLoginComponent } from './components/microsoft-login/microsoft-
 import { GoogleOauthLoginComponent } from './components/google-oauth-login/google-oauth-login.component';
 import { UserEffects } from '../../effects/user.effects';
 import { userReducer } from '../../reducers/user.reducer';
+import { PatreonLoginComponent } from './components/patreon-login/patreon-login.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
     MicrosoftLoginComponent,
     GoogleOauthLoginComponent,
+    PatreonLoginComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,7 @@ import { userReducer } from '../../reducers/user.reducer';
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([AuthEffects, UserEffects]),
     StoreModule.forFeature('auth', authReducer),
-    StoreModule.forFeature('user', userReducer)
+    StoreModule.forFeature('user', userReducer),
   ],
 })
 export class AuthModule {}
