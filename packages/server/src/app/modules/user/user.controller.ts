@@ -181,7 +181,15 @@ export class UserController {
   async googleAuthRedirect(@Req() req, @Res() res) {
     try {
       const user = await this.userService.googleLogin(req);
-      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, user.toJSON())
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
       this._sendTokenResponse(user.id, res);
     } catch(e) {
       console.error(e)
@@ -198,7 +206,15 @@ export class UserController {
         throw new Error('No user from microsoft');
       }
       const user = await this.userService.msLogin(req.user);
-      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, user.toJSON())
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
       this._sendTokenResponse(user.id, res);
     } catch(e: any) {
       console.error(e);
