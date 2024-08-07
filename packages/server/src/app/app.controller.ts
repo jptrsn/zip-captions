@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Headers, Post, RawBodyRequest, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Headers, HttpCode, Post, RawBodyRequest, Req } from '@nestjs/common';
 import { createHmac } from 'node:crypto';
 import { AppService } from './app.service';
 
@@ -7,6 +7,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('patreon-webhook')
+  @HttpCode(200)
   async updatePatreonSupporters(@Req() req: RawBodyRequest<Request>, @Headers() headers,  @Body() body): Promise<void> {
     try {
       const event = headers['x-patreon-event'];
