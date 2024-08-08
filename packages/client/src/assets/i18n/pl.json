@@ -503,7 +503,8 @@
     "title": "Zaloguj się do podpisów zip",
     "blurb": "Skorzystaj z konta, aby włączyć funkcje, które działają we wszystkich sesjach.",
     "loginWithGoogle": "Zaloguj się z Google",
-    "loginWithAzure": "Zaloguj się z Microsoft"
+    "loginWithAzure": "Zaloguj się z Microsoft",
+    "loginWithPatreon": "Zaloguj się na Patreonie"
   },
   "USER": {
     "PROFILE": {
@@ -521,7 +522,23 @@
       "deleteWarnP2": "Tej akcji nie można cofnąć.",
       "deleteWarnP3": "Jeśli zmienisz zdanie, zawsze możesz utworzyć konto ponownie, logując się u dostawcy.",
       "confirmLabel": "Potwierdź usunięcie konta wpisując poniżej swój zarejestrowany adres e-mail",
-      "emailDeleteError": "Adres e-mail musi być zgodny z zarejestrowanym adresem e-mail"
+      "emailDeleteError": "Adres e-mail musi być zgodny z zarejestrowanym adresem e-mail",
+      "reasonLabel": "Opcjonalnie daj nam znać, dlaczego zdecydowałeś się usunąć swoje konto",
+      "DELETE_REASONS": {
+        "alternative": "Znalazłem aplikację do napisów, która działa dla mnie lepiej niż Zip Captions",
+        "quality": "Zip Captions nie generuje napisów, których potrzebuję, lub ich jakość jest niska",
+        "privacy": "Martwię się tym, jak Zip Captions postępuje z moimi danymi",
+        "usage": "Nie muszę już tak często używać napisów",
+        "bugs": "Napisy zip są zawodne lub zbyt skomplikowane, aby je rozgryźć",
+        "other": "Coś innego"
+      }
+    },
+    "PATREON": {
+      "active": "Wspierasz nas na Patreonie!",
+      "connected": "Masz połączenie z Patreonem!",
+      "usernameLabel": "Nazwa użytkownika Patreona",
+      "startDateLabel": "Dołączył",
+      "thanksMessage": "Dziękujemy, że nas wspieracie - bez Waszej pomocy nie moglibyśmy tego zrobić!"
     }
   }
 }

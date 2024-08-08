@@ -25,6 +25,19 @@ export class UserEffects {
       )
     )
 
+    loadUserPatreon$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.getProfileSuccess),
+        switchMap(() => 
+          this.userService.getSupporterProfile()
+            .pipe(
+              map((profile) => UserActions.getSupporterProfileSuccess({ profile })),
+              catchError((err) => of(UserActions.getSupporterProfileFailure({ error: err.message })))
+            )
+        )
+      )
+    )
+
     saveUiSettings$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.saveSettingsState),

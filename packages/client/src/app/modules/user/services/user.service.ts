@@ -2,14 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { UserActions } from '../../../actions/user.actions';
 import { AppState } from '../../../models/app.model';
-import { UserProfile, UserRoom } from '../../../reducers/user.reducer';
+import { SupporterProfile, UserProfile, UserRoom } from '../../../reducers/user.reducer';
 import { selectUserId } from '../../../selectors/user.selector';
-import { SettingsState } from '../../settings/models/settings.model';
-import { AuthActions } from '../../../actions/auth.actions';
 import { StorageService } from '../../../services/storage.service';
+import { SettingsState } from '../../settings/models/settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +51,7 @@ export class UserService {
   saveSyncSetting(sync: boolean): Observable<boolean> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.post<{sync: boolean}>(`${this.userEndpoint}/profile/${id}/sync`, { sync }).pipe(
       map(({sync}) => (sync))
@@ -62,7 +61,7 @@ export class UserService {
   getUiSettings(): Observable<SettingsState> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.get<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`)
   }
@@ -70,7 +69,7 @@ export class UserService {
   saveUiSettings(settings: SettingsState): Observable<SettingsState> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.post<SettingsState>(`${this.userEndpoint}/profile/${id}/settings`, { settings })
   }
@@ -78,7 +77,7 @@ export class UserService {
   getUserRooms(): Observable<UserRoom[]> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.get<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`)
   }
@@ -86,7 +85,7 @@ export class UserService {
   saveUserRooms(rooms: UserRoom[], upsert?: boolean): Observable<UserRoom[]> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.patch<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`, { rooms, upsert })
   }
@@ -98,7 +97,7 @@ export class UserService {
   getUserRoom(roomId: string): Observable<UserRoom> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     return this.http.get<UserRoom>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`)
   }
@@ -106,7 +105,7 @@ export class UserService {
   saveUserRoom(room: Partial<UserRoom>): Observable<UserRoom> {
     const id = this.userId();
     if (!id) {
-      throw new Error('No user ID set')
+      throw new Error('No user ID set');
     }
     console.log('save room', room);
     return this.http.patch<UserRoom>(`${this.userEndpoint}/profile/${id}/rooms/${room.roomId}`, { room });
@@ -117,7 +116,15 @@ export class UserService {
     if (!id) {
       throw new Error('No user ID set')
     }
-    return this.http.delete<void>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`)
+    return this.http.delete<void>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`);
+  }
+
+  getSupporterProfile(): Observable<SupporterProfile | null> {
+    const id = this.userId();
+    if (!id) {
+      throw new Error('No user ID set');
+    }
+    return this.http.get<SupporterProfile | null>(`${this.userEndpoint}/profile/${id}/support`);
   }
 
 }

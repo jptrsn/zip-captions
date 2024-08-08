@@ -17,6 +17,8 @@ import { UserService } from './services/user.service';
 import { EventsService } from '../../services/events/events.service';
 import { AppEvent, AppEventType } from '../../models/event.model';
 import { PatreonOAuthGuard } from '../../guards/patreon-oauth.guard';
+import { AppService } from '../../app.service';
+import { Supporter } from '../../models/supporter.model';
 
 @Controller('user')
 export class UserController {
@@ -27,6 +29,7 @@ export class UserController {
               private readonly uiSettingsService: UiSettingsService,
               private readonly sessionService: SessionService,
               private readonly eventService: EventsService,
+              private readonly appService: AppService,
               private cache: CacheService,
               private jwtService: JwtService) 
   {
@@ -148,6 +151,16 @@ export class UserController {
     const updatedUser = await this.userService.updateUser(params.id, { syncUiSettings: body.sync });
     this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, params);
     return {sync: updatedUser.syncUiSettings || false};
+  }
+
+  @Get('profile/:id/support')
+  @NoCache()
+  @UseGuards(JwtAuthGuard)
+  async getUserSupportInfo(@Req() req, @Param() params: { id: string}): Promise<Supporter> {
+    this._validateParam(req, params);
+    const user = await this.userService.findOne({id: req.user.id});
+    const supporter = await this.appService.findSupporter({ email: user.primaryEmail, deletedAt: null });
+    return supporter ? supporter.toJSON() : null
   }
 
   @Get('validate')

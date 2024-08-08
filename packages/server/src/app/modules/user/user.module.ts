@@ -18,6 +18,8 @@ import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast
 import { AppEvent, AppEventSchema } from '../../models/event.model';
 import { EventsService } from '../../services/events/events.service';
 import { PatreonStrategy } from '../../strategies/patreon.strategy';
+import { AppService } from '../../app.service';
+import { Supporter, SupporterSchema } from '../../models/supporter.model';
 
 @Module({
   imports: [
@@ -28,7 +30,8 @@ import { PatreonStrategy } from '../../strategies/patreon.strategy';
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
       { name: BroadcastSession.name, schema: BroadcastSessionSchema },
-      { name: AppEvent.name, schema: AppEventSchema }
+      { name: AppEvent.name, schema: AppEventSchema },
+      { name: Supporter.name, schema: SupporterSchema }
     ]
       ),
     JwtModule.registerAsync({
@@ -47,7 +50,8 @@ import { PatreonStrategy } from '../../strategies/patreon.strategy';
     CacheService,
     UiSettingsService,
     SessionService,
-    EventsService
+    EventsService,
+    AppService,
   ],
 })
 export class UserModule {}

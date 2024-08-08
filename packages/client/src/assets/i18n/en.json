@@ -532,6 +532,13 @@
         "bugs": "Zip Captions is unreliable, or too complicated to figure out",
         "other": "Something else"
       }
+    },
+    "PATREON": {
+      "active": "You support us on Patreon!",
+      "connected": "You're connected with Patreon!",
+      "usernameLabel": "Patreon user name",
+      "startDateLabel": "Joined",
+      "thanksMessage": "Thank you for supporting us - we couldn't do this without your help!"
     }
   }
 }
