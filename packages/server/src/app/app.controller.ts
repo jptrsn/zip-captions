@@ -21,6 +21,7 @@ export class AppController {
       if (!this._verifySignature(req.rawBody, secret, signature)) {
         throw new ForbiddenException();
       }
+      console.log(body)
       switch (event) {
         case 'members:create':
         case 'members:update':

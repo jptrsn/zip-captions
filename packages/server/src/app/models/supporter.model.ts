@@ -26,6 +26,11 @@ export class Supporter {
   @Prop({
     type: String
   })
+  displayName?: string;
+
+  @Prop({
+    type: String
+  })
   tiers?: string;
 
   @Prop({

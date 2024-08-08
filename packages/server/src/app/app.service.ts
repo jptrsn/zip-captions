@@ -13,20 +13,30 @@ export class AppService {
       throw new BadRequestException('Invalid payload type');
     }
     const userObject = payload.included.find((inc) => inc.type === 'user') as PatreonUserObject | undefined;
-    if (!userObject?.attributes.email) {
-      throw new BadRequestException('No user info found');
+    if (!userObject) {
+      console.log('no user info in body', JSON.stringify(payload.included));
+    }
+    
+    const data = payload.data as PatreonMembersCreateWebhookPayload;
+    const email = userObject?.attributes?.email || data.attributes.email;
+    const id = userObject?.id;
+    const displayName = userObject?.attributes?.full_name || data.attributes.full_name;
+
+    if (!email || !id || !displayName) {
+      console.log('field missing for update', email, id, displayName);
+      throw new BadRequestException();
     }
 
-    const data = payload.data as PatreonMembersCreateWebhookPayload;
     const record: Supporter = {
-      id: userObject.id,
+      id,
       status: data.attributes.is_follower ? 'follower' : 'member',
-      email: userObject.attributes.email,
+      email,
+      displayName,
       amountCents: data.attributes.will_pay_amount_cents,
       totalContribution: data.attributes.lifetime_support_cents
     }
     if (data.relationships.currently_entitled_tiers) {
-      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers);
+      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     }
     return this.upsertSupporter(record);
   }
@@ -36,23 +46,31 @@ export class AppService {
       throw new BadRequestException('Invalid payload type');
     }
     const userObject = payload.included.find((inc) => inc.type === 'user') as PatreonUserObject | undefined;
-    if (!userObject?.attributes.email) {
-      console.log('no email', JSON.stringify(payload));
-      throw new BadRequestException('No user info found');
+    if (!userObject) {
+      console.log('no user info in body', JSON.stringify(payload.included));
+    }
+    
+    const data = payload.data as PatreonMembersCreateWebhookPayload;
+    const email = userObject?.attributes.email || data.attributes.email;
+    const id = userObject?.id;
+    const displayName = userObject?.attributes.full_name || data.attributes.full_name;
+
+    if (!email || !id || !displayName) {
+      console.log('field missing for update', email, id, displayName);
+      throw new BadRequestException();
     }
 
-    const data = payload.data as PatreonMembersCreateWebhookPayload;
     const record: Supporter = {
-      id: userObject.id,
+      id,
       status: 'deleted',
-      email: userObject.attributes.email,
+      email,
+      displayName,
       amountCents: data.attributes.will_pay_amount_cents,
       totalContribution: data.attributes.lifetime_support_cents,
-      tiers: JSON.stringify(data.relationships.currently_entitled_tiers),
       deletedAt: new Date()
     }
     if (data.relationships.currently_entitled_tiers) {
-      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers);
+      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     } else {
       record.tiers = null;
     }
@@ -65,6 +83,7 @@ export class AppService {
     }
     const userObject = payload.included.find((inc) => inc.type === 'user') as PatreonUserObject | undefined;
     if (!userObject?.attributes.email) {
+      console.log('no user info in body', payload, userObject)
       throw new BadRequestException('No user info found');
     }
 
@@ -73,10 +92,11 @@ export class AppService {
       id: userObject.id,
       status: 'pledge',
       email: userObject.attributes.email,
+      displayName: userObject.attributes.full_name,
       amountCents: data.attributes.amount_cents
     }
     if (data.relationships.currently_entitled_tiers) {
-      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers);
+      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     }
     return this.upsertSupporter(record);
   }
@@ -87,6 +107,7 @@ export class AppService {
     }
     const userObject = payload.included.find((inc) => inc.type === 'user') as PatreonUserObject | undefined;
     if (!userObject?.attributes.email) {
+      console.log('no user info in body', payload, userObject)
       throw new BadRequestException('No user info found');
     }
 
@@ -96,13 +117,14 @@ export class AppService {
       id: userObject.id,
       status: data.attributes.last_charge_status === 'Paid' ? data.attributes.patron_status : 'lapsed',
       email: userObject.attributes.email,
+      displayName: userObject.attributes.full_name,
       amountCents: data.attributes.pledge_amount_cents,
     }
     if (data.attributes.pledge_relationship_start) {
       record.startDate = new Date(data.attributes.pledge_relationship_start)
     }
     if (data.relationships.currently_entitled_tiers) {
-      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers);
+      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     }
     await this.upsertSupporter(record);
     
@@ -114,6 +136,7 @@ export class AppService {
     }
     const userObject = payload.included.find((inc) => inc.type === 'user') as PatreonUserObject | undefined;
     if (!userObject?.attributes.email) {
+      console.log('no user info in body', payload, userObject)
       throw new BadRequestException('No user info found');
     }
 
@@ -122,12 +145,13 @@ export class AppService {
       id: userObject.id,
       status: 'lapsed',
       email: userObject.attributes.email,
+      displayName: userObject.attributes.full_name,
       amountCents: data.attributes.pledge_amount_cents,
       totalContribution: data.attributes.lifetime_support_cents,
       endDate: new Date(data.attributes.last_charge_date)
     };
     if (data.relationships.currently_entitled_tiers) {
-      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers);
+      record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     }
 
     await this.upsertSupporter(record);
