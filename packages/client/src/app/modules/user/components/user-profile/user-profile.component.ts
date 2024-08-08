@@ -5,9 +5,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { UserActions } from '../../../../actions/user.actions';
 import { AppState } from '../../../../models/app.model';
-import { UserProfile } from '../../../../reducers/user.reducer';
+import { SupporterProfile, UserProfile } from '../../../../reducers/user.reducer';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
-import { selectUserProfile } from '../../../../selectors/user.selector';
+import { selectUserProfile, selectUserSupportProfile } from '../../../../selectors/user.selector';
 
 @Component({
   selector: 'app-user-profile',
@@ -17,6 +17,7 @@ import { selectUserProfile } from '../../../../selectors/user.selector';
 export class UserProfileComponent {
   public profile: Signal<UserProfile | undefined>;
   public joined: Signal<Date | undefined>;
+  public patronage: Signal<SupporterProfile | undefined>;
   public loggedIn: Observable<boolean | undefined>;
   public formGroup: FormGroup;
   public loading: WritableSignal<boolean> = signal(false);
@@ -36,6 +37,7 @@ export class UserProfileComponent {
               private fb: FormBuilder) {
     this.profile = toSignal(this.store.select(selectUserProfile));
     this.loggedIn = this.store.select(selectUserLoggedIn);
+    this.patronage = toSignal(this.store.select(selectUserSupportProfile));
     this.joined = computed(() => {
       const ts = this.profile()?.createdAt;
       if (ts) {

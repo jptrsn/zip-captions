@@ -503,7 +503,8 @@
     "title": "Connectez-vous aux légendes de zip",
     "blurb": "Utilisez votre compte pour activer les fonctionnalités qui fonctionnent à toutes les sessions.",
     "loginWithGoogle": "Connectez-vous avec Google",
-    "loginWithAzure": "Connectez-vous avec Microsoft"
+    "loginWithAzure": "Connectez-vous avec Microsoft",
+    "loginWithPatreon": "Connectez-vous avec Patreon"
   },
   "USER": {
     "PROFILE": {
@@ -521,7 +522,23 @@
       "deleteWarnP2": "Cette action ne peut pas être annulée.",
       "deleteWarnP3": "Si vous changez d'avis, vous pouvez toujours créer à nouveau votre compte en vous connectant auprès d'un fournisseur.",
       "confirmLabel": "Confirmez la suppression du compte en saisissant ci-dessous votre adresse e-mail enregistrée",
-      "emailDeleteError": "L'adresse email doit correspondre à votre email enregistré"
+      "emailDeleteError": "L'adresse email doit correspondre à votre email enregistré",
+      "reasonLabel": "Facultativement, faites-nous savoir pourquoi vous avez décidé de supprimer votre compte",
+      "DELETE_REASONS": {
+        "alternative": "J'ai trouvé une application de sous-titrage qui fonctionne mieux pour moi que Zip Captions",
+        "quality": "Zip Captions ne génère pas les sous-titres dont j'ai besoin, ou la qualité est mauvaise",
+        "privacy": "Je m'inquiète de la façon dont Zip Captions gère mes données",
+        "usage": "Je n'ai plus autant besoin de sous-titrer",
+        "bugs": "Les sous-titres zip ne sont pas fiables ou sont trop compliqués à comprendre",
+        "other": "Autre chose"
+      }
+    },
+    "PATREON": {
+      "active": "Vous nous soutenez sur Patreon !",
+      "connected": "Vous êtes connecté à Patreon !",
+      "usernameLabel": "Nom d'utilisateur Patreon",
+      "startDateLabel": "Rejoint",
+      "thanksMessage": "Merci de nous soutenir, nous ne pourrions pas y parvenir sans votre aide !"
     }
   }
 }

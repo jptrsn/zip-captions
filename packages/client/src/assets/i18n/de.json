@@ -290,7 +290,7 @@
     "TABS": {
       "broadcast": "Aktie",
       "view": "Betrachten"
-      },
+    },
     "serverStatus": "Broadcast-Server",
     "peerStatus": "Peer-Verbindungen",
     "sessionId": "Session-ID",
@@ -503,7 +503,8 @@
     "title": "Anmelden Sie sich für Zip -Bildunterschriften an",
     "blurb": "Verwenden Sie Ihr Konto, um Funktionen zu aktivieren, die über alle Sitzungen hinweg funktionieren.",
     "loginWithGoogle": "Anmeldung mit Google",
-    "loginWithAzure": "Melden Sie sich bei Microsoft an"
+    "loginWithAzure": "Melden Sie sich bei Microsoft an",
+    "loginWithPatreon": "Melden Sie sich mit Patreon an"
   },
   "USER": {
     "PROFILE": {
@@ -521,7 +522,23 @@
       "deleteWarnP2": "Diese Aktion kann nicht rückgängig gemacht werden.",
       "deleteWarnP3": "Wenn Sie Ihre Meinung ändern, können Sie Ihr Konto jederzeit erneut erstellen, indem Sie sich bei einem Anbieter anmelden.",
       "confirmLabel": "Bestätigen Sie die Löschung des Kontos, indem Sie unten Ihre registrierte E-Mail-Adresse eingeben",
-      "emailDeleteError": "Die E-Mail-Adresse muss mit Ihrer registrierten E-Mail-Adresse übereinstimmen"
+      "emailDeleteError": "Die E-Mail-Adresse muss mit Ihrer registrierten E-Mail-Adresse übereinstimmen",
+      "reasonLabel": "Teilen Sie uns optional mit, warum Sie sich entschieden haben, Ihr Konto zu löschen",
+      "DELETE_REASONS": {
+        "alternative": "Ich habe eine Untertitel-App gefunden, die für mich besser funktioniert als Zip Captions",
+        "quality": "Zip Captions generiert nicht die Untertitel, die ich benötige, oder die Qualität ist schlecht",
+        "privacy": "Ich mache mir Sorgen darüber, wie Zip Captions mit meinen Daten umgeht",
+        "usage": "Ich brauche nicht mehr so oft Untertitel",
+        "bugs": "Zip Captions ist unzuverlässig oder zu kompliziert, um es herauszufinden",
+        "other": "Etwas anderes"
+      }
+    },
+    "PATREON": {
+      "active": "Du unterstützt uns auf Patreon!",
+      "connected": "Du bist mit Patreon verbunden!",
+      "usernameLabel": "Patreon-Benutzername",
+      "startDateLabel": "Beigetreten",
+      "thanksMessage": "Vielen Dank für Ihre Unterstützung - ohne Ihre Hilfe könnten wir das nicht schaffen!"
     }
   }
 }

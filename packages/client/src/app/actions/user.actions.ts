@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { UserProfile, UserRoom } from '../reducers/user.reducer';
+import { SupporterProfile, UserProfile, UserRoom } from '../reducers/user.reducer';
 import { SettingsState } from '../modules/settings/models/settings.model';
 
 export const UserActions = createActionGroup({
@@ -39,5 +39,9 @@ export const UserActions = createActionGroup({
     'Delete Account': props<{reason: string | null }>(),
     'Delete Account Success': emptyProps(),
     'Delete Account Failure': props<{ error: string }>(),
+
+    'Get Supporter Profile': emptyProps(),
+    'Get Supporter Profile Success': props<{ profile: SupporterProfile | null}>(),
+    'Get Supporter Profile Failure': props<{ error: string }>()
   }
 });
