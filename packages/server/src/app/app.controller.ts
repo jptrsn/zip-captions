@@ -16,11 +16,19 @@ export class AppController {
 
       if (!event || !signature || !secret) {
         throw new BadRequestException();
-      } 
+      }
+      console.log('webhook', event)
       if (!this._verifySignature(req.rawBody, secret, signature)) {
         throw new ForbiddenException();
       }
       switch (event) {
+        case 'members:create':
+        case 'members:update':
+          await this.appService.upsertMember(body);
+          break;
+        case 'members:delete':
+          await this.appService.markMemberDeleted(body);
+          break;
         case 'members:pledge:create':
           await this.appService.createPledge(body);
           break;
@@ -32,6 +40,7 @@ export class AppController {
           break;
         default:
           console.log('unhandled webhook event', event);
+          console.log(body);
           break;
       }
     } catch(e) {

@@ -24,6 +24,11 @@ export class Supporter {
   status: string;
 
   @Prop({
+    type: String
+  })
+  tiers?: string;
+
+  @Prop({
     type: Number
   })
   amountCents?: number;
@@ -43,6 +48,16 @@ export class Supporter {
   @Prop({
     type: Date
   })
+  updatedAt?: Date;
+
+  @Prop({
+    type: Date
+  })
+  deletedAt?: Date;
+
+  @Prop({
+    type: Date
+  })
   startDate?: Date;
 
   @Prop({
@@ -52,3 +67,10 @@ export class Supporter {
 }
 
 export const SupporterSchema = SchemaFactory.createForClass(Supporter);
+
+SupporterSchema.pre<Supporter>('validate', function (next) {
+  if (!this.deletedAt) {
+    this.updatedAt = new Date();
+  }
+  return next();
+})

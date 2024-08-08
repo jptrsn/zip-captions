@@ -1,3 +1,42 @@
+export interface PatreonMembersCreateWebhookPayload extends PatreonWebhookData {
+  attributes: {
+    campaign_lifetime_support_cents: number;
+    currently_entitled_amount_cents: number;
+    email: string;
+    full_name: string;
+    is_follower: boolean;
+    is_free_trial: boolean;
+    last_charge_date: string | null;
+    last_charge_status: string | null;
+    lifetime_support_cents: number;
+    next_charge_date: string | null;
+    note: string;
+    patron_status: string | null,
+    pledge_cadence: string | null,
+    pledge_relationship_start: string; // '2024-08-08T00:59:34.874+00:00',
+    will_pay_amount_cents: number;
+  }
+}
+
+export interface PatreonMembersUpdateWebhookPayload extends PatreonWebhookData {
+  attributes: {
+    access_expires_at: null;
+    campaign_currency: string; // 'USD',
+    campaign_lifetime_support_cents: number;
+    campaign_pledge_amount_cents: number;
+    full_name: string;
+    is_follower: boolean;
+    is_free_member: null,
+    is_free_trial: null,
+    last_charge_date: string; // '2014-04-01T00:00:00.000+00:00',
+    last_charge_status: string; // 'Paid',
+    lifetime_support_cents: number;
+    patron_status: string; // 'active_patron',
+    pledge_amount_cents: number;
+    pledge_relationship_start: string; // '2014-03-14T00:00:00.000+00:00'
+  }
+}
+
 export interface PatreonPledgeCreateWebhookPayload extends PatreonWebhookData {
   attributes: {
     amount_cents: number; // 250,
@@ -35,6 +74,18 @@ interface PatreonWebhookData {
     },
     card: {
       data: null
+    },
+    campaign: {
+      data: {
+        id: string;
+        type: 'campaign';
+      },
+      links: {
+        related: string;
+      }
+    },
+    currently_entitled_tiers: {
+      data: []
     },
     creator: {
       data: {
