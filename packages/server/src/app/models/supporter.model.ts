@@ -56,7 +56,8 @@ export class Supporter {
   updatedAt?: Date;
 
   @Prop({
-    type: Date
+    type: Date,
+    expires: 1000 * 60 * 60 * 24 * 365 // 365 days
   })
   deletedAt?: Date;
 
@@ -66,8 +67,7 @@ export class Supporter {
   startDate?: Date;
 
   @Prop({
-    type: Date,
-    expires: 1000 * 60 * 60 * 24 * 365 // 365 days
+    type: Date
   })
   endDate?: Date;
 }
