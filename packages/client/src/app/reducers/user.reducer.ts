@@ -23,9 +23,23 @@ export interface UserRoom {
   expires?: string;
 }
 
+export interface SupporterProfile {
+  id: string;
+  email: string;
+  status: string;
+  displayName?: string;
+  amountCents?: number;
+  totalContribution?: number;
+  startDate?: Date;
+  endDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface UserState {
   id?: string;
   profile?: UserProfile;
+  supporter?: SupporterProfile;
   uiSettings?: SettingsState;
   rooms?: UserRoom[];
   error?: string;
@@ -57,6 +71,12 @@ export const userReducer = createReducer(
 
   on(UserActions.saveRoomsSuccess, (state: UserState, action: { rooms: UserRoom[] }) => ({...state, rooms: action.rooms })),
   on(UserActions.saveRoomsFailure, (state: UserState, action: { error: string }) => ({...state, rooms: [], error: action.error })),
+
+  on(UserActions.deleteAccountSuccess, (state: UserState) => ({...state, loading: false, profile: undefined })),
+  on(UserActions.deleteAccountFailure, (state: UserState, action: { error: string }) => ({...state, error: action.error})),
+
+  on(UserActions.getSupporterProfileSuccess, (state: UserState, action: { profile: SupporterProfile | null}) => ({...state, supporter: action.profile || undefined })),
+  on(UserActions.getSupporterProfileFailure, (state: UserState, action: { error: string }) => ({...state, error: action.error})),
 
 );
 

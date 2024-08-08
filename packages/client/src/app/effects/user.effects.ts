@@ -25,6 +25,19 @@ export class UserEffects {
       )
     )
 
+    loadUserPatreon$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.getProfileSuccess),
+        switchMap(() => 
+          this.userService.getSupporterProfile()
+            .pipe(
+              map((profile) => UserActions.getSupporterProfileSuccess({ profile })),
+              catchError((err) => of(UserActions.getSupporterProfileFailure({ error: err.message })))
+            )
+        )
+      )
+    )
+
     saveUiSettings$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.saveSettingsState),
@@ -93,6 +106,18 @@ export class UserEffects {
           .pipe(
             map((rooms) => UserActions.saveRoomsSuccess({ rooms })),
             catchError((err) => of(UserActions.saveRoomsFailure({ error: err.message })))
+          )
+        )
+      )
+    )
+
+    deleteAccount$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserActions.deleteAccount),
+        switchMap(({ reason }) => this.userService.deleteAccount(reason)
+          .pipe(
+            switchMap(() => [UserActions.deleteAccountSuccess(), AuthActions.logout()]),
+            catchError((err: any) => of(UserActions.deleteAccountFailure({ error: err.message })))
           )
         )
       )

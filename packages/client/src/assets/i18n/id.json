@@ -503,7 +503,8 @@
     "title": "Masuk ke Zip Captions",
     "blurb": "Gunakan akun Anda untuk mengaktifkan fitur yang berfungsi di semua sesi.",
     "loginWithGoogle": "Masuk dengan Google",
-    "loginWithAzure": "Masuk dengan Microsoft"
+    "loginWithAzure": "Masuk dengan Microsoft",
+    "loginWithPatreon": "Masuk dengan Patreon"
   },
   "USER": {
     "PROFILE": {
@@ -514,7 +515,30 @@
       "organization": "Organisasi",
       "joined": "Bergabung",
       "providers": "Penyedia masuk terhubung",
-      "notSet": "Tidak diatur"
+      "notSet": "Anda belum masuk",
+      "delete": "Hapus akun Saya",
+      "deleted": "Akun Anda telah berhasil dihapus, dan informasi pribadi Anda telah dihapus dari database kami.",
+      "deleteWarnP1": "Kamu yakin ingin menghapus akunmu?",
+      "deleteWarnP2": "Tindakan ini tidak bisa dibatalkan.",
+      "deleteWarnP3": "Jika Anda berubah pikiran, Anda selalu dapat membuat akun lagi dengan masuk menggunakan penyedia.",
+      "confirmLabel": "Konfirmasikan penghapusan akun dengan mengetikkan alamat email Anda yang terdaftar di bawah",
+      "emailDeleteError": "Alamat email harus sesuai dengan email yang Anda daftarkan",
+      "reasonLabel": "Jika diinginkan, beri tahu kami alasan Anda memutuskan untuk menghapus akun Anda",
+      "DELETE_REASONS": {
+        "alternative": "Saya telah menemukan aplikasi teks yang berfungsi lebih baik bagi saya daripada Teks Zip",
+        "quality": "Zip Captions tidak menghasilkan teks yang saya perlukan, atau kualitasnya buruk",
+        "privacy": "Saya khawatir tentang cara Zip Caption menangani data saya",
+        "usage": "Saya tidak perlu lagi menggunakan captioning",
+        "bugs": "Zip Caption tidak dapat diandalkan, atau terlalu rumit untuk dipahami",
+        "other": "Sesuatu yang lain"
+      }
+    },
+    "PATREON": {
+      "active": "Anda mendukung kami di Patreon!",
+      "connected": "Kamu terhubung dengan Patreon!",
+      "usernameLabel": "Nama pengguna Patreon",
+      "startDateLabel": "Bergabung",
+      "thanksMessage": "Terima kasih telah mendukung kami - kami tidak dapat melakukan ini tanpa bantuan Anda!"
     }
   }
 }

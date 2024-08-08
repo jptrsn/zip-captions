@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { AppState } from '../../../models/app.model';
-import { StorageService } from '../../../services/storage.service';
 import { selectUserLoggedIn } from '../../../selectors/auth.selectors';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { StorageService } from '../../../services/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +32,13 @@ export class AuthService {
       return this.login().pipe(
         map((id: string | null) => {
           if (!id) {
-            this.router.navigate(['auth', 'login'])
+            this.router.navigate(['auth', 'login']);
           }
           return !!id;
+        }),
+        catchError(() => {
+          this.router.navigate(['auth', 'login']);
+          return of(false);
         })
       )
     }
@@ -58,6 +62,7 @@ export class AuthService {
       map(({ id }) => {
         return id
       }),
+      catchError(() => of(null))
     );
   }
 
@@ -74,6 +79,10 @@ export class AuthService {
   
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
+  }
+
+  getPatreonLoginUrl(): string {
+    return `${this.userEndpoint}/patreon-login`;
   }
   
 }

@@ -15,6 +15,11 @@ import { SessionService } from '../../services/session/session.service';
 import { SocketConnection, SocketConnectionSchema } from '../../models/socket-connection.model';
 import { OwnerRoom, OwnerRoomSchema } from '../../models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast-session.model';
+import { AppEvent, AppEventSchema } from '../../models/event.model';
+import { EventsService } from '../../services/events/events.service';
+import { PatreonStrategy } from '../../strategies/patreon.strategy';
+import { AppService } from '../../app.service';
+import { Supporter, SupporterSchema } from '../../models/supporter.model';
 
 @Module({
   imports: [
@@ -24,11 +29,13 @@ import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast
       { name: UiSettings.name, schema: UiSettingsSchema },
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
-      { name: BroadcastSession.name, schema: BroadcastSessionSchema }
+      { name: BroadcastSession.name, schema: BroadcastSessionSchema },
+      { name: AppEvent.name, schema: AppEventSchema },
+      { name: Supporter.name, schema: SupporterSchema }
     ]
       ),
     JwtModule.registerAsync({
-      useFactory: () => ({ secret: process.env.JWT_SECRET, signOptions: { expiresIn: '7d'} })
+      useFactory: () => ({ secret: process.env.JWT_SECRET, signOptions: { expiresIn: '1d'} })
     })
   ],
   controllers: [
@@ -38,10 +45,13 @@ import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast
     AzureStrategy,
     GoogleStrategy,
     JwtStrategy,
+    PatreonStrategy,
     UserService,
     CacheService,
     UiSettingsService,
     SessionService,
+    EventsService,
+    AppService,
   ],
 })
 export class UserModule {}

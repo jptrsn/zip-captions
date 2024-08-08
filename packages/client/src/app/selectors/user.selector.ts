@@ -28,3 +28,8 @@ export const selectUserSettingsSync = createSelector(
   selectUserProfile,
   (profile) => profile?.syncUiSettings || false
 )
+
+export const selectUserSupportProfile = createSelector(
+  selectUserState,
+  (state) => state.supporter
+)

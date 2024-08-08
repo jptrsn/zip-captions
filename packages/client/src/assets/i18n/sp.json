@@ -503,7 +503,8 @@
     "title": "Iniciar sesión en los subtítulos",
     "blurb": "Use su cuenta para habilitar las características que funcionan en todas las sesiones",
     "loginWithGoogle": "Inicia sesión con Google",
-    "loginWithAzure": "Inicie sesión con Microsoft"
+    "loginWithAzure": "Inicie sesión con Microsoft",
+    "loginWithPatreon": "Iniciar sesión con Patreon"
   },
   "USER": {
     "PROFILE": {
@@ -514,7 +515,30 @@
       "organization": "Organización",
       "joined": "Unido",
       "providers": "Proveedores de inicio de sesión conectados",
-      "notSet": "No listo"
+      "notSet": "No has iniciado sesión",
+      "delete": "Borrar mi cuenta",
+      "deleted": "Su cuenta ha sido eliminada exitosamente y su información personal ha sido eliminada de nuestra base de datos.",
+      "deleteWarnP1": "¿Estás seguro de que quieres eliminar tu cuenta?",
+      "deleteWarnP2": "Esta acción no se puede deshacer.",
+      "deleteWarnP3": "Si cambia de opinión, siempre puede volver a crear su cuenta iniciando sesión con un proveedor.",
+      "confirmLabel": "Confirma la eliminación de la cuenta escribiendo tu dirección de correo electrónico registrada a continuación",
+      "emailDeleteError": "La dirección de correo electrónico debe coincidir con su correo electrónico registrado",
+      "reasonLabel": "Opcionalmente, infórmanos por qué has decidido eliminar tu cuenta",
+      "DELETE_REASONS": {
+        "alternative": "Encontré una aplicación de subtítulos que me funciona mejor que Zip Captions",
+        "quality": "Zip Captions no genera los subtítulos que necesito o la calidad es mala",
+        "privacy": "Me preocupa cómo Zip Captions maneja mis datos",
+        "usage": "Ya no necesito usar tanto subtítulos",
+        "bugs": "Zip Captions no es confiable o es demasiado complicado para entenderlo",
+        "other": "Algo más"
+      }
+    },
+    "PATREON": {
+      "active": "¡Nos apoyas en Patreon!",
+      "connected": "¡Estás conectado con Patreon!",
+      "usernameLabel": "Nombre de usuario de Patreon",
+      "startDateLabel": "Unido",
+      "thanksMessage": "Gracias por apoyarnos. ¡No podríamos hacer esto sin su ayuda!"
     }
   }
 }

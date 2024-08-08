@@ -37,7 +37,7 @@ export class TermsAndConditionsComponent {
       ]
     },
     {
-      title: 'TERMS.4',
+      title: 'TERMS.5',
       sections: [
         { 
           text: 'TERMS.5.1',

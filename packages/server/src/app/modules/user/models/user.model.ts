@@ -22,23 +22,6 @@ export class User {
   primaryEmail: string;
 
   @Prop({
-    type: String,
-    trim: true
-  })
-  familyName?: string;
-
-  @Prop({
-    type: String,
-    trim: true
-  })
-  givenName?: string;
-
-  @Prop({
-    type: String
-  })
-  photoData?: string;
-
-  @Prop({
     type: Date,
     required: true,
     default: Date.now
@@ -54,6 +37,16 @@ export class User {
     type: String
   })
   msId?: string;
+
+  @Prop({
+    type: String
+  })
+  patreonId?: string;
+
+  @Prop({
+    type: String
+  })
+  patreonRefreshToken?: string;
 
   @Prop({
     type: Boolean

@@ -503,7 +503,8 @@
     "title": "Accedi a didascalie zip",
     "blurb": "Usa il tuo account per abilitare le funzionalità che funzionano in tutte le sessioni.",
     "loginWithGoogle": "Accedi con Google",
-    "loginWithAzure": "Accedi con Microsoft"
+    "loginWithAzure": "Accedi con Microsoft",
+    "loginWithPatreon": "Accedi con Patreon"
     },
   "USER": {
     "PROFILE": {
@@ -514,7 +515,30 @@
       "organization": "Organizzazione",
       "joined": "Partecipato",
       "providers": "Fornitori di accesso connessi",
-      "notSet": "Non impostato"
+      "notSet": "Non sei registrato",
+      "delete": "Cancella il mio account",
+      "deleted": "Il tuo account è stato eliminato con successo e le tue informazioni personali sono state eliminate dal nostro database.",
+      "deleteWarnP1": "Sei sicuro di voler eliminare il tuo account?",
+      "deleteWarnP2": "Questa azione non può essere annullata.",
+      "deleteWarnP3": "Se cambi idea, puoi sempre creare nuovamente il tuo account accedendo con un provider.",
+      "confirmLabel": "Conferma l'eliminazione dell'account digitando di seguito l'indirizzo email registrato",
+      "emailDeleteError": "L'indirizzo email deve corrispondere a quello registrato",
+      "reasonLabel": "Facoltativamente facci sapere perché hai deciso di eliminare il tuo account",
+      "DELETE_REASONS": {
+        "alternative": "Ho trovato un'app per i sottotitoli che per me funziona meglio di Zip Captions",
+        "quality": "Zip Captions non genera i sottotitoli di cui ho bisogno o la qualità è scarsa",
+        "privacy": "Sono preoccupato per il modo in cui Zip Captions gestisce i miei dati",
+        "usage": "Non ho più bisogno di usare tanto i sottotitoli",
+        "bugs": "Zip Captions è inaffidabile o troppo complicato da capire",
+        "other": "Qualcos'altro"
+      }
+    },
+    "PATREON": {
+      "active": "Ci sostieni su Patreon!",
+      "connected": "Sei connesso con Patreon!",
+      "usernameLabel": "Nome utente Patreon",
+      "startDateLabel": "Partecipato",
+      "thanksMessage": "Grazie per averci supportato: non potremmo farcela senza il tuo aiuto!"
     }
   }
 }

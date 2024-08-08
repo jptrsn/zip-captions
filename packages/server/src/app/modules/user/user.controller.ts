@@ -14,6 +14,11 @@ import { UiSettings, UiSettingsDocument } from './models/ui-settings.model';
 import { UserProfile } from './models/user.model';
 import { UiSettingsService } from './services/ui-settings.service';
 import { UserService } from './services/user.service';
+import { EventsService } from '../../services/events/events.service';
+import { AppEvent, AppEventType } from '../../models/event.model';
+import { PatreonOAuthGuard } from '../../guards/patreon-oauth.guard';
+import { AppService } from '../../app.service';
+import { Supporter } from '../../models/supporter.model';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +28,8 @@ export class UserController {
   constructor(private readonly userService: UserService,
               private readonly uiSettingsService: UiSettingsService,
               private readonly sessionService: SessionService,
+              private readonly eventService: EventsService,
+              private readonly appService: AppService,
               private cache: CacheService,
               private jwtService: JwtService) 
   {
@@ -43,14 +50,35 @@ export class UserController {
     const userProfile = {
       id: user.id,
       createdAt: user.createdAt.toString(),
-      familyName: user.familyName,
-      givenName: user.givenName,
       primaryEmail: user.primaryEmail,
       googleConnected: !!user.googleId,
       azureConnected: !!user.msId,
       syncUiSettings: user.syncUiSettings
     }
     return userProfile;
+  }
+
+  @Delete('profile/:id')
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@Req() req, @Param() params: { id: string }, @Query() query?: { reason: string | undefined }): Promise<void> {
+    this._validateParam(req, params);
+    const user = await this.userService.findOne({ id: req.user.id });
+    if (!user) {
+      console.log(`User ${params.id} not found`);
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    await this.uiSettingsService.deleteByOwnerId(user.id);
+    await this.userService.deleteUser(user.id);
+    await this.sessionService.removeUserInformation(user.id);
+    const ev: Partial<AppEvent> = {
+      type: AppEventType.accountDeleted
+    }
+    if (query.reason) {
+      ev.message = query.reason;
+    }
+    await this.eventService.logEvent(ev);
+    this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, params);
+    this._burstCacheForKey(UserController.SETTINGS_CACHE_KEY, params);
   }
 
   @Get('profile/:id/settings')
@@ -125,13 +153,25 @@ export class UserController {
     return {sync: updatedUser.syncUiSettings || false};
   }
 
+  @Get('profile/:id/support')
+  @NoCache()
+  @UseGuards(JwtAuthGuard)
+  async getUserSupportInfo(@Req() req, @Param() params: { id: string}): Promise<Supporter> {
+    this._validateParam(req, params);
+    const user = await this.userService.findOne({id: req.user.id});
+    const supporter = await this.appService.findSupporter({ email: user.primaryEmail, deletedAt: null });
+    return supporter ? supporter.toJSON() : null
+  }
+
   @Get('validate')
   @NoCache()
   @UseGuards(JwtAuthGuard)
   async validate(@Req() req): Promise<{id: string} | null> {
     if ((req.user?.exp * 1000) > Date.now()) {
-      return {id: req.user.id}
+      const result = await this._getUserFromCache(UserController.PROFILE_CACHE_KEY, { id: req.user.id })
+      return result ? {id: req.user.id} : null;
     }
+    this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, { id: req.user.id })
     return null
   }
 
@@ -149,12 +189,28 @@ export class UserController {
     console.log('login with azure')
   }
 
+  @Get('patreon-login')
+  @NoCache()
+  @UseGuards(PatreonOAuthGuard)
+  patreonAuth(@Req() req) {
+    console.log('login with patreon')
+  }
+
   @Get('google-redirect')
   @NoCache()
   @UseGuards(GoogleOAuthGuard)
   async googleAuthRedirect(@Req() req, @Res() res) {
     try {
       const user = await this.userService.googleLogin(req);
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
       this._sendTokenResponse(user.id, res);
     } catch(e) {
       console.error(e)
@@ -171,6 +227,43 @@ export class UserController {
         throw new Error('No user from microsoft');
       }
       const user = await this.userService.msLogin(req.user);
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
+      this._sendTokenResponse(user.id, res);
+    } catch(e: any) {
+      console.error(e);
+      res.redirect(`${this.clientUrl}/auth/login?error=${encodeURIComponent(e)}`)
+    }
+  }
+
+  // TODO: Implement code exchange using a different callback route
+  @Get('patreon-redirect')
+  @NoCache()
+  @UseGuards(PatreonOAuthGuard)
+  async patreonAuthRedirect(@Req() req, @Res() res) {
+    try {
+      if (req.authInfo?.message) {
+        throw new Error('No user from patreon');
+      }
+      console.log('patreonAuthRedirect', Object.keys(req));
+      console.log('query', req.query);
+      const user = await this.userService.patreonLogin(req.user);
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
       this._sendTokenResponse(user.id, res);
     } catch(e: any) {
       console.error(e);
@@ -207,6 +300,10 @@ export class UserController {
     delete converted.ownerId;
     delete converted._id;
     return converted;
+  }
+
+  private async _getUserFromCache(key: string, params: { id: string }): Promise<string | null> {
+    return this.cache.get(`${key}-${params.id}`)
   }
 
   private _burstCacheForKey(key: string, params: { id: string }): void {

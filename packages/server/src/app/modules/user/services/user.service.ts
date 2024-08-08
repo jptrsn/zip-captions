@@ -7,8 +7,9 @@ import { PassportUserInfo, User, UserDocument } from '../models/user.model';
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>,
-              private cache: CacheService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
+    
+  }
 
   async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
     const model: Partial<User> = { primaryEmail: email.toLowerCase() };
@@ -39,25 +40,25 @@ export class UserService {
 
   }
 
+  async deleteUser(id: string): Promise<void> {
+    const user = await this.userModel.findOne({id});
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    await this.userModel.deleteOne({id});
+  }
+
   // Finds or creates the user document and returns it for valid google oauth responses
   async googleLogin(req): Promise<UserDocument> {
     if (!req.user) {
       throw new Error('No user from google');
     }
     const userInfo: PassportUserInfo = req.user;
-    const cacheKey = `google_user_${userInfo.id}`
-    let user = await this.cache.wrap(
-      cacheKey,
-      () => this.findOne({googleId: userInfo.id})
-    )
+    let user = await this.findOne({googleId: userInfo.id})
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         googleId: userInfo.id
       })
-      await this.cache.set(cacheKey, user)
     }
 
     return user;
@@ -65,21 +66,27 @@ export class UserService {
 
   // Finds or creates the user document and returns it for valid google oauth responses
   async msLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
-    const cacheKey = `ms_user_${userInfo.id}`
-    let user = await this.cache.wrap(
-      cacheKey,
-      () => this.findOne({msId: userInfo.id})
-    )
+    let user = await this.findOne({msId: userInfo.id});
     if (!user) {
       user = await this._loginUser(userInfo.email, {
-        givenName: userInfo.firstName,
-        familyName: userInfo.lastName,
-        photoData: userInfo.picture,
         msId: userInfo.id
       })
-      await this.cache.set(cacheKey, user)
     }
+    return user;
+  }
 
+  async patreonLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
+    console.log('patreonLogin', userInfo);
+    let user = await this.findOne({patreonId: userInfo.id});
+    if (!user) {
+      user = await this._loginUser(userInfo.email, {
+        patreonId: userInfo.id,
+        patreonRefreshToken: userInfo.refreshToken
+      })
+    } else {
+      user.patreonRefreshToken = userInfo.refreshToken;
+      await user.save();
+    }
     return user;
   }
 
