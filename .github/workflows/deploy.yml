@@ -126,6 +126,10 @@ jobs:
             SESSION_SECRET=secretref:session-secret
             JWT_SECRET=secretref:jwt-secret
             APP_ORIGIN=https://zipcaptions.app
+            PATREON_CLIENT_ID=secretref:patreon-client-id
+            PATREON_CLIENT_SECRET=secretref:patreon-client-secret
+            PATREON_REDIRECT_URI=secretref:patreon-redirect-uri
+            PATREON_SUPPORTER_WEBHOOK_SECRET=secretref:patreon-supporter-webhook-secret
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
