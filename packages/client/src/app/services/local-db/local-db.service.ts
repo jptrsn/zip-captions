@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { Observable, liveQuery } from 'dexie';
 import { NON_INDEXED_FIELDS, applyEncryptionMiddleware } from 'dexie-encrypted';
-import { Transcript, TranscriptTextSegment, TranscriptTextSegmentUpdate } from '../../models/transcript.model';
+import { Transcript, TranscriptTextSegment, TranscriptTextSegmentUpdate } from 'shared-ui';
 import { LocalDb } from './db';
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,12 @@ export class LocalDbService {
 
   private db: LocalDb;
   private userIdHash: string;
+  private transcriptId?: string;
+  
   constructor() { 
     this.db = new LocalDb();
     this.userIdHash = genSaltSync(5);
+    console.log('userIdHash', this.userIdHash)
   }
 
   public async init(userId: string, symmetricKey: Uint8Array) {

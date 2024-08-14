@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { Transcript, TranscriptTextSegment } from '../../models/transcript.model';
+import { Transcript, TranscriptTextSegment } from 'shared-ui';
 
 export class LocalDb extends Dexie {
   transcripts!: Table<Transcript, string>;
