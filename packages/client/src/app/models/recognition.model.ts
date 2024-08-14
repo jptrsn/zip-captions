@@ -10,6 +10,7 @@ export interface RecognitionState {
   status: RecognitionStatus;
   id?: string;
   error?: string;
+  transcriptId?: string;
 }
 
 export * as RecognitionActions from '../actions/recogntion.actions';

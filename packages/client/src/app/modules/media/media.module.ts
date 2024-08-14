@@ -42,6 +42,6 @@ import { FlowDirectionComponent } from './components/flow-direction/flow-directi
     RecognitionEnableComponent,
     RecognitionRenderComponent,
     RecognitionControlSidebarComponent,
-  ],
+  ]
 })
 export class MediaModule {}

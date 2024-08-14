@@ -10,7 +10,6 @@ import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { browserSelector, platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
-import { getWorker } from '../../../services/worker.util';
 import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -30,16 +29,11 @@ export class RecognitionService {
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private NETWORK_ERROR_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 15;
-  private historyWorker: Worker;
   private language: Signal<Language>;
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
 
   constructor(private store: Store<AppState>) {
-    this.historyWorker = getWorker();
-    this.historyWorker.addEventListener('message', ({data}) => {
-      // console.log(data);
-    })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
     this.browser = toSignal(this.store.select(browserSelector));
