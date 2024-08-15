@@ -1,4 +1,5 @@
 import { createAction, props } from "@ngrx/store";
+import { TranscriptTextSegmentUpdate } from "shared-ui";
 
 export const connectRecognition = createAction('[Recognition] Connect', props<{id: string}>());
 export const disconnectRecognition = createAction('[Recognition] Disconnect', props<{id: string}>());
@@ -19,14 +20,14 @@ export const disconnectRecognitionFailure = createAction('[Recognition] Disconne
 export const resetRecogntionState = createAction('[Recognition] Reset state');
 
 export const initTranscript = createAction('[Recognition] Init Transcript');
-export const initTranscriptSuccess = createAction('[Recognition] Init Transcript Success', props<{ transcriptId: string}>());
+export const initTranscriptSuccess = createAction('[Recognition] Init Transcript Success', props<{ transcriptId: number}>());
 export const initTranscriptFailure = createAction('[Recognition] Init Transcript Failure', props<{error: string}>());
 
 export const addTranscriptSegment = createAction('[Recognition] Add Transcript Segment', props<{ text: string }>());
 export const addTranscriptSegmentSuccess = createAction('[Recognition] Add Transcript Segment Success');
 export const addTranscriptSegmentFailure = createAction('[Recognition] Add Transcript Segment Failure', props<{error: string}>());
 
-export const finalizeTranscript = createAction('[Recognition] Finalize Transcript', props<{transcriptId: string}>());
+export const finalizeTranscript = createAction('[Recognition] Finalize Transcript', props<{transcriptId: number}>());
 export const finalizeTranscriptSuccess = createAction('[Recognition] Finalize Transcript Success');
 export const finalizeTranscriptFailure = createAction('[Recognition] Finalize Transcript', props<{error: string}>());
 

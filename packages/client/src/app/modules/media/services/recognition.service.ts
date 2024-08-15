@@ -166,7 +166,9 @@ export class RecognitionService {
         if (partialTranscript !== '') {
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
+            this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript }))
             // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
+            console.log('partialTranscript', partialTranscript)
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
           transcript = '';
@@ -230,7 +232,6 @@ export class RecognitionService {
       // console.log('end', Date.now())
       mostRecentResults = undefined;
       const mostRecentOutput = liveOutput();
-      // console.log('mostRecentOutput', mostRecentOutput);
       transcriptSegments.clear();
       if (mostRecentOutput !== '') {
         recognizedText.update((current: string[]) => {
@@ -238,6 +239,7 @@ export class RecognitionService {
           // this.historyWorker.postMessage({id: streamId, type: 'put', message: mostRecentOutput})
           return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
         });
+        this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput }))
         // console.log('clearing live output');
         liveOutput.set('');
         transcript = '';
