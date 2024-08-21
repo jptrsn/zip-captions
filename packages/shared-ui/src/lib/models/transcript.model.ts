@@ -2,6 +2,8 @@ export interface Transcript {
   id?: number;
   userIdHash: string;
   title?: string;
+  start?: Date;
+  end?: Date;
 }
 
 export interface TranscriptTextSegment extends TranscriptTextSegmentUpdate {

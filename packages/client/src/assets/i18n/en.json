@@ -256,7 +256,8 @@
       "appearance": "Look & Feel",
       "sync": "Sync",
       "sharing": "Sharing",
-      "obs": "OBS Studio"
+      "obs": "OBS Studio",
+      "transcription": "Transcript"
     },
     "UI": {
       "t1": "Preview",
@@ -284,6 +285,12 @@
       "local": "Local",
       "server": "Server",
       "loginRequired": "You must log in before you can save custom UI settings"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transcription",
+      "subheader": "You can choose to save the recognized text results as a transcript, and download them later",
+      "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account",
+      "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys"
     }
   },
   "STREAM": {
@@ -428,7 +435,11 @@
     "idle": "Idle",
     "build": "Build",
     "renderHistory": "On-screen Results",
-    "fontFamily": "Font"
+    "fontFamily": "Font",
+    "transcriptEnable": "Save Transcriptions",
+    "transcriptEnabled": "Transcript will be recorded",
+    "transcriptDisabled": "No transcription data will be saved",
+    "transcriptTitlePattern"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

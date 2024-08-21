@@ -33,3 +33,8 @@ export const recognitionPausedSelector = createSelector(
   selectRecognition,
   (state) => state.status === RecognitionStatus.paused
 )
+
+export const selectTranscriptId = createSelector(
+  selectRecognition,
+  (state) => state.transcriptId
+)

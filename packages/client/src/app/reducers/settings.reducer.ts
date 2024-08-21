@@ -10,6 +10,9 @@ export const defaultSettingsState: SettingsState = {
   lineHeight: 'lineHeight-normal',
   textFlow: 'bottom-up',
   fontFamily: FontFamily.sans,
+  transcription: {
+    enabled: false
+  }
 }
 
 export const settingsReducers = createReducer(

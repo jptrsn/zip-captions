@@ -1,0 +1,14 @@
+<div class="flex flex-col basis-full py-3 sm:px-6 gap-3 max-w-4xl" *ngIf="isLoggedIn(); else loginRequired">
+  
+  <div class="flex flex-col gap-3 max-w-sm text-center mb-3">
+    <div class="text-lg" translate>SETTINGS.TRANSCRIPTION.header</div>
+    <div class="text-md" translate>SETTINGS.TRANSCRIPTION.subheader</div>
+    <p class="text-sm" translate>SETTINGS.TRANSCRIPTION.localDataWarning</p>
+    <p class="text-sm" translate>SETTINGS.TRANSCRIPTION.encryptionWarning</p>
+    <app-transcript-enabled [group]="formGroup" controlName="enabled"></app-transcript-enabled>
+  </div>
+</div>
+        
+<ng-template #loginRequired>
+  <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']" translate>SETTINGS.SHARING.loginRequired</div>
+</ng-template>

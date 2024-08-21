@@ -37,12 +37,12 @@ export class LocalDbService {
     return liveQuery(() => this.db.transcriptSegments.where({ userIdHash: this.userIdHash, transcriptId }).sortBy('start'))
   }
 
-  async updateTranscript(transcriptId: number, title: string): Promise<number> {
-    return this.db.transcripts.update({id: transcriptId, userIdHash: this.userIdHash}, { title })
+  async updateTranscript(transcriptId: number, update: Partial<Transcript>): Promise<number> {
+    return this.db.transcripts.update({id: transcriptId, userIdHash: this.userIdHash}, update)
   }
 
   async createTranscript(title: string): Promise<number> {
-    return this.db.transcripts.add({ title, userIdHash: this.userIdHash })
+    return this.db.transcripts.add({ title, userIdHash: this.userIdHash, start: new Date() })
   }
 
   async createTranscriptSegment(segment: TranscriptTextSegmentUpdate): Promise<number> {

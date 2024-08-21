@@ -27,6 +27,8 @@ import { routes } from './settings.routes';
 import { NgIconsModule } from '@ng-icons/core';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs-studio-settings.component';
+import { TranscriptionSettingsComponent } from './components/transcription-settings/transcription-settings.component';
+import { TranscriptEnabledComponent } from './components/transcript-enabled/transcript-enabled.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs
     BroadcastSettingsComponent,
     RoomCardComponent,
     ObsStudioSettingsComponent,
+    TranscriptionSettingsComponent,
+    TranscriptEnabledComponent,
   ],
   imports: [
     CommonModule,

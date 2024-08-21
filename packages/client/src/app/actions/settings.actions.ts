@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, FontFamily, Language, LineHeight, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, Language, LineHeight, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -35,3 +35,7 @@ export const setRenderHistoryFailure = createAction('[Settings] Set Render Histo
 export const setFontFamily = createAction('[Settings] Set Font Family', props<{ font: FontFamily }>())
 export const setFontFamilySuccess = createAction('[Settings] Set Font Family Success');
 export const setFontFamilyFailure = createAction('[Settings] Set Font Family Failure', props<{error: string}>());
+
+export const saveTranscriptionSettings = createAction('[Settings] Save Transcription Settings', props<{ transcription: Partial<TranscriptionSettings> }>())
+export const saveTranscriptionSettingsSuccess = createAction('[Settings] Save Transcription Settings Success');
+export const saveTranscriptionSettingsFailure = createAction('[Settings] Save Transcription Settings Failure', props<{error: string}>());

@@ -105,6 +105,11 @@ export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
 ])
 
 export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
+
+export interface TranscriptionSettings {
+  enabled: boolean;
+  titlePattern?: string;
+}
 export interface SettingsState {
   theme: AppTheme;
   lang: Language;
@@ -114,6 +119,7 @@ export interface SettingsState {
   lineHeight: LineHeight;
   textFlow: TextFlow;
   fontFamily: FontFamily;
+  transcription: TranscriptionSettings;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

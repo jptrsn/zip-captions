@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { LocalDbService } from '../../../services/local-db/local-db.service';
-import { TranscriptTextSegmentUpdate } from 'shared-ui';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +36,10 @@ export class TranscriptionService {
   }
 
   async finalizeTranscript(): Promise<void> {
+    if (!this.transcriptId) {
+      throw new Error('No transcript ID set')
+    }
+    await this.localDb.updateTranscript(this.transcriptId, { end: new Date() })
     this.transcriptId = undefined;
     this.lastTimestamp = undefined;
   }
