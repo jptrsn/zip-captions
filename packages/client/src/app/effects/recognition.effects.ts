@@ -25,7 +25,7 @@ export class RecognitionEffects {
     this.actions$.pipe(
       ofType(RecognitionActions.disconnectRecognition),
       map((props) => this.recognitionService.disconnectFromStream(props.id)),
-      switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock()]),
+      switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
       catchError((err: any) => of(RecognitionActions.disconnectRecognitionFailure({error: err.message})))
     )
   )

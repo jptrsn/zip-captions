@@ -43,3 +43,13 @@ export const selectFontFamily = createSelector(
   selectAppSettings,
   (state) => state.fontFamily
 )
+
+export const selectTranscriptionEnabled = createSelector(
+  selectAppSettings,
+  (state) => state.transcription.enabled
+)
+
+export const selectTranscriptTitlePattern = createSelector(
+  selectAppSettings,
+  (state) => state.transcription.titlePattern
+)

@@ -27,6 +27,7 @@ export class SettingsComponent {
   public tabIndex: Signal<number>;
 
   public tabNames = [
+    'transcription',
     'appearance',
     'sync',
     'sharing',
