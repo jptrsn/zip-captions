@@ -13,11 +13,11 @@ export class LocalDbService {
   
   constructor() { 
     this.db = new LocalDb();
-    this.userIdHash = '123456' 
-    console.log('userIdHash', this.userIdHash);
+    this.userIdHash = '';
   }
 
   public async init(userId: string, symmetricKey: Uint8Array) {
+    this.db.close();
     this.userIdHash = await this._getUserHash(userId);
     this.db = new LocalDb(userId);
     applyEncryptionMiddleware(this.db, symmetricKey, {
@@ -27,6 +27,13 @@ export class LocalDbService {
         console.log('dexie encrypt onkeychange')
       }
     )
+    console.log('db initialized', this.userIdHash);
+  }
+
+  public async deInitDatabase() {
+    this.db.close();
+    this.userIdHash = '';
+    this.db = new LocalDb();
   }
   
   listTranscripts(): Observable<Transcript[]> {
@@ -55,4 +62,5 @@ export class LocalDbService {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map((h) => h.toString(16).padStart(2, '0')).join('');
   }
+
  }

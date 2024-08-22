@@ -1,14 +1,20 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, from, map, of, switchMap } from "rxjs";
-import { AppActions } from "../models/app.model";
+import { catchError, forkJoin, from, map, of, switchMap, withLatestFrom } from "rxjs";
+import { AppActions, AppState } from "../models/app.model";
 import { RecognitionActions } from "../models/recognition.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
+import { Store } from "@ngrx/store";
+import { selectUserId } from "../selectors/user.selector";
+import { AuthActions } from "../actions/auth.actions";
+import { SettingsActions } from "../modules/settings/models/settings.model";
+import { selectTranscriptionEnabled } from "../selectors/settings.selector";
 
 @Injectable()
 export class RecognitionEffects {
   constructor(private actions$: Actions,
+              private store: Store<AppState>,
               @Inject(RecognitionService) private recognitionService: RecognitionService,
               @Inject(TranscriptionService) private transcription: TranscriptionService) {}
 
@@ -43,6 +49,22 @@ export class RecognitionEffects {
       ofType(RecognitionActions.resumeRecognition),
       map(() => this.recognitionService.resumeRecognition()),
       map(() => RecognitionActions.resumeRecognitionSuccess())
+    )
+  )
+
+  initTranscriptDb$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.initTranscriptDb),
+      switchMap(({userId}) => this.transcription.initTranscriptDatabase(userId)),
+      map(() => RecognitionActions.initTranscriptDbSuccess())
+    )
+  )
+
+  deInitTranscriptDb$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.deInitTranscriptDb),
+      switchMap(() => this.transcription.deInitTranscriptDatabase()),
+      map(() => RecognitionActions.deInitTranscriptDbSuccess())
     )
   )
 

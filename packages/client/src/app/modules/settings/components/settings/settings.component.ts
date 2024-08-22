@@ -3,9 +3,10 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { fadeInAnimation, fadeInOnEnterAnimation, fadeOutAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
-import { Observable, Subject, map, startWith } from 'rxjs';
+import { Observable, Subject, map, startWith, tap } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -35,14 +36,26 @@ export class SettingsComponent {
   ];
   
   constructor(private fb: FormBuilder,
-              private store: Store<AppState>) {
-    this.tabsControl = this.fb.control(0)
-    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(takeUntilDestroyed(), startWith(0))) as Signal<number>;
+              private store: Store<AppState>,
+              private router: Router,
+              private route: ActivatedRoute) {
     
     this.acceptedCookies = toSignal(this.store.pipe(
       select(selectAppAppearance),
       map((appearance: AppAppearanceState) => appearance.cookiesAccepted)
     ));
+
+    // The modulus operator here makes sure that the index is always less than the length of the array of tab names
+    const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
+    this.tabsControl = this.fb.control(initialTabIndex)
+    this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
+      takeUntilDestroyed(), 
+      tap((index) => {
+        const params = { tabIndex: index };
+        this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
+      }),
+      startWith(initialTabIndex)
+    )) as Signal<number>;
   }
 
   canDeactivate(): boolean | Observable<boolean> {

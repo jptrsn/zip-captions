@@ -108,6 +108,7 @@ export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap
 
 export interface TranscriptionSettings {
   enabled: boolean;
+  loading?: boolean;
   titlePattern?: string;
 }
 export interface SettingsState {

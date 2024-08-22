@@ -6,8 +6,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, Language } from './modules/settings/models/settings.model';
 import { windowControlsOverlaySelector } from './selectors/app.selector';
-import { languageSelector, themeSelector } from './selectors/settings.selector';
+import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
+import { selectUserId } from './selectors/user.selector';
+import { RecognitionActions } from './models/recognition.model';
+import { selectUserLoggedIn } from './selectors/auth.selectors';
 
 @Component({
   selector: 'app-root',
@@ -56,6 +59,21 @@ export class AppComponent {
         console.log('relatedApps', relatedApps);
       }) 
     }
+
+    let transcriptDbInitialized = false;
+    const userIdSignal = toSignal(this.store.select(selectUserId))
+    const transcriptsEnabledSignal = toSignal(this.store.select(selectTranscriptionEnabled));
+    const loggedInSignal = toSignal(this.store.select(selectUserLoggedIn))
+    effect(() => {
+      const userId = userIdSignal();
+      console.log('userId', userId)
+      if (userId && transcriptsEnabledSignal() && loggedInSignal()) {
+        this.store.dispatch(RecognitionActions.initTranscriptDb({userId}))
+        transcriptDbInitialized = true;
+      } else if (transcriptDbInitialized) {
+        this.store.dispatch(RecognitionActions.deInitTranscriptDb())
+      }
+    }, { allowSignalWrites: true })
   }
 
 }
