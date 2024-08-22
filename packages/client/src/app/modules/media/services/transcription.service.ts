@@ -8,8 +8,29 @@ export class TranscriptionService {
 
   private transcriptId?: number;
   private lastTimestamp?: Date;
+  private key: string;
   constructor(@Inject(LocalDbService) private localDb: LocalDbService) {
+    const key = localStorage.getItem('zip_captions_transcription');
+    if (key) {
+      this.key = key;
+    } else {
+      const array = new Uint8Array(32);
+      self.crypto.getRandomValues(array);
+      this.key = this._bytesToSring(array);
+      localStorage.setItem('zip_captions_transcription', this.key);
+    }
+  }
 
+  async initTranscriptDatabase(userId: string): Promise<void> {
+    const encoded = this._stringToBytes(this.key)
+    await this.localDb.init(userId, encoded);
+  }
+
+  async deInitTranscriptDatabase(): Promise<void> {
+    this.transcriptId = undefined;
+    this.lastTimestamp = undefined;
+    await this.localDb.deInitDatabase();
+    console.log('deinit transcript db');
   }
 
   async createTranscript(title: string): Promise<number> {
@@ -43,4 +64,23 @@ export class TranscriptionService {
     this.transcriptId = undefined;
     this.lastTimestamp = undefined;
   }
+
+  // https://codereview.stackexchange.com/a/3589/75693
+private _bytesToSring(bytes: Uint8Array): string {
+  const chars = [];
+  for(let i = 0, n = bytes.length; i < n;) {
+      chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
+  }
+  return String.fromCharCode.apply(null, chars);
+}
+
+// https://codereview.stackexchange.com/a/3589/75693
+private _stringToBytes(str: string): Uint8Array {
+  const bytes = [];
+  for(let i = 0, n = str.length; i < n; i++) {
+      const char = str.charCodeAt(i);
+      bytes.push(char >>> 8, char & 0xFF);
+  }
+  return new Uint8Array(bytes);
+}
 }

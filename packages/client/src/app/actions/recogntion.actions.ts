@@ -18,6 +18,12 @@ export const disconnectRecognitionFailure = createAction('[Recognition] Disconne
 
 export const resetRecogntionState = createAction('[Recognition] Reset state');
 
+export const initTranscriptDb = createAction('[Recognition] Init Transcript DB', props<{ userId: string}>());
+export const initTranscriptDbSuccess = createAction('[Recognition] Init Transcript DB Success');
+
+export const deInitTranscriptDb = createAction('[Recognition] DeInit Transcript DB');
+export const deInitTranscriptDbSuccess = createAction('[Recognition] DeInit Transcript DB Success');
+
 export const initTranscript = createAction('[Recognition] Init Transcript');
 export const initTranscriptSuccess = createAction('[Recognition] Init Transcript Success', props<{ transcriptId: number}>());
 export const initTranscriptFailure = createAction('[Recognition] Init Transcript Failure', props<{error: string}>());

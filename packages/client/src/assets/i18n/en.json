@@ -289,8 +289,9 @@
     "TRANSCRIPTION": {
       "header": "Transcription",
       "subheader": "You can choose to save the recognized text results as a transcript, and download them later",
-      "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account",
-      "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys"
+      "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account. Remember to sign in before starting your captions to be sure the transcript is saved.",
+      "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys",
+      "loginRequired": "You must be signed-in to configure transcriptions."
     }
   },
   "STREAM": {
@@ -437,9 +438,9 @@
     "renderHistory": "On-screen Results",
     "fontFamily": "Font",
     "transcriptEnable": "Save Transcriptions",
-    "transcriptEnabled": "Transcript will be recorded",
-    "transcriptDisabled": "No transcription data will be saved",
-    "transcriptTitlePattern"
+    "transcriptEnabled": "Caption transcriptions will be recorded",
+    "transcriptDisabled": "Record transcript of captions",
+    "transcriptTitlePattern": "Use this pattern to generate transcript titles"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",

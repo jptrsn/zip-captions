@@ -1,16 +1,21 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { StorageService } from "../services/storage.service";
 import { TranslateService } from '@ngx-translate/core'
 import { defaultSettingsState } from "../reducers/settings.reducer";
+import { AppState } from "../models/app.model";
+import { Store } from "@ngrx/store";
+import { selectTranscriptionSettings } from "../selectors/settings.selector";
+import { RecognitionActions } from "../models/recognition.model";
 
 @Injectable()
 export class SettingsEffects {
   constructor(private actions$: Actions,
               private storage: StorageService,
-              private translate: TranslateService) {}
+              private translate: TranslateService,
+              private store: Store<AppState>) {}
 
   init$ = createEffect(() =>
     this.actions$.pipe(
@@ -19,7 +24,7 @@ export class SettingsEffects {
         const cached = this.storage.get('settings');
         return this._applySettingsToDefault(cached);
       }),
-      map((settings: SettingsState) => SettingsActions.initSettingsComplete({settings}))
+      switchMap((settings: SettingsState) => (settings.transcription.enabled ? [SettingsActions.initSettingsComplete({settings})] : [SettingsActions.initSettingsComplete({settings})]))
     )
   )
 
@@ -102,6 +107,20 @@ export class SettingsEffects {
       map(({font}) => this.storage.update('settings', 'fontFamily', font)),
       map(() => SettingsActions.setFontFamilySuccess()),
       catchError((err) => of(SettingsActions.setFontFamilyFailure({error: err.message})))
+    )
+  )
+
+  saveTranscriptionSettings$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(SettingsActions.saveTranscriptionSettings),
+      withLatestFrom(this.store.select(selectTranscriptionSettings)),
+      map(([{transcription}, transcriptionSettings]) => {
+        const update = {...transcriptionSettings, ...transcription};
+        delete update.loading;
+        this.storage.update('settings', 'transcription', update)
+      }),
+      map(() => SettingsActions.saveTranscriptionSettingsSuccess()),
+      catchError((err) => of(SettingsActions.saveTranscriptionSettingsFailure({ error: err.message })))
     )
   )
 
