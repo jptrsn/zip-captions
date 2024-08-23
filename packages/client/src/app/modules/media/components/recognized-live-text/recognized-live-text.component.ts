@@ -1,18 +1,20 @@
-import { Component, Input, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { fadeOutOnLeaveAnimation } from 'angular-animations';
+import { fadeOutOnLeaveAnimation, slideInDownOnEnterAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
-import { FontFamily, FontFamilyClassMap, LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
+import { selectFontFamily, selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { FontFamilyClassMap, LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-live-text',
   templateUrl: './recognized-live-text.component.html',
   styleUrls: ['./recognized-live-text.component.scss'],
   animations: [
-    fadeOutOnLeaveAnimation()
+    fadeOutOnLeaveAnimation(),
+    slideInUpOnEnterAnimation(),
+    slideInDownOnEnterAnimation()
   ]
 })
 export class RecognizedLiveTextComponent {
