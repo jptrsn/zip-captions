@@ -82,6 +82,10 @@ export class TranscriptionService {
     return from(this.localDb.getTranscriptSegments(transcriptId));
   }
 
+  getTranscriptById(transcriptId: number): Observable<Transcript | undefined> {
+    return from(this.localDb.getTranscriptById(transcriptId));
+  }
+
   // https://codereview.stackexchange.com/a/3589/75693
   private _bytesToSring(bytes: Uint8Array): string {
     const chars = [];

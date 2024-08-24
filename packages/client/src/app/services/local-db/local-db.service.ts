@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, liveQuery } from 'dexie';
+import { Observable, PromiseExtended, liveQuery } from 'dexie';
 import { NON_INDEXED_FIELDS, applyEncryptionMiddleware } from 'dexie-encrypted';
 import { Transcript, TranscriptTextSegment, TranscriptTextSegmentUpdate } from 'shared-ui';
 import { LocalDb } from './db';
@@ -41,6 +41,10 @@ export class LocalDbService {
 
   getTranscriptSegments(transcriptId: number): Observable<TranscriptTextSegment[]> {
     return liveQuery(() => this.db.transcriptSegments.where({ userIdHash: this.userIdHash, transcriptId }).sortBy('start'))
+  }
+
+  getTranscriptById(transcriptId: number): PromiseExtended<Transcript | undefined> {
+    return this.db.transcripts.where({ userIdHash: this.userIdHash, id: transcriptId }).first();
   }
 
   async updateTranscript(transcriptId: number, update: Partial<Transcript>): Promise<number> {
