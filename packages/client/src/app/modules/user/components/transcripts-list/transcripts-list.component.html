@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-3">
   <div class="flex-row">
-    <h3>Transcripts</h3>
+    <h1>Transcripts</h1>
   </div>
   <ng-container *ngIf="transcripts() as transcripts">
     <div class="collapse bg-accent" *ngFor="let t of transcripts" [routerLink]="[ t.id ]">

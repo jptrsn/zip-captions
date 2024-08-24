@@ -1,1 +1,19 @@
-<p>view-transcript works!</p>
+<div class="flex flex-col gap-3 p-6">
+  <ng-container *ngIf="transcript() as t">
+    <div class="flex flex-row items-center justify-start gap-3">
+      <h1 class="text-xl">{{t.title}}</h1>
+      <span>{{ t.start | timeago }}</span>
+    </div>
+    <div *ngFor="let s of segments()" class="flex flex-col text-wrap">
+      <p>
+        {{ s.text }}
+      </p>
+      <div class="flex flex-row w-full items-center justify-end gap-3 text-xs">
+        <div class="flex">{{ t.start | duration: s.start }}</div>
+        <ng-icon name="heroArrowLongRight"></ng-icon>
+        <div class="flex">{{ t.start | duration: s.end }}</div>
+      </div>
+    </div>
+  </ng-container>
+  
+</div>
