@@ -30,7 +30,7 @@ export class RecognizedLiveTextComponent {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.fontClass = toSignal(this.store.pipe(select(selectFontFamily), map((font) => FontFamilyClassMap.get(font)))) as Signal<string>;
-    this.classList = computed(() => `recognized-text live ${this.textSize()} ${this.lineHeight()} ${this.fontClass()}`)
+    this.classList = computed(() => `recognized-text mx-6 live ${this.textSize()} ${this.lineHeight()} ${this.fontClass()} ${this.textFlowDown() ? 'mt-4' : 'mb-4'}`)
 
     this.textFlowDown = toSignal(this.store.pipe(
       select(selectTextFlow), 

@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { LocalDbService } from '../../../services/local-db/local-db.service';
+import { from, Observable, Subject } from 'rxjs';
+import { Transcript, TranscriptTextSegment } from 'shared-ui';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,9 @@ export class TranscriptionService {
   private transcriptId?: number;
   private lastTimestamp?: Date;
   private key: string;
+  private dbInitialized: boolean;
   constructor(@Inject(LocalDbService) private localDb: LocalDbService) {
+    this.dbInitialized = false;
     const key = localStorage.getItem('zip_captions_transcription');
     if (key) {
       this.key = key;
@@ -24,13 +28,18 @@ export class TranscriptionService {
   async initTranscriptDatabase(userId: string): Promise<void> {
     const encoded = this._stringToBytes(this.key)
     await this.localDb.init(userId, encoded);
+    this.dbInitialized = true;
   }
 
   async deInitTranscriptDatabase(): Promise<void> {
     this.transcriptId = undefined;
     this.lastTimestamp = undefined;
     await this.localDb.deInitDatabase();
-    console.log('deinit transcript db');
+    this.dbInitialized = false;
+  }
+
+  dbIsInitialized(): boolean {
+    return !!this.dbInitialized;
   }
 
   async createTranscript(title: string): Promise<number> {
@@ -39,7 +48,7 @@ export class TranscriptionService {
     return this.transcriptId;
   }
 
-  async createTranscriptSegment(text: string): Promise<number> {
+  async createTranscriptSegment(text: string, start: Date | undefined): Promise<number> {
     if (this.transcriptId === undefined) {
       throw new Error('No transcript ID set')
     } 
@@ -49,7 +58,7 @@ export class TranscriptionService {
     const result = await this.localDb.createTranscriptSegment({
       transcriptId: this.transcriptId,
       text,
-      start: this.lastTimestamp,
+      start: start || this.lastTimestamp,
       end: new Date()
     });
     this.lastTimestamp = new Date();
@@ -65,22 +74,30 @@ export class TranscriptionService {
     this.lastTimestamp = undefined;
   }
 
-  // https://codereview.stackexchange.com/a/3589/75693
-private _bytesToSring(bytes: Uint8Array): string {
-  const chars = [];
-  for(let i = 0, n = bytes.length; i < n;) {
-      chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
+  listTranscripts(): Observable<Transcript[]> {
+    return from(this.localDb.listTranscripts());
   }
-  return String.fromCharCode.apply(null, chars);
-}
 
-// https://codereview.stackexchange.com/a/3589/75693
-private _stringToBytes(str: string): Uint8Array {
-  const bytes = [];
-  for(let i = 0, n = str.length; i < n; i++) {
-      const char = str.charCodeAt(i);
-      bytes.push(char >>> 8, char & 0xFF);
+  listTranscriptSegments(transcriptId: number): Observable<TranscriptTextSegment[]> {
+    return from(this.localDb.getTranscriptSegments(transcriptId));
   }
-  return new Uint8Array(bytes);
-}
+
+  // https://codereview.stackexchange.com/a/3589/75693
+  private _bytesToSring(bytes: Uint8Array): string {
+    const chars = [];
+    for(let i = 0, n = bytes.length; i < n;) {
+        chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
+    }
+    return String.fromCharCode.apply(null, chars);
+  }
+
+  // https://codereview.stackexchange.com/a/3589/75693
+  private _stringToBytes(str: string): Uint8Array {
+    const bytes = [];
+    for(let i = 0, n = str.length; i < n; i++) {
+        const char = str.charCodeAt(i);
+        bytes.push(char >>> 8, char & 0xFF);
+    }
+    return new Uint8Array(bytes);
+  }
 }

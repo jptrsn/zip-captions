@@ -27,7 +27,6 @@ export class LocalDbService {
         console.log('dexie encrypt onkeychange')
       }
     )
-    console.log('db initialized', this.userIdHash);
   }
 
   public async deInitDatabase() {
