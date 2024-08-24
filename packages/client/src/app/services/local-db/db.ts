@@ -8,9 +8,9 @@ export class LocalDb extends Dexie {
   constructor(dbName?: string) {
     
     super(dbName || 'ngdexieliveQuery')
-    this.version(3).stores({
+    this.version(1).stores({
       transcripts: '++id, userIdHash',
-      transcriptSegments: '++id, userIdHash, transcriptId'
+      transcriptSegments: '++id, [userIdHash+transcriptId]'
     });
     this.on('populate', () => this.populate())
   }

@@ -14,11 +14,15 @@ import { userReducer } from '../../reducers/user.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserRoutingModule } from './user-routing.module';
+import { TranscriptsListComponent } from './components/transcripts-list/transcripts-list.component';
+import { ViewTranscriptComponent } from './components/view-transcript/view-transcript.component';
 
 @NgModule({
   declarations: [
     UserHomeComponent,
     UserProfileComponent,
+    TranscriptsListComponent,
+    ViewTranscriptComponent,
   ],
   imports: [
     CommonModule,

@@ -9,7 +9,7 @@ import { RecognitionActions, SpeechRecognition } from '../../../models/recogniti
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { browserSelector, platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
-import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
+import { languageSelector, selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,6 +32,7 @@ export class RecognitionService {
   private language: Signal<Language>;
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
+  private transcriptionEnabled: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>) {
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
@@ -39,6 +40,7 @@ export class RecognitionService {
     this.browser = toSignal(this.store.select(browserSelector));
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
+    this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
   }
 
   public connectToStream(streamId: string): void {
@@ -130,6 +132,7 @@ export class RecognitionService {
     // Network error observable is used to debounce intermittent network issues that interrupt connection to the recognition server without going offline fully
     const networkError$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
+    let segmentStart: Date | undefined;
     // Live results logic
     debounce$.pipe(
       takeUntil(disconnect$),
@@ -164,9 +167,16 @@ export class RecognitionService {
         .join('')
         .trim();
         if (partialTranscript !== '') {
+          if (!segmentStart) {
+            segmentStart = new Date();
+          }
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
-            this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript }))
+            if (this.transcriptionEnabled()) {
+              console.log('segmentStart', segmentStart)
+              this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
+              segmentStart = undefined;
+            }
             // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
             console.log('partialTranscript', partialTranscript)
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
@@ -185,7 +195,6 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      // console.log('segment')
       if (liveOutput() !== '') {
         // console.log('live output has data')
       } else if (!this.activeRecognitionStreams.has(streamId)) {
@@ -222,6 +231,9 @@ export class RecognitionService {
           transcript = lastResult[0].transcript
         }
       }
+      if (transcript.length && !segmentStart) {
+        segmentStart = new Date();
+      }
       liveOutput.set(transcript);
       if (this.obsConnected()) {
         this.store.dispatch(ObsActions.sendCaption({text: transcript}));
@@ -239,7 +251,10 @@ export class RecognitionService {
           // this.historyWorker.postMessage({id: streamId, type: 'put', message: mostRecentOutput})
           return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
         });
-        this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput }))
+        if (this.transcriptionEnabled()) {
+          this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: segmentStart }))
+          segmentStart = undefined;
+        }
         // console.log('clearing live output');
         liveOutput.set('');
         transcript = '';

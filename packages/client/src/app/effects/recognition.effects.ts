@@ -83,7 +83,7 @@ export class RecognitionEffects {
   addSegment$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.addTranscriptSegment),
-      switchMap(({ text }) => from(this.transcription.createTranscriptSegment(text))
+      switchMap(({ text, start }) => from(this.transcription.createTranscriptSegment(text, start))
       .pipe(
         map(() => RecognitionActions.addTranscriptSegmentSuccess()),
         catchError((err) => of(RecognitionActions.addTranscriptSegmentFailure({ error: err.message })))

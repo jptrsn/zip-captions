@@ -48,7 +48,6 @@ export class AppComponent {
       
       // @ts-expect-error navigator.windowControlsOverlay is of type unknown
       navigator.windowControlsOverlay.addEventListener('geometrychange', (event: { isTrusted: boolean; type: 'geometrychange', visible: boolean}) => {
-        console.log('geometry change event', event);
         this.store.dispatch(AppActions.updateWindowsOverlayState({visible: event.visible}));
       })
     }
@@ -56,7 +55,9 @@ export class AppComponent {
     if ('getInstalledRelatedApps' in navigator) {
       // @ts-expect-error PWA specific method
       navigator.getInstalledRelatedApps().then((relatedApps) => {
-        console.log('relatedApps', relatedApps);
+        if (relatedApps.length) {
+          console.log('relatedApps', relatedApps);
+        }
       }) 
     }
 
@@ -66,7 +67,6 @@ export class AppComponent {
     const loggedInSignal = toSignal(this.store.select(selectUserLoggedIn))
     effect(() => {
       const userId = userIdSignal();
-      console.log('userId', userId)
       if (userId && transcriptsEnabledSignal() && loggedInSignal()) {
         this.store.dispatch(RecognitionActions.initTranscriptDb({userId}))
         transcriptDbInitialized = true;

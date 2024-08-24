@@ -38,3 +38,8 @@ export const selectTranscriptId = createSelector(
   selectRecognition,
   (state) => state.transcriptId
 )
+
+export const selectTranscriptDbInitialized = createSelector(
+  selectRecognition,
+  (state) => state.transcriptInitialized
+)
