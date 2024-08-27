@@ -59,6 +59,10 @@ export class LocalDbService {
     return this.db.transcriptSegments.add({...segment, userIdHash: this.userIdHash });
   }
 
+  async deleteTranscript(transcriptId: number): Promise<void> {
+    return this.db.transcripts.delete(transcriptId);
+  }
+
   private async _getUserHash(userId: string): Promise<string> {
     const msgBuffer = new TextEncoder().encode(userId);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);

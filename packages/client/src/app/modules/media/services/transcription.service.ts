@@ -86,6 +86,14 @@ export class TranscriptionService {
     return from(this.localDb.getTranscriptById(transcriptId));
   }
 
+  updateTranscript(transcriptId: number, update: Partial<Transcript>) {
+    return this.localDb.updateTranscript(transcriptId, update)
+  }
+
+  deleteTranscript(transcriptId: number): Promise<void> {
+    return this.localDb.deleteTranscript(transcriptId);
+  }
+
   // https://codereview.stackexchange.com/a/3589/75693
   private _bytesToSring(bytes: Uint8Array): string {
     const chars = [];

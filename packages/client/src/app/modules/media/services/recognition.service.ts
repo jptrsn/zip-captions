@@ -74,6 +74,9 @@ export class RecognitionService {
       this.activeRecognitionStreams.delete(streamId);
       this.recognitionMap.delete(streamId);
       recognition.stop();
+      if (this.transcriptionEnabled()) {
+        this.store.dispatch(RecognitionActions.finalizeTranscript());
+      }
     }
   }
 
@@ -173,12 +176,12 @@ export class RecognitionService {
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
             if (this.transcriptionEnabled()) {
-              console.log('segmentStart', segmentStart)
+              // console.log('segmentStart', segmentStart)
               this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
               segmentStart = undefined;
             }
             // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
-            console.log('partialTranscript', partialTranscript)
+            // console.log('partialTranscript', partialTranscript)
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
           transcript = '';
@@ -195,13 +198,11 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      if (liveOutput() !== '') {
-        // console.log('live output has data')
+      if (liveOutput() == '') {
+        console.log('live output blank, recognition stopping')
+        recognition.stop();
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
-        recognition.stop();
-      } else {
-        // console.log('liveoutput blank')
         recognition.stop();
       }
     });

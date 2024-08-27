@@ -28,6 +28,7 @@ export {
   heroLockClosed,
   heroLockOpen,
   heroPencilSquare,
+  heroPencil,
   heroTrash
 } from '@ng-icons/heroicons/outline';
 
@@ -41,6 +42,7 @@ export {
   tablerMinus,
   tablerBuildingBroadcastTower,
   tablerHistory,
+  tablerBoxMultiple
 } from '@ng-icons/tabler-icons'
 
 // Custom vectors to add

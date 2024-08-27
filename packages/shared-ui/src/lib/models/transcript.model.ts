@@ -2,6 +2,7 @@ export interface Transcript {
   id?: number;
   userIdHash: string;
   title?: string;
+  description?: string;
   start?: Date;
   end?: Date;
 }

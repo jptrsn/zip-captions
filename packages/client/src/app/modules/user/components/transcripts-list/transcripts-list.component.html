@@ -1,21 +1,77 @@
-<div class="flex flex-col gap-3">
-  <div class="flex-row">
-    <h1>Transcripts</h1>
+<div class="flex flex-col gap-3 p-6 max-h-full overflow-hidden relative">
+  <div class="flex flex-row justify-between">
+    <h1 class="text-xl">Transcripts</h1>
+    <!-- TODO: Add ability to merge transcripts -->
+    <!-- <button class="btn btn-sm" [ngClass]="{'btn-primary': !editMode(), 'btn-secondary': editMode() }" (click)="toggleEditMode()">
+      <ng-icon name="tablerBoxMultiple"></ng-icon>
+    </button> -->
   </div>
-  <ng-container *ngIf="transcripts() as transcripts">
-    <div class="collapse bg-accent" *ngFor="let t of transcripts" [routerLink]="[ t.id ]">
-      <div class="collapse-title">
-        <span>
-          {{t.title}}
-        </span>
-        <span>
-          {{ t.start | timeago }}
-        </span>
-        <span>
-          {{ t.start | duration: t.end }}
-        </span>
-      </div>
-
-    </div>
-  </ng-container>
+  
+  <div class="flex basis-auto flex-shrink-1 flex-grow-0 overflow-y-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th *ngIf="editMode()"></th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Duration</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of transcripts()">
+          <th *ngIf="editMode()">
+            <input type="checkbox" class="checkbox">
+          </th>
+          <th [routerLink]="[t.id]">{{t.title}}</th>
+          <th>{{t.description}}</th>
+          <th>{{t.start | date: 'short' }}</th>
+          <th>{{ t.start | duration: t.end }}</th>
+          <th class="flex flex-row gap-1">
+            <ng-icon name="heroPencil" (click)="editTranscript(t); edit.showModal()"></ng-icon>
+            <ng-icon name="heroTrash" (click)="promptDeleteTranscript(t); delete.showModal()"></ng-icon>
+          </th>
+        </tr>
+      </tbody>
+    </table>  
+  </div>
 </div>
+<dialog #edit class="modal">
+  <form method="dialog" [formGroup]="formGroup" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
+    <div class="font-bold text-lg">Edit Transcript</div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text text-base-100">Title</span>
+      </label>
+      <input type="text" class="input input-bordered input-ghost" formControlName="title">
+      <label class="label no-height">
+        <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['title'].hasError('required') && formGroup.controls['title'].touched">Required</span>
+      </label>
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text text-base-100">Description</span>
+      </label>
+      <input type="text" class="input input-bordered input-ghost" formControlName="description">
+    </div>
+    <div class="modal-action gap-1">
+      <button class="btn btn-sm" translate (click)="cancelEditTranscript()">BUTTONS.cancel</button>
+      <button class="btn btn-sm btn-primary" translate (click)="saveAndClose()">BUTTONS.saveAndClose</button>
+    </div>
+  </form>
+</dialog>
+<dialog #delete class="modal">
+  <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
+    <div class="font-bold text-lg">Delete Transcript?</div>
+    <div class="p-3" *ngIf="transcriptToDelete() as t">
+      <div class="text-md">{{t.title}}</div>
+      <p class="text-sm">{{t.description}}</p>
+    </div>
+    <p class="text-xs font-italic">This action cannot be undone</p>
+    <div class="modal-action gap-1">
+      <button class="btn btn-sm" translate>BUTTONS.cancel</button>
+      <button class="btn btn-sm btn-primary" translate (click)="deleteTranscript()">BUTTONS.confirm</button>
+    </div>
+  </form>
+</dialog>
