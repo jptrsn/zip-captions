@@ -14,8 +14,8 @@
           <th *ngIf="editMode()"></th>
           <th>Title</th>
           <th>Description</th>
-          <th>Date</th>
-          <th>Duration</th>
+          <th class="hide-sm">Date</th>
+          <th class="hide-sm">Duration</th>
           <th></th>
         </tr>
       </thead>
@@ -24,16 +24,20 @@
           <td *ngIf="editMode()">
             <input type="checkbox" class="checkbox">
           </td>
-          <td class="w-[25%] cursor-pointer" [routerLink]="[t.id]">{{t.title}}</td>
-          <td class="w-[40%] cursor-pointer" [routerLink]="[t.id]">
+          <td class="sm:w-[25%] cursor-pointer" [routerLink]="[t.id]">{{t.title}}</td>
+          <td class="sm:w-[55%] cursor-pointer" [routerLink]="[t.id]">
             <div class="truncate">{{t.description}}</div>
           </td>
-          <td>{{t.start | date: 'short' }}</td>
-          <td>{{ t.start | duration: t.end }}</td>
+          <td class="hide-sm">{{ t.start | date: 'short' }}</td>
+          <td class="hide-sm">{{ t.start | duration: t.end }}</td>
           <td>
-            <div class="flex flex-row gap-1">
-              <ng-icon name="heroPencil" (click)="editTranscript(t); edit.showModal()"></ng-icon>
-              <ng-icon name="heroTrash" (click)="promptDeleteTranscript(t); delete.showModal()"></ng-icon>
+            <div class="flex flex-col sm:flex-row">
+              <button class="btn btn-xs btn-ghost rounded-full"  (click)="editTranscript(t); edit.showModal()">
+                <ng-icon name="heroPencil" size="16"></ng-icon>
+              </button>
+              <button class="btn btn-xs btn-ghost rounded-full" (click)="promptDeleteTranscript(t); delete.showModal()">
+                <ng-icon name="heroTrash" size="16"></ng-icon>
+              </button>
             </div>
           </td>
         </tr>
