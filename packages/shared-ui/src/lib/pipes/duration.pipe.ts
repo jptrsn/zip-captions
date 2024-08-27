@@ -29,19 +29,19 @@ export class DurationPipe implements PipeTransform {
       }
       if (totalHours > 0 || rtn.length) {
         if (rtn.length) {
-          rtn += `, `;
+          rtn += ` `;
         }
         rtn += `${totalHours % 24} h`;
       }
       if (totalMinutes > 0 || rtn.length) {
         if (rtn.length) {
-          rtn += `, `;
+          rtn += ` `;
         }
         rtn += `${totalMinutes % 60} m`;
       }
       if (totalSeconds > 0 || rtn.length) {
         if (rtn.length) {
-          rtn += `, `;
+          rtn += ` `;
         }
         rtn += `${totalSeconds % 60} s`;
       }

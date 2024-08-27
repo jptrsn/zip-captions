@@ -8,7 +8,7 @@
   </div>
   
   <div class="flex basis-auto flex-shrink-1 flex-grow-0 overflow-y-auto">
-    <table class="table">
+    <table class="table table-pin-rows">
       <thead>
         <tr>
           <th *ngIf="editMode()"></th>
@@ -21,17 +21,21 @@
       </thead>
       <tbody>
         <tr *ngFor="let t of transcripts()">
-          <th *ngIf="editMode()">
+          <td *ngIf="editMode()">
             <input type="checkbox" class="checkbox">
-          </th>
-          <th [routerLink]="[t.id]">{{t.title}}</th>
-          <th>{{t.description}}</th>
-          <th>{{t.start | date: 'short' }}</th>
-          <th>{{ t.start | duration: t.end }}</th>
-          <th class="flex flex-row gap-1">
-            <ng-icon name="heroPencil" (click)="editTranscript(t); edit.showModal()"></ng-icon>
-            <ng-icon name="heroTrash" (click)="promptDeleteTranscript(t); delete.showModal()"></ng-icon>
-          </th>
+          </td>
+          <td class="w-[25%] cursor-pointer" [routerLink]="[t.id]">{{t.title}}</td>
+          <td class="w-[40%] cursor-pointer" [routerLink]="[t.id]">
+            <div class="truncate">{{t.description}}</div>
+          </td>
+          <td>{{t.start | date: 'short' }}</td>
+          <td>{{ t.start | duration: t.end }}</td>
+          <td>
+            <div class="flex flex-row gap-1">
+              <ng-icon name="heroPencil" (click)="editTranscript(t); edit.showModal()"></ng-icon>
+              <ng-icon name="heroTrash" (click)="promptDeleteTranscript(t); delete.showModal()"></ng-icon>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>  
@@ -53,7 +57,7 @@
       <label class="label">
         <span class="label-text text-base-100">Description</span>
       </label>
-      <input type="text" class="input input-bordered input-ghost" formControlName="description">
+      <textarea class="textarea textarea-bordered textarea-ghost" formControlName="description"></textarea>
     </div>
     <div class="modal-action gap-1">
       <button class="btn btn-sm" translate (click)="cancelEditTranscript()">BUTTONS.cancel</button>
