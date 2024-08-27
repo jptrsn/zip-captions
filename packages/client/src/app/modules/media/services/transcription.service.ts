@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { LocalDbService } from '../../../services/local-db/local-db.service';
-import { from, Observable, Subject } from 'rxjs';
+import { firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { Transcript, TranscriptTextSegment } from 'shared-ui';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ export class TranscriptionService {
   private lastTimestamp?: Date;
   private key: string;
   private dbInitialized: boolean;
-  constructor(@Inject(LocalDbService) private localDb: LocalDbService) {
+  
+  constructor(@Inject(LocalDbService) private localDb: LocalDbService,
+              @Inject(TranslateService) private translate: TranslateService) {
+    
     this.dbInitialized = false;
     const key = localStorage.getItem('zip_captions_transcription');
     if (key) {
@@ -42,18 +46,19 @@ export class TranscriptionService {
     return !!this.dbInitialized;
   }
 
-  async createTranscript(title: string): Promise<number> {
-    this.transcriptId = await this.localDb.createTranscript(title);
+  async createTranscript(title?: string): Promise<number> {
+    const transcriptTitle = title ? title : await firstValueFrom(this.translate.get('TRANSCRIPT.blankTitle'));
+    this.transcriptId = await this.localDb.createTranscript(transcriptTitle);
     this.lastTimestamp = new Date();
     return this.transcriptId;
   }
 
   async createTranscriptSegment(text: string, start: Date | undefined): Promise<number> {
     if (this.transcriptId === undefined) {
-      throw new Error('No transcript ID set')
+      throw new Error('No transcript ID set');
     } 
     if (!this.lastTimestamp) {
-      throw new Error('No start timestamp defined')
+      throw new Error('No start timestamp defined');
     }
     const result = await this.localDb.createTranscriptSegment({
       transcriptId: this.transcriptId,

@@ -1,17 +1,37 @@
-<div class="flex flex-col gap-3 p-6">
+<div class="flex flex-col bg-base-300 overflow-hidden px-3 sm:px-6">
   <ng-container *ngIf="transcript() as t">
-    <div class="flex flex-row items-center justify-start gap-3">
-      <h1 class="text-xl">{{t.title}}</h1>
-      <span>{{ t.start | timeago }}</span>
+    <div class="flex flex-row items-center gap-6">
+      <button class="hidden sm:block btn btn-small rounded-full" [routerLink]="['..']">
+        <ng-icon name="heroArrowLeft"></ng-icon>
+      </button>
+      <div class="text-xl text-bold">
+        {{t.title}}
+      </div>
     </div>
-    <div *ngFor="let s of segments()" class="flex flex-col text-wrap">
-      <p>
-        {{ s.text }}
+    <div class="flex flex-col items-start sm:flex-row sm:items-end justify-start gap-3 sm:gap-6 md:gap-12 mb-6">
+      <div class="flex flex-col sm:basis-auto">
+          <p class="text-md">
+            Recorded <span>{{ t.start | timeago }}</span>
+          </p>
+          <p class="text-md" *ngIf="t.end">
+            Duration <span>{{ t.start | duration: t.end }}</span>
+          </p>
+      </div>
+      <p class="sm:flex sm:basis-1/2 text-sm">
+        {{t.description}}
       </p>
-      <div class="flex flex-row w-full items-center justify-end gap-3 text-xs">
-        <div class="flex">{{ t.start | duration: s.start }}</div>
-        <ng-icon name="heroArrowLongRight"></ng-icon>
-        <div class="flex">{{ t.start | duration: s.end }}</div>
+    </div>
+    
+    <div class="flex flex-col gap-3 overflow-y-auto pr-3">
+      <div *ngFor="let s of segments()" class="flex flex-col sm:flex-row sm:gap-2">
+        <p class="flex basis-full">
+          {{ s.text }}
+        </p>
+        <div class="flex basis-auto flex-row items-center justify-end gap-1 text-xs">
+          <div class="flex whitespace-nowrap">{{ t.start | duration: s.start }}</div>
+          <ng-icon name="heroArrowLongRight"></ng-icon>
+          <div class="flex whitespace-nowrap">{{ t.start | duration: s.end }}</div>
+        </div>
       </div>
     </div>
   </ng-container>

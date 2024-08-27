@@ -62,9 +62,9 @@ export class AppComponent {
     }
 
     let transcriptDbInitialized = false;
-    const userIdSignal = toSignal(this.store.select(selectUserId))
+    const userIdSignal = toSignal(this.store.select(selectUserId));
     const transcriptsEnabledSignal = toSignal(this.store.select(selectTranscriptionEnabled));
-    const loggedInSignal = toSignal(this.store.select(selectUserLoggedIn))
+    const loggedInSignal = toSignal(this.store.select(selectUserLoggedIn));
     effect(() => {
       const userId = userIdSignal();
       if (userId && transcriptsEnabledSignal() && loggedInSignal()) {
