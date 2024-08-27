@@ -199,8 +199,8 @@ export class RecognitionService {
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
       if (liveOutput() == '') {
-        console.log('live output blank, recognition stopping')
-        recognition.stop();
+        console.log('live output blank, recognition continuing')
+        // recognition.stop();
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
         recognition.stop();
@@ -218,9 +218,9 @@ export class RecognitionService {
           return result[0];
         })
         .filter((result: SpeechRecognitionAlternative) => {
-          if (this.platform() === AppPlatform.desktop && this.browser() === BrowserPlatform.blink) {
-            return result.transcript.length && result.confidence > 0;
-          }
+          // if (this.platform() === AppPlatform.desktop && this.browser() === BrowserPlatform.blink) {
+          //   return result.transcript.length && result.confidence > 0;
+          // }
           return result.transcript.length;
         })
         .map((result) => result.transcript)

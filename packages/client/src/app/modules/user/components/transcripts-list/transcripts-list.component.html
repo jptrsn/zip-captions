@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-3 p-6 max-h-full overflow-hidden relative">
+<div class="flex flex-col gap-3 bg-base-300 p-6 basis-full overflow-hidden relative">
   <div class="flex flex-row justify-between">
     <h1 class="text-xl">Transcripts</h1>
     <!-- TODO: Add ability to merge transcripts -->
@@ -20,12 +20,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let t of transcripts()">
+        <tr *ngFor="let t of transcripts()" class="hover">
           <td *ngIf="editMode()">
             <input type="checkbox" class="checkbox">
           </td>
           <td class="sm:w-[25%] cursor-pointer" [routerLink]="[t.id]">{{t.title}}</td>
-          <td class="sm:w-[55%] cursor-pointer" [routerLink]="[t.id]">
+          <td class="sm:w-[45%] cursor-pointer" [routerLink]="[t.id]">
             <div class="truncate">{{t.description}}</div>
           </td>
           <td class="hide-sm">{{ t.start | date: 'short' }}</td>

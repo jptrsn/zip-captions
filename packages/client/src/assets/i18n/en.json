@@ -552,5 +552,8 @@
       "startDateLabel": "Joined",
       "thanksMessage": "Thank you for supporting us - we couldn't do this without your help!"
     }
+  },
+  "TRANSCRIPT": {
+    "blankTitle": "Untitled Transcript"
   }
 }

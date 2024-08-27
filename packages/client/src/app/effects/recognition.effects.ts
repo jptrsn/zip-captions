@@ -71,7 +71,7 @@ export class RecognitionEffects {
   createTranscript$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.initTranscript),
-      switchMap(() => from(this.transcription.createTranscript(`${ new Date().toLocaleString() }`))
+      switchMap(() => from(this.transcription.createTranscript())
       .pipe(
         map((transcriptId) => RecognitionActions.initTranscriptSuccess({ transcriptId })),
         catchError((err) => of(RecognitionActions.initTranscriptFailure({ error: err.message })))
