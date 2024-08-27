@@ -6,3 +6,9 @@
   overflow-y: hidden;
   text-overflow: ellipsis;
 }
+
+@media screen and (max-width: 640px) {
+  .hide-sm {
+    display: none
+  }
+}
