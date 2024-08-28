@@ -16,6 +16,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { UserRoutingModule } from './user-routing.module';
 import { TranscriptsListComponent } from './components/transcripts-list/transcripts-list.component';
 import { ViewTranscriptComponent } from './components/view-transcript/view-transcript.component';
+import { EditableStringComponent } from '../../standalone/editable-string/editable-string.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ViewTranscriptComponent } from './components/view-transcript/view-trans
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([UserEffects, AuthEffects]),
     StoreModule.forFeature('user', userReducer),
+    EditableStringComponent,
   ],
 })
 export class UserModule {}
