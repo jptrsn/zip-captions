@@ -39,12 +39,12 @@ export class ViewTranscriptComponent {
     this.transcriptGroup = this.fb.group({
       id: this.fb.control<number | null>(null),
       title: this.fb.control<string | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
-      description: this.fb.control<string | null>(null)
+      description: this.fb.control<string | null>(null, { updateOn: 'blur' })
     });
 
     this.segmentGroup = this.fb.group({
       id: this.fb.control<number | null>(null),
-      text: this.fb.control<string | null>(null, [Validators.required]),
+      text: this.fb.control<string | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
       start: this.fb.control<string | null>(null),
       end: this.fb.control<string | null>(null)
     });
@@ -52,16 +52,24 @@ export class ViewTranscriptComponent {
     this.transcriptGroup.valueChanges.pipe(
       takeUntilDestroyed()
     ).subscribe((formValue) => {
-      if (formValue.id && (formValue.title || formValue.description)) {
-        const update: Partial<Transcript> = {}
-        const tId = formValue.id;
-        if (formValue.title) {
-          update.title = formValue.title;
+      this.transcriptGroup.updateValueAndValidity({emitEvent: false});
+      if (this.transcriptGroup.valid) {
+        if (formValue.id && (formValue.title || formValue.description)) {
+          const update: Partial<Transcript> = {}
+          const tId = formValue.id;
+          if (formValue.title) {
+            update.title = formValue.title;
+          }
+          if (formValue.description) {
+            update.description = formValue.description;
+          }
+          console.log('update', update)
+          this.transcriptionService.updateTranscript(tId, update).then(() => {
+            this.transcriptGroup.markAsPristine();
+          })
         }
-        if (formValue.description) {
-          update.description = formValue.description;
-        }
-        this.transcriptionService.updateTranscript(tId, update);
+      } else {
+
       }
     })
 

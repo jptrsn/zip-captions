@@ -7,19 +7,25 @@
       <app-editable-string
         [group]="transcriptGroup"
         controlName="title"
+        classList="text-xl text-bold"
       ></app-editable-string>
     </div>
-    <div class="flex flex-col items-start sm:flex-row justify-start gap-3 sm:gap-6 md:gap-12 mb-6 px-3 sm:px-6">
-      <div class="flex flex-col sm:basis-auto">
-          <p class="text-md">
+    <div class="flex flex-col items-start sm:flex-row justify-start mb-3 sm:mb-6 px-3">
+      <div class="flex flex-row gap-3 sm:gap-0 sm:flex-col px-3 py-1">
+          <p class="whitespace-nowrap">
             Recorded <span>{{ t.start | timeago }}</span>
           </p>
-          <p class="text-md" *ngIf="t.end">
+          <p class="whitespace-nowrap" *ngIf="t.end">
             Duration <span>{{ t.start | duration: t.end }}</span>
           </p>
       </div>
-      <p class="sm:flex sm:basis-1/2 text-sm">
-        {{t.description}}
+      <p class="flex self-stretch basis-full">
+        <app-editable-string
+          [group]="transcriptGroup"
+          controlName="description"
+          type="textarea"
+          classList="text-sm"
+        ></app-editable-string>
       </p>
     </div>
     

@@ -2,19 +2,27 @@
   display: flex;
   flex: 1 1 100%;
 }
-.form-control:not(:focus-within) {
-  border: none;
-}
-.form-control {
-  
+.textarea,
+.input {
+  outline: none;
 }
 .textarea:not(:focus),
 .input:not(:focus) {
   background-color: transparent;
+}
+.textarea:not(:focus):not(:disabled),
+.input:not(:focus):not(:disabled) {
   &:not(:hover) {
     border: none;
   }
   &:hover {
     font-style: italic;
   }
+}
+.input:disabled,
+.textarea:disabled {
+  cursor: text;
+  color: inherit;
+  border: none;
+  resize: none;
 }
