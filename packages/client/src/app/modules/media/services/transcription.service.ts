@@ -95,6 +95,10 @@ export class TranscriptionService {
     return this.localDb.updateTranscript(transcriptId, update)
   }
 
+  updateTranscriptSegment(segmentId: number, update: Partial<TranscriptTextSegment>) {
+    return this.localDb.updateTranscriptSegment(segmentId, update);
+  }
+
   deleteTranscript(transcriptId: number): Promise<void> {
     return this.localDb.deleteTranscript(transcriptId);
   }

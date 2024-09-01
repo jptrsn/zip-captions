@@ -1,11 +1,10 @@
-import { Component, effect, Inject, Signal } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../models/app.model';
-import { Transcript, TranscriptTextSegment } from 'shared-ui';
+import { Component, effect, Inject, signal, Signal, WritableSignal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { TranscriptionService } from '../../../media/services/transcription.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { Transcript, TranscriptTextSegment } from 'shared-ui';
+import { TranscriptionService } from '../../../media/services/transcription.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-view-transcript',
@@ -25,13 +24,13 @@ export class ViewTranscriptComponent {
   segmentGroup: FormGroup<{
     id: FormControl<number | null>,
     text: FormControl<string | null>,
-    start: FormControl<string | null>,
-    end: FormControl<string | null>
+    // startMs: FormControl<number | null>,
+    // endMs: FormControl<number | null>
   }>;
   
+  editMode: WritableSignal<boolean>;
   private transcriptId: number;
-  constructor(private store: Store<AppState>,
-              private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               @Inject(TranscriptionService) private transcriptionService: TranscriptionService,
               private fb: FormBuilder
   ) {
@@ -41,16 +40,21 @@ export class ViewTranscriptComponent {
       title: this.fb.control<string | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
       description: this.fb.control<string | null>(null, { updateOn: 'blur' })
     });
+    this.transcriptGroup.disable();
 
     this.segmentGroup = this.fb.group({
-      id: this.fb.control<number | null>(null),
+      id: this.fb.control<number | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
       text: this.fb.control<string | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
-      start: this.fb.control<string | null>(null),
-      end: this.fb.control<string | null>(null)
+      // startMs: this.fb.control<number | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
+      // endMs: this.fb.control<number | null>(null, {validators: [Validators.required], updateOn: 'blur'})
     });
+    this.segmentGroup.disable();
+
+    this.editMode = signal(false);
 
     this.transcriptGroup.valueChanges.pipe(
-      takeUntilDestroyed()
+      takeUntilDestroyed(),
+      filter(() => this.transcriptGroup.dirty)
     ).subscribe((formValue) => {
       this.transcriptGroup.updateValueAndValidity({emitEvent: false});
       if (this.transcriptGroup.valid) {
@@ -63,13 +67,10 @@ export class ViewTranscriptComponent {
           if (formValue.description) {
             update.description = formValue.description;
           }
-          console.log('update', update)
           this.transcriptionService.updateTranscript(tId, update).then(() => {
             this.transcriptGroup.markAsPristine();
           })
         }
-      } else {
-
       }
     })
 
@@ -94,6 +95,39 @@ export class ViewTranscriptComponent {
         this.transcriptionService.updateTranscript(transcript.id, {end: max})
       }
     })
+  }
+
+  toggleEditMode(): void {
+    const editable = this.editMode();
+    if (!editable) {
+      this.transcriptGroup.enable()
+      this.segmentGroup.enable();
+    } else {
+      this.transcriptGroup.disable();
+      this.segmentGroup.disable();
+    }
+    this.editMode.set(!editable);
+  }
+
+  editSegment(segment: TranscriptTextSegment, modal: HTMLDialogElement): void {
+    if (this.editMode()) {
+      this.segmentGroup.setValue({
+        id: segment.id || null,
+        text: segment.text
+      });
+      modal.showModal();
+    }
+  }
+
+  updateTranscriptSegmentText(): void {
+    this.segmentGroup.updateValueAndValidity();
+    const segmentId = this.segmentGroup.value.id;
+    const text = this.segmentGroup.value.text;
+    if (this.segmentGroup.valid && segmentId && text) {
+      this.transcriptionService.updateTranscriptSegment(segmentId, { text }).then(() => {
+        this.toggleEditMode();
+      })
+    }
   }
 
   private _findMaxDate(initialDate: Date, segments: TranscriptTextSegment[]): Date {

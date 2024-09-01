@@ -47,19 +47,23 @@ export class LocalDbService {
     return this.db.transcripts.where({ userIdHash: this.userIdHash, id: transcriptId }).first();
   }
 
-  async updateTranscript(transcriptId: number, update: Partial<Transcript>): Promise<number> {
+  updateTranscript(transcriptId: number, update: Partial<Transcript>): Promise<number> {
     return this.db.transcripts.update({id: transcriptId, userIdHash: this.userIdHash}, update)
   }
 
-  async createTranscript(title: string): Promise<number> {
+  createTranscript(title: string): Promise<number> {
     return this.db.transcripts.add({ title, userIdHash: this.userIdHash, start: new Date() })
   }
 
-  async createTranscriptSegment(segment: TranscriptTextSegmentUpdate): Promise<number> {
+  createTranscriptSegment(segment: TranscriptTextSegmentUpdate): Promise<number> {
     return this.db.transcriptSegments.add({...segment, userIdHash: this.userIdHash });
   }
 
-  async deleteTranscript(transcriptId: number): Promise<void> {
+  updateTranscriptSegment(segmentId: number, update: Partial<TranscriptTextSegment>): Promise<number> {
+    return this.db.transcriptSegments.update(segmentId, update);
+  }
+
+  deleteTranscript(transcriptId: number): Promise<void> {
     return this.db.transcripts.delete(transcriptId);
   }
 
