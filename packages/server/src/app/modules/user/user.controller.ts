@@ -175,6 +175,14 @@ export class UserController {
     return null
   }
 
+  @Post('dbToken')
+  @NoCache()
+  @UseGuards(JwtAuthGuard)
+  async getDbToken(@Body('key') key: string): Promise<{token: string}> {
+    const token = this.appService.encodeDbKey(key);
+    return { token }
+  }
+
   @Get('google-login')
   @NoCache()
   @UseGuards(GoogleOAuthGuard)
