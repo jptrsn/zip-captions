@@ -74,9 +74,9 @@ export class RecognitionService {
       this.activeRecognitionStreams.delete(streamId);
       this.recognitionMap.delete(streamId);
       recognition.stop();
-      if (this.transcriptionEnabled()) {
-        this.store.dispatch(RecognitionActions.finalizeTranscript());
-      }
+    }
+    if (this.transcriptionEnabled()) {
+      this.store.dispatch(RecognitionActions.finalizeTranscript());
     }
   }
 
@@ -304,11 +304,14 @@ export class RecognitionService {
   }
 
   private _handleRecognitionError(streamId: string, err: any) {
-    // console.warn('recognition error', err);
+    console.warn('recognition error', err);
     this.activeRecognitionStreams.delete(streamId);
     this.store.dispatch(RecognitionActions.disconnectRecognition({id: streamId}))
     this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
     this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
+    if (this.transcriptionEnabled()) {
+      this.store.dispatch(RecognitionActions.finalizeTranscript())
+    }
   }
 
   private _debugAllEventListeners(recognition: SpeechRecognition): void {

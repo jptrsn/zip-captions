@@ -15,6 +15,7 @@ import { ObsConnectionState } from '../../reducers/obs.reducer';
 import { selectObsConnected } from '../../selectors/obs.selectors';
 import { selectUserLoggedIn } from '../../selectors/auth.selectors';
 import { AuthActions } from '../../actions/auth.actions';
+import { selectTranscriptionEnabled } from '../../selectors/settings.selector';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -41,6 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public windowControlsOverlay: Signal<boolean | undefined>;
   public showObsConnectionState: Signal<boolean | undefined>;
   public isLoggedIn: Signal<boolean | undefined>;
+  public transcriptionEnabled: Signal<boolean | undefined>;
   
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -54,9 +56,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ));
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
-    this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)))
+    this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)));
 
-    this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn))
+    this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn));
+    this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(
