@@ -3,6 +3,7 @@ import { LocalDbService } from '../../../services/local-db/local-db.service';
 import { firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { Transcript, TranscriptTextSegment } from 'shared-ui';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,16 @@ export class TranscriptionService {
   private lastTimestamp?: Date;
   private key: string;
   private dbInitialized: boolean;
-  
+  private userEndpoint: string;
+
   constructor(@Inject(LocalDbService) private localDb: LocalDbService,
+              @Inject(HttpClient) private http: HttpClient,
               @Inject(TranslateService) private translate: TranslateService) {
     
+    const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
+    const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
+    const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';
+    this.userEndpoint = `${baseUrl}/${apiVersion}/${userRoute}`;
     this.dbInitialized = false;
     const key = localStorage.getItem('zip_captions_transcription');
     if (key) {
@@ -30,7 +37,9 @@ export class TranscriptionService {
   }
 
   async initTranscriptDatabase(userId: string): Promise<void> {
-    const encoded = this._stringToBytes(this.key)
+    const resp = await firstValueFrom(this.http.post<{token: string}>(`${this.userEndpoint}/dbToken`, { key: this.key}));
+    const encoded = this._stringToBytes(resp.token);
+    console.log('encoded', encoded);
     await this.localDb.init(userId, encoded);
     this.dbInitialized = true;
   }
@@ -115,10 +124,10 @@ export class TranscriptionService {
   // https://codereview.stackexchange.com/a/3589/75693
   private _stringToBytes(str: string): Uint8Array {
     const bytes = [];
-    for(let i = 0, n = str.length; i < n; i++) {
+    for(let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         bytes.push(char >>> 8, char & 0xFF);
     }
-    return new Uint8Array(bytes);
+    return new Uint8Array(bytes.slice(0, 32));
   }
 }

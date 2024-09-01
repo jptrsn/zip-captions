@@ -1,15 +1,11 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, forkJoin, from, map, of, switchMap, withLatestFrom } from "rxjs";
+import { Store } from "@ngrx/store";
+import { catchError, from, map, of, switchMap } from "rxjs";
 import { AppActions, AppState } from "../models/app.model";
 import { RecognitionActions } from "../models/recognition.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
-import { Store } from "@ngrx/store";
-import { selectUserId } from "../selectors/user.selector";
-import { AuthActions } from "../actions/auth.actions";
-import { SettingsActions } from "../modules/settings/models/settings.model";
-import { selectTranscriptionEnabled } from "../selectors/settings.selector";
 
 @Injectable()
 export class RecognitionEffects {
