@@ -9,7 +9,11 @@ export class LocalDb extends Dexie {
     
     super(dbName || 'ngdexieliveQuery')
     this.version(1).stores({
+      // Primary key: id (auto-incremented)
+      // Indexes: userIdHash, [userIdHash+id] (compound index)
       transcripts: '++id, userIdHash, [userIdHash+id]',
+      // Primary key: id (auto-incremented)
+      // Indexes: [userIdHash+transcriptId] (compound index), transcriptId
       transcriptSegments: '++id, [userIdHash+transcriptId], transcriptId'
     });
   }
