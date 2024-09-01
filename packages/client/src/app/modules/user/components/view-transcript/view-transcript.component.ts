@@ -125,7 +125,7 @@ export class ViewTranscriptComponent {
     const text = this.segmentGroup.value.text;
     if (this.segmentGroup.valid && segmentId && text) {
       this.transcriptionService.updateTranscriptSegment(segmentId, { text }).then(() => {
-        this.toggleEditMode();
+        this.segmentGroup.reset({});
       })
     }
   }

@@ -554,6 +554,7 @@
     }
   },
   "TRANSCRIPT": {
+    "enabled": "Transcription Enabled",
     "blankTitle": "Untitled Transcript"
   }
 }

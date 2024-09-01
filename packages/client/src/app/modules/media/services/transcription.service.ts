@@ -39,7 +39,6 @@ export class TranscriptionService {
   async initTranscriptDatabase(userId: string): Promise<void> {
     const resp = await firstValueFrom(this.http.post<{token: string}>(`${this.userEndpoint}/dbToken`, { key: this.key}));
     const encoded = this._stringToBytes(resp.token);
-    console.log('encoded', encoded);
     await this.localDb.init(userId, encoded);
     this.dbInitialized = true;
   }
