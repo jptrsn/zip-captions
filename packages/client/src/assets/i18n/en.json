@@ -440,7 +440,11 @@
     "transcriptEnable": "Save Transcriptions",
     "transcriptEnabled": "Caption transcriptions will be recorded",
     "transcriptDisabled": "Record transcript of captions",
-    "transcriptTitlePattern": "Use this pattern to generate transcript titles"
+    "transcriptTitlePattern": "Use this pattern to generate transcript titles",
+    "title": "Title",
+    "description": "Description",
+    "date": "Date",
+    "duration": "Duration"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -554,7 +558,12 @@
     }
   },
   "TRANSCRIPT": {
+    "titlePlural": "Transcripts",
     "enabled": "Transcription Enabled",
-    "blankTitle": "Untitled Transcript"
+    "blankTitle": "Untitled Transcript",
+    "edit": "Edit Transcript",
+    "delete": "Delete Transcript?",
+    "deleteWarn": "This action cannot be undone",
+    "recorded": "Recorded"
   }
 }
