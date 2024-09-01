@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-3 bg-base-300 p-6 basis-full overflow-hidden relative">
   <div class="flex flex-row justify-between">
-    <h1 class="text-xl">Transcripts</h1>
+    <h1 class="text-xl" translate>TRANSCRIPT.titlePlural</h1>
     <!-- TODO: Add ability to merge transcripts -->
     <!-- <button class="btn btn-sm" [ngClass]="{'btn-primary': !editMode(), 'btn-secondary': editMode() }" (click)="toggleEditMode()">
       <ng-icon name="tablerBoxMultiple"></ng-icon>
@@ -12,10 +12,10 @@
       <thead>
         <tr>
           <th *ngIf="editMode()"></th>
-          <th>Title</th>
-          <th>Description</th>
-          <th class="hide-sm">Date</th>
-          <th class="hide-sm">Duration</th>
+          <th translate>LABELS.title</th>
+          <th translate>LABELS.description</th>
+          <th class="hide-sm" translate>LABELS.date</th>
+          <th class="hide-sm" translate>LABELS.duration</th>
           <th></th>
         </tr>
       </thead>
@@ -47,10 +47,10 @@
 </div>
 <dialog #edit class="modal">
   <form method="dialog" [formGroup]="formGroup" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
-    <div class="font-bold text-lg">Edit Transcript</div>
+    <div class="font-bold text-lg" translate>TRANSCRIPT.edit</div>
     <div class="form-control">
       <label class="label">
-        <span class="label-text text-base-100">Title</span>
+        <span class="label-text text-base-100" translate>LABELS.title</span>
       </label>
       <input type="text" class="input input-bordered input-ghost" formControlName="title">
       <label class="label no-height">
@@ -59,7 +59,7 @@
     </div>
     <div class="form-control">
       <label class="label">
-        <span class="label-text text-base-100">Description</span>
+        <span class="label-text text-base-100" translate>LABELS.description</span>
       </label>
       <textarea class="textarea textarea-bordered textarea-ghost" formControlName="description"></textarea>
     </div>
@@ -71,12 +71,12 @@
 </dialog>
 <dialog #delete class="modal">
   <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center">
-    <div class="font-bold text-lg">Delete Transcript?</div>
+    <div class="font-bold text-lg" translate>TRANSCRIPT.delete</div>
     <div class="p-3" *ngIf="transcriptToDelete() as t">
       <div class="text-md">{{t.title}}</div>
       <p class="text-sm">{{t.description}}</p>
     </div>
-    <p class="text-xs font-italic">This action cannot be undone</p>
+    <p class="text-xs font-italic" translate>TRANSCRIPT.deleteWarn</p>
     <div class="modal-action gap-1">
       <button class="btn btn-sm" translate>BUTTONS.cancel</button>
       <button class="btn btn-sm btn-primary" translate (click)="deleteTranscript()">BUTTONS.confirm</button>

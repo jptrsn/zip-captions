@@ -256,7 +256,8 @@
       "appearance": "Regardez et ressentez",
       "sync": "Synchroniser",
       "sharing": "Partage",
-      "obs": "OBS-Studio"
+      "obs": "OBS-Studio",
+      "transcription": "Transcription"
     },
     "UI": {
       "t1": "Aperçu",
@@ -284,6 +285,16 @@
       "local": "Locale",
       "server": "Serveur",
       "loginRequired": "Vous devez vous connecter avant de pouvoir enregistrer les paramètres personnalisés de l'interface utilisateur"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transcription",
+      "subheader": "Vous pouvez choisir d'enregistrer les résultats textuels reconnus sous forme de transcription et de les télécharger plus tard",
+      "localDataWarning": "Toutes les données seront stockées localement sur votre appareil, à l'aide d'une clé de cryptage unique à votre compte. N'oubliez pas de vous connecter avant de commencer vos sous-titres pour vous assurer que la transcription est enregistrée.",
+      "encryptionWarning": "Si vous choisissez de supprimer votre compte, vous supprimerez toutes les données enregistrées et les clés de cryptage",
+      "loginRequired": "Vous devez être connecté pour configurer les transcriptions.",
+      "description": "Description",
+      "date": "Date",
+      "duration": "Durée"
     }
   },
   "STREAM": {
@@ -428,7 +439,15 @@
     "idle": "Inactif",
     "build": "Création",
     "renderHistory": "Résultats à l'écran",
-    "fontFamily": "Police De Caractère"
+    "fontFamily": "Police De Caractère",
+    "transcriptEnable": "Enregistrer les transcriptions",
+    "transcriptEnabled": "Les transcriptions des sous-titres seront enregistrées",
+    "transcriptDisabled": "Enregistrer la transcription des sous-titres",
+    "transcriptTitlePattern": "Utilisez ce modèle pour générer des titres de transcription",
+    "title": "Titre",
+    "description": "Description",
+    "date": "Date",
+    "duration": "Durée"
   },
   "HINTS": {
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
@@ -540,5 +559,14 @@
       "startDateLabel": "Rejoint",
       "thanksMessage": "Merci de nous soutenir, nous ne pourrions pas y parvenir sans votre aide !"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transcriptions",
+    "enabled": "Transcription activée",
+    "blankTitle": "Transcription sans titre",
+    "edit": "Modifier la transcription",
+    "delete": "Supprimer la transcription ?",
+    "deleteWarn": "Cette action est irréversible",
+    "recorded": "Enregistré"
   }
 }

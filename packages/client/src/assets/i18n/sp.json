@@ -256,7 +256,8 @@
       "appearance": "Mira y siente",
       "sync": "Sincronización",
       "sharing": "Intercambio",
-      "obs": "Estudio OBS"
+      "obs": "Estudio OBS",
+      "transcription": "Transcripción"
     },
     "UI": {
       "t1": "Avance",
@@ -284,6 +285,13 @@
       "local": "Local",
       "server": "Servidor",
       "loginRequired": "Debes iniciar sesión antes de poder guardar la configuración personalizada de la interfaz de usuario."
+    },
+    "TRANSCRIPTION": {
+      "header": "Transcripción",
+      "subheader": "Puedes elegir guardar los resultados del texto reconocido como una transcripción y descargarlos más tarde",
+      "localDataWarning": "Todos los datos se almacenarán localmente en su dispositivo, utilizando una clave de cifrado que es exclusiva de su cuenta. Recuerde iniciar sesión antes de comenzar con los subtítulos para asegurarse de que la transcripción se guarde.",
+      "encryptionWarning": "Si elige eliminar su cuenta, eliminará todos los datos guardados y las claves de cifrado",
+      "loginRequired": "Debes iniciar sesión para configurar las transcripciones"
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle": "Ralentí",
     "build": "Construya",
     "renderHistory": "Resultados en pantalla",
-    "fontFamily": "Fuente"
+    "fontFamily": "Fuente",
+    "transcriptEnable": "Salvar transcrições",
+    "transcriptEnabled": "As transcrições das legendas serão gravadas",
+    "transcriptDisabled": "Gravar transcrição de legendas",
+    "transcriptTitlePattern": "Use este padrão para gerar títulos de transcrição",
+    "title": "Título",
+    "description": "Descrição",
+    "date": "Data",
+    "duration": "Duração"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
@@ -540,5 +556,14 @@
       "startDateLabel": "Unido",
       "thanksMessage": "Gracias por apoyarnos. ¡No podríamos hacer esto sin su ayuda!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transcripciones",
+    "enabled": "Transcripción habilitada",
+    "blankTitle": "Transcripción sin título",
+    "edit": "Editar transcripción",
+    "delete": "¿Eliminar transcripción?",
+    "deleteWarn": "Esta acción no se puede deshacer",
+    "recorded": "Grabado"
   }
 }
