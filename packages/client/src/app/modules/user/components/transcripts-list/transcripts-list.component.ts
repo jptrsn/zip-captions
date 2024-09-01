@@ -58,7 +58,7 @@ export class TranscriptsListComponent {
   }
 
   editTranscript(transcript: Transcript): void {
-    this.formGroup.controls['id'].setValue(transcript.id!);
+    this.formGroup.controls['id'].setValue(transcript.id ?? null);
     this.formGroup.controls['title'].setValue(transcript.title || null);
     this.formGroup.controls['description'].setValue(transcript.description || null);
   }
