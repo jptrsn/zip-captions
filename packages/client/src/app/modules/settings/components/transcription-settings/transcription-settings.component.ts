@@ -45,6 +45,7 @@ export class TranscriptionSettingsComponent {
         settings.titlePattern = this.formGroup.value.titlePattern
       }
       this.store.dispatch(SettingsActions.saveTranscriptionSettings({ transcription: settings }))
+      this.formGroup.markAsPristine();
     } else {
       console.log('form group not valid', this.formGroup)
     }
