@@ -5,6 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Transcript, TranscriptTextSegment } from 'shared-ui';
 import { TranscriptionService } from '../../../media/services/transcription.service';
 import { filter } from 'rxjs';
+import { AppState } from '../../../../models/app.model';
+import { Store } from '@ngrx/store';
+import { languageSelector } from '../../../../selectors/settings.selector';
 
 @Component({
   selector: 'app-view-transcript',
@@ -30,11 +33,13 @@ export class ViewTranscriptComponent {
   
   editMode: WritableSignal<boolean>;
   private transcriptId: number;
+  private language: Signal<string | undefined>
   constructor(private route: ActivatedRoute,
+              private store: Store<AppState>,
               @Inject(TranscriptionService) private transcriptionService: TranscriptionService,
               private fb: FormBuilder
   ) {
-
+    this.language = toSignal(this.store.select(languageSelector));
     this.transcriptGroup = this.fb.group({
       id: this.fb.control<number | null>(null),
       title: this.fb.control<string | null>(null, {validators: [Validators.required], updateOn: 'blur'}),
@@ -128,6 +133,59 @@ export class ViewTranscriptComponent {
         this.segmentGroup.reset({});
       })
     }
+  }
+
+  download(format: 'txt' | 'srt' | 'vtt'): void {
+    let text = '';
+    const segments = this.segments();
+    const transcript = this.transcript();
+    if (transcript && segments) {
+      const tStart = new Date(transcript.start!).getTime();
+      let idx = 1;
+      const type = format === 'vtt' ? 'text/vtt;charset=utf-8' : 'text/plain;charset=utf-8';
+      if (format === 'txt') {
+        text += `${transcript.title}\r\n`;
+        if (transcript.description) {
+          text += `\r\n${transcript.description}\r\n`;
+        }
+        text += `\r\n`;
+      } else if (format === 'vtt') {
+        text += `${transcript.title}\r\n\r\n`;
+      }
+      for (const s of segments) {
+        const st = this._parseElapsed(tStart, s.start.getTime(), format === 'vtt');
+        const en = this._parseElapsed(tStart, s.end.getTime(), format === 'vtt');
+        switch (format) {
+          case 'txt': {
+            text += `${s.text}\r\n`;
+            break;
+          }
+          case 'vtt':
+          case 'srt': {
+            text += `${idx}\r\n` +
+            `${st} --> ${en}\r\n` +
+            `${s.text}\r\n\r\n`;
+            idx++;
+            break;
+          }
+        }
+      }
+      const file = new Blob([text], { type });
+      const filename = `${transcript.title}.${format}`;
+      const el = document.createElement('a');
+      el.setAttribute('href', URL.createObjectURL(file));
+      el.setAttribute('download', filename);
+      el.click();
+    }
+  }
+
+  private _parseElapsed(initialMs: number, timestampMs: number, vtt?: boolean): string {
+    const absDiff = Math.abs(timestampMs - initialMs);
+    const ms = absDiff % 1000;
+    const seconds = Math.floor(absDiff / 1000) % 60;
+    const minutes = Math.floor(absDiff / (1000 * 60)) % 60;
+    const hours = Math.floor(absDiff / (1000 * 60 * 60)) % 24;
+    return vtt ? `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}` : `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')},${ms.toString().padStart(3, '0')}`;
   }
 
   private _findMaxDate(initialDate: Date, segments: TranscriptTextSegment[]): Date {

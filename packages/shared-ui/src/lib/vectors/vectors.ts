@@ -29,7 +29,8 @@ export {
   heroLockOpen,
   heroPencilSquare,
   heroPencil,
-  heroTrash
+  heroTrash,
+  heroDocumentArrowDown
 } from '@ng-icons/heroicons/outline';
 
 export {

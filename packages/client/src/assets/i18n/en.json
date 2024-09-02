@@ -376,7 +376,8 @@
     "donate": "Donate",
     "stream": "Sharing",
     "forum": "Forum",
-    "auth": "My Account"
+    "auth": "My Account",
+    "transcript": "Transcripts"
   },
   "FOOTER": {
     "copyright": "Copyright"
