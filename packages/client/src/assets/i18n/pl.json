@@ -256,7 +256,8 @@
       "appearance": "Spójrz i poczuj",
       "sync": "Synchronizacja",
       "sharing": "Dzielenie się",
-      "obs": "Studio OBS"
+      "obs": "Studio OBS",
+      "transcription": "Transkrypcja"
     },
     "UI": {
       "t1": "Zapowiedź",
@@ -284,6 +285,13 @@
       "local": "Lokalny",
       "server": "Serwer",
       "loginRequired": "Aby zapisać niestandardowe ustawienia interfejsu użytkownika, musisz się zalogować"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transkrypcja",
+      "subheader": "Możesz zapisać rozpoznane wyniki tekstowe jako transkrypcję i pobrać je później",
+      "localDataWarning": "Wszystkie dane będą przechowywane lokalnie na Twoim urządzeniu, przy użyciu klucza szyfrowania unikalnego dla Twojego konta. Pamiętaj, aby zalogować się przed rozpoczęciem napisów, aby mieć pewność, że transkrypcja została zapisana.",
+      "encryptionWarning": "Jeśli zdecydujesz się usunąć swoje konto, usuniesz wszystkie zapisane dane i klucze szyfrujące",
+      "loginRequired": "Aby skonfigurować transkrypcje, musisz się zalogować"
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle":  "Bezczynny",
     "build":  "Zbudować",
     "renderHistory":  "Wyniki na ekranie",
-    "fontFamily": "Czcionka"
+    "fontFamily": "Czcionka",
+    "transcriptEnable": "Zapisz transkrypcje",
+    "transcriptEnabled": "Transkrypcje napisów zostaną nagrane",
+    "transcriptDisabled": "Nagraj transkrypcję podpisów",
+    "transcriptTitlePattern": "Użyj tego wzorca do wygenerowania tytułów transkrypcji",
+    "title": "Tytuł",
+    "description": "Opis",
+    "date": "Data",
+    "duration": "Czas trwania"
   },
   "HINTS": {
     "beginSpeaking":  "Zacznij mówić ...",
@@ -540,5 +556,14 @@
       "startDateLabel": "Dołączył",
       "thanksMessage": "Dziękujemy, że nas wspieracie - bez Waszej pomocy nie moglibyśmy tego zrobić!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transkrypcje",
+    "enabled": "Transkrypcja włączona",
+    "blankTitle": "Transkrypcja bez tytułu",
+    "edit": "Edytuj transkrypcję",
+    "delete": "Usunąć transkrypcję?",
+    "deleteWarn": "Tej akcji nie można cofnąć",
+    "recorded": "Nagrany"
   }
 }

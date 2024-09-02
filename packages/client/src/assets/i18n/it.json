@@ -256,7 +256,8 @@
       "appearance": "Guarda e senti",
       "sync": "Sincronizza",
       "sharing": "Condivisione",
-      "obs": "Studio OBS"
+      "obs": "Studio OBS",
+      "transcription": "Trascrizione"
     },
     "UI": {
       "t1": "Anteprima",
@@ -284,6 +285,13 @@
       "local": "Locale",
       "server": "Server",
       "loginRequired": "È necessario accedere prima di poter salvare le impostazioni dell'interfaccia utente personalizzate"
+    },
+    "TRANSCRIPTION": {
+      "header": "Trascrizione",
+      "subheader": "Puoi scegliere di salvare i risultati del testo riconosciuto come trascrizione e scaricarli in seguito",
+      "localDataWarning": "Tutti i dati verranno archiviati localmente sul tuo dispositivo, utilizzando una chiave di crittografia univoca per il tuo account. Ricordati di accedere prima di iniziare i sottotitoli per essere sicuro che la trascrizione venga salvata.",
+      "encryptionWarning": "Se scegli di eliminare il tuo account, eliminerai tutti i dati salvati e le chiavi di crittografia",
+      "loginRequired": "Devi aver effettuato l'accesso per configurare le trascrizioni."
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle": "Inattivo",
     "build": "Costruire",
     "renderHistory": "Risultati su schermo",
-    "fontFamily": "Carattere"
+    "fontFamily": "Carattere",
+    "transcriptEnable": "Salva trascrizioni",
+    "transcriptEnabled": "Le trascrizioni dei sottotitoli verranno registrate",
+    "transcriptDisabled": "Registra la trascrizione delle didascalie",
+    "transcriptTitlePattern": "Utilizza questo modello per generare titoli di trascrizione",
+    "title": "Titolo",
+    "description": "Descrizione",
+    "date": "Data",
+    "duration": "Durata"
   },
   "HINTS": {
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
@@ -540,5 +556,14 @@
       "startDateLabel": "Partecipato",
       "thanksMessage": "Grazie per averci supportato: non potremmo farcela senza il tuo aiuto!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Trascrizioni",
+    "enabled": "Trascrizione abilitata",
+    "blankTitle": "Trascrizione senza titolo",
+    "edit": "Modifica trascrizione",
+    "delete": "Eliminare la trascrizione?",
+    "deleteWarn": "Questa azione non può essere annullata",
+    "recorded": "Registrato"
   }
 }

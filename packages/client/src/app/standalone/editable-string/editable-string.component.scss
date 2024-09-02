@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex: 1 1 100%;
+}
+.textarea,
+.input {
+  outline: none;
+}
+.textarea:not(:focus),
+.input:not(:focus) {
+  background-color: transparent;
+}
+.textarea:not(:focus):not(:disabled),
+.input:not(:focus):not(:disabled) {
+  &:not(:hover) {
+    border: none;
+  }
+  &:hover {
+    font-style: italic;
+  }
+}
+.input:disabled,
+.textarea:disabled {
+  cursor: text;
+  color: inherit;
+  border: none;
+  resize: none;
+}

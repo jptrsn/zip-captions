@@ -256,7 +256,8 @@
       "appearance": "Sehen und fühlen",
       "sync": "Synchronisieren",
       "sharing": "Teilen",
-      "obs": "OBS Studio"
+      "obs": "OBS Studio",
+      "transcription": "Transkript"
     },
     "UI": {
       "t1": "Vorschau",
@@ -284,6 +285,13 @@
       "local": "Lokal",
       "server": "Server",
       "loginRequired": "Sie müssen sich anmelden, bevor Sie benutzerdefinierte UI-Einstellungen speichern können"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transkription",
+      "subheader": "Sie können die erkannten Textergebnisse als Transkript speichern und später herunterladen",
+      "localDataWarning": "Alle Daten werden lokal auf Ihrem Gerät gespeichert, wobei ein für Ihr Konto eindeutiger Verschlüsselungsschlüssel verwendet wird. Denken Sie daran, sich anzumelden, bevor Sie mit den Untertiteln beginnen, um sicherzustellen, dass das Transkript gespeichert wird.",
+      "encryptionWarning": "Wenn Sie Ihr Konto löschen, werden alle gespeicherten Daten und Verschlüsselungsschlüssel gelöscht",
+      "loginRequired": "Sie müssen angemeldet sein, um Transkriptionen zu konfigurieren."
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle": "Leerlauf",
     "build": "Bauen Sie",
     "renderHistory": "Ergebnisse auf dem Bildschirm",
-    "fontFamily": "Schriftart"
+    "fontFamily": "Schriftart",
+    "transcriptEnable": "Transkriptionen speichern",
+    "transcriptEnabled": "Untertiteltranskriptionen werden aufgezeichnet",
+    "transcriptDisabled": "Abschrift der Bildunterschriften aufzeichnen",
+    "transcriptTitlePattern": "Verwenden Sie dieses Muster, um Transkripttitel zu generieren",
+    "title": "Titel",
+    "description": "Beschreibung",
+    "date": "Datum",
+    "duration": "Dauer"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
@@ -540,5 +556,14 @@
       "startDateLabel": "Beigetreten",
       "thanksMessage": "Vielen Dank für Ihre Unterstützung - ohne Ihre Hilfe könnten wir das nicht schaffen!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transkripte",
+    "enabled": "Transkription aktiviert",
+    "blankTitle": "Transkript ohne Titel",
+    "edit": "Transkript bearbeiten",
+    "delete": "Transkript löschen?",
+    "deleteWarn": "Diese Aktion kann nicht rückgängig gemacht werden",
+    "recorded": "Aufgezeichnet"
   }
 }

@@ -6,6 +6,10 @@
     "@angular/core": "^16.0.0"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dexie": "^4.0.8",
+    "dexie-encrypted": "git+https://github.com/asset-view/dexie-encrypted/tree/ESM",
+    "rxdb": "^15.30.2",
     "tslib": "^2.3.0"
   },
   "sideEffects": false

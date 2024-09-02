@@ -1,0 +1,64 @@
+<div class="flex flex-col bg-base-300 overflow-hidden">
+  <ng-container *ngIf="transcript() as t">
+    <div class="flex flex-row items-center gap-3 px-3 sm:px-6">
+      <button class="hidden sm:block btn btn-sm rounded-full" [routerLink]="['..']">
+        <ng-icon name="heroArrowLeft"></ng-icon>
+      </button>
+      <app-editable-string
+        [group]="transcriptGroup"
+        controlName="title"
+        classList="text-xl text-bold"
+      ></app-editable-string>
+      <div class="form-control">
+        <label class="label cursor-pointer">
+          <span class="label-text mr-1" translate>BUTTONS.edit</span>
+          <input type="checkbox" class="toggle toggle-sm toggle-primary" (change)="toggleEditMode()">
+        </label>
+      </div>
+    </div>
+    <div class="flex flex-col items-start sm:flex-row justify-start mb-1 px-3">
+      <div class="flex flex-row gap-3 sm:gap-0 sm:flex-col px-3 py-1">
+          <p class="whitespace-nowrap">
+            {{ 'TRANSCRIPT.recorded' | translate }} <span>{{ t.start | timeago }}</span>
+          </p>
+          <p class="whitespace-nowrap" *ngIf="t.end">
+            {{ 'LABELS.duration' | translate }} <span>{{ t.start | duration: t.end }}</span>
+          </p>
+      </div>
+      <p class="flex self-stretch basis-full">
+        <app-editable-string
+          [group]="transcriptGroup"
+          controlName="description"
+          type="textarea"
+          classList="text-sm"
+        ></app-editable-string>
+      </p>
+    </div>
+    
+    <div class="flex flex-col gap-3 overflow-y-auto pr-3 bg-base-100 pt-1">
+      <div *ngFor="let s of segments()" class="flex flex-col sm:flex-row sm:gap-2">
+        <p class="flex basis-full px-3 sm:px-6" (click)="editSegment(s, editSegmentModal)">
+          {{ s.text }}
+        </p>
+        <div class="flex basis-auto flex-row items-center justify-end gap-1 text-xs">
+          <div class="flex whitespace-nowrap">{{ t.start | duration: s.start }}</div>
+          <ng-icon name="heroArrowLongRight"></ng-icon>
+          <div class="flex whitespace-nowrap">{{ t.start | duration: s.end }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<dialog #editSegmentModal class="modal">
+  <form method="dialog" class="modal-box bg-base-content text-base-100 sm:w-11/12 justify-self-center h-[75%] flex flex-col" [formGroup]="segmentGroup">
+    <div class="form-control basis-full">
+      <textarea 
+      class="textarea textarea-bordered textarea-ghost basis-full"
+      formControlName="text"></textarea>
+    </div>
+    <div class="modal-action gap-1">
+      <button class="btn btn-sm" translate>BUTTONS.cancel</button>
+      <button class="btn btn-sm btn-primary" translate (click)="updateTranscriptSegmentText()">BUTTONS.save</button>
+    </div>
+  </form>
+</dialog>

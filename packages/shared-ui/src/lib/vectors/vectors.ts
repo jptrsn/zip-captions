@@ -1,6 +1,7 @@
 // Base icon vector set that's in use in the app
 export {
   heroArrowPath,
+  heroArrowLongRight,
   heroBars3,
   heroMicrophone,
   heroPlayCircle,
@@ -27,6 +28,7 @@ export {
   heroLockClosed,
   heroLockOpen,
   heroPencilSquare,
+  heroPencil,
   heroTrash
 } from '@ng-icons/heroicons/outline';
 
@@ -40,6 +42,7 @@ export {
   tablerMinus,
   tablerBuildingBroadcastTower,
   tablerHistory,
+  tablerBoxMultiple
 } from '@ng-icons/tabler-icons'
 
 // Custom vectors to add

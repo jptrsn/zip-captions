@@ -14,11 +14,16 @@ import { userReducer } from '../../reducers/user.reducer';
 import { UserHomeComponent } from './components/user-home/user-home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserRoutingModule } from './user-routing.module';
+import { TranscriptsListComponent } from './components/transcripts-list/transcripts-list.component';
+import { ViewTranscriptComponent } from './components/view-transcript/view-transcript.component';
+import { EditableStringComponent } from '../../standalone/editable-string/editable-string.component';
 
 @NgModule({
   declarations: [
     UserHomeComponent,
     UserProfileComponent,
+    TranscriptsListComponent,
+    ViewTranscriptComponent,
   ],
   imports: [
     CommonModule,
@@ -31,6 +36,7 @@ import { UserRoutingModule } from './user-routing.module';
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([UserEffects, AuthEffects]),
     StoreModule.forFeature('user', userReducer),
+    EditableStringComponent,
   ],
 })
 export class UserModule {}

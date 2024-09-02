@@ -256,7 +256,8 @@
       "appearance": "Olhar e sentir",
       "sync": "Sincronizar",
       "sharing": "Compartilhamento",
-      "obs": "OBS Estúdio"
+      "obs": "OBS Estúdio",
+      "transcription": "Transcrição"
     },
     "UI": {
       "t1": "Visualização",
@@ -284,6 +285,13 @@
       "local": "Local",
       "server": "Servidor",
       "loginRequired": "Você deve fazer login antes de salvar as configurações personalizadas da IU"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transcrição",
+      "subheader": "Você pode optar por salvar os resultados do texto reconhecido como uma transcrição e baixá-los mais tarde",
+      "localDataWarning": "Todos os dados serão armazenados localmente no seu dispositivo, usando uma chave de criptografia exclusiva da sua conta. Lembre-se de fazer login antes de iniciar as legendas para garantir que a transcrição seja salva.",
+      "encryptionWarning": "Se você optar por excluir sua conta, você excluirá todos os dados salvos e chaves de criptografia",
+      "loginRequired": "Você deve estar conectado para configurar as transcrições."
     }
   },
   "STREAM": {
@@ -540,5 +548,14 @@
       "startDateLabel": "Ingressou",
       "thanksMessage": "Obrigado por nos apoiar - não poderíamos fazer isso sem a sua ajuda!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transcrições",
+    "enabled": "Transcrição habilitada",
+    "blankTitle": "Transcrição sem título",
+    "edit": "Editar transcrição",
+    "delete": "Excluir transcrição?",
+    "deleteWarn": "Esta ação não pode ser desfeita",
+    "recorded": "Gravado"
   }
 }

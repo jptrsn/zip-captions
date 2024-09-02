@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -10,6 +10,9 @@ export const defaultSettingsState: SettingsState = {
   lineHeight: 'lineHeight-normal',
   textFlow: 'bottom-up',
   fontFamily: FontFamily.sans,
+  transcription: {
+    enabled: false
+  }
 }
 
 export const settingsReducers = createReducer(
@@ -23,4 +26,7 @@ export const settingsReducers = createReducer(
   on(SettingsActions.setTextFlow, (state: SettingsState, action: { flow: TextFlow }) => ({...state, textFlow: action.flow})),
   on(SettingsActions.setRenderHistory, (state: SettingsState, action: { count: number }) => ({...state, renderHistory: action.count})),
   on(SettingsActions.setFontFamily, (state: SettingsState, action: { font: FontFamily }) => ({...state, fontFamily: action.font })),
+  on(SettingsActions.saveTranscriptionSettings, (state: SettingsState, action: { transcription: Partial<TranscriptionSettings>}) => ({...state, transcription: { ...state.transcription, ...action.transcription, loading: true }})),
+  on(SettingsActions.saveTranscriptionSettingsSuccess, (state: SettingsState) => ({...state, transcription: { ...state.transcription, loading: false }})),
+  on(SettingsActions.saveTranscriptionSettingsFailure, (state: SettingsState, action: { error: string }) => ({...state, error: action.error, transcription: { ...state.transcription, loading: false }})),
 )

@@ -256,7 +256,8 @@
       "appearance": "Look & Feel",
       "sync": "Sync",
       "sharing": "Sharing",
-      "obs": "OBS Studio"
+      "obs": "OBS Studio",
+      "transcription": "Transcript"
     },
     "UI": {
       "t1": "Preview",
@@ -284,6 +285,13 @@
       "local": "Local",
       "server": "Server",
       "loginRequired": "You must log in before you can save custom UI settings"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transcription",
+      "subheader": "You can choose to save the recognized text results as a transcript, and download them later",
+      "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account. Remember to sign in before starting your captions to be sure the transcript is saved.",
+      "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys",
+      "loginRequired": "You must be signed-in to configure transcriptions."
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle": "Idle",
     "build": "Build",
     "renderHistory": "On-screen Results",
-    "fontFamily": "Font"
+    "fontFamily": "Font",
+    "transcriptEnable": "Save Transcriptions",
+    "transcriptEnabled": "Caption transcriptions will be recorded",
+    "transcriptDisabled": "Record transcript of captions",
+    "transcriptTitlePattern": "Use this pattern to generate transcript titles",
+    "title": "Title",
+    "description": "Description",
+    "date": "Date",
+    "duration": "Duration"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -540,5 +556,14 @@
       "startDateLabel": "Joined",
       "thanksMessage": "Thank you for supporting us - we couldn't do this without your help!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transcripts",
+    "enabled": "Transcription Enabled",
+    "blankTitle": "Untitled Transcript",
+    "edit": "Edit Transcript",
+    "delete": "Delete Transcript?",
+    "deleteWarn": "This action cannot be undone",
+    "recorded": "Recorded"
   }
 }

@@ -10,9 +10,9 @@
     <app-user-saved-settings *ngSwitchCase="'sync'" @fadeInOnEnter></app-user-saved-settings>
     <app-broadcast-settings *ngSwitchCase="'sharing'" @fadeInOnEnter></app-broadcast-settings>
     <app-obs-studio-settings *ngSwitchCase="'obs'" @fadeInOnEnter></app-obs-studio-settings>
+    <app-transcription-settings *ngSwitchCase="'transcription'" @fadeInOnEnter></app-transcription-settings>
   </div>
   
-
 </div>
 
 <app-unsaved-changes-dialog [openModal]="showUnsavedChangesModal" (afterClosed)="modalClosed($event)"></app-unsaved-changes-dialog>

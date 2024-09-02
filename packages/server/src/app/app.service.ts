@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Supporter, SupporterDocument } from './models/supporter.model';
 import { Model } from 'mongoose';
 import { PatreonMembersCreateWebhookPayload, PatreonPledgeCreateWebhookPayload, PatreonPledgeUpdateWebhookPayload, PatreonUserObject, PatreonWebhookPayload } from './models/patreon.model';
+import { createHmac } from 'crypto';
 
 @Injectable()
 export class AppService {
@@ -176,5 +177,11 @@ export class AppService {
 
   async findSupporter(props: Partial<Supporter>): Promise<SupporterDocument | undefined> {
     return this.supporterModel.findOne(props);
+  }
+
+  encodeDbKey(input: string): string {
+    const hmac = createHmac('sha256', process.env.SESSION_SECRET);
+    hmac.update(input);
+    return hmac.digest('hex');
   }
 }

@@ -9,8 +9,7 @@ import { RecognitionActions, SpeechRecognition } from '../../../models/recogniti
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { browserSelector, platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
-import { languageSelector, selectRenderHistoryLength } from '../../../selectors/settings.selector';
-import { getWorker } from '../../../services/worker.util';
+import { languageSelector, selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { Language } from '../../settings/models/settings.model';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -30,21 +29,18 @@ export class RecognitionService {
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private NETWORK_ERROR_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 15;
-  private historyWorker: Worker;
   private language: Signal<Language>;
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
+  private transcriptionEnabled: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>) {
-    this.historyWorker = getWorker();
-    this.historyWorker.addEventListener('message', ({data}) => {
-      // console.log(data);
-    })
     this.language = toSignal(this.store.select(languageSelector)) as Signal<Language>;
     this.platform = toSignal(this.store.select(platformSelector));
     this.browser = toSignal(this.store.select(browserSelector));
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
+    this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
   }
 
   public connectToStream(streamId: string): void {
@@ -78,6 +74,9 @@ export class RecognitionService {
       this.activeRecognitionStreams.delete(streamId);
       this.recognitionMap.delete(streamId);
       recognition.stop();
+    }
+    if (this.transcriptionEnabled()) {
+      this.store.dispatch(RecognitionActions.finalizeTranscript());
     }
   }
 
@@ -136,6 +135,7 @@ export class RecognitionService {
     // Network error observable is used to debounce intermittent network issues that interrupt connection to the recognition server without going offline fully
     const networkError$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
+    let segmentStart: Date | undefined;
     // Live results logic
     debounce$.pipe(
       takeUntil(disconnect$),
@@ -170,9 +170,18 @@ export class RecognitionService {
         .join('')
         .trim();
         if (partialTranscript !== '') {
+          if (!segmentStart) {
+            segmentStart = new Date();
+          }
           recognizedText.update((current: string[]) => {
             current.push(partialTranscript);
+            if (this.transcriptionEnabled()) {
+              // console.log('segmentStart', segmentStart)
+              this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
+              segmentStart = undefined;
+            }
             // this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
+            // console.log('partialTranscript', partialTranscript)
             return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
           });
           transcript = '';
@@ -189,14 +198,11 @@ export class RecognitionService {
       throttleTime(this.SEGMENTATION_DEBOUNCE_MS, undefined, { leading: false, trailing: true }),
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
-      // console.log('segment')
-      if (liveOutput() !== '') {
-        // console.log('live output has data')
+      if (liveOutput() == '') {
+        console.log('live output blank, recognition continuing')
+        // recognition.stop();
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
-        recognition.stop();
-      } else {
-        // console.log('liveoutput blank')
         recognition.stop();
       }
     });
@@ -212,9 +218,9 @@ export class RecognitionService {
           return result[0];
         })
         .filter((result: SpeechRecognitionAlternative) => {
-          if (this.platform() === AppPlatform.desktop && this.browser() === BrowserPlatform.blink) {
-            return result.transcript.length && result.confidence > 0;
-          }
+          // if (this.platform() === AppPlatform.desktop && this.browser() === BrowserPlatform.blink) {
+          //   return result.transcript.length && result.confidence > 0;
+          // }
           return result.transcript.length;
         })
         .map((result) => result.transcript)
@@ -226,6 +232,9 @@ export class RecognitionService {
           transcript = lastResult[0].transcript
         }
       }
+      if (transcript.length && !segmentStart) {
+        segmentStart = new Date();
+      }
       liveOutput.set(transcript);
       if (this.obsConnected()) {
         this.store.dispatch(ObsActions.sendCaption({text: transcript}));
@@ -236,7 +245,6 @@ export class RecognitionService {
       // console.log('end', Date.now())
       mostRecentResults = undefined;
       const mostRecentOutput = liveOutput();
-      // console.log('mostRecentOutput', mostRecentOutput);
       transcriptSegments.clear();
       if (mostRecentOutput !== '') {
         recognizedText.update((current: string[]) => {
@@ -244,6 +252,10 @@ export class RecognitionService {
           // this.historyWorker.postMessage({id: streamId, type: 'put', message: mostRecentOutput})
           return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
         });
+        if (this.transcriptionEnabled()) {
+          this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: segmentStart }))
+          segmentStart = undefined;
+        }
         // console.log('clearing live output');
         liveOutput.set('');
         transcript = '';
@@ -292,11 +304,14 @@ export class RecognitionService {
   }
 
   private _handleRecognitionError(streamId: string, err: any) {
-    // console.warn('recognition error', err);
+    console.warn('recognition error', err);
     this.activeRecognitionStreams.delete(streamId);
     this.store.dispatch(RecognitionActions.disconnectRecognition({id: streamId}))
     this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
     this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
+    if (this.transcriptionEnabled()) {
+      this.store.dispatch(RecognitionActions.finalizeTranscript())
+    }
   }
 
   private _debugAllEventListeners(recognition: SpeechRecognition): void {

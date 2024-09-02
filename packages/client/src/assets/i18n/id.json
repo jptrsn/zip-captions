@@ -256,7 +256,8 @@
       "appearance": "Lihat & Rasakan",
       "sync": "Sinkronisasi",
       "sharing": "Membagikan",
-      "obs": "OBS Studio"
+      "obs": "OBS Studio",
+      "transcription": "Salinan"
     },
     "UI": {
       "t1": "Pratinjau",
@@ -284,6 +285,13 @@
       "local": "Lokal",
       "server": "Pelayanan",
       "loginRequired": "Anda harus masuk sebelum dapat menyimpan pengaturan UI khusus"
+    },
+    "TRANSCRIPTION": {
+      "header": "Transkripsi",
+      "subheader": "Anda dapat memilih untuk menyimpan hasil teks yang dikenali sebagai transkrip, dan mendownloadnya nanti",
+      "localDataWarning": "Semua data akan disimpan secara lokal di perangkat Anda, menggunakan kunci enkripsi yang unik untuk akun Anda. Ingatlah untuk masuk sebelum memulai teks untuk memastikan transkrip disimpan.",
+      "encryptionWarning": "Jika Anda memilih untuk menghapus akun Anda, Anda akan menghapus semua data tersimpan dan kunci enkripsi",
+      "loginRequired": "Anda harus masuk untuk mengonfigurasi transkripsi."
     }
   },
   "STREAM": {
@@ -428,7 +436,15 @@
     "idle": "Menganggur",
     "build": "Membangun",
     "renderHistory": "Hasil di layar",
-    "fontFamily": "Font"
+    "fontFamily": "Font",
+    "transcriptEnable": "Simpan Transkripsi",
+    "transcriptEnabled": "Transkripsi teks akan direkam",
+    "transcriptDisabled": "Rekam transkrip teks",
+    "transcriptTitlePattern": "Gunakan pola ini untuk menghasilkan judul transkrip",
+    "title": "Judul",
+    "description": "Keterangan",
+    "date": "Tanggal",
+    "duration": "Lamanya"
   },
   "HINTS": {
     "beginSpeaking": "Mulailah berbicara ...",
@@ -540,5 +556,14 @@
       "startDateLabel": "Bergabung",
       "thanksMessage": "Terima kasih telah mendukung kami - kami tidak dapat melakukan ini tanpa bantuan Anda!"
     }
+  },
+  "TRANSCRIPT": {
+    "titlePlural": "Transkrip",
+    "enabled": "Transkripsi Diaktifkan",
+    "blankTitle": "Transkrip Tanpa Judul",
+    "edit": "Edit Transkrip",
+    "delete": "Hapus Transkrip?",
+    "deleteWarn": "Tindakan ini tidak dapat dibatalkan",
+    "recorded": "Tercatat"
   }
 }

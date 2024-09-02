@@ -1,18 +1,20 @@
-import { Component, Input, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { Component, Input, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { fadeOutOnLeaveAnimation } from 'angular-animations';
+import { fadeOutOnLeaveAnimation, slideInDownOnEnterAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 import { map } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
-import { FontFamily, FontFamilyClassMap, LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
+import { selectFontFamily, selectLineHeight, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { FontFamilyClassMap, LineHeight, TextFlow, TextSize } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-recognized-live-text',
   templateUrl: './recognized-live-text.component.html',
   styleUrls: ['./recognized-live-text.component.scss'],
   animations: [
-    fadeOutOnLeaveAnimation()
+    fadeOutOnLeaveAnimation(),
+    slideInUpOnEnterAnimation(),
+    slideInDownOnEnterAnimation()
   ]
 })
 export class RecognizedLiveTextComponent {
@@ -28,7 +30,7 @@ export class RecognizedLiveTextComponent {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.fontClass = toSignal(this.store.pipe(select(selectFontFamily), map((font) => FontFamilyClassMap.get(font)))) as Signal<string>;
-    this.classList = computed(() => `recognized-text live ${this.textSize()} ${this.lineHeight()} ${this.fontClass()}`)
+    this.classList = computed(() => `recognized-text mx-6 live ${this.textSize()} ${this.lineHeight()} ${this.fontClass()} ${this.textFlowDown() ? 'mt-4' : 'mb-4'}`)
 
     this.textFlowDown = toSignal(this.store.pipe(
       select(selectTextFlow), 

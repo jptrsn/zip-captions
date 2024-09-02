@@ -22,6 +22,12 @@ export class AppController {
         throw new ForbiddenException();
       }
       console.log(body)
+      if (body.data?.included?.length) {
+        const tier = body.data.included.find((incl) => incl.type === 'tier');
+        if (tier) {
+          console.log('tier attributes', JSON.stringify(tier.attributes))
+        }
+      }
       switch (event) {
         case 'members:create':
         case 'members:update':
