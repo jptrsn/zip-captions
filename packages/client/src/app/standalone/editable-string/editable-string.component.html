@@ -1,11 +1,11 @@
-<form class="flex basis-full form-control" [formGroup]="group">
+<form class="flex basis-full form-control relative" [formGroup]="group">
   <label class="label" *ngIf="label">
     <span class="label-text" [ngClass]="{'text-error': control.invalid && control.dirty}">{{ label }}</span>
   </label>
   <ng-container *ngIf="type === 'text'">
-    <input type="text" class="input input-bordered w-full" [class]="classList" [ngClass]="{'input-error': control.invalid && control.dirty}" [formControlName]="controlName" [placeholder]="placeholder">
+    <input type="text" class="input z-2 input-bordered w-full" [class]="classList" [ngClass]="{'input-error': control.invalid && control.dirty}" [formControlName]="controlName" [placeholder]="placeholder">
   </ng-container>
   <ng-container *ngIf="type === 'textarea'">
-    <textarea class="textarea textarea-bordered w-full" [class]="classList" [formControlName]="controlName" [placeholder]="placeholder"></textarea>
+    <textarea class="textarea z-2 textarea-bordered w-full" [class]="classList" [formControlName]="controlName" [placeholder]="placeholder"></textarea>
   </ng-container>
 </form>

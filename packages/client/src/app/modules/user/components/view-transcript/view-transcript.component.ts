@@ -33,7 +33,7 @@ export class ViewTranscriptComponent {
   
   editMode: WritableSignal<boolean>;
   private transcriptId: number;
-  private language: Signal<string | undefined>
+  private language: Signal<string | undefined>;
   constructor(private route: ActivatedRoute,
               private store: Store<AppState>,
               @Inject(TranscriptionService) private transcriptionService: TranscriptionService,
@@ -66,11 +66,11 @@ export class ViewTranscriptComponent {
         if (formValue.id && (formValue.title || formValue.description)) {
           const update: Partial<Transcript> = {}
           const tId = formValue.id;
-          if (formValue.title) {
+          if (this.transcriptGroup.controls['title'].dirty && formValue.title) {
             update.title = formValue.title;
           }
-          if (formValue.description) {
-            update.description = formValue.description;
+          if (this.transcriptGroup.controls['description'].dirty) {
+            update.description = formValue.description || undefined;
           }
           this.transcriptionService.updateTranscript(tId, update).then(() => {
             this.transcriptGroup.markAsPristine();

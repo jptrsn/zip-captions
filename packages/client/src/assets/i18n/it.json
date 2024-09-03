@@ -560,6 +560,7 @@
   "TRANSCRIPT": {
     "titlePlural": "Trascrizioni",
     "enabled": "Trascrizione abilitata",
+    "descriptionPlaceholder": "Fare clic qui per aggiungere una breve descrizione di questa trascrizione",
     "blankTitle": "Trascrizione senza titolo",
     "edit": "Modifica trascrizione",
     "delete": "Eliminare la trascrizione?",
