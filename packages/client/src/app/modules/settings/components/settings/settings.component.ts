@@ -28,12 +28,20 @@ export class SettingsComponent {
   public tabIndex: Signal<number>;
 
   public tabNames = [
-    'transcription',
     'appearance',
+    'transcription',
     'sync',
     'sharing',
     'obs',
   ];
+
+  public tabIcons: {[key: string]: string} = {
+    'appearance': 'heroSwatch',
+    'transcription': 'heroDocumentText',
+    'sync': 'heroArrowsRightLeft',
+    'sharing': 'heroShare',
+    'obs': 'obsStudioLogo'
+  }
   
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
@@ -47,7 +55,7 @@ export class SettingsComponent {
 
     // The modulus operator here makes sure that the index is always less than the length of the array of tab names
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
-    this.tabsControl = this.fb.control(initialTabIndex)
+    this.tabsControl = this.fb.control(initialTabIndex);
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
       takeUntilDestroyed(), 
       tap((index) => {

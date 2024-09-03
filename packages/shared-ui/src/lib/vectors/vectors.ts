@@ -30,7 +30,11 @@ export {
   heroPencilSquare,
   heroPencil,
   heroTrash,
-  heroDocumentArrowDown
+  heroDocumentArrowDown,
+  heroArrowsRightLeft,
+  heroShare,
+  heroSwatch,
+  heroDocumentText
 } from '@ng-icons/heroicons/outline';
 
 export {

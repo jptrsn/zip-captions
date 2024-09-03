@@ -551,6 +551,7 @@
   },
   "TRANSCRIPT": {
     "titlePlural": "Transcrições",
+    "descriptionPlaceholder": "Clique aqui para adicionar uma breve descrição desta transcrição",
     "enabled": "Transcrição habilitada",
     "blankTitle": "Transcrição sem título",
     "edit": "Editar transcrição",

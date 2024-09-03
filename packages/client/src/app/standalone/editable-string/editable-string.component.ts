@@ -16,6 +16,7 @@ export class EditableStringComponent implements OnInit {
   @Input({ required: true }) group!: FormGroup;
   @Input({ required: true }) controlName!: string;
   @Input() label?: string;
+  @Input() placeholder = '';
   @Input() type: 'text' | 'textarea' = 'text';
   @Input() classList = '';
   control!: FormControl<string | null>
@@ -26,6 +27,5 @@ export class EditableStringComponent implements OnInit {
       console.warn(`Using editable string component with form control updateOn '${this.control.updateOn}' is not recommended`)
     }
   }
-
   
 }

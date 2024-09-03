@@ -1,0 +1,7 @@
+@media screen and (max-width: 640px) {
+  form > .relative {
+    input.tab:after {
+      content: none;
+    }
+  }
+}

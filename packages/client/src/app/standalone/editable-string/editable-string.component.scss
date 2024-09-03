@@ -26,3 +26,7 @@
   border: none;
   resize: none;
 }
+.textarea:focus::placeholder,
+.textarea:disabled::placeholder {
+  color: transparent;
+}
