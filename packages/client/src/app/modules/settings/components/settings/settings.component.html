@@ -1,7 +1,12 @@
-<div class="flex flex-col basis-full items-center justify-start w-full overflow-hidden bg-base-300">
+<div class="flex flex-col basis-full items-center justify-start w-full bg-base-300">
   <!-- Tabs header -->
   <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
-    <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="'SETTINGS.TABS.' + name | translate" [value]="i">
+    <div class="relative border-b-2" *ngFor="let name of tabNames, index as i">
+      <input [formControl]="tabsControl" type="radio" role="tab" class="tab" [attr.aria-label]="'SETTINGS.TABS.' + name | translate" [value]="i" [id]="name">
+      <label [for]="name" class="absolute top-0 left-0 right-0 cursor-pointer sm:!hidden flex items-center justify-center">
+        <ng-icon [name]="tabIcons[name]" size="24"></ng-icon>
+      </label>
+    </div>
   </form>
 
   <!-- Tabs body -->
