@@ -15,7 +15,7 @@
 
   <!-- Trigger recognition buttons -->
   <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
-    <div class="badge badge-info text-sm" *ngIf="transcriptionEnabled() && isLoggedIn()" translate>
+    <div class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto" *ngIf="transcriptionEnabled() && isLoggedIn()" translate>
       TRANSCRIPT.enabled
     </div>
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
