@@ -16,6 +16,7 @@ export class EditableStringComponent implements OnInit {
   @Input({ required: true }) group!: FormGroup;
   @Input({ required: true }) controlName!: string;
   @Input() label?: string;
+  @Input() placeholder = '';
   @Input() type: 'text' | 'textarea' = 'text';
   @Input() classList = '';
   control!: FormControl<string | null>
