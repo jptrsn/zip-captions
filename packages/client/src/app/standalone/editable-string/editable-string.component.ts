@@ -27,6 +27,5 @@ export class EditableStringComponent implements OnInit {
       console.warn(`Using editable string component with form control updateOn '${this.control.updateOn}' is not recommended`)
     }
   }
-
   
 }

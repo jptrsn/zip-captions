@@ -560,6 +560,7 @@
   "TRANSCRIPT": {
     "titlePlural": "Transkrypcje",
     "enabled": "Transkrypcja włączona",
+    "descriptionPlaceholder": "Kliknij tutaj, aby dodać krótki opis tego transkrypcji",
     "blankTitle": "Transkrypcja bez tytułu",
     "edit": "Edytuj transkrypcję",
     "delete": "Usunąć transkrypcję?",

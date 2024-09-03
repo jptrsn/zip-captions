@@ -560,6 +560,7 @@
   },
   "TRANSCRIPT": {
     "titlePlural": "Transcripts",
+    "descriptionPlaceholder": "Click here to add a short description of this transcript",
     "enabled": "Transcription Enabled",
     "blankTitle": "Untitled Transcript",
     "edit": "Edit Transcript",

@@ -75,13 +75,15 @@ export class TranscriptsListComponent {
       const update: Partial<Transcript> = {};
       const title = this.formGroup.controls['title'].value;
       const description = this.formGroup.controls['description'].value;
-      if (title) {
+      if (this.formGroup.controls['title'].dirty && title) {
         update.title = title;
       }
-      if (description) {
-        update.description = description
+      if (this.formGroup.controls['description'].dirty) {
+        update.description = description || undefined;
       }
-      this.transcriptionService.updateTranscript(tId, update);
+      this.transcriptionService.updateTranscript(tId, update).then(() => {
+        this.formGroup.markAsPristine();
+      })
     }
   }
 
