@@ -13,10 +13,25 @@
     </ng-template>
   </div>
 
-  <button class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto" *ngIf="transcriptionEnabled() && isLoggedIn()" [routerLink]="['user', 'transcripts']">
-    <span translate class="hidden sm:inline">TRANSCRIPT.enabled</span>
-    <ng-icon class="sm:!hidden" size="18" name="heroDocumentText"></ng-icon>
+  <!-- Transcript status badge-->
+  <button 
+    class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto"
+    [ngClass]="{'badge-info': isLoggedIn(), 'badge-warning': !isLoggedIn()}"
+    *ngIf="transcriptionEnabled()" 
+    [routerLink]="['user', 'transcripts']"
+    >
+    <ng-container *ngIf="isLoggedIn() else loginRequired">
+      <ng-icon class="sm:!hidden" size="18" name="heroDocumentText"></ng-icon>
+      <span translate class="hidden sm:inline">TRANSCRIPT.enabled</span>
+    </ng-container>
+    <ng-template #loginRequired>
+      <span class="tooltip tooltip-bottom flex" [attr.data-tip]="'SETTINGS.TRANSCRIPTION.loginRequired' | translate">
+        <ng-icon class="error" size="18" name="heroExclamationTriangle"></ng-icon>
+      </span>
+      <span translate class="hidden sm:inline">TRANSCRIPT.loginRequired</span>
+    </ng-template>
   </button>
+  
   <!-- Trigger recognition buttons -->
   <ng-container [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
