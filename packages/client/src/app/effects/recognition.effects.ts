@@ -40,6 +40,14 @@ export class RecognitionEffects {
     )
   )
 
+  pauseRecognitionOnError$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(RecognitionActions.error),
+      map(() => this.recognitionService.pauseRecognition()),
+      map(() => RecognitionActions.pauseSuccess())
+    )
+  )
+
   resumeRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.resume),

@@ -8,7 +8,7 @@ import { Subject, filter, map, takeUntil } from 'rxjs';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionStatus } from '../../models/recognition.model';
 import { platformSelector, windowControlsOverlaySelector } from '../../selectors/app.selector';
-import { selectIsBroadcasting } from '../../selectors/peer.selectors';
+import { selectIsBroadcasting, selectIsViewing } from '../../selectors/peer.selectors';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { MenuItem } from './header.model';
 import { ObsConnectionState } from '../../reducers/obs.reducer';
@@ -39,6 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showRecordButton: Signal<boolean | undefined>;
   public isActive: Signal<boolean | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
+  public isViewingBroadcast: Signal<boolean | undefined>;
   public windowControlsOverlay: Signal<boolean | undefined>;
   public showObsConnectionState: Signal<boolean | undefined>;
   public isLoggedIn: Signal<boolean | undefined>;
@@ -56,6 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ));
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.isViewingBroadcast = toSignal(this.store.select(selectIsViewing));
     this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)));
 
     this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn));

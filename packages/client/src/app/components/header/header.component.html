@@ -17,7 +17,7 @@
   <button 
     class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto"
     [ngClass]="{'badge-info': isLoggedIn(), 'badge-warning': !isLoggedIn()}"
-    *ngIf="transcriptionEnabled()" 
+    *ngIf="transcriptionEnabled() && !isViewingBroadcast()"
     [routerLink]="['user', 'transcripts']"
     >
     <ng-container *ngIf="isLoggedIn() else loginRequired">

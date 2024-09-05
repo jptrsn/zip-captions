@@ -282,7 +282,7 @@ export class RecognitionService {
       // console.log(`err: ${new Date(errTimestamp).toTimeString()}, result: ${new Date(resultTimestamp).toTimeString()}`)
       if (errTimestamp > resultTimestamp) {
         recognition.stop();
-        this._handleRecognitionError(streamId, { error: "network"});
+        this._handleRecognitionError(streamId, { error: "network"}, true);
       }
     })
 
@@ -307,14 +307,16 @@ export class RecognitionService {
 
   }
 
-  private _handleRecognitionError(streamId: string, err: any) {
+  private _handleRecognitionError(streamId: string, err: any, fatal = false) {
     console.warn('recognition error', err);
-    this.activeRecognitionStreams.delete(streamId);
-    this.store.dispatch(RecognitionActions.disconnect({id: streamId}))
-    this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
     this.store.dispatch(RecognitionActions.error({ error: err.error }))
-    if (this.transcriptionEnabled()) {
-      this.store.dispatch(RecognitionActions.finalizeTranscript())
+    if (fatal) {
+      this.activeRecognitionStreams.delete(streamId);
+      this.store.dispatch(RecognitionActions.disconnect({id: streamId}))
+      this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
+      if (this.transcriptionEnabled()) {
+        this.store.dispatch(RecognitionActions.finalizeTranscript())
+      }
     }
   }
 
