@@ -6,6 +6,7 @@ import { Directive, ElementRef, Inject, Input, OnChanges, SimpleChanges } from '
 })
 export class BackgroundMagnitudeDirective implements OnChanges {
   @Input() magnitude!: number | null | undefined;
+  @Input() maxValue = 35;
   @Input() lower = 'darkblue';
   @Input() upper = 'transparent';
   constructor(@Inject(ElementRef) private el: ElementRef) {}
@@ -19,7 +20,8 @@ export class BackgroundMagnitudeDirective implements OnChanges {
 
   private _applyMagnitude(mag: number): void {
     if (mag) {
-      this.el.nativeElement.style['background-image'] = this._generateGradient(mag);
+      const percent = Math.ceil((mag / this.maxValue) * 100);
+      this.el.nativeElement.style['background-image'] = this._generateGradient(percent);
     } else {
       this.el.nativeElement.style['background-image'] = 'unset';
     }

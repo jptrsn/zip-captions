@@ -8,6 +8,7 @@ import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../.
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-audio-input-enable',
@@ -24,7 +25,8 @@ export class AudioInputEnableComponent {
 
   constructor(private store: Store<AppState>,
               private mediaService: MediaService,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+            private router: Router) {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
     this.disconnected = computed(() => this.streamState().status === AudioStreamStatus.disconnected);
@@ -44,6 +46,9 @@ export class AudioInputEnableComponent {
     if (this.connected() || this.error()) {
       this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
+      if (this.router.url !== '/') {
+        this.router.navigate(['/'])
+      }
       this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
     }
   }

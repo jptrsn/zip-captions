@@ -75,6 +75,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       { label: 'home', routerOutlet: '/'},
       { label: 'stream', routerOutlet: '/stream' },
       { label: 'settings', routerOutlet: '/settings' },
+      {label: 'transcript', routerOutlet: '/user/transcripts'},
+      {label: 'auth', routerOutlet: '/auth' },
       { label: 'policies', children: [
         { label: 'privacy', routerOutlet: '/privacy' },
         { label: 'terms', routerOutlet: '/terms' },
@@ -84,9 +86,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
-      ]},
-      {label: 'auth', routerOutlet: '/auth' },
-      {label: 'transcript', routerOutlet: '/user/transcripts'}
+      ]}      
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 

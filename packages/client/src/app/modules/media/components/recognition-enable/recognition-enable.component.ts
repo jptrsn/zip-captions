@@ -1,5 +1,6 @@
 import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, of, switchMap } from 'rxjs';
@@ -21,7 +22,8 @@ export class RecognitionEnableComponent {
   public small: Signal<boolean | undefined>;
 
   constructor(private store: Store<AppState>,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private router: Router) {
     this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
     map((status: RecognitionStatus) => (status === RecognitionStatus.connected)),
     ));
@@ -44,6 +46,9 @@ export class RecognitionEnableComponent {
     if (this.connected() || this.error()) {
       this.store.dispatch(RecognitionActions.disconnect({id: 'default'}));
     } else {
+      if (this.router.url !== '/') {
+        this.router.navigate(['/'])
+      }
       this.store.dispatch(RecognitionActions.connect({id: 'default'}))
     }
   }

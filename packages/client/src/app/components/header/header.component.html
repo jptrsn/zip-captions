@@ -7,20 +7,21 @@
   
   <!-- App Title -->
   <div class="flex-1 draggable" *ngIf="!isBroadcasting()">
-    <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
+    <div class="normal-case text-xl hidden sm:inline" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
-      <div class="normal-case text-sm">ZipCaptions.app</div>
+      <div class="normal-case text-sm hidden sm:inline">ZipCaptions.app</div>
     </ng-template>
   </div>
 
+  <button class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto" *ngIf="transcriptionEnabled() && isLoggedIn()" [routerLink]="['user', 'transcripts']">
+    <span translate class="hidden sm:inline">TRANSCRIPT.enabled</span>
+    <ng-icon class="sm:!hidden" size="18" name="heroDocumentText"></ng-icon>
+  </button>
   <!-- Trigger recognition buttons -->
-  <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
-    <div class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto" *ngIf="transcriptionEnabled() && isLoggedIn()" translate>
-      TRANSCRIPT.enabled
-    </div>
+  <ng-container [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
-    <button *ngIf="!isActive()" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
+    <button *ngIf="!isActive() && activeRoute() === '/'" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
       <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
     </button>
   </ng-container>
