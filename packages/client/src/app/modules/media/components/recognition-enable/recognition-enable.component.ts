@@ -1,12 +1,13 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
-import { filter, map, of, switchMap, tap } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { filter, map, of, switchMap } from 'rxjs';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionStatus } from '../../../../models/recognition.model';
+import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { recognitionErrorSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
-import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-recognition-enable',
@@ -41,9 +42,9 @@ export class RecognitionEnableComponent {
 
   toggleState(): void {
     if (this.connected() || this.error()) {
-      this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'default'}));
+      this.store.dispatch(RecognitionActions.disconnect({id: 'default'}));
     } else {
-      this.store.dispatch(RecognitionActions.connectRecognition({id: 'default'}))
+      this.store.dispatch(RecognitionActions.connect({id: 'default'}))
     }
   }
 }

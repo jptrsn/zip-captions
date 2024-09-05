@@ -6,7 +6,7 @@ import { selectObsConnected, selectObsStreamActive, selectObsWebsocketIp } from 
 import { Store, select } from '@ngrx/store';
 import { ObsActions } from '../../actions/obs.actions';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { RecognitionActions } from '../../models/recognition.model';
+import { RecognitionActions } from '../../actions/recogntion.actions';
 import { recognitionActiveSelector } from '../../selectors/recognition.selector';
 import { filter, map, startWith } from 'rxjs';
 import { AudioStreamActions } from '../../models/audio-stream.model';
@@ -54,7 +54,7 @@ export class ObsConnectionStatusComponent {
         if (this.isDesktop()) {
           this.store.dispatch(AudioStreamActions.connectStream({ id: 'default'}));
         } else {
-          this.store.dispatch(RecognitionActions.connectRecognition({ id: 'default' }))
+          this.store.dispatch(RecognitionActions.connect({ id: 'default' }))
         }
       }
     )

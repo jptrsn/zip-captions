@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { LocalDbService } from '../../../services/local-db/local-db.service';
-import { firstValueFrom, from, Observable, Subject } from 'rxjs';
+import { firstValueFrom, from, Observable, Subject, tap } from 'rxjs';
 import { Transcript, TranscriptTextSegment } from 'shared-ui';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -78,13 +78,16 @@ export class TranscriptionService {
     return result;
   }
 
-  async finalizeTranscript(): Promise<void> {
+  finalizeTranscript(): Observable<number> {
     if (!this.transcriptId) {
       throw new Error('No transcript ID set')
     }
-    await this.localDb.updateTranscript(this.transcriptId, { end: new Date() })
-    this.transcriptId = undefined;
-    this.lastTimestamp = undefined;
+    return from(this.localDb.updateTranscript(this.transcriptId, { end: new Date() })).pipe(
+      tap(() => {
+        this.transcriptId = undefined;
+        this.lastTimestamp = undefined;
+      })
+    )
   }
 
   listTranscripts(): Observable<Transcript[]> {
@@ -109,6 +112,10 @@ export class TranscriptionService {
 
   deleteTranscript(transcriptId: number): Promise<void> {
     return this.localDb.deleteTranscript(transcriptId);
+  }
+
+  deleteDatabase(): Observable<void> {
+    return from(this.localDb.deleteDatabase())
   }
 
   // https://codereview.stackexchange.com/a/3589/75693

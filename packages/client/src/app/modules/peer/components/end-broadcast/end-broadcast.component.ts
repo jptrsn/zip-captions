@@ -4,7 +4,8 @@ import { Store, select } from '@ngrx/store';
 import { filter, map, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
 
 @Component({
@@ -31,7 +32,7 @@ export class EndBroadcastComponent {
   }
 
   endBroadcast(): void {
-    this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'broadcast'}));
+    this.store.dispatch(RecognitionActions.disconnect({id: 'broadcast'}));
     this.store.select(recognitionStatusSelector).pipe(
       filter((status) => status === RecognitionStatus.disconnected),
       take(1)

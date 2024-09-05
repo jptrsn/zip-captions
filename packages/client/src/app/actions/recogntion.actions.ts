@@ -1,38 +1,35 @@
-import { createAction, props } from "@ngrx/store";
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
-export const connectRecognition = createAction('[Recognition] Connect', props<{id: string}>());
-export const disconnectRecognition = createAction('[Recognition] Disconnect', props<{id: string}>());
-export const recognitionError = createAction('[Recognition] Error', props<{error: string}>());
-
-export const pauseRecognition = createAction('[Recognition] Pause');
-export const pauseRecognitionSuccess = createAction('[Recognition] Pause Success');
-
-export const resumeRecognition = createAction('[Recognition] Resume');
-export const resumeRecognitionSuccess = createAction('[Recognition] Resume Success');
-
-export const connectRecognitionSuccess = createAction('[Recognition] Connect success');
-export const connectRecognitionFailure = createAction('[Recognition] Connect failure', props<{error: string}>());
-
-export const disconnectRecognitionSuccess = createAction('[Recognition] Disconnect success');
-export const disconnectRecognitionFailure = createAction('[Recognition] Disconnect failure', props<{error: string}>());
-
-export const resetRecogntionState = createAction('[Recognition] Reset state');
-
-export const initTranscriptDb = createAction('[Recognition] Init Transcript DB', props<{ userId: string}>());
-export const initTranscriptDbSuccess = createAction('[Recognition] Init Transcript DB Success');
-
-export const deInitTranscriptDb = createAction('[Recognition] DeInit Transcript DB');
-export const deInitTranscriptDbSuccess = createAction('[Recognition] DeInit Transcript DB Success');
-
-export const initTranscript = createAction('[Recognition] Init Transcript');
-export const initTranscriptSuccess = createAction('[Recognition] Init Transcript Success', props<{ transcriptId: number}>());
-export const initTranscriptFailure = createAction('[Recognition] Init Transcript Failure', props<{error: string}>());
-
-export const addTranscriptSegment = createAction('[Recognition] Add Transcript Segment', props<{ text: string, start: Date | undefined }>());
-export const addTranscriptSegmentSuccess = createAction('[Recognition] Add Transcript Segment Success');
-export const addTranscriptSegmentFailure = createAction('[Recognition] Add Transcript Segment Failure', props<{error: string}>());
-
-export const finalizeTranscript = createAction('[Recognition] Finalize Transcript');
-export const finalizeTranscriptSuccess = createAction('[Recognition] Finalize Transcript Success');
-export const finalizeTranscriptFailure = createAction('[Recognition] Finalize Transcript', props<{error: string}>());
-
+export const RecognitionActions = createActionGroup({
+  source: 'Recognition',
+  events: {
+    'Connect': props<{ id: string }>(),
+    'Disconnect': props<{ id: string }>(),
+    'Error': props<{ error: string }>(),
+    'Pause': emptyProps(),
+    'Pause Success': emptyProps(),
+    'Resume': emptyProps(),
+    'Resume Success': emptyProps(),
+    'Connect success': emptyProps(),
+    'Connect failure': props<{ error: string }>(),
+    'Disconnect success': emptyProps(),
+    'Disconnect failure': props<{ error: string }>(),
+    'Reset state': emptyProps(),
+    'Init Transcript DB': props<{ userId: string }>(),
+    'Init Transcript DB Success': emptyProps(),
+    'DeInit Transcript DB': emptyProps(),
+    'DeInit Transcript DB Success': emptyProps(),
+    'Init Transcript': emptyProps(),
+    'Init Transcript Success': props<{ transcriptId: number }>(),
+    'Init Transcript Failure': props<{ error: string }>(),
+    'Add Transcript Segment': props<{ text: string, start: Date | undefined }>(),
+    'Add Transcript Segment Success': emptyProps(),
+    'Add Transcript Segment Failure': props<{ error: string }>(),
+    'Finalize Transcript': emptyProps(),
+    'Finalize Transcript Success': emptyProps(),
+    'Finalize Transcript Failure': props<{ error: string }>(),
+    'Delete Transcript DB': emptyProps(),
+    'Delete Transcript DB Success': emptyProps(),
+    'Delete Transcript DB Error': props<{ error: string}>()
+  },
+});

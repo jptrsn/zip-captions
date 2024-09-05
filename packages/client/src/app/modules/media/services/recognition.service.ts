@@ -5,7 +5,8 @@ import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUnti
 import { ObsActions } from '../../../actions/obs.actions';
 import { AppPlatform, AppState, BrowserPlatform } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
-import { RecognitionActions, SpeechRecognition } from '../../../models/recognition.model';
+import { SpeechRecognition } from '../../../models/recognition.model';
+import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { browserSelector, platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
@@ -199,8 +200,11 @@ export class RecognitionService {
       auditTime(this.SEGMENTATION_DEBOUNCE_MS),
     ).subscribe(() =>{
       if (liveOutput() == '') {
-        console.log('live output blank, recognition continuing')
-        // recognition.stop();
+        console.log('live output blank')
+        if (this.platform() === AppPlatform.desktop) {
+          console.log('restarting recognition');
+          recognition.stop();
+        }
       } else if (!this.activeRecognitionStreams.has(streamId)) {
         // console.log('recognition stream inactive - stopping')
         recognition.stop();
@@ -208,7 +212,7 @@ export class RecognitionService {
     });
 
     recognition.addEventListener('result', (e: any) => {
-      // console.log('result')
+      // console.log('result', e.results[0][0])
       debounce$.next(Date.now());
       if (this.platform() === AppPlatform.desktop) {
         mostRecentResults = Array.from(e.results);
@@ -306,9 +310,9 @@ export class RecognitionService {
   private _handleRecognitionError(streamId: string, err: any) {
     console.warn('recognition error', err);
     this.activeRecognitionStreams.delete(streamId);
-    this.store.dispatch(RecognitionActions.disconnectRecognition({id: streamId}))
+    this.store.dispatch(RecognitionActions.disconnect({id: streamId}))
     this.store.dispatch(AudioStreamActions.audioStreamError({ error: err.error }))
-    this.store.dispatch(RecognitionActions.recognitionError({ error: err.error }))
+    this.store.dispatch(RecognitionActions.error({ error: err.error }))
     if (this.transcriptionEnabled()) {
       this.store.dispatch(RecognitionActions.finalizeTranscript())
     }
