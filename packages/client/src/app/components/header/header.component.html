@@ -56,45 +56,50 @@
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <div class="dropdown-content w-64">
-      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true, topLevel: true}"></ng-container>
+      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true, topLevel: true, loggedIn: isLoggedIn() }"></ng-container>
     </div>
   </details>
 
 </div>
 
 <!-- Menu template with recursion for sub-menus -->
-<ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel">
+<ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel" let-loggedIn="loggedIn">
   <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-primary rounded-box">
-    <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of entries">
-      
-      <ng-container *ngIf="item.children; else routeButton">
-        <details>
-          <summary [ngClass]="{'text-lg': largeText}">{{'ROUTES.' + item.label | translate}}</summary>
-          <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
-        </details>
-      </ng-container>
+    <ng-container *ngFor="let item of entries">
 
-      <ng-template #routeButton>
-      
-        <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
-          {{'ROUTES.' + item.label | translate }}
-        </button>
-
-        <ng-template #linkButton>
-          <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
-            <span class="flex basis-full">
-              {{'ROUTES.' + item.label | translate}}
-            </span>
-            <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
-          </a>
+      <li *ngIf="(item.loginRequired ? !!loggedIn : true)" [ngClass]="{'disabled': (activeRoute() === item.routerOutlet)}">
+        <ng-container *ngIf="item.children; else routeButton">
+          <details>
+            <summary [ngClass]="{'text-lg': largeText}">{{'ROUTES.' + item.label | translate}}</summary>
+            <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
+          </details>
+        </ng-container>
+  
+        <ng-template #routeButton>
+        
+          <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
+            {{'ROUTES.' + item.label | translate }}
+          </button>
+  
+          <ng-template #linkButton>
+            <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
+              <span class="flex basis-full">
+                {{'ROUTES.' + item.label | translate}}
+              </span>
+              <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+            </a>
+          </ng-template>
+  
         </ng-template>
-
-      </ng-template>
-
-    </li>
+  
+      </li>
+    </ng-container>
     
-    <li *ngIf="isLoggedIn() && topLevel">
-      <button [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
+    <li *ngIf="topLevel">
+      <button *ngIf="loggedIn; else loginMenuItem" [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
+      <ng-template #loginMenuItem>
+        <button [ngClass]="{'text-lg': largeText}" [routerLink]="['/auth']" translate>BUTTONS.login</button>
+      </ng-template>
     </li>
   </ul>
 </ng-template>

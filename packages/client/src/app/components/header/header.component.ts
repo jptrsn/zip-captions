@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -62,6 +62,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn));
     this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
+    effect(() => {
+      console.log('isLoggedIn', this.isLoggedIn())
+    })
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(
@@ -77,8 +80,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       { label: 'home', routerOutlet: '/'},
       { label: 'stream', routerOutlet: '/stream' },
       { label: 'settings', routerOutlet: '/settings' },
-      {label: 'transcript', routerOutlet: '/user/transcripts'},
-      {label: 'auth', routerOutlet: '/auth' },
+      { label: 'transcript', routerOutlet: '/user/transcripts', loginRequired: true },
+      { label: 'auth', routerOutlet: '/auth', loginRequired: true },
       { label: 'policies', children: [
         { label: 'privacy', routerOutlet: '/privacy' },
         { label: 'terms', routerOutlet: '/terms' },
@@ -88,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
-      ]}      
+      ]}
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 
