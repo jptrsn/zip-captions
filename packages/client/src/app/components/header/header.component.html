@@ -1,4 +1,4 @@
-<div class="bg-base-300 gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
+<div class="bg-primary text-light gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
   
   <!-- App Icon with return-to-home route -->
   <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
@@ -7,20 +7,36 @@
   
   <!-- App Title -->
   <div class="flex-1 draggable" *ngIf="!isBroadcasting()">
-    <div class="normal-case text-xl" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
+    <div class="normal-case text-xl hidden sm:inline" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
     <ng-template #smallTitle>
-      <div class="normal-case text-sm">ZipCaptions.app</div>
+      <div class="normal-case text-sm hidden sm:inline">ZipCaptions.app</div>
     </ng-template>
   </div>
 
+  <!-- Transcript status badge-->
+  <button 
+    class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto"
+    [ngClass]="{'badge-info': isLoggedIn(), 'badge-warning': !isLoggedIn()}"
+    *ngIf="transcriptionEnabled() && !isViewingBroadcast()"
+    [routerLink]="['user', 'transcripts']"
+    >
+    <ng-container *ngIf="isLoggedIn() else loginRequired">
+      <ng-icon class="sm:!hidden" size="18" name="heroDocumentText"></ng-icon>
+      <span translate class="hidden sm:inline">TRANSCRIPT.enabled</span>
+    </ng-container>
+    <ng-template #loginRequired>
+      <span class="tooltip tooltip-bottom flex" [attr.data-tip]="'SETTINGS.TRANSCRIPTION.loginRequired' | translate">
+        <ng-icon class="error" size="18" name="heroExclamationTriangle"></ng-icon>
+      </span>
+      <span translate class="hidden sm:inline">TRANSCRIPT.loginRequired</span>
+    </ng-template>
+  </button>
+  
   <!-- Trigger recognition buttons -->
-  <ng-container *ngIf="activeRoute() === '/'" [ngSwitch]="showRecordButton()">
-    <div class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto" *ngIf="transcriptionEnabled() && isLoggedIn()" translate>
-      TRANSCRIPT.enabled
-    </div>
+  <ng-container [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
-    <button *ngIf="!isActive()" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
+    <button *ngIf="!isActive() && activeRoute() === '/'" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
       <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
     </button>
   </ng-container>
@@ -40,45 +56,50 @@
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <div class="dropdown-content w-64">
-      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true, topLevel: true}"></ng-container>
+      <ng-container *ngTemplateOutlet="routeList;context:{items: menuItems, largeText: true, topLevel: true, loggedIn: isLoggedIn() }"></ng-container>
     </div>
   </details>
 
 </div>
 
 <!-- Menu template with recursion for sub-menus -->
-<ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel">
-  <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-primary rounded-box">
-    <li [ngClass]="{'disabled': activeRoute() === item.routerOutlet}" *ngFor="let item of entries">
-      
-      <ng-container *ngIf="item.children; else routeButton">
-        <details>
-          <summary [ngClass]="{'text-lg': largeText}">{{'ROUTES.' + item.label | translate}}</summary>
-          <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
-        </details>
-      </ng-container>
+<ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel" let-loggedIn="loggedIn">
+  <ul tabindex="0" class="menu menu-vertical p-2 bg-primary rounded-box border-solid border-secondary border-2">
+    <ng-container *ngFor="let item of entries">
 
-      <ng-template #routeButton>
-      
-        <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
-          {{'ROUTES.' + item.label | translate }}
-        </button>
-
-        <ng-template #linkButton>
-          <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
-            <span class="flex basis-full">
-              {{'ROUTES.' + item.label | translate}}
-            </span>
-            <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
-          </a>
+      <li *ngIf="(item.loginRequired ? !!loggedIn : true)" [ngClass]="{'disabled': (activeRoute() === item.routerOutlet)}">
+        <ng-container *ngIf="item.children; else routeButton">
+          <details>
+            <summary [ngClass]="{'text-lg': largeText}">{{'ROUTES.' + item.label | translate}}</summary>
+            <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
+          </details>
+        </ng-container>
+  
+        <ng-template #routeButton>
+        
+          <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
+            {{'ROUTES.' + item.label | translate }}
+          </button>
+  
+          <ng-template #linkButton>
+            <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
+              <span class="flex basis-full">
+                {{'ROUTES.' + item.label | translate}}
+              </span>
+              <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+            </a>
+          </ng-template>
+  
         </ng-template>
-
-      </ng-template>
-
-    </li>
+  
+      </li>
+    </ng-container>
     
-    <li *ngIf="isLoggedIn() && topLevel">
-      <button [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
+    <li *ngIf="topLevel">
+      <button *ngIf="loggedIn; else loginMenuItem" [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
+      <ng-template #loginMenuItem>
+        <button [ngClass]="{'text-lg': largeText}" [routerLink]="['/auth']" translate>BUTTONS.login</button>
+      </ng-template>
     </li>
   </ul>
 </ng-template>

@@ -376,7 +376,8 @@
     "donate": "Spende",
     "stream": "Sendung",
     "forum": "Forum",
-    "auth": "Mein Konto"
+    "auth": "Mein Konto",
+    "transcript": "Transkripte"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -452,6 +453,7 @@
     "verifyingConnection": "Verifizierung des Beitrittscodes...",
     "hostConnecting": "Warten auf Sitzungsleiter...",
     "recognitionPaused": "Die Anerkennung wurde pausiert...",
+    "resume": "Weitermachen",
     "viewStream": "Besuchen Sie ZipCaptions.app und verwenden Sie die Sitzungs-ID und den Beitrittscode, um die Untertitel auf Ihrem eigenen Gerät anzuzeigen.",
     "offlineWarning": "Sie scheinen offline zu sein - ZipCaptions benötigt eine Internetverbindung, um zu funktionieren",
     "advancedWarning": "Ändern Sie nichts, wenn Sie nicht sicher sind, dass Sie wissen, was Sie tun"
@@ -561,10 +563,19 @@
     "titlePlural": "Transkripte",
     "descriptionPlaceholder": "Klicken Sie hier, um eine kurze Beschreibung dieses Transkripts hinzuzufügen",
     "enabled": "Transkription aktiviert",
+    "loginRequired": "Für die Transkription ist eine Anmeldung erforderlich",
     "blankTitle": "Transkript ohne Titel",
     "edit": "Transkript bearbeiten",
     "delete": "Transkript löschen?",
     "deleteWarn": "Diese Aktion kann nicht rückgängig gemacht werden",
     "recorded": "Aufgezeichnet"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions wird von diesen wunderbaren Menschen unterstützt",
+    "active": "Wir freuen uns sehr, dass Sie uns helfen, kostenlosen Zugang für alle zu ermöglichen, indem Sie uns auf Patreon unterstützen. Ohne Sie könnten wir das nicht schaffen!",
+    "following": "Helfen Sie uns, kostenlosen Zugang für alle zu ermöglichen, indem Sie anderen von uns erzählen, in sozialen Medien posten oder uns auf Patreon unterstützen",
+    "notFollowing": "Treten Sie uns kostenlos auf Patreon bei, um die neuesten Updates zu erhalten, oder unterstützen Sie uns dabei, den Zugang für alle kostenlos zu ermöglichen.",
+    "notLoggedIn": "Melden Sie sich unten an, um ein besseres Erlebnis mit Zip Captions zu ermöglichen",
+    "visit": "Besuchen Sie uns auf Patreon"
   }
 }

@@ -376,7 +376,8 @@
     "donate":  "Doar",
     "stream":  "Compartilhamento",
     "forum":  "Fórum",
-    "auth": "Minha Conta"
+    "auth": "Minha Conta",
+    "transcript": "Transcrições"
   },
   "FOOTER": {
     "copyright":  "Direito autoral"
@@ -436,7 +437,15 @@
     "idle":  "Parado",
     "build":  "Construir",
     "renderHistory":  "Resultados na tela",
-    "fontFamily": "Tipo de letra"
+    "fontFamily": "Tipo de letra",
+    "transcriptEnable": "Salvar transcrições",
+    "transcriptEnabled": "As transcrições das legendas serão gravadas",
+    "transcriptDisabled": "Gravar transcrição de legendas",
+    "transcriptTitlePattern": "Use este padrão para gerar títulos de transcrição",
+    "title": "Título",
+    "description": "Descrição",
+    "date": "Data",
+    "duration": "Duração"
   },
   "HINTS": {
     "beginSpeaking":  "Comece a falar ...",
@@ -444,6 +453,7 @@
     "verifyingConnection":  "Verificando o código de junção ...",
     "hostConnecting":  "Esperando pelo anfitrião da sessão ...",
     "recognitionPaused":  "O reconhecimento foi pausado ...",
+    "resume": "Continuar",
     "viewStream":  "Visite Zipcaptions.App e use o ID da sessão e participe do código para visualizar legendas em seu próprio dispositivo.",
     "offlineWarning":  "Você parece estar offline - o ZipCaptions requer uma conexão com a Internet para operar.",
     "advancedWarning": "Não Mude A Menos Que Você Esteja Confiante De Que Sabe O Que Está Fazendo"
@@ -553,10 +563,19 @@
     "titlePlural": "Transcrições",
     "descriptionPlaceholder": "Clique aqui para adicionar uma breve descrição desta transcrição",
     "enabled": "Transcrição habilitada",
+    "loginRequired": "A transcrição requer login",
     "blankTitle": "Transcrição sem título",
     "edit": "Editar transcrição",
     "delete": "Excluir transcrição?",
     "deleteWarn": "Esta ação não pode ser desfeita",
     "recorded": "Gravado"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions é apoiado por essas pessoas maravilhosas",
+    "active": "Estamos entusiasmados por você estar nos ajudando a levar acessibilidade gratuita a todos, apoiando-nos no Patreon. Não poderíamos fazer isso sem você!",
+    "following": "Ajude-nos a oferecer acessibilidade gratuita a todos, contando sobre nós, postando nas redes sociais ou apoiando-nos no Patreon",
+    "notFollowing": "Junte-se a nós no Patreon gratuitamente para obter as atualizações mais recentes ou faça uma promessa de ajudar a levar acessibilidade a todos gratuitamente.",
+    "notLoggedIn": "Faça login abaixo para ter uma melhor experiência com Zip Captions",
+    "visit": "Visite-nos no Patreon"
   }
 }

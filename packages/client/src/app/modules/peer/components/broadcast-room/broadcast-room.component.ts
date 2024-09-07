@@ -4,7 +4,8 @@ import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions, RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../../media/services/recognition.service';
 import { PeerService } from '../../services/peer.service';
@@ -48,7 +49,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(RecognitionActions.connectRecognition({id: 'broadcast'}));
+    this.store.dispatch(RecognitionActions.connect({id: 'broadcast'}));
     this.liveText.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((live) => {
@@ -63,7 +64,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.recognitionConnected()) {
-      this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'broadcast'}));
+      this.store.dispatch(RecognitionActions.disconnect({id: 'broadcast'}));
     }
     this.onDestroy$.next();
   }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -8,7 +8,7 @@ import { Subject, filter, map, takeUntil } from 'rxjs';
 import { AppPlatform, AppState } from '../../models/app.model';
 import { RecognitionStatus } from '../../models/recognition.model';
 import { platformSelector, windowControlsOverlaySelector } from '../../selectors/app.selector';
-import { selectIsBroadcasting } from '../../selectors/peer.selectors';
+import { selectIsBroadcasting, selectIsViewing } from '../../selectors/peer.selectors';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { MenuItem } from './header.model';
 import { ObsConnectionState } from '../../reducers/obs.reducer';
@@ -39,6 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showRecordButton: Signal<boolean | undefined>;
   public isActive: Signal<boolean | undefined>;
   public isBroadcasting: Signal<boolean | undefined>;
+  public isViewingBroadcast: Signal<boolean | undefined>;
   public windowControlsOverlay: Signal<boolean | undefined>;
   public showObsConnectionState: Signal<boolean | undefined>;
   public isLoggedIn: Signal<boolean | undefined>;
@@ -56,6 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ));
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    this.isViewingBroadcast = toSignal(this.store.select(selectIsViewing));
     this.showObsConnectionState = toSignal<boolean>(this.store.pipe(select(selectObsConnected), map((state) => state !== ObsConnectionState.uninitialized)));
 
     this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn));
@@ -75,6 +77,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       { label: 'home', routerOutlet: '/'},
       { label: 'stream', routerOutlet: '/stream' },
       { label: 'settings', routerOutlet: '/settings' },
+      { label: 'transcript', routerOutlet: '/user/transcripts', loginRequired: true },
+      { label: 'auth', routerOutlet: '/user', loginRequired: true },
       { label: 'policies', children: [
         { label: 'privacy', routerOutlet: '/privacy' },
         { label: 'terms', routerOutlet: '/terms' },
@@ -84,9 +88,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
-      ]},
-      {label: 'auth', routerOutlet: '/auth' },
-      {label: 'transcript', routerOutlet: '/user/transcripts'}
+      ]}
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 

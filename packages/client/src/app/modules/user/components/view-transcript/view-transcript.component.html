@@ -1,6 +1,6 @@
 <div class="flex flex-col bg-base-300 overflow-hidden">
   <ng-container *ngIf="transcript() as t">
-    <div class="flex flex-row items-center gap-3 px-3 sm:px-6">
+    <div class="flex flex-row items-center gap-3 px-3 sm:px-6 mb-1">
       <button class="hidden sm:block btn btn-sm rounded-full" [routerLink]="['..']">
         <ng-icon name="heroArrowLeft"></ng-icon>
       </button>
@@ -19,7 +19,7 @@
         <summary class="btn btn-small rounded-full">
           <ng-icon name="heroDocumentArrowDown"></ng-icon>
         </summary>
-        <ul class="menu dropdown-content bg-base-100 rounded-box p-3 shadow w-24">
+        <ul class="menu dropdown-content bg-base-100 rounded-box p-3 shadow w-24 z-10">
           <li><a (click)="download('txt')">.txt</a></li>
           <li><a (click)="download('srt')">.srt</a></li>
           <li><a (click)="download('vtt')">.vtt</a></li>

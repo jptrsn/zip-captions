@@ -453,6 +453,7 @@
     "verifyingConnection": "Verifying join code...",
     "hostConnecting": "Waiting for session host...",
     "recognitionPaused": "Recognition has been paused...",
+    "resume": "Resume",
     "viewStream": "Visit ZipCaptions.app and use the session ID and join code to view captions on your own device.",
     "offlineWarning": "You appear to be offline - ZipCaptions requires a connection to the internet to operate.",
     "advancedWarning": "Do not change unless you are confident you know what you are doing"
@@ -562,10 +563,19 @@
     "titlePlural": "Transcripts",
     "descriptionPlaceholder": "Click here to add a short description of this transcript",
     "enabled": "Transcription Enabled",
+    "loginRequired": "Transcription requires login",
     "blankTitle": "Untitled Transcript",
     "edit": "Edit Transcript",
     "delete": "Delete Transcript?",
     "deleteWarn": "This action cannot be undone",
     "recorded": "Recorded"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions is supported by these wonderful people",
+    "active": "We are thrilled that you are helping us bring free accessibility to everyone by supporting us on Patreon. We couldn't do this without you!",
+    "following": "Help us bring free accessibility to everyone by telling others about us, posting on social media, or supporting us on Patreon",
+    "notFollowing": "Join us on Patreon for free to get the latest updates, or make a pledge to help bring accessibility to everyone for free.",
+    "notLoggedIn": "Sign in below to enable a better experience with Zip Captions",
+    "visit": "Visit us on Patreon"
   }
 }
