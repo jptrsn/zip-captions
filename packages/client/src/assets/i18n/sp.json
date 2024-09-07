@@ -376,7 +376,8 @@
     "donate": "Donar",
     "stream": "Difusión",
     "forum": "Foro",
-    "auth": "Mi Cuenta"
+    "auth": "Mi Cuenta",
+    "transcript": "Transcripciones"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -452,6 +453,7 @@
     "verifyingConnection": "Verificando código de unión...",
     "hostConnecting": "Esperando al anfitrión de la sesión...",
     "recognitionPaused": "El reconocimiento se ha pausado...",
+    "resume": "Continuar",
     "viewStream": "Visita ZipCaptions.app y utiliza el identificador de sesión y el código de unión para ver los subtítulos en tu propio dispositivo.",
     "offlineWarning": "Parece estar desconectado - ZipCaptions requiere una conexión a Internet para funcionar",
     "advancedWarning": "No cambie a menos que esté seguro de que sabe lo que está haciendo"
@@ -561,10 +563,19 @@
     "titlePlural": "Transcripciones",
     "descriptionPlaceholder": "Haga clic aquí para agregar una breve descripción de esta transcripción",
     "enabled": "Transcripción habilitada",
+    "loginRequired": "La transcripción requiere iniciar sesión",
     "blankTitle": "Transcripción sin título",
     "edit": "Editar transcripción",
     "delete": "¿Eliminar transcripción?",
     "deleteWarn": "Esta acción no se puede deshacer",
     "recorded": "Grabado"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions cuenta con el apoyo de estas personas maravillosas",
+    "active": "Estamos encantados de que nos ayudes a brindar accesibilidad gratuita a todos apoyándonos en Patreon. ¡No podríamos hacer esto sin ti!",
+    "following": "Ayúdanos a brindar acceso gratuito a todos contándoles a otros sobre nosotros, publicando en las redes sociales o apoyándonos en Patreon",
+    "notFollowing": "Únase a nosotros en Patreon de forma gratuita para obtener las últimas actualizaciones o comprométase a ayudar a brindar accesibilidad a todos de forma gratuita",
+    "notLoggedIn": "Inicie sesión a continuación para disfrutar de una mejor experiencia con Zip Captions",
+    "visit": "Visítanos en Patreon"
   }
 }

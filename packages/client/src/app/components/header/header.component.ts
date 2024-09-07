@@ -62,9 +62,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.isLoggedIn = toSignal<boolean | undefined>(this.store.select(selectUserLoggedIn));
     this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
-    effect(() => {
-      console.log('isLoggedIn', this.isLoggedIn())
-    })
 
     this.activeRoute = signal(this.router.url);
     this.router.events.pipe(

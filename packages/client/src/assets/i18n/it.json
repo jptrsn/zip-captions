@@ -376,7 +376,8 @@
     "donate": "Donare",
     "stream": "Trasmissione",
     "forum": "Forum",
-    "auth": "Il Mio Conto"
+    "auth": "Il Mio Conto",
+    "transcript": "Trascrizioni"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -452,6 +453,7 @@
     "verifyingConnection": "Verifica del codice di adesione...",
     "hostConnecting": "In attesa dell'host di sessione...",
     "recognitionPaused": "Il riconoscimento è stato messo in pausa...",
+    "resume": "Continuare",
     "viewStream": "Visitare ZipCaptions.app e utilizzare l'ID di sessione e il codice di adesione per visualizzare le didascalie sul proprio dispositivo.",
     "offlineWarning": "Sembra che tu sia offline - ZipCaptions richiede una connessione a Internet per funzionare",
     "advancedWarning": "Non modificate se non siete sicuri di sapere cosa state facendo"
@@ -559,12 +561,21 @@
   },
   "TRANSCRIPT": {
     "titlePlural": "Trascrizioni",
-    "enabled": "Trascrizione abilitata",
     "descriptionPlaceholder": "Fare clic qui per aggiungere una breve descrizione di questa trascrizione",
+    "enabled": "Trascrizione abilitata",
+    "loginRequired": "La trascrizione richiede l'accesso",
     "blankTitle": "Trascrizione senza titolo",
     "edit": "Modifica trascrizione",
     "delete": "Eliminare la trascrizione?",
     "deleteWarn": "Questa azione non può essere annullata",
     "recorded": "Registrato"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions è supportato da queste persone meravigliose",
+    "active": "Siamo entusiasti che tu ci stia aiutando a portare l'accessibilità gratuita a tutti supportandoci su Patreon. Non potremmo farlo senza di te!",
+    "following": "Aiutaci a portare l'accessibilità gratuita a tutti raccontando di noi agli altri, pubblicando sui social media o supportandoci su Patreon",
+    "notFollowing": "Unisciti a noi su Patreon gratuitamente per ricevere gli ultimi aggiornamenti o impegnarti a contribuire a portare l'accessibilità a tutti gratuitamente.",
+    "notLoggedIn": "Accedi di seguito per abilitare un'esperienza migliore con i sottotitoli zip",
+    "visit": "Vieni a trovarci su Patreon"
   }
 }
