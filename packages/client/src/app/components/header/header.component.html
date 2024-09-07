@@ -1,4 +1,4 @@
-<div class="bg-base-300 gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
+<div class="bg-primary text-light gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
   
   <!-- App Icon with return-to-home route -->
   <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
@@ -64,7 +64,7 @@
 
 <!-- Menu template with recursion for sub-menus -->
 <ng-template #routeList let-entries="items" let-largeText="largeText" let-topLevel="topLevel" let-loggedIn="loggedIn">
-  <ul tabindex="0" class="menu menu-vertical p-2 shadow bg-primary rounded-box">
+  <ul tabindex="0" class="menu menu-vertical p-2 bg-primary rounded-box border-solid border-secondary border-2">
     <ng-container *ngFor="let item of entries">
 
       <li *ngIf="(item.loginRequired ? !!loggedIn : true)" [ngClass]="{'disabled': (activeRoute() === item.routerOutlet)}">

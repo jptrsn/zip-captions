@@ -1,6 +1,6 @@
 <button 
-  class="btn btn-ghost btn-circle tooltip tooltip-left"
-  [ngClass]="{'btn-primary btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected(), 'btn-sm': small()}" 
+  class="btn btn-circle tooltip tooltip-left"
+  [ngClass]="{'btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected(), 'btn-sm': small()}" 
   (click)="toggleState()"
   appBackgroundMagnitude 
   [magnitude]="vol()"

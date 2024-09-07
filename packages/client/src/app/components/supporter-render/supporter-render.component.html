@@ -11,5 +11,8 @@
   <div *ngIf="notFollowing()">
     <span translate>SUPPORTER.notFollowing</span>
   </div>
-  <a [href]="patreonUrl" target="_blank" class="badge badge-info px-6 py-1 text-blue-600 visited:text-purple-600" translate>SUPPORTER.visit</a>
+  <a [href]="patreonUrl" target="_blank" class="btn btn-secondary btn-rounded px-6 py-1">
+    <ng-icon name="patreonLogo" size="24"></ng-icon>
+    <span translate>SUPPORTER.visit</span>
+  </a>
 </div>

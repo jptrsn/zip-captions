@@ -9,6 +9,7 @@ export class BackgroundMagnitudeDirective implements OnChanges {
   @Input() maxValue = 35;
   @Input() lower = 'darkblue';
   @Input() upper = 'transparent';
+  
   constructor(@Inject(ElementRef) private el: ElementRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -28,6 +29,6 @@ export class BackgroundMagnitudeDirective implements OnChanges {
   }
 
   private _generateGradient(percent: number): string {
-    return `linear-gradient(to top, ${this.lower} 0%, ${this.lower} ${percent}%, ${this.upper} ${percent}%, ${this.upper} 100%)`;
+    return `linear-gradient(to top, ${this.lower}, ${this.lower} ${percent - 5}%, ${this.upper} ${percent + 5}%, ${this.upper})`;
   }
 }

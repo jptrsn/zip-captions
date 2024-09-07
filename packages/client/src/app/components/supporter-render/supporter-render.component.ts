@@ -23,11 +23,13 @@ export class SupporterRenderComponent {
     const profile = toSignal(this.store.select(selectUserSupportProfile));
     this.activeSupporter = computed(() => {
       const p = profile();
+      if (this.loggedOut()) return undefined;
       return p ? !!(p.amountCents) : undefined
     });
     this.following = computed(() => {
       const p = profile();
-      if (p && 'amountCents' in p) {
+      const loggedOut = this.loggedOut();
+      if (!loggedOut && p && 'amountCents' in p) {
         return p.amountCents === 0
       }
       return undefined
