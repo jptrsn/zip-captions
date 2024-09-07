@@ -15,7 +15,7 @@
           [text]="liveText" 
         ></app-recognized-live-text>
       </div>
-    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
     </label>
   </div>
