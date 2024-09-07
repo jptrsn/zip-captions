@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       { label: 'stream', routerOutlet: '/stream' },
       { label: 'settings', routerOutlet: '/settings' },
       { label: 'transcript', routerOutlet: '/user/transcripts', loginRequired: true },
-      { label: 'auth', routerOutlet: '/auth', loginRequired: true },
+      { label: 'auth', routerOutlet: '/user', loginRequired: true },
       { label: 'policies', children: [
         { label: 'privacy', routerOutlet: '/privacy' },
         { label: 'terms', routerOutlet: '/terms' },

@@ -23,7 +23,7 @@ export class LoginComponent {
     const userLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
     effect(() => {
       if (userLoggedIn()) {
-        this.router.navigate(['user']);
+        this.router.navigate(['/']);
       }
     });
 
