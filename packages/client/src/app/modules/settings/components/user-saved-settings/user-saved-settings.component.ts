@@ -1,13 +1,13 @@
 import { Component, Signal, ViewEncapsulation, computed, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { UserActions } from '../../../../actions/user.actions';
 import { AppState } from '../../../../models/app.model';
+import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
+import { selectSyncSettings } from '../../../../selectors/settings.selector';
 import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
 import { SettingsActions, SettingsState } from '../../models/settings.model';
-import { selectAppSettings } from '../../../../selectors/settings.selector';
-import { UserActions } from '../../../../actions/user.actions';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 
 @Component({
   selector: 'app-user-saved-settings',
@@ -35,7 +35,7 @@ export class UserSavedSettingsComponent {
     this.syncSettings = toSignal(this.store.select(selectUserSettingsSync));
     this.syncControl = this.fb.control<boolean | null>(null);
     this.savedUiSettings = toSignal(this.store.select(selectUserSavedSettings));
-    this.currentUiSettings = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
+    this.currentUiSettings = toSignal(this.store.select(selectSyncSettings)) as Signal<SettingsState>;
     const userId = toSignal(this.store.select(selectUserId))
     
     effect(() => {

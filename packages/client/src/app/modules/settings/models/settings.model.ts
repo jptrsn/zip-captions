@@ -111,7 +111,11 @@ export interface TranscriptionSettings {
   loading?: boolean;
   titlePattern?: string;
 }
-export interface SettingsState {
+export interface SettingsState extends SyncableSettings {
+  transcription: TranscriptionSettings;
+}
+
+export interface SyncableSettings {
   theme: AppTheme;
   lang: Language;
   wakelock: boolean;
@@ -120,7 +124,6 @@ export interface SettingsState {
   lineHeight: LineHeight;
   textFlow: TextFlow;
   fontFamily: FontFamily;
-  transcription: TranscriptionSettings;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';
