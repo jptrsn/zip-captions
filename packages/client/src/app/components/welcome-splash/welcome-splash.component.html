@@ -5,15 +5,11 @@
   <p class="flex max-w-2xl text-base leading-relaxed text-center">
     {{ 'WELCOME.p2' | translate }}
   </p>
-  <p class="flex max-w-2xl text-base leading-relaxed text-center">
-    {{ 'WELCOME.p3' | translate }}
-  </p>
-  <p>
-    <button class="btn btn-secondary text btn-wide btn-xl rounded-full" [routerLink]="['auth', 'login']">
-      <span *ngIf="isLoggedIn(); else login" translate>ROUTES.auth</span>
-      <ng-template #login>
-        <span translate>BUTTONS.login</span>
-      </ng-template>
-    </button>
-  </p>
+
+  <app-supporter-render class="flex max-w-2xl text-base leading-relaxed text-center"></app-supporter-render>
+  
+  <button *ngIf="!isLoggedIn()" class="btn btn-secondary text btn-wide btn-xl rounded-full" [routerLink]="['auth', 'login']">
+    <span translate>BUTTONS.login</span>
+  </button>
+  
 </div>

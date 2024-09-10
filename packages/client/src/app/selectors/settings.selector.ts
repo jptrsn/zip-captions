@@ -1,8 +1,19 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { SettingsState } from "../modules/settings/models/settings.model";
+import { SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
+
+export const selectSyncSettings = createSelector(
+  selectAppSettings,
+  (state) => {
+    const clone: SyncableSettings = {...state}
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore cloning to delete transcription property is allowed, but typescript gets mad
+    delete clone.transcription;
+    return clone
+  }
+)
 
 export const themeSelector = createSelector(
   selectAppSettings,

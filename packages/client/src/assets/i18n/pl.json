@@ -376,7 +376,8 @@
     "donate":  "Podarować",
     "stream":  "Dzielenie się",
     "forum":  "Forum",
-    "auth": "Moje Konto"
+    "auth": "Moje Konto",
+    "transcript": "Transkrypcje"
   },
   "FOOTER": {
     "copyright":  "Prawa autorskie"
@@ -452,6 +453,7 @@
     "verifyingConnection":  "Weryfikacja kodu łączenia ...",
     "hostConnecting":  "Czekam na hosta sesji ...",
     "recognitionPaused":  "Uznanie zostało zatrzymane ...",
+    "resume": "Kontynuować",
     "viewStream":  "Odwiedź zipcaptions.app i użyj identyfikatora sesji i dołącz do kodu, aby wyświetlić podpisy na własnym urządzeniu.",
     "offlineWarning":  "Wygląda na to, że jesteś offline - zipcaptions wymaga połączenia z Internetem do działania.",
     "advancedWarning":  "Nie zmień, chyba że jesteś pewien, że wiesz, co robisz"
@@ -559,12 +561,21 @@
   },
   "TRANSCRIPT": {
     "titlePlural": "Transkrypcje",
-    "enabled": "Transkrypcja włączona",
     "descriptionPlaceholder": "Kliknij tutaj, aby dodać krótki opis tego transkrypcji",
+    "enabled": "Transkrypcja włączona",
+    "loginRequired": "Transkrypcja wymaga logowania",
     "blankTitle": "Transkrypcja bez tytułu",
     "edit": "Edytuj transkrypcję",
     "delete": "Usunąć transkrypcję?",
     "deleteWarn": "Tej akcji nie można cofnąć",
     "recorded": "Nagrany"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions jest wspierany przez tych wspaniałych ludzi",
+    "active": "Jesteśmy podekscytowani, że pomagasz nam zapewnić każdemu bezpłatny dostęp, wspierając nas na Patreonie. Bez Ciebie nie moglibyśmy tego zrobić!",
+    "following": "Pomóż nam zapewnić każdemu darmową dostępność, opowiadając o nas innym, publikując posty w mediach społecznościowych lub wspierając nas na Patreonie",
+    "notFollowing": "Dołącz do nas na Patreonie za darmo, aby otrzymywać najnowsze aktualizacje, lub złóż zobowiązanie, że pomożesz zapewnić każdemu bezpłatny dostęp.",
+    "notLoggedIn": "Zaloguj się poniżej, aby móc lepiej korzystać z podpisów Zip",
+    "visit": "Odwiedź nas na Patreonie"
   }
 }

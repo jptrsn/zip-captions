@@ -8,7 +8,7 @@ import { defaultSettingsState } from "../reducers/settings.reducer";
 import { AppState } from "../models/app.model";
 import { Store } from "@ngrx/store";
 import { selectTranscriptionSettings } from "../selectors/settings.selector";
-import { RecognitionActions } from "../models/recognition.model";
+import { RecognitionActions } from '../actions/recogntion.actions';
 
 @Injectable()
 export class SettingsEffects {

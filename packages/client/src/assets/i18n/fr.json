@@ -291,10 +291,7 @@
       "subheader": "Vous pouvez choisir d'enregistrer les résultats textuels reconnus sous forme de transcription et de les télécharger plus tard",
       "localDataWarning": "Toutes les données seront stockées localement sur votre appareil, à l'aide d'une clé de cryptage unique à votre compte. N'oubliez pas de vous connecter avant de commencer vos sous-titres pour vous assurer que la transcription est enregistrée.",
       "encryptionWarning": "Si vous choisissez de supprimer votre compte, vous supprimerez toutes les données enregistrées et les clés de cryptage",
-      "loginRequired": "Vous devez être connecté pour configurer les transcriptions.",
-      "description": "Description",
-      "date": "Date",
-      "duration": "Durée"
+      "loginRequired": "Vous devez être connecté pour configurer les transcriptions."
     }
   },
   "STREAM": {
@@ -379,7 +376,8 @@
     "donate": "Faire un Don",
     "stream": "Diffusion",
     "forum": "Forum",
-    "auth": "Mon Compte"
+    "auth": "Mon Compte",
+    "transcript": "Transcriptions"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
@@ -455,6 +453,7 @@
     "verifyingConnection": "Vérification du code d'adhésion...",
     "hostConnecting": "Attente de l'hôte de la session...",
     "recognitionPaused": "La reconnaissance a été suspendue...",
+    "resume": "Continuer",
     "viewStream": "Visitez ZipCaptions.app et utilisez l'identifiant de session et le code de participation pour visualiser les sous-titres sur votre propre appareil.",
     "offlineWarning": "Vous semblez être hors ligne - ZipCaptions nécessite une connexion à Internet pour fonctionner",
     "advancedWarning": "Ne changez rien si vous n'êtes pas sûr de savoir ce que vous faites."
@@ -564,10 +563,19 @@
     "titlePlural": "Transcriptions",
     "descriptionPlaceholder": "Cliquez ici pour ajouter une brève description de cette transcription",
     "enabled": "Transcription activée",
+    "loginRequired": "La transcription nécessite une connexion",
     "blankTitle": "Transcription sans titre",
     "edit": "Modifier la transcription",
     "delete": "Supprimer la transcription ?",
     "deleteWarn": "Cette action est irréversible",
     "recorded": "Enregistré"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions est soutenu par ces personnes formidables",
+    "active": "Nous sommes ravis que vous nous aidiez à offrir un accès gratuit à tous en nous soutenant sur Patreon. Nous ne pourrions pas y parvenir sans vous !",
+    "following": "Aidez-nous à offrir un accès gratuit à tous en parlant de nous aux autres, en publiant sur les réseaux sociaux ou en nous soutenant sur Patreon",
+    "notFollowing": "Rejoignez-nous gratuitement sur Patreon pour obtenir les dernières mises à jour ou engagez-vous à contribuer à rendre l'accessibilité accessible à tous gratuitement.",
+    "notLoggedIn": "Connectez-vous ci-dessous pour bénéficier d'une meilleure expérience avec les sous-titres Zip",
+    "visit": "Rendez-nous visite sur Patreon"
   }
 }

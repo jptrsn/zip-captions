@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import '../../../testing/matchMedia.mock';
 import { AppPlatform, AppState } from '../../models/app.model';
-import { RecognitionActions } from '../../models/recognition.model';
+import { RecognitionActions } from '../../actions/recogntion.actions';
 import { RecognitionEnableComponent } from '../../modules/media/components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from '../../modules/media/components/recognition-render/recognition-render.component';
 import { defaultAppState } from '../../reducers/app.reducer';
@@ -45,10 +45,10 @@ describe('HeaderComponent', () => {
   it('should update state when recognition is active', waitForAsync(async() => {
     let status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeFalsy();
-    store.dispatch(RecognitionActions.connectRecognition({id: 'test'}))
+    store.dispatch(RecognitionActions.connect({id: 'test'}))
     status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeTruthy();
-    store.dispatch(RecognitionActions.disconnectRecognition({id: 'test'}));
+    store.dispatch(RecognitionActions.disconnect({id: 'test'}));
     status = await lastValueFrom(store.select(recognitionStatusSelector)); 
     expect(status).toBeFalsy();
   }));

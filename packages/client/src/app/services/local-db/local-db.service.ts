@@ -67,6 +67,11 @@ export class LocalDbService {
     return this.db.transcripts.delete(transcriptId);
   }
 
+  async deleteDatabase(): Promise<void> {
+    await this.db.close();
+    return this.db.delete({ disableAutoOpen: true });
+  }
+
   private async _getUserHash(userId: string): Promise<string> {
     const msgBuffer = new TextEncoder().encode(userId);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);

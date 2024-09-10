@@ -5,6 +5,7 @@ import { AuthActions } from "../actions/auth.actions";
 import { catchError, map, of, switchMap, tap } from "rxjs";
 import { UserActions } from "../actions/user.actions";
 import { SettingsActions } from "../modules/settings/models/settings.model";
+import { RecognitionActions } from "../actions/recogntion.actions";
 
 @Injectable()
 export class UserEffects {
@@ -116,7 +117,7 @@ export class UserEffects {
         ofType(UserActions.deleteAccount),
         switchMap(({ reason }) => this.userService.deleteAccount(reason)
           .pipe(
-            switchMap(() => [UserActions.deleteAccountSuccess(), AuthActions.logout()]),
+            switchMap(() => [UserActions.deleteAccountSuccess(), AuthActions.logout(), RecognitionActions.deleteTranscriptDB()]),
             catchError((err: any) => of(UserActions.deleteAccountFailure({ error: err.message })))
           )
         )

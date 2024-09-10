@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions } from '../../../../models/recognition.model';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { ObsConnectionService } from '../../../../services/obs-connection/obs-connection.service';
 import { RecognitionService } from '../../../media/services/recognition.service';
@@ -45,7 +45,7 @@ export class StreamCaptionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.recognitionConnected()) {
-      this.store.dispatch(RecognitionActions.disconnectRecognition({id: 'stream'}));
+      this.store.dispatch(RecognitionActions.disconnect({id: 'stream'}));
     }
     this.onDestroy$.next();
   }

@@ -1,4 +1,9 @@
-import { HttpClient, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { NgModule, isDevMode } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -44,6 +49,7 @@ import { PeerEffects } from './effects/peer.effects';
 import { ObsEffects } from './effects/obs.effects';
 import { AuthEffects } from './effects/auth.effects';
 import { UserEffects } from './effects/user.effects';
+import { SupporterRenderComponent } from './components/supporter-render/supporter-render.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -64,6 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     OfflineWarningComponent,
     DetectPwaInstallComponent,
     ObsConnectionStatusComponent,
+    SupporterRenderComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -92,9 +99,17 @@ export function HttpLoaderFactory(http: HttpClient) {
       peer: peerReducers,
       obs: obsReducers,
       auth: authReducer,
-      user: userReducer
+      user: userReducer,
     }),
-    EffectsModule.forRoot([AppEffects, SettingsEffects, RecognitionEffects, PeerEffects, ObsEffects, AuthEffects, UserEffects]),
+    EffectsModule.forRoot([
+      AppEffects,
+      SettingsEffects,
+      RecognitionEffects,
+      PeerEffects,
+      ObsEffects,
+      AuthEffects,
+      UserEffects,
+    ]),
     StoreDevtoolsModule.instrument({
       maxAge: 10,
     }),
@@ -109,12 +124,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     TimeagoModule.forRoot(),
   ],
-  providers: [
-    provideHttpClient(withInterceptors([
-      JwtInterceptor
-    ])),
-
-  ],
+  providers: [provideHttpClient(withInterceptors([JwtInterceptor]))],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

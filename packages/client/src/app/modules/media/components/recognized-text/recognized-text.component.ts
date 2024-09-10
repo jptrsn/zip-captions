@@ -8,6 +8,7 @@ import { recognitionPausedSelector } from '../../../../selectors/recognition.sel
 import { selectFontFamily, selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/models/settings.model';
 import { map } from 'rxjs';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 
 @Component({
   selector: 'app-recognized-text',
@@ -29,6 +30,7 @@ export class RecognizedTextComponent {
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
   public renderedResults: Signal<string[]>;
+  public recognitionPaused: Signal<boolean | undefined>;
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
@@ -39,9 +41,10 @@ export class RecognizedTextComponent {
     this.lineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.fontClass = toSignal(this.store.pipe(select(selectFontFamily), map((font) => FontFamilyClassMap.get(font)))) as Signal<string>;
     this.classList = computed(() => `recognized-text ${this.textSize()} ${this.lineHeight()} ${this.fontClass()}`)
-    const recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
+    this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused));
-    this.isPaused = computed(() => recognitionPaused() || broadcastPaused());
+    this.isPaused = computed(() => this.recognitionPaused() || broadcastPaused());
+    
     this.renderedResults = computed(() => {
       const textArray = this.textOutput();
       const count = this.renderHistory();
@@ -50,5 +53,9 @@ export class RecognizedTextComponent {
       }
       return textArray.slice(count * -1);
     });
+  }
+
+  resume(): void {
+    this.store.dispatch(RecognitionActions.resume())
   }
 }

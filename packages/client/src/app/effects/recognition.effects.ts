@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, from, map, of, switchMap } from "rxjs";
 import { AppActions, AppState } from "../models/app.model";
-import { RecognitionActions } from "../models/recognition.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
+import { RecognitionActions } from '../actions/recogntion.actions';
 
 @Injectable()
 export class RecognitionEffects {
@@ -16,51 +16,59 @@ export class RecognitionEffects {
 
   connectRecognition$ = createEffect(() => 
     this.actions$.pipe(
-      ofType(RecognitionActions.connectRecognition),
+      ofType(RecognitionActions.connect),
       map((props) => this.recognitionService.connectToStream(props.id)),
-      switchMap(() => [RecognitionActions.connectRecognitionSuccess(), AppActions.hideFooter(), AppActions.applyWakeLock(), RecognitionActions.initTranscript()]),
-      catchError((err: any) => of(RecognitionActions.connectRecognitionFailure({error: err.message})))
+      switchMap(() => [RecognitionActions.connectSuccess(), AppActions.hideFooter(), AppActions.applyWakeLock(), RecognitionActions.initTranscript()]),
+      catchError((err: any) => of(RecognitionActions.connectFailure({error: err.message})))
     )
   )
 
   disconnectRecognition$ = createEffect(() => 
     this.actions$.pipe(
-      ofType(RecognitionActions.disconnectRecognition),
+      ofType(RecognitionActions.disconnect),
       map((props) => this.recognitionService.disconnectFromStream(props.id)),
-      switchMap(() => [RecognitionActions.disconnectRecognitionSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
-      catchError((err: any) => of(RecognitionActions.disconnectRecognitionFailure({error: err.message})))
+      switchMap(() => [RecognitionActions.disconnectSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
+      catchError((err: any) => of(RecognitionActions.disconnectFailure({error: err.message})))
     )
   )
 
   pauseRecognition$ = createEffect(() => 
     this.actions$.pipe(
-      ofType(RecognitionActions.pauseRecognition),
+      ofType(RecognitionActions.pause),
       map(() => this.recognitionService.pauseRecognition()),
-      map(() => RecognitionActions.pauseRecognitionSuccess())
+      map(() => RecognitionActions.pauseSuccess())
+    )
+  )
+
+  pauseRecognitionOnError$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(RecognitionActions.error),
+      map(() => this.recognitionService.pauseRecognition()),
+      map(() => RecognitionActions.pauseSuccess())
     )
   )
 
   resumeRecognition$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(RecognitionActions.resumeRecognition),
+      ofType(RecognitionActions.resume),
       map(() => this.recognitionService.resumeRecognition()),
-      map(() => RecognitionActions.resumeRecognitionSuccess())
+      map(() => RecognitionActions.resumeSuccess())
     )
   )
 
   initTranscriptDb$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(RecognitionActions.initTranscriptDb),
+      ofType(RecognitionActions.initTranscriptDB),
       switchMap(({userId}) => this.transcription.initTranscriptDatabase(userId)),
-      map(() => RecognitionActions.initTranscriptDbSuccess())
+      map(() => RecognitionActions.initTranscriptDBSuccess())
     )
   )
 
   deInitTranscriptDb$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(RecognitionActions.deInitTranscriptDb),
+      ofType(RecognitionActions.deInitTranscriptDB),
       switchMap(() => this.transcription.deInitTranscriptDatabase()),
-      map(() => RecognitionActions.deInitTranscriptDbSuccess())
+      map(() => RecognitionActions.deInitTranscriptDBSuccess())
     )
   )
 
@@ -83,6 +91,30 @@ export class RecognitionEffects {
       .pipe(
         map(() => RecognitionActions.addTranscriptSegmentSuccess()),
         catchError((err) => of(RecognitionActions.addTranscriptSegmentFailure({ error: err.message })))
+      )
+    )
+    )
+  )
+
+  finalizeTranscript$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(RecognitionActions.finalizeTranscript),
+      switchMap(() => this.transcription.finalizeTranscript()
+      .pipe(
+        map(() => RecognitionActions.finalizeTranscriptSuccess()),
+        catchError((err) => of(RecognitionActions.finalizeTranscriptFailure({ error: err.message })))
+      )
+    )
+    )
+  )
+
+  deleteTranscriptDatabase$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RecognitionActions.deleteTranscriptDB),
+    switchMap(() => this.transcription.deleteDatabase()
+    .pipe(
+        map(() => RecognitionActions.deleteTranscriptDBSuccess()),
+        catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
       )
     )
     )

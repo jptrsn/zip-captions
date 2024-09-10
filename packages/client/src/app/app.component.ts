@@ -9,7 +9,7 @@ import { windowControlsOverlaySelector } from './selectors/app.selector';
 import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
 import { selectUserId } from './selectors/user.selector';
-import { RecognitionActions } from './models/recognition.model';
+import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 
 @Component({
@@ -68,10 +68,10 @@ export class AppComponent {
     effect(() => {
       const userId = userIdSignal();
       if (userId && transcriptsEnabledSignal() && loggedInSignal()) {
-        this.store.dispatch(RecognitionActions.initTranscriptDb({userId}))
+        this.store.dispatch(RecognitionActions.initTranscriptDB({userId}))
         transcriptDbInitialized = true;
       } else if (transcriptDbInitialized) {
-        this.store.dispatch(RecognitionActions.deInitTranscriptDb())
+        this.store.dispatch(RecognitionActions.deInitTranscriptDB())
       }
     }, { allowSignalWrites: true })
   }

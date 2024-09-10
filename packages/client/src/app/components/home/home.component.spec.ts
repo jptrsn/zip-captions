@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../models/app.model';
 import { Store } from '@ngrx/store';
-import { RecognitionActions } from '../../models/recognition.model';
+import { RecognitionActions } from '../../actions/recogntion.actions';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { lastValueFrom } from 'rxjs';
 
@@ -41,7 +41,7 @@ describe('HomeComponent', () => {
   });
 
   it('should render recognized text when active', waitForAsync(async() => {
-    store.dispatch(RecognitionActions.connectRecognition({id: 'test'}));
+    store.dispatch(RecognitionActions.connect({id: 'test'}));
     await lastValueFrom(store.select(recognitionStatusSelector));
     expect(fixture.debugElement.query(By.css('app-recognition-render')).nativeElement).toBeDefined();
     expect(fixture.debugElement.query(By.css('app-welcome-splash'))).toBeNull();

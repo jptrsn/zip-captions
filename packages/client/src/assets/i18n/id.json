@@ -376,7 +376,8 @@
     "donate": "Menyumbangkan",
     "stream": "Membagikan",
     "forum": "Forum",
-    "auth": "Akun Saya"
+    "auth": "Akun Saya",
+    "transcript": "Transkrip"
   },
   "FOOTER": {
     "copyright": "Hak cipta"
@@ -452,6 +453,7 @@
     "verifyingConnection": "Memverifikasi kode bergabung ...",
     "hostConnecting": "Menunggu Host Sesi ...",
     "recognitionPaused": "Pengakuan telah dijeda ...",
+    "resume": "Melanjutkan",
     "viewStream": "Kunjungi zipcaptions.app dan gunakan ID sesi dan bergabunglah dengan kode untuk melihat teks di perangkat Anda sendiri.",
     "offlineWarning": "Anda tampaknya offline - zipcaptions memerlukan koneksi ke internet untuk beroperasi.",
     "advancedWarning": "Jangan berubah kecuali Anda yakin Anda tahu apa yang Anda lakukan"
@@ -561,10 +563,19 @@
     "titlePlural": "Transkrip",
     "descriptionPlaceholder": "Klik di sini untuk menambahkan deskripsi singkat tentang transkrip ini",
     "enabled": "Transkripsi Diaktifkan",
+    "loginRequired": "Transkripsi memerlukan login",
     "blankTitle": "Transkrip Tanpa Judul",
     "edit": "Edit Transkrip",
     "delete": "Hapus Transkrip?",
     "deleteWarn": "Tindakan ini tidak dapat dibatalkan",
     "recorded": "Tercatat"
+  },
+  "SUPPORTER": {
+    "credits": "Zip Captions didukung oleh orang-orang hebat ini",
+    "active": "Kami sangat senang Anda membantu kami menghadirkan aksesibilitas gratis kepada semua orang dengan mendukung kami di Patreon. Kami tidak dapat melakukan ini tanpa Anda!",
+    "following": "Bantu kami menghadirkan aksesibilitas gratis kepada semua orang dengan memberi tahu orang lain tentang kami, memposting di media sosial, atau mendukung kami di Patreon",
+    "notFollowing": "Bergabunglah dengan kami di Patreon secara gratis untuk mendapatkan pembaruan terkini, atau buatlah janji untuk membantu memberikan aksesibilitas kepada semua orang secara gratis.",
+    "notLoggedIn": "Masuk di bawah untuk mengaktifkan pengalaman yang lebih baik dengan Zip Caption",
+    "visit": "Kunjungi kami di Patreon"
   }
 }

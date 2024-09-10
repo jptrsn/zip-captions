@@ -16,8 +16,8 @@
       <span *ngIf="activeRoute$() === '/' && error$() as err" translate class="text-center">{{err}}</span>
     </div>
     <div class="flex-initial flex-row">
-      <a [href]="licenseUrl" target="_blank" class="text-sm mx-4 my-2 text-base-content text-right tooltip tooltip-left tooltip-info" [attr.data-tip]="('LABELS.build' | translate) + ': ' + buildTimestamp">
-        <span>{{ 'FOOTER.copyright' | translate}} {{copyrightYear}}</span> - Zip Captions
+      <a [href]="licenseUrl" target="_blank" class="text-xs sm:text-sm ml-4 my-2 text-base-content text-right tooltip tooltip-left tooltip-info" [attr.data-tip]="('LABELS.build' | translate) + ': ' + buildTimestamp">
+        <span>© {{copyrightYear}}</span><span class="hidden sm:inline"> - Zip Captions</span>
       </a>
     </div>
   </footer>

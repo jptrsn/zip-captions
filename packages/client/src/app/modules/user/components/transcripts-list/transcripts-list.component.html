@@ -8,7 +8,7 @@
   </div>
   
   <div class="flex basis-auto flex-shrink-1 flex-grow-0 overflow-y-auto">
-    <table class="table table-pin-rows">
+    <table class="table">
       <thead>
         <tr>
           <th *ngIf="editMode()"></th>
@@ -28,7 +28,7 @@
           <td class="sm:w-[45%] cursor-pointer" [routerLink]="[t.id]">
             <div class="truncate">{{t.description}}</div>
           </td>
-          <td class="hide-sm">{{ t.start | date: 'short' }}</td>
+          <td class="hide-sm">{{ t.start | date: 'YYYY/MM/dd hh:mm a' }}</td>
           <td class="hide-sm">{{ t.start | duration: t.end }}</td>
           <td>
             <div class="flex flex-col sm:flex-row">

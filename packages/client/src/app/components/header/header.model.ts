@@ -3,4 +3,5 @@ export interface MenuItem {
   routerOutlet?: string;
   href?: string;
   children?: MenuItem[];
+  loginRequired?: boolean
 }

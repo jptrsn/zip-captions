@@ -5,7 +5,7 @@ import { AppState } from '../../../../models/app.model';
 import { selectLineHeight, selectRenderHistoryLength, selectTextSize } from '../../../../selectors/settings.selector';
 import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
-import { RecognitionActions } from '../../../../models/recognition.model';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
@@ -117,10 +117,10 @@ export class RecognitionControlSidebarComponent {
   }
 
   private _pauseRecognition(): void {
-    this.store.dispatch(RecognitionActions.pauseRecognition());
+    this.store.dispatch(RecognitionActions.pause());
   }
 
   private _resumeRecognition(): void {
-    this.store.dispatch(RecognitionActions.resumeRecognition());
+    this.store.dispatch(RecognitionActions.resume());
   }
 }
