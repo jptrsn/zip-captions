@@ -29,6 +29,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs-studio-settings.component';
 import { TranscriptionSettingsComponent } from './components/transcription-settings/transcription-settings.component';
 import { TranscriptEnabledComponent } from './components/transcript-enabled/transcript-enabled.component';
+import { TranscriptRecordAudioComponent } from './components/transcript-record-audio/transcript-record-audio.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { TranscriptEnabledComponent } from './components/transcript-enabled/tran
     ObsStudioSettingsComponent,
     TranscriptionSettingsComponent,
     TranscriptEnabledComponent,
+    TranscriptRecordAudioComponent,
   ],
   imports: [
     CommonModule,

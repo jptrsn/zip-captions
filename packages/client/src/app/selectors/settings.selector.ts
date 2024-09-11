@@ -74,3 +74,8 @@ export const selectTranscriptSettingsLoading = createSelector(
   selectAppSettings,
   (state) => state.transcription.loading
 )
+
+export const selectTranscriptRecordAudio = createSelector(
+  selectAppSettings,
+  (state) => state.transcription.recordAudio
+)

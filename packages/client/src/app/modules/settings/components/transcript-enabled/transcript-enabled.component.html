@@ -3,7 +3,7 @@
   <label class="cursor-pointer label bg-base-100 rounded-lg ps-5 pe-3 py-4">
     <span class="label-text me-2" *ngIf="isEnabled(); else isDisabledLabel" translate>LABELS.transcriptEnabled</span>
     <ng-template #isDisabledLabel>
-      <span class="label-text me-2" translate>LABELS.transcriptDisabled</span>
+      <span class="label-text me-2" translate>LABELS.transcriptEnabled</span>
     </ng-template>
     <input type="checkbox" class="checkbox checkbox-primary" [formControlName]="controlName" />
   </label>
