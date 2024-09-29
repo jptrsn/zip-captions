@@ -1,5 +1,6 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
+import { Component, Signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, of, switchMap } from 'rxjs';
@@ -8,7 +9,6 @@ import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../.
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-audio-input-enable',
