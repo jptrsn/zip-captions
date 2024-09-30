@@ -23,6 +23,7 @@ export class EndBroadcastComponent {
 
   public isActive: Signal<boolean | undefined>;
   public vol: Signal<number | undefined>;
+  private streamId: Signal<string | undefined>;
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
@@ -32,9 +33,9 @@ export class EndBroadcastComponent {
       map((status: RecognitionStatus) => status === RecognitionStatus.connected)
     ));
     const broadcasting = toSignal(this.store.pipe(select(selectIsBroadcasting)));
-    const streamId = toSignal(this.mediaService.getMediaStream('default'));
+    this.streamId = toSignal(this.mediaService.getMediaStream('default'));
     this.vol = computed(() => {
-      const id = streamId()
+      const id = this.streamId()
       if (broadcasting() && id) {
         return this.mediaService.getVolumeForStream(id)()
       }
@@ -48,6 +49,10 @@ export class EndBroadcastComponent {
 
   endBroadcast(): void {
     this.store.dispatch(RecognitionActions.disconnect({id: 'broadcast'}));
+    const id = this.streamId();
+    if (id) {
+      this.mediaService.disconnectStream(id) 
+    }
     this.store.select(recognitionStatusSelector).pipe(
       filter((status) => status === RecognitionStatus.disconnected),
       take(1)

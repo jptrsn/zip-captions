@@ -100,7 +100,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       takeUntil(this.onDestroy$),
       filter((ev: any) => ev instanceof NavigationEnd)
     ).subscribe((ev: NavigationEnd) => {
-      console.log('active route', ev.url.substring(0, ev.url.indexOf('?')))
       this.activeRoute.set(ev.url.substring(0, ev.url.indexOf('?')));
     });
   }
