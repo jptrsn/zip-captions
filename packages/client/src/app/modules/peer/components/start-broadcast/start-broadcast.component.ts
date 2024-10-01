@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnChanges, Signal, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, effect, Input, OnChanges, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, filter, take } from 'rxjs';
+import { filter, Observable, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
 import { UserRoom } from '../../../../reducers/user.reducer';
@@ -45,8 +45,12 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
       this.userId$.pipe(
         filter((id) => !!id),
         take(1)
-      ).subscribe(() => this._listUserRooms())
+      ).subscribe(() => this._listUserRooms());
     }
+
+    effect(() => {
+      console.log('isLoggedIn', this.isLoggedIn())
+    })
 
     this.formGroup.controls['room'].valueChanges
       .pipe(takeUntilDestroyed())
@@ -96,6 +100,7 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
   }
 
   private _listUserRooms(): void {
+    console.log('list users rooms')
     this.store.dispatch(PeerActions.getBroadcastRooms())
   }
 }

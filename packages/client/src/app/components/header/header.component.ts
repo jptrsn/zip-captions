@@ -100,7 +100,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       takeUntil(this.onDestroy$),
       filter((ev: any) => ev instanceof NavigationEnd)
     ).subscribe((ev: NavigationEnd) => {
-      this.activeRoute.set(ev.url);
+      this.activeRoute.set(ev.url.substring(0, ev.url.indexOf('?')));
     });
   }
 

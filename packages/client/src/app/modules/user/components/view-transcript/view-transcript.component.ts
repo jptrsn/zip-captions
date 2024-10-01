@@ -1,4 +1,4 @@
-import { Component, effect, Inject, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, effect, ElementRef, Inject, Renderer2, signal, Signal, ViewChild, WritableSignal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -15,6 +15,7 @@ import { languageSelector } from '../../../../selectors/settings.selector';
   styleUrls: ['./view-transcript.component.scss'],
 })
 export class ViewTranscriptComponent {
+  @ViewChild('menu', {read: ElementRef}) menuElement!: ElementRef;
   segments: Signal<TranscriptTextSegment[] | undefined>;
   transcript: Signal<Transcript | undefined>;
   
@@ -37,7 +38,8 @@ export class ViewTranscriptComponent {
   constructor(private route: ActivatedRoute,
               private store: Store<AppState>,
               @Inject(TranscriptionService) private transcriptionService: TranscriptionService,
-              private fb: FormBuilder
+              private fb: FormBuilder,
+              private renderer: Renderer2
   ) {
     this.language = toSignal(this.store.select(languageSelector));
     this.transcriptGroup = this.fb.group({
@@ -176,6 +178,9 @@ export class ViewTranscriptComponent {
       el.setAttribute('href', URL.createObjectURL(file));
       el.setAttribute('download', filename);
       el.click();
+    }
+    if (this.menuElement?.nativeElement) {
+      this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
     }
   }
 

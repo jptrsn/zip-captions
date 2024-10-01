@@ -33,6 +33,7 @@ import { StreamCaptionsComponent } from './components/stream-captions/stream-cap
 import { StartBroadcastComponent } from './components/start-broadcast/start-broadcast.component';
 import { JoinBroadcastComponent } from './components/join-broadcast/join-broadcast.component';
 import { PeerHomeComponent } from './components/peer-home/peer-home.component';
+import { BackgroundMagnitudeDirective } from '../../directives/background-magnitude.directive';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { PeerHomeComponent } from './components/peer-home/peer-home.component';
     ReactiveFormsModule,
     NgIconsModule,
     SharedUiModule,
+    BackgroundMagnitudeDirective,
     TranslateModule.forChild({ extend: true }),
     EffectsModule.forFeature([PeerEffects, ObsEffects]),
     MediaModule,

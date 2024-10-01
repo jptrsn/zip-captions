@@ -1,5 +1,9 @@
 <div class="tooltip tooltip-left tooltip-warning" [attr.data-tip]="'STREAM.endBroadcast' | translate">
-  <button class="btn btn-circle btn-info" (click)="confirmEndBroadcast()">
+  <button 
+    class="btn btn-circle btn-info" 
+    appBackgroundMagnitude
+    [magnitude]="vol()"
+    (click)="confirmEndBroadcast()">
     <ng-icon name="heroSignalSlash"></ng-icon>
   </button>
 </div>
