@@ -522,7 +522,8 @@
     "blurb": "Use sua conta para ativar os recursos que funcionam em todas as sessões",
     "loginWithGoogle": "Faça login no Google",
     "loginWithAzure": "Faça login com a Microsoft",
-    "loginWithPatreon": "Faça login com o Patreon"
+    "loginWithPatreon": "Faça login com o Patreon",
+		"loginWithApple": "Faça login com a Apple"
   },
   "USER": {
     "PROFILE": {

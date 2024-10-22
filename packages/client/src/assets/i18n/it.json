@@ -522,7 +522,8 @@
     "blurb": "Usa il tuo account per abilitare le funzionalità che funzionano in tutte le sessioni.",
     "loginWithGoogle": "Accedi con Google",
     "loginWithAzure": "Accedi con Microsoft",
-    "loginWithPatreon": "Accedi con Patreon"
+    "loginWithPatreon": "Accedi con Patreon",
+		"loginWithApple": "Accedi con Apple"
     },
   "USER": {
     "PROFILE": {

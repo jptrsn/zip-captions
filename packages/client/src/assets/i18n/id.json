@@ -522,7 +522,8 @@
     "blurb": "Gunakan akun Anda untuk mengaktifkan fitur yang berfungsi di semua sesi.",
     "loginWithGoogle": "Masuk dengan Google",
     "loginWithAzure": "Masuk dengan Microsoft",
-    "loginWithPatreon": "Masuk dengan Patreon"
+    "loginWithPatreon": "Masuk dengan Patreon",
+		"loginWithApple": "Masuk dengan Apple"
   },
   "USER": {
     "PROFILE": {

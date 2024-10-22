@@ -358,7 +358,7 @@
     "unsavedChangesTitle":  "Niezbawione zmiany!",
     "unsavedChangesParagraph":  "Masz niezbawione zmiany, czy na pewno chcesz je odrzucić?",
     "syncSettingsTitle": "Zapisz te zmiany wszędzie?",
-    "syncSettingsP1": "Zdecydowałeś się zsynchronizować ustawienia wyglądu po zalogowaniu. Czy chciałbyś zapisać te zmiany wszędzie?",	
+    "syncSettingsP1": "Zdecydowałeś się zsynchronizować ustawienia wyglądu po zalogowaniu. Czy chciałbyś zapisać te zmiany wszędzie?",
     "syncSettingsP2": "Jeśli zdecydujesz się nie zapisać, przechowywane ustawienia zostaną zastosowane następnym razem, gdy się zalogujesz"
   },
   "ROUTES": {
@@ -522,7 +522,8 @@
     "blurb": "Skorzystaj z konta, aby włączyć funkcje, które działają we wszystkich sesjach.",
     "loginWithGoogle": "Zaloguj się z Google",
     "loginWithAzure": "Zaloguj się z Microsoft",
-    "loginWithPatreon": "Zaloguj się na Patreonie"
+    "loginWithPatreon": "Zaloguj się na Patreonie",
+		"loginWithApple": "Zaloguj się za pomocą Apple"
   },
   "USER": {
     "PROFILE": {

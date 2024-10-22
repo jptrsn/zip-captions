@@ -522,7 +522,8 @@
     "blurb": "Verwenden Sie Ihr Konto, um Funktionen zu aktivieren, die über alle Sitzungen hinweg funktionieren.",
     "loginWithGoogle": "Anmeldung mit Google",
     "loginWithAzure": "Melden Sie sich bei Microsoft an",
-    "loginWithPatreon": "Melden Sie sich mit Patreon an"
+    "loginWithPatreon": "Melden Sie sich mit Patreon an",
+		"loginWithApple": "Melden Sie sich bei Apple an"
   },
   "USER": {
     "PROFILE": {

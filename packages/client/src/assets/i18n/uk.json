@@ -522,7 +522,8 @@
     "blurb": "Використовуйте свій обліковий запис, щоб увімкнути функції, які працюють на всіх сесіях.",
     "loginWithGoogle": "Увійдіть у Google",
     "loginWithAzure": "Увійдіть за допомогою Microsoft",
-    "loginWithPatreon": "Увійдіть за допомогою Patreon"
+    "loginWithPatreon": "Увійдіть за допомогою Patreon",
+		"loginWithApple": "Увійдіть за допомогою Apple"
   },
   "USER": {
     "PROFILE": {
