@@ -76,13 +76,17 @@ export class AuthService {
   getGoogleLoginUrl(): string {
     return `${this.userEndpoint}/google-login`;
   }
-  
+
   getAzureLoginUrl(): string {
     return `${this.userEndpoint}/azure-login`;
   }
 
+	getAppleLoginUrl(): string {
+		return `${this.userEndpoint}/apple-login`;
+	}
+
   getPatreonLoginUrl(): string {
     return `${this.userEndpoint}/patreon-login`;
   }
-  
+
 }

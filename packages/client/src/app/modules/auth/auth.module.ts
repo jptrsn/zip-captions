@@ -16,6 +16,7 @@ import { GoogleOauthLoginComponent } from './components/google-oauth-login/googl
 import { UserEffects } from '../../effects/user.effects';
 import { userReducer } from '../../reducers/user.reducer';
 import { PatreonLoginComponent } from './components/patreon-login/patreon-login.component';
+import { AppleLoginComponent } from './components/apple-login/apple-login.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { PatreonLoginComponent } from './components/patreon-login/patreon-login.
     MicrosoftLoginComponent,
     GoogleOauthLoginComponent,
     PatreonLoginComponent,
+    AppleLoginComponent,
   ],
   imports: [
     CommonModule,
