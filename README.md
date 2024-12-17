@@ -1,12 +1,12 @@
 # ZipCaptions
+**Free Speech-To-Text In Your Browser**
 
-## Free Speech-To-Text In Your Browser
-Zip Captions is a platform that allows users to generate text from a given audio source, using only your web browser. Zip Captions has never been and never will be pay-to-play: we believe that accessibility needs to be freely available.
+ZipCaptions is a platform that allows users to generate text from a given audio source, using only your web browser. Zip Captions has never been and never will be pay-to-play: we believe that accessibility needs to be freely available.
 
 ## Support
-We accept monetary support through [Patreon](https://patreon.com/zipcaptions). Any contributions are put toward offsetting the operating costs (such as they are), or implementing new features. We operate without any formal financial backers or sponsorhips, and have no corporate backers in any form. This is an entirely community-supported endeavour.
+We accept monetary support through [Patreon](https://patreon.com/zipcaptions). Any contributions are put toward offsetting the operating costs (such as they are) or implementing new features. We operate without any formal financial backers or sponsorhips, and have no corporate backers in any form. This is an entirely community-supported endeavour.
 
-We also welcome bug reports, feature requests, and conversation in our discord server - the more feedback we get, the better the tool will be for everyone.
+We also welcome bug reports, feature requests, and conversation in our Discord server&mdash;the more feedback we get, the better the tool will be for everyone.
 
 ## Language Support
 We currently support multiple languages, by navigating to the `Settings` page. 
@@ -15,7 +15,7 @@ We currently support multiple languages, by navigating to the `Settings` page.
 Contributions are welcome! Anything from bug reports to feature enhancements to pull requests are welcomed and encouraged. If you have questions about using the application, we recommend visiting the [Discord Server](https://discord.gg/Swe2JeHnPc) and asking your questions there.
 
 ## Languages
-ZipCaptions supports multiple languages, to the best of our ability. If you notice a spelling or grammatical issue, feel free to adjust the text and submit a pull request (guidelines below). For additional language support, you are welcome to create a new translation file,
+ZipCaptions supports multiple languages to the best of our ability. If you notice a spelling or grammatical issue, feel free to adjust the text and submit a pull request (guidelines below). For additional language support, you are welcome to create a new translation file.
 
 ## Reporting Bugs
 Before reporting a bug, please search for any open issues in the GitHub repository, and add your information there if one already exists. When creating a bug report, please include as many details as possible (e.g. the device being used, browser and version, etc). If you use ZipCaptions on more than one device, check if the problem is isolated to one or the other, or if it affects both. Consider answering the following questions:
