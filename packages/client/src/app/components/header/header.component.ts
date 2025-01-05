@@ -88,6 +88,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'github', href: 'https://github.com/jptrsn/zip-captions/issues' },
         { label: 'help', href: 'https://help.zipcaptions.app' },
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
+      ]},
+      { label: 'about', children: [
+        { label: 'about us', href: 'https://www.zipsolutions.org/about-us.html'},
+        { label: 'advisory board', href: 'https://www.zipsolutions.org/advisory.html'},
+        { label: 'testimonials', href: 'https://www.zipsolutions.org/testimonial.html'},
+        { label: 'our story', 'https://www.zipsolutions.org/story.html'},
       ]}
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
