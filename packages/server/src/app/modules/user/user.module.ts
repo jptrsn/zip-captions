@@ -20,12 +20,13 @@ import { EventsService } from '../../services/events/events.service';
 import { PatreonStrategy } from '../../strategies/patreon.strategy';
 import { AppService } from '../../app.service';
 import { Supporter, SupporterSchema } from '../../models/supporter.model';
+import { AppleStrategy } from '../../strategies/apple.strategy';
 
 @Module({
   imports: [
     HttpModule,
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema }, 
+      { name: User.name, schema: UserSchema },
       { name: UiSettings.name, schema: UiSettingsSchema },
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
@@ -46,6 +47,7 @@ import { Supporter, SupporterSchema } from '../../models/supporter.model';
     GoogleStrategy,
     JwtStrategy,
     PatreonStrategy,
+		AppleStrategy,
     UserService,
     CacheService,
     UiSettingsService,

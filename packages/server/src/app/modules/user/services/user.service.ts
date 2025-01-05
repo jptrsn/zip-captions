@@ -8,7 +8,7 @@ import { PassportUserInfo, User, UserDocument } from '../models/user.model';
 export class UserService {
 
   constructor(@InjectModel(User.name) private userModel: Model<User>) {
-    
+
   }
 
   async createUser(email: string, opts?: Partial<User>): Promise<UserDocument> {
@@ -64,12 +64,23 @@ export class UserService {
     return user;
   }
 
-  // Finds or creates the user document and returns it for valid google oauth responses
+  // Finds or creates the user document and returns it for valid msft oauth responses
   async msLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
     let user = await this.findOne({msId: userInfo.id});
     if (!user) {
       user = await this._loginUser(userInfo.email, {
         msId: userInfo.id
+      })
+    }
+    return user;
+  }
+
+	// Finds or creates the user document and returns it for valid apple oauth responses
+  async appleLogin(userInfo: PassportUserInfo): Promise<UserDocument> {
+    let user = await this.findOne({appleId: userInfo.id});
+    if (!user) {
+      user = await this._loginUser(userInfo.email, {
+        appleId: userInfo.id
       })
     }
     return user;

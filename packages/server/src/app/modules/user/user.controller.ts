@@ -19,6 +19,7 @@ import { AppEvent, AppEventType } from '../../models/event.model';
 import { PatreonOAuthGuard } from '../../guards/patreon-oauth.guard';
 import { AppService } from '../../app.service';
 import { Supporter } from '../../models/supporter.model';
+import { AppleOauthGuard } from '../../guards/apple-oauth.guard';
 
 @Controller('user')
 export class UserController {
@@ -31,7 +32,7 @@ export class UserController {
               private readonly eventService: EventsService,
               private readonly appService: AppService,
               private cache: CacheService,
-              private jwtService: JwtService) 
+              private jwtService: JwtService)
   {
     this.clientUrl = process.env.APP_ORIGIN
   }
@@ -122,7 +123,7 @@ export class UserController {
   async saveRoom(@Req() req, @Param() params: { id: string, roomId: string }, @Body() body: { room: OwnerRoomUpdate }): Promise<OwnerRoom> {
     this._validateParam(req, params);
     console.log('save room', body.room);
-    return await this.sessionService.updateUserRoom(params.id, body.room); 
+    return await this.sessionService.updateUserRoom(params.id, body.room);
   }
 
   @Delete('profile/:id/rooms/:roomId')
@@ -130,7 +131,7 @@ export class UserController {
   async deleteRoom(@Req() req, @Param() params: { id: string, roomId: string }): Promise<{ success: boolean }> {
     this._validateParam(req, params);
     console.log('delete room', params.roomId);
-    await this.sessionService.deleteUserRoom(params.id, params.roomId); 
+    await this.sessionService.deleteUserRoom(params.id, params.roomId);
     return { success: true };
   }
 
@@ -204,6 +205,13 @@ export class UserController {
     console.log('login with patreon')
   }
 
+	@Get('apple-login')
+  @NoCache()
+  @UseGuards(AppleOauthGuard)
+  appleAuth(@Req() req) {
+    console.log('login with apple')
+  }
+
   @Get('google-redirect')
   @NoCache()
   @UseGuards(GoogleOAuthGuard)
@@ -241,6 +249,34 @@ export class UserController {
         primaryEmail: user.primaryEmail,
         googleConnected: !!user.googleId,
         azureConnected: !!user.msId,
+        syncUiSettings: user.syncUiSettings
+      }
+      await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
+      this._sendTokenResponse(user.id, res);
+    } catch(e: any) {
+      console.error(e);
+      res.redirect(`${this.clientUrl}/auth/login?error=${encodeURIComponent(e)}`)
+    }
+  }
+
+	@Post('apple-redirect')
+  @UseGuards(AppleOauthGuard)
+  async appleAuthRedirect(@Req() req, @Res() res) {
+    try {
+			console.log('apple authInfo', req.authInfo)
+			console.log('apple post body', req.body)
+			console.log('user', req.user)
+      if (req.authInfo?.message) {
+        throw new Error('No user from Apple');
+      }
+      const user = await this.userService.appleLogin(req.user);
+      const userProfile = {
+        id: user.id,
+        createdAt: user.createdAt.toString(),
+        primaryEmail: user.primaryEmail,
+        googleConnected: !!user.googleId,
+        azureConnected: !!user.msId,
+				appleConnected: !!user.appleId,
         syncUiSettings: user.syncUiSettings
       }
       await this._updateCachedResponse(UserController.PROFILE_CACHE_KEY, { id: user.id }, userProfile)
@@ -317,7 +353,7 @@ export class UserController {
   private _burstCacheForKey(key: string, params: { id: string }): void {
     this.cache.del(`${key}-${params.id}`)
   }
-  
+
   private _updateCachedResponse(key: string, params: { id: string}, value: any): void {
     this.cache.set(`${key}-${params.id}`, value);
   }

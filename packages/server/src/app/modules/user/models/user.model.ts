@@ -43,6 +43,11 @@ export class User {
   })
   patreonId?: string;
 
+	@Prop({
+    type: String
+  })
+  appleId?: string;
+
   @Prop({
     type: String
   })
