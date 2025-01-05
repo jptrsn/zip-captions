@@ -44,13 +44,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showObsConnectionState: Signal<boolean | undefined>;
   public isLoggedIn: Signal<boolean | undefined>;
   public transcriptionEnabled: Signal<boolean | undefined>;
-  
+
   private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(private router: Router,
               private store: Store<AppState>,
               private renderer: Renderer2) {
-    
+
     this.isActive = toSignal(this.store.pipe(
       select(recognitionStatusSelector),
       map((status: RecognitionStatus) => status === RecognitionStatus.connected)
@@ -72,7 +72,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.renderer.removeAttribute(this.menuElement.nativeElement, 'open')
       }
     })
-    
+
     this.menuItems = [
       { label: 'home', routerOutlet: '/'},
       { label: 'stream', routerOutlet: '/stream' },
@@ -90,10 +90,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'donate', href: 'https://www.patreon.com/zipcaptions' }
       ]},
       { label: 'about', children: [
-        { label: 'about us', href: 'https://www.zipsolutions.org/about-us.html'},
-        { label: 'advisory board', href: 'https://www.zipsolutions.org/advisory.html'},
+        { label: 'about_us', href: 'https://www.zipsolutions.org/about-us.html'},
+        { label: 'advisory_board', href: 'https://www.zipsolutions.org/advisory.html'},
         { label: 'testimonials', href: 'https://www.zipsolutions.org/testimonial.html'},
-        { label: 'our story', 'https://www.zipsolutions.org/story.html'},
+        { label: 'our_story', href: 'https://www.zipsolutions.org/story.html'},
       ]}
     ]
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
