@@ -377,7 +377,11 @@
     "stream": "Sharing",
     "forum": "Forum",
     "auth": "My Account",
-    "transcript": "Transcripts"
+    "transcript": "Transcripts",
+		"about_us": "About Us",
+		"advisory_board": "Advisory Board",
+		"testimonials": "Testimonials",
+		"our_story": "Our Story"
   },
   "FOOTER": {
     "copyright": "Copyright"
