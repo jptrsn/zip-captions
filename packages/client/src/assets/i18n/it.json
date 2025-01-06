@@ -377,7 +377,11 @@
     "stream": "Trasmissione",
     "forum": "Forum",
     "auth": "Il Mio Conto",
-    "transcript": "Trascrizioni"
+    "transcript": "Trascrizioni",
+		"about_us": "Chi siamo",
+		"advisory_board": "Comitato consultivo",
+		"testimonials": "Testimonianze",
+		"our_story": "La nostra storia"
   },
   "FOOTER": {
     "copyright": "Copyright"

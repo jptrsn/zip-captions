@@ -377,7 +377,11 @@
     "stream":  "Compartilhamento",
     "forum":  "Fórum",
     "auth": "Minha Conta",
-    "transcript": "Transcrições"
+    "transcript": "Transcrições",
+		"about_us": "Sobre nós",
+		"advisory_board": "Conselho Consultivo",
+		"testimonials": "Depoimentos",
+		"our_story": "Nossa História"
   },
   "FOOTER": {
     "copyright":  "Direito autoral"

@@ -1,0 +1,79 @@
+name: Bug Report
+description: Create a report to help us improve the ZipCaptions experience.
+body:
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: bug-repro-steps
+    attributes:
+      label: Steps to reproduce
+      description: Make a numbered list of the steps you took to reproduce this behavior.
+      value: |-
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior-description
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior-description
+    attributes:
+      label: Actual behavior
+      description: >-
+        What actually happened instead? Did you see an error messages show up?
+        If so, what did it say?
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots-area
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+  - type: dropdown
+    id: device-type-dropdown
+    attributes:
+      label: Which device did the bug occur on?
+      options:
+        - Desktop/Laptop
+        - Smartphone/Tablet
+        - Other or N/A
+    validations:
+      required: true
+  - type: input
+    id: device-model-input
+    attributes:
+      label: Device model
+      description: 'e.g.: iPhone 6'
+  - type: input
+    id: device-os-input
+    attributes:
+      label: Operating system & version
+      description: >-
+        Desktop e.g.: Windows, macOS, Linux (with distro name), ChromeOS. Mobile
+        e.g.: iOS/iPadOS, Android
+    validations:
+      required: true
+  - type: input
+    id: device-browser-input
+    attributes:
+      label: Browser & version
+      description: 'e.g.: stock browser, Google Chrome 131, Safari 18'
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context-area
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
