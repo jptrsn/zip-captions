@@ -377,7 +377,11 @@
     "stream": "Membagikan",
     "forum": "Forum",
     "auth": "Akun Saya",
-    "transcript": "Transkrip"
+    "transcript": "Transkrip",
+		"about_us": "Tentang Kami",
+		"advisory_board": "Dewan Penasehat",
+		"testimonials": "Testimoni",
+		"our_story": "Kisah Kami"
   },
   "FOOTER": {
     "copyright": "Hak cipta"

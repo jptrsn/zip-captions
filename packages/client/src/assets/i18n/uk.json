@@ -377,7 +377,11 @@
     "stream": "Спільний доступ",
     "forum": "Форум",
     "auth": "Мій Рахунок",
-    "transcript": "Стенограми"
+    "transcript": "Стенограми",
+		"about_us": "Про нас",
+		"advisory_board": "Консультативна рада",
+		"testimonials": "Відгуки",
+		"our_story": "Наша історія"
   },
   "FOOTER": {
     "copyright": "Авторські права"

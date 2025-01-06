@@ -377,7 +377,11 @@
     "stream": "Sendung",
     "forum": "Forum",
     "auth": "Mein Konto",
-    "transcript": "Transkripte"
+    "transcript": "Transkripte",
+		"about_us": "Über uns",
+		"advisory_board": "Beirat",
+		"testimonials": "Erfahrungsberichte",
+		"our_story": "Unsere Geschichte"
   },
   "FOOTER": {
     "copyright": "Copyright"

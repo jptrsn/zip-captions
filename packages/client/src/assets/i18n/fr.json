@@ -158,7 +158,7 @@
     "9.2" : "Vous devriez consulter cette page de temps en temps pour vous assurer que vous êtes satisfait des changements apportés à cette politique.",
     "9.3" : "Nous pouvons vous informer des modifications apportées à la présente politique par courrier électronique ou par l'intermédiaire du système de messagerie privée sur notre site web.",
     "10" : "Vos droits",
-    "10.1" : "Vous pouvez nous demander de vous fournir toutes les informations personnelles que nous détenons à votre sujet ; la fourniture de ces informations sera soumise à.", 
+    "10.1" : "Vous pouvez nous demander de vous fournir toutes les informations personnelles que nous détenons à votre sujet ; la fourniture de ces informations sera soumise à.",
     "10.1a" : "au paiement d'une redevance (actuellement fixée à 10 dollars canadiens) ; et",
     "10.1b" : "la fourniture d'une preuve appropriée de votre identité (à cette fin, nous acceptons généralement une photocopie de votre passeport certifiée par un avocat ou une banque, ainsi que l'original d'une facture de service public indiquant votre adresse actuelle).",
     "10.2" : "Nous pouvons ne pas divulguer les informations personnelles que vous demandez dans la mesure où la loi le permet.",
@@ -377,7 +377,11 @@
     "stream": "Diffusion",
     "forum": "Forum",
     "auth": "Mon Compte",
-    "transcript": "Transcriptions"
+    "transcript": "Transcriptions",
+		"about_us": "À propos de nous",
+		"advisory_board": "Conseil consultatif",
+		"testimonials": "Témoignages",
+		"our_story": "Notre histoire"
   },
   "FOOTER" : {
     "copyright" : "Copyright"
