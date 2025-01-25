@@ -18,6 +18,7 @@ import { AppEvent, AppEventSchema } from './models/event.model';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Supporter, SupporterSchema } from './models/supporter.model';
+import { AzureSttModule } from './modules/azure-stt/azure-stt.module';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -31,7 +32,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     } else {
       const dbConnectionString = `mongodb://${process.env.MONGO_DB_URL}:${process.env.MONGO_DB_PORT}/${process.env.MONGO_DB_NAME}?ssl=true&replicaSet=globaldb`
       return [dbConnectionString, { auth: {username: process.env.MONGO_DB_USER, password: process.env.MONGO_DB_PASSWORD}, retryWrites: false}]
-      
+
     }
 }
 
@@ -49,6 +50,7 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     ]),
     HttpModule,
     UserModule,
+		AzureSttModule,
   ],
   controllers: [
     AppController,
