@@ -19,7 +19,7 @@ export const defaultSettingsState: SettingsState = {
 export const settingsReducers = createReducer(
   defaultSettingsState,
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
-  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => ({...state, lang: action.language})),
+  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => ({...state, lang: action.language, dialect: state.lang === action.language ? state.dialect : 'unspecified'})),
 	on(SettingsActions.setDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: action.dialect})),
 	on(SettingsActions.setDefaultDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: (state.dialect === 'unspecified' ? action.dialect : state.dialect) })),
   on(SettingsActions.initSettingsComplete, (state: SettingsState, action: { settings: SettingsState}) => ({...state, ...action.settings })),

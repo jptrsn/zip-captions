@@ -1,11 +1,7 @@
-import { AfterViewInit, Component, effect, Input, OnChanges, OnDestroy, signal, Signal, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, effect, Input, OnChanges, OnDestroy, signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { startWith, Subject, takeUntil } from 'rxjs';
 import { RecognitionDialect, SupportedDialects } from '../../models/settings.model';
-import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../../models/app.model';
-import { languageSelector } from '../../../../selectors/settings.selector';
-import { map, startWith, Subject, takeUntil } from 'rxjs';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dialect-selector',

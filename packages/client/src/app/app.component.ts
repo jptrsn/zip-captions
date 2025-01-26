@@ -12,6 +12,7 @@ import { selectUserId } from './selectors/user.selector';
 import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
+import { StorageService } from './services/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,8 @@ export class AppComponent {
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private updates: SwUpdate,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+						  private storage: StorageService) {
 
     AvailableLanguages.forEach((lang) => this.translate.reloadLang(lang));
 
@@ -41,8 +43,11 @@ export class AppComponent {
 			}
 			const defaultDialect = navigator.languages.find((l) => SupportedDialects.some((sd) => sd === l)) as RecognitionDialect | undefined;
 			if (defaultDialect) {
-
-				this.store.dispatch(setDefaultDialect({dialect: defaultDialect}))
+				const setDialect = this.storage.get('settings')?.dialect;
+				console.log('setDialect', setDialect)
+				if (!setDialect) {
+					this.store.dispatch(setDefaultDialect({dialect: defaultDialect}))
+				}
 			}
 		} else {
 			this.translate.setDefaultLang('en');

@@ -11,7 +11,7 @@ import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { languageSelector, selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
-import { InterfaceLanguage } from '../../settings/models/settings.model';
+import { InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
 
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -49,6 +49,10 @@ export class WebRecognitionService {
 		this.recog.continuous = true;
   }
 
+	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
+		this.recog.lang = language;
+	}
+
 	public connectToStream(): void {
 		if (this.platform() === AppPlatform.mobile) {
       this.DEBOUNCE_TIME_MS = 2500;
@@ -58,7 +62,6 @@ export class WebRecognitionService {
       this.SEGMENTATION_DEBOUNCE_MS = 1000;
     }
 
-		this.recog.lang = this.language();
 		this._addEventListeners();
 		this.recog.start();
 		this.isStreaming = true;
