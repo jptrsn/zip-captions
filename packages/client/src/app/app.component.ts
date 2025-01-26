@@ -36,16 +36,14 @@ export class AppComponent {
 		if ('languages' in navigator) {
 			const defaultLanguage = navigator.languages.find((l) => AvailableLanguages.some((al) => al === l));
 
-			if (defaultLanguage) {
-				this.translate.setDefaultLang('en');
-			} else {
-				this.translate.setDefaultLang('en');
-			}
+			this.translate.setDefaultLang(defaultLanguage || 'en');
+
 			const defaultDialect = navigator.languages.find((l) => SupportedDialects.some((sd) => sd === l)) as RecognitionDialect | undefined;
 			if (defaultDialect) {
-				const setDialect = this.storage.get('settings')?.dialect;
-				console.log('setDialect', setDialect)
-				if (!setDialect) {
+				const settings = this.storage.get('settings')
+				const setDialect = settings?.dialect;
+				const setLanguage = settings?.language;
+				if (!setDialect && (!setLanguage || setLanguage === defaultLanguage)) {
 					this.store.dispatch(setDefaultDialect({dialect: defaultDialect}))
 				}
 			}
