@@ -30,7 +30,6 @@ export class WebRecognitionService {
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private NETWORK_ERROR_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 15;
-  private language: Signal<InterfaceLanguage>;
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
   private transcriptionEnabled: Signal<boolean | undefined>;
@@ -38,7 +37,7 @@ export class WebRecognitionService {
 	private isStreaming = false;
 
   constructor(private store: Store<AppState>) {
-    this.language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
+
     this.platform = toSignal(this.store.select(platformSelector));
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
@@ -70,9 +69,7 @@ export class WebRecognitionService {
 	public disconnectFromStream(): void {
 		this.isStreaming = false;
 		this.recog.stop();
-		if (this.transcriptionEnabled()) {
-      this.store.dispatch(RecognitionActions.finalizeTranscript());
-    }
+
 	}
 
 	public pauseRecognition(): void {
@@ -149,8 +146,6 @@ export class WebRecognitionService {
 									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
 									segmentStart = undefined;
 								}
-								// this.historyWorker.postMessage({id: streamId, type: 'put', message: partialTranscript})
-								// console.log('partialTranscript', partialTranscript)
 								return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
 							});
 							transcript = '';

@@ -46,6 +46,9 @@ export class RecognitionService {
 
   public disconnectFromStream(streamId: string): void {
     this.webRecognition.disconnectFromStream();
+		if (this.transcriptionEnabled()) {
+      this.store.dispatch(RecognitionActions.finalizeTranscript());
+    }
   }
 
   public pauseRecognition(): void {
