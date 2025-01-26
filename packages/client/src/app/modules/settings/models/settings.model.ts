@@ -32,18 +32,74 @@ export enum AppTheme {
   ZipLight = 'Zip-Light',
 }
 
-export type Language = 'en' | 'fr' | 'sp' | 'de' | 'it' | 'pt' | 'id' | 'pl' | 'uk';
+export type InterfaceLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'id' | 'pl' | 'uk';
 
-export const AvailableLanguages: Language[] = [
+export const AvailableLanguages: InterfaceLanguage[] = [
   'en',
   'fr',
-  'sp',
+  'es',
   'de',
   'it',
   'pt',
   'id',
   'pl',
   'uk'
+]
+
+export type RecognitionDialect = 'unspecified' | 'en-AU' | 'en-CA' | 'en-GB' | 'en-GH' | 'en-HK' | 'en-IE' | 'en-IN' | 'en-KE' | 'en-NG' | 'en-NZ' | 'en-PH' | 'en-SG' | 'en-TZ' | 'en-US' | 'en-ZA' | 'fr-BE' | 'fr-CA' | 'fr-CH' | 'fr-FR' | 'es-AR' | 'es-BO' | 'es-CL' | 'es-CO' | 'es-CR' | 'es-CU' | 'es-DO' | 'es-EC' | 'es-ES' | 'es-GQ' | 'es-GT' | 'es-HN' | 'es-MX' | 'es-NI' | 'es-PA' | 'es-PE' | 'es-PR' | 'es-PY' | 'es-SV' | 'es-US' | 'es-UY' | 'es-VE' | 'de-AT' | 'de-CH' | 'de-DE' | 'it-CH' | 'it-IT' | 'pt-BR' | 'pt-PT' | 'id-ID' | 'pl-PL' | 'uk-UA';
+
+export const SupportedDialects: RecognitionDialect[] = [
+	'en-AU',
+	'en-CA',
+	'en-GB',
+	'en-GH',
+	'en-HK',
+	'en-IE',
+	'en-IN',
+	'en-KE',
+	'en-NG',
+	'en-NZ',
+	'en-PH',
+	'en-SG',
+	'en-TZ',
+	'en-US',
+	'en-ZA',
+	'fr-BE',
+	'fr-CA',
+	'fr-CH',
+	'fr-FR',
+	'es-AR',
+	'es-BO',
+	'es-CL',
+	'es-CO',
+	'es-CR',
+	'es-CU',
+	'es-DO',
+	'es-EC',
+	'es-ES',
+	'es-GQ',
+	'es-GT',
+	'es-HN',
+	'es-MX',
+	'es-NI',
+	'es-PA',
+	'es-PE',
+	'es-PR',
+	'es-PY',
+	'es-SV',
+	'es-US',
+	'es-UY',
+	'es-VE',
+	'de-AT',
+	'de-CH',
+	'de-DE',
+	'it-CH',
+	'it-IT',
+	'pt-BR',
+	'pt-PT',
+	'id-ID',
+	'pl-PL',
+	'uk-UA',
 ]
 
 export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';
@@ -117,7 +173,8 @@ export interface SettingsState extends SyncableSettings {
 
 export interface SyncableSettings {
   theme: AppTheme;
-  lang: Language;
+  lang: InterfaceLanguage;
+	dialect: RecognitionDialect;
   wakelock: boolean;
   renderHistory: number;
   textSize: TextSize;

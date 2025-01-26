@@ -1,0 +1,6 @@
+<label class="form-control" [formGroup]="group">
+	<span class="text-accent label" translate>LABELS.dialect</span>
+  <select class="select select-lg mt-1 w-full" [formControlName]="controlName">
+    <option *ngFor="let dialect of availableDialects()" [value]="dialect">{{ 'DIALECTS.' + dialect | translate }}</option>
+  </select>
+</label>

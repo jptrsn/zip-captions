@@ -25,6 +25,11 @@ export const languageSelector = createSelector(
   (state) => state.lang
 )
 
+export const dialectSelector = createSelector(
+	selectAppSettings,
+	(state) => state.dialect
+)
+
 export const wakeLockEnabledSelector = createSelector(
   selectAppSettings,
   (state) => state.wakelock

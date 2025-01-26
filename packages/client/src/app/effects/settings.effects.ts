@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
-import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
-import { StorageService } from "../services/storage.service";
-import { TranslateService } from '@ngx-translate/core'
-import { defaultSettingsState } from "../reducers/settings.reducer";
-import { AppState } from "../models/app.model";
 import { Store } from "@ngrx/store";
+import { TranslateService } from '@ngx-translate/core';
+import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
+import { AppState } from "../models/app.model";
+import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
+import { defaultSettingsState } from "../reducers/settings.reducer";
 import { selectTranscriptionSettings } from "../selectors/settings.selector";
-import { RecognitionActions } from '../actions/recogntion.actions';
+import { StorageService } from "../services/storage.service";
 
 @Injectable()
 export class SettingsEffects {
@@ -39,7 +38,7 @@ export class SettingsEffects {
     )
   )
 
-  applyTheme$ = createEffect(() => 
+  applyTheme$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.setTheme),
       map(({theme}) => this.storage.update('settings', 'theme', theme)),
@@ -47,12 +46,20 @@ export class SettingsEffects {
     )
   )
 
-  applyLanguage$ = createEffect(() => 
+  applyLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.setLanguage),
-      tap(({language}) => this.storage.update('settings', 'lang',  language)),
+      tap(({language}) => this.storage.update('settings', 'lang', language)),
       switchMap(({language}) => this.translate.use(language)),
       map(() => SettingsActions.setLanguageComplete())
+    )
+  )
+
+	applyDialect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setDialect),
+      tap(({dialect}) => this.storage.update('settings', 'dialect', dialect)),
+      map(() => SettingsActions.setDialectComplete())
     )
   )
 
@@ -83,7 +90,7 @@ export class SettingsEffects {
     )
   )
 
-  saveTextFlow$ = createEffect(() => 
+  saveTextFlow$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.setTextFlow),
       map(({flow}) => this.storage.update('settings', 'textFlow', flow)),
@@ -110,7 +117,7 @@ export class SettingsEffects {
     )
   )
 
-  saveTranscriptionSettings$ = createEffect(() => 
+  saveTranscriptionSettings$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.saveTranscriptionSettings),
       withLatestFrom(this.store.select(selectTranscriptionSettings)),
@@ -138,5 +145,5 @@ export class SettingsEffects {
     }
     return defaults;
   }
-  
+
 }

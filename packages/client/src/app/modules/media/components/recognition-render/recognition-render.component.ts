@@ -59,9 +59,9 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
       return this.state()?.status != RecognitionStatus.uninitialized;
     });
     this.error = toSignal(this.store.select(recognitionErrorSelector));
-    
+
     this.textFlowDown = toSignal(this.store.pipe(
-      select(selectTextFlow), 
+      select(selectTextFlow),
       map((flow: TextFlow) => (flow === 'top-down'))));
 
     if (this.fullScreen.isAvailable) {
