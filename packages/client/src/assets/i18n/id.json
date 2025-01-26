@@ -11,6 +11,7 @@
     "uk": "Ukrania (Український)"
   },
 	"DIALECTS": {
+		"unspecified": "Umum",
 		"en-AU": "Bahasa Inggris (Australia)",
 		"en-CA": "Bahasa Inggris (Kanada)",
 		"en-GB": "Bahasa Inggris (Inggris Raya)",

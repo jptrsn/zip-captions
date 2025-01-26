@@ -8,9 +8,9 @@ import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animati
 import { Subject, combineLatest, filter, map, startWith, takeUntil } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
-import { languageSelector, selectAppSettings, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
+import { dialectSelector, languageSelector, selectAppSettings, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { selectUserSettingsSync } from '../../../../selectors/user.selector';
-import { AppTheme, FontFamily, FontFamilyClassMap, InterfaceLanguage, LineHeight, SettingsActions, SettingsState, TextSize } from '../../models/settings.model';
+import { AppTheme, FontFamily, FontFamilyClassMap, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextSize } from '../../models/settings.model';
 import { UserActions } from '../../../../actions/user.actions';
 
 @Component({
@@ -26,6 +26,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
     lang: FormControl<InterfaceLanguage | null>,
+		dialect: FormControl<RecognitionDialect | null>,
     font: FormControl<FontFamily | null>,
     wakelock: FormControl<boolean | undefined | null>,
     renderHistory: FormControl<number | null>,
@@ -44,6 +45,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
   private language: Signal<InterfaceLanguage>;
+	private dialect: Signal<RecognitionDialect | undefined>;
   private wakeLockEnabled: Signal<boolean | undefined>;
   private currentTextSize: Signal<TextSize>;
   private currentLineHeight: Signal<LineHeight>;
@@ -64,6 +66,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     this.fontFamily = toSignal(this.store.select(selectFontFamily)) as Signal<FontFamily>;
+		this.dialect = toSignal(this.store.pipe(select(dialectSelector)));
 
     this.settingsState = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
     this.syncUiSettings = toSignal(this.store.select(selectUserSettingsSync));
@@ -71,6 +74,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language()),
+			dialect: this.fb.control(this.dialect() || null),
       font: this.fb.control(this.fontFamily()),
       wakelock: this.fb.control(this.wakeLockEnabled()),
       renderHistory: this.fb.control(this.renderHistory()),

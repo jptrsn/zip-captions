@@ -11,6 +11,7 @@
     "uk": "Ucraniano (Український)"
   },
 	"DIALECTS": {
+		"unspecified": "Genérico",
 		"en-AU": "Inglés (Australia)",
 		"en-CA": "inglés (Canadá)",
 		"en-GB": "inglés (Reino Unido)",
