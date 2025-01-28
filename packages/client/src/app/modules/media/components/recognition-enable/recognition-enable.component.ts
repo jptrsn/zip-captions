@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, of, switchMap } from 'rxjs';
-import { RecognitionActions } from '../../../../actions/recognition.actions';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';

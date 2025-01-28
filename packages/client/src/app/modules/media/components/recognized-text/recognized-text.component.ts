@@ -8,7 +8,7 @@ import { recognitionPausedSelector } from '../../../../selectors/recognition.sel
 import { selectFontFamily, selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/models/settings.model';
 import { map } from 'rxjs';
-import { RecognitionActions } from '../../../../actions/recognition.actions';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 
 @Component({
   selector: 'app-recognized-text',

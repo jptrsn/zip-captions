@@ -5,7 +5,7 @@ import { AuthActions } from "../actions/auth.actions";
 import { catchError, map, of, switchMap, tap } from "rxjs";
 import { UserActions } from "../actions/user.actions";
 import { SettingsActions } from "../modules/settings/models/settings.model";
-import { RecognitionActions } from "../actions/recognition.actions";
+import { RecognitionActions } from "../actions/recogntion.actions";
 
 @Injectable()
 export class UserEffects {

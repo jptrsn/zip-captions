@@ -5,7 +5,7 @@ import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'ang
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
-import { RecognitionActions } from '../../../../actions/recognition.actions';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../../media/services/recognition.service';
 import { PeerService } from '../../services/peer.service';

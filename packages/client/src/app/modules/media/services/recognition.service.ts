@@ -1,8 +1,8 @@
 import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs';
-import { RecognitionActions } from '../../../actions/recognition.actions';
+import { map, Observable } from 'rxjs';
+import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
@@ -99,4 +99,8 @@ export class RecognitionService {
 			return this.azureRecognition.getRecognizedText();
 		}
   }
+
+	initializeAzure(): Observable<{token: string; region: string}> {
+		return this.azureRecognition.initialize(this.language());
+	}
 }

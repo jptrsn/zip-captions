@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionActions } from '../../../../actions/recognition.actions';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { ObsConnectionService } from '../../../../services/obs-connection/obs-connection.service';
 import { RecognitionService } from '../../../media/services/recognition.service';

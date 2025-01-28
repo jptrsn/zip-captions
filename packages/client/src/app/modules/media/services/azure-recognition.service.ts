@@ -4,7 +4,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Store } from "@ngrx/store";
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { map, Observable, take } from "rxjs";
-import { RecognitionActions } from "../../../actions/recognition.actions";
+import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
 import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
 import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";

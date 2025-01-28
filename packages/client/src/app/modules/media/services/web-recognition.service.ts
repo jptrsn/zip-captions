@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
 import { ObsActions } from '../../../actions/obs.actions';
-import { RecognitionActions } from '../../../actions/recognition.actions';
+import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { SpeechRecognition } from '../../../models/recognition.model';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, from, map, of, switchMap } from "rxjs";
-import { RecognitionActions } from '../actions/recognition.actions';
+import { catchError, filter, from, map, of, switchMap } from "rxjs";
+import { RecognitionActions } from '../actions/recogntion.actions';
 import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
@@ -107,15 +107,28 @@ export class RecognitionEffects {
   )
 
   deleteTranscriptDatabase$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(RecognitionActions.deleteTranscriptDB),
-    switchMap(() => this.transcription.deleteDatabase()
-    .pipe(
-        map(() => RecognitionActions.deleteTranscriptDBSuccess()),
-        catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
-      )
-    )
+		this.actions$.pipe(
+			ofType(RecognitionActions.deleteTranscriptDB),
+			switchMap(() => this.transcription.deleteDatabase()
+			.pipe(
+					map(() => RecognitionActions.deleteTranscriptDBSuccess()),
+					catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
+				)
+			)
     )
   )
+
+	initAzureRecognition$ = createEffect(() =>
+		this.actions$.pipe(
+			ofType(RecognitionActions.setEngine),
+			filter(({ engine }) => engine === 'azure'),
+			switchMap(() => this.recognitionService.initializeAzure()
+				.pipe(
+					map(({token, region}) => RecognitionActions.setEngineSuccess({token, region})),
+					catchError((err) => of(RecognitionActions.setEngineFailure({error: err})))
+				)
+			)
+		)
+	)
 
 }

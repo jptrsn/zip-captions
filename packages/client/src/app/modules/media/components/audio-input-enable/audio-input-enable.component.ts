@@ -5,10 +5,11 @@ import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, of, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
+import { AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
 
 @Component({
   selector: 'app-audio-input-enable',
@@ -30,7 +31,7 @@ export class AudioInputEnableComponent {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
     this.disconnected = computed(() => this.streamState().status === AudioStreamStatus.disconnected);
-    
+
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
       filter((err) => err !== 'ERRORS.liveTextMissing'),
@@ -44,12 +45,12 @@ export class AudioInputEnableComponent {
 
   toggleState(): void {
     if (this.connected() || this.error()) {
-      this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
+      this.store.dispatch(RecognitionActions.disconnect({id: this.streamState().id}))
     } else {
       if (this.router.url !== '/') {
         this.router.navigate(['/'])
       }
-      this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
+      this.store.dispatch(RecognitionActions.connect({id: this.streamState().id}))
     }
   }
 }

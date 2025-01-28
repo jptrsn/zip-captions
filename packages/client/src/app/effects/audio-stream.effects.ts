@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, of, switchMap, tap } from "rxjs";
 import { AudioStreamActions } from '../models/audio-stream.model';
-import { RecognitionActions } from '../actions/recognition.actions';
+import { RecognitionActions } from '../actions/recogntion.actions';
 import { MediaService } from "../modules/media/services/media.service";
 
 @Injectable()
