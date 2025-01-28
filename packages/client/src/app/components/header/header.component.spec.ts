@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import '../../../testing/matchMedia.mock';
 import { AppPlatform, AppState } from '../../models/app.model';
-import { RecognitionActions } from '../../actions/recogntion.actions';
+import { RecognitionActions } from '../../actions/recognition.actions';
 import { RecognitionEnableComponent } from '../../modules/media/components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from '../../modules/media/components/recognition-render/recognition-render.component';
 import { defaultAppState } from '../../reducers/app.reducer';
@@ -49,7 +49,7 @@ describe('HeaderComponent', () => {
     status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeTruthy();
     store.dispatch(RecognitionActions.disconnect({id: 'test'}));
-    status = await lastValueFrom(store.select(recognitionStatusSelector)); 
+    status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeFalsy();
   }));
 

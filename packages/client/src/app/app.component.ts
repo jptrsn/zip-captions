@@ -9,7 +9,7 @@ import { windowControlsOverlaySelector } from './selectors/app.selector';
 import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
 import { selectUserId } from './selectors/user.selector';
-import { RecognitionActions } from './actions/recogntion.actions';
+import { RecognitionActions } from './actions/recognition.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
 import { StorageService } from './services/storage.service';

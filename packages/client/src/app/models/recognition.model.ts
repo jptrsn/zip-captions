@@ -12,7 +12,16 @@ export interface RecognitionState {
   error?: string;
   transcriptInitialized?: boolean;
   transcriptId?: number;
+	engine: RecognitionEngineState;
 }
+
+export interface RecognitionEngineState {
+	provider: 'web' | 'azure';
+	initialized: boolean;
+	token?: string;
+	region?: string;
+}
+
 
 // Type definitions for non-npm package dom-speech-recognition-browser 0.0
 // Project: https://wicg.github.io/speech-api/

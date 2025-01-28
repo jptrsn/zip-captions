@@ -8,7 +8,7 @@ import { ObsActions } from '../../../../actions/obs.actions';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { ComponentCanDeactivate } from '../../../../guards/active-stream/active-stream.guard';
 import { AppPlatform, AppState } from '../../../../models/app.model';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../selectors/app.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
@@ -86,7 +86,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
     this.tabsControl = this.fb.control(initialTabIndex)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
-      takeUntilDestroyed(), 
+      takeUntilDestroyed(),
       tap((index) => {
         const params = { tabIndex: index };
         this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
@@ -161,7 +161,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
           }
         }
       }
-      
+
     })
   }
 }

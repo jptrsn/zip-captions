@@ -8,7 +8,7 @@ import { recognitionPausedSelector } from '../../../../selectors/recognition.sel
 import { selectFontFamily, selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/models/settings.model';
 import { map } from 'rxjs';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 
 @Component({
   selector: 'app-recognized-text',
@@ -26,7 +26,7 @@ export class RecognizedTextComponent {
   @Input({ required: true}) error!: Signal<string | undefined>;
   @Input({ required: true}) renderHistory!: Signal<number | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
-  
+
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
   public renderedResults: Signal<string[]>;
@@ -44,7 +44,7 @@ export class RecognizedTextComponent {
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused));
     this.isPaused = computed(() => this.recognitionPaused() || broadcastPaused());
-    
+
     this.renderedResults = computed(() => {
       const textArray = this.textOutput();
       const count = this.renderHistory();

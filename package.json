@@ -70,6 +70,7 @@
     "dexie-encrypted": "git+https://github.com/asset-view/dexie-encrypted/tree/ESM",
     "express": "~4.18.1",
     "express-session": "^1.17.3",
+    "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
     "mongoose": "^7.5.3",
     "ngx-clipboard": "^16.0.0",
     "ngx-socket-io": "^4.5.1",

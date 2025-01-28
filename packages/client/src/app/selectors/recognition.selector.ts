@@ -43,3 +43,8 @@ export const selectTranscriptDbInitialized = createSelector(
   selectRecognition,
   (state) => state.transcriptInitialized
 )
+
+export const selectRecognitionEngine = createSelector(
+	selectRecognition,
+	(state) => state.engine
+)

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, of, switchMap } from 'rxjs';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
@@ -24,11 +24,11 @@ export class RecognitionEnableComponent {
   constructor(private store: Store<AppState>,
               private translate: TranslateService,
               private router: Router) {
-    this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
+    this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector),
     map((status: RecognitionStatus) => (status === RecognitionStatus.connected)),
     ));
 
-    this.disconnected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
+    this.disconnected = toSignal(this.store.pipe(select(recognitionStatusSelector),
     map((status: RecognitionStatus) => (status === RecognitionStatus.disconnected)),
     ));
 

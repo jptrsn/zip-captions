@@ -5,7 +5,7 @@ import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'ang
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { RecognitionService } from '../../../media/services/recognition.service';
 import { PeerService } from '../../services/peer.service';
@@ -21,7 +21,7 @@ import { PeerService } from '../../services/peer.service';
 })
 export class BroadcastRoomComponent implements OnInit, OnDestroy {
   public recognitionConnected: Signal<boolean | undefined>;
-  
+
   private recognitionPaused: Signal<boolean | undefined>;
   private liveText: Observable<string>;
   private recognizedText: Observable<string[]>;

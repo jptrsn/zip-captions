@@ -5,7 +5,7 @@ import { filter, map, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 import { recognitionStatusSelector } from '../../../../selectors/recognition.selector';
 import { AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
@@ -51,7 +51,7 @@ export class EndBroadcastComponent {
     this.store.dispatch(RecognitionActions.disconnect({id: 'broadcast'}));
     const id = this.streamId();
     if (id) {
-      this.mediaService.disconnectStream(id) 
+      this.mediaService.disconnectStream(id)
     }
     this.store.select(recognitionStatusSelector).pipe(
       filter((status) => status === RecognitionStatus.disconnected),

@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../models/app.model';
 import { Store } from '@ngrx/store';
-import { RecognitionActions } from '../../actions/recogntion.actions';
+import { RecognitionActions } from '../../actions/recognition.actions';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { lastValueFrom } from 'rxjs';
 

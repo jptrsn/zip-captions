@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, from, map, of, switchMap } from "rxjs";
-import { RecognitionActions } from '../actions/recogntion.actions';
+import { RecognitionActions } from '../actions/recognition.actions';
 import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
@@ -15,7 +15,7 @@ export class RecognitionEffects {
   connectRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.connect),
-      map((props) => this.recognitionService.connectToStream(props.id)),
+      map((props) => this.recognitionService.connectToStream()),
       switchMap(() => [RecognitionActions.connectSuccess(), AppActions.hideFooter(), AppActions.applyWakeLock(), RecognitionActions.initTranscript()]),
       catchError((err: any) => of(RecognitionActions.connectFailure({error: err.message})))
     )
@@ -24,7 +24,7 @@ export class RecognitionEffects {
   disconnectRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.disconnect),
-      map((props) => this.recognitionService.disconnectFromStream(props.id)),
+      map((props) => this.recognitionService.disconnectFromStream()),
       switchMap(() => [RecognitionActions.disconnectSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
       catchError((err: any) => of(RecognitionActions.disconnectFailure({error: err.message})))
     )

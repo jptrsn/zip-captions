@@ -5,7 +5,7 @@ import { AppState } from '../../../../models/app.model';
 import { selectLineHeight, selectRenderHistoryLength, selectTextSize } from '../../../../selectors/settings.selector';
 import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../../actions/recognition.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
@@ -51,7 +51,7 @@ export class RecognitionControlSidebarComponent {
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
-    
+
     this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
 
     this.renderHistoryLength = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
@@ -113,7 +113,7 @@ export class RecognitionControlSidebarComponent {
     } else {
       this._resumeRecognition();
     }
-    
+
   }
 
   private _pauseRecognition(): void {

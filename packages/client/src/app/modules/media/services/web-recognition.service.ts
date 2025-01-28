@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
 import { ObsActions } from '../../../actions/obs.actions';
-import { RecognitionActions } from '../../../actions/recogntion.actions';
+import { RecognitionActions } from '../../../actions/recognition.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { SpeechRecognition } from '../../../models/recognition.model';
@@ -46,6 +46,7 @@ export class WebRecognitionService {
 		this.recog = new webkitSpeechRecognition();
 		this.recog.interimResults = true;
 		this.recog.continuous = true;
+		this._addEventListeners();
   }
 
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
@@ -61,7 +62,6 @@ export class WebRecognitionService {
       this.SEGMENTATION_DEBOUNCE_MS = 1000;
     }
 
-		this._addEventListeners();
 		this.recog.start();
 		this.isStreaming = true;
 	}
