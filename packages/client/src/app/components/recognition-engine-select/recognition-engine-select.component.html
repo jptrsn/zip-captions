@@ -1,6 +1,6 @@
 <label class="form-control" [formGroup]="group">
 	<span class="text-accent label" translate>Engine</span>
-  <select class="select select-lg mt-1 w-full" formControlName="provider">
+  <select class="select select-secondary select-lg mt-1 w-full" formControlName="provider">
 			<option *ngFor="let p of providers" [value]="p.value">{{p.label}}</option>
   </select>
 </label>
