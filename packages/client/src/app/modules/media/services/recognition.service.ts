@@ -21,30 +21,38 @@ declare const webkitSpeechRecognition = SpeechRecognition || webkitSpeechRecogni
 })
 export class RecognitionService {
 
-	private language: Signal<InterfaceLanguage>;
+
+	private activeLanguage: Signal<InterfaceLanguage | RecognitionDialect>;
 	private obsConnected: Signal<boolean | undefined>;
 	private transcriptionEnabled: Signal<boolean | undefined>;
-	private dialect: Signal<RecognitionDialect | undefined>;
+
 	private provider: Signal<RecognitionEngineState['provider']>;
   constructor(private store: Store<AppState>,
 		private webRecognition: WebRecognitionService,
 		private azureRecognition: AzureRecognitionService,
 	) {
-		this.language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
+		const language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
+		const dialect = toSignal(this.store.select(dialectSelector));
+
+		this.activeLanguage = computed(() => {
+			const l = language();
+			const d = dialect();
+			if (d && d !== 'unspecified') return d;
+			return l;
+		})
+
 		this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
 		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
-		this.dialect = toSignal(this.store.select(dialectSelector));
 		const engine = toSignal(this.store.select(selectRecognitionEngine));
 		this.provider = computed(() => {
 			return engine()?.provider || 'web'
 		})
 		effect(() => {
-			const l = this.language();
-			const d = this.dialect();
+			const al = this.activeLanguage();
 			if (this.provider() === 'web') {
-				this.webRecognition.setLanguage(d && d !== 'unspecified' ? d : l)
+				this.webRecognition.setLanguage(al);
 			} else {
-				this.azureRecognition.setLanguage(d && d !== 'unspecified' ? d : l)
+				this.azureRecognition.setLanguage(al);
 			}
 		})
 	}
@@ -84,7 +92,7 @@ export class RecognitionService {
 		}
   }
 
-  public getLiveOutput(streamId: string): Signal<string> {
+  public getLiveOutput(): Signal<string> {
 		if (this.provider() === 'web') {
 			return this.webRecognition.getLiveOutput();
 		} else {
@@ -92,7 +100,7 @@ export class RecognitionService {
 		}
   }
 
-  getRecognizedText(streamId: string): Signal<string[]> {
+  getRecognizedText(): Signal<string[]> {
 		if (this.provider() === 'web') {
 			return this.webRecognition.getRecognizedText();
 		} else {
@@ -101,6 +109,6 @@ export class RecognitionService {
   }
 
 	initializeAzure(): Observable<{token: string; region: string}> {
-		return this.azureRecognition.initialize(this.language());
+		return this.azureRecognition.initialize(this.activeLanguage());
 	}
 }

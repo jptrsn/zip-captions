@@ -34,6 +34,7 @@ export class AzureRecognitionService {
 		return this._getToken().pipe(map((auth) => {
 			if (!auth) throw new Error('Azure Recognition Service missing token');
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
+			console.log('language', language);
 			speechConfig.speechRecognitionLanguage = language;
 
 			const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
@@ -57,12 +58,14 @@ export class AzureRecognitionService {
 		if (!this.recognizer) {
 			throw new Error('Azure Recognition Engine not initialized!')
 		}
+
+		this.isStreaming = true;
 		this.recognizer.startContinuousRecognitionAsync(
 			() => {
-				console.log('recognizer started continuous async')
-				this.isStreaming = true;
+				console.log('recognizer started continuous async', this.isStreaming)
 			},
 			(err) => {
+				console.warn('start continuous error!', err)
 				this.isStreaming = false;
 				this.store.dispatch(RecognitionActions.error({error: err}))
 			}
@@ -118,6 +121,10 @@ export class AzureRecognitionService {
 					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: event.result.text, start: segmentStart }))
 					segmentStart = undefined;
 				}
+			}
+			this.recognizer.canceled = (sender: sdk.Recognizer,  event: sdk.SpeechRecognitionCanceledEventArgs) => {
+				console.log('cancelled', sender, event);
+				this.isStreaming = false;
 			}
 		}
 	}

@@ -47,8 +47,8 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
     this.connected = toSignal(this.store.select(recognitionConnectedSelector));
     this.paused = toSignal(this.store.select(recognitionPausedSelector));
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
-    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput(id() as string)() : '');
-    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText(id() as string)() : []);
+    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput()() : '');
+    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText()() : []);
     this.hasLiveResults = computed(() => {
       if (this.connected()) {
         if (this.liveText() == '' && this.textOutput().length === 0) {
