@@ -31,7 +31,7 @@ export class UserController {
               private readonly eventService: EventsService,
               private readonly appService: AppService,
               private cache: CacheService,
-              private jwtService: JwtService) 
+              private jwtService: JwtService)
   {
     this.clientUrl = process.env.APP_ORIGIN
   }
@@ -53,7 +53,8 @@ export class UserController {
       primaryEmail: user.primaryEmail,
       googleConnected: !!user.googleId,
       azureConnected: !!user.msId,
-      syncUiSettings: user.syncUiSettings
+      syncUiSettings: user.syncUiSettings,
+			creditBalance: user.creditBalance
     }
     return userProfile;
   }
@@ -122,7 +123,7 @@ export class UserController {
   async saveRoom(@Req() req, @Param() params: { id: string, roomId: string }, @Body() body: { room: OwnerRoomUpdate }): Promise<OwnerRoom> {
     this._validateParam(req, params);
     console.log('save room', body.room);
-    return await this.sessionService.updateUserRoom(params.id, body.room); 
+    return await this.sessionService.updateUserRoom(params.id, body.room);
   }
 
   @Delete('profile/:id/rooms/:roomId')
@@ -130,7 +131,7 @@ export class UserController {
   async deleteRoom(@Req() req, @Param() params: { id: string, roomId: string }): Promise<{ success: boolean }> {
     this._validateParam(req, params);
     console.log('delete room', params.roomId);
-    await this.sessionService.deleteUserRoom(params.id, params.roomId); 
+    await this.sessionService.deleteUserRoom(params.id, params.roomId);
     return { success: true };
   }
 
@@ -317,7 +318,7 @@ export class UserController {
   private _burstCacheForKey(key: string, params: { id: string }): void {
     this.cache.del(`${key}-${params.id}`)
   }
-  
+
   private _updateCachedResponse(key: string, params: { id: string}, value: any): void {
     this.cache.set(`${key}-${params.id}`, value);
   }

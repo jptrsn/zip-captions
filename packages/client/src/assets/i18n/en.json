@@ -584,6 +584,10 @@
     "loginWithPatreon": "Sign in with Patreon"
   },
   "USER": {
+		"TABS": {
+			"account": "Account",
+			"provider": "Provider"
+		},
     "PROFILE": {
       "title": "Welcome",
       "blurb": "Here's what we know about you:",
@@ -616,7 +620,23 @@
       "usernameLabel": "Patreon user name",
       "startDateLabel": "Joined",
       "thanksMessage": "Thank you for supporting us - we couldn't do this without your help!"
-    }
+    },
+		"PROVIDER": {
+			"title": "Recognition Provider",
+			"description": "Select which service you would like to process audio and return results. Different engines will vary in speed, quality, and cost. We do our best to bring you as much choice as possible while keeping things as free as we can.",
+			"web": {
+				"label": "Browser (Chrome/Safari)",
+				"description": "Using the browser provider, Zip Captions will send audio data from your device directly to your browser provider using the Web Speech API.",
+				"cost": "free",
+				"link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+			},
+			"azure": {
+				"label": "Microsoft Azure Cognitive Services",
+				"description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket.",
+				"cost": "60 credits per minute",
+				"link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+			}
+		}
   },
   "TRANSCRIPT": {
     "titlePlural": "Transcripts",

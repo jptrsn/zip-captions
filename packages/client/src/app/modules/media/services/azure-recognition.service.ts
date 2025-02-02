@@ -20,6 +20,7 @@ export class AzureRecognitionService {
 	private azureSttEndpoint: string;
 	private readonly MAX_RECOGNITION_LENGTH = 15;
 	private transcriptionEnabled: Signal<boolean | undefined>;
+	private readonly STT_CREDITS_PER_MINUTE = 60;
 
 	constructor(private store: Store<AppState>,
 							private http: HttpClient
@@ -34,7 +35,6 @@ export class AzureRecognitionService {
 		return this._getToken().pipe(map((auth) => {
 			if (!auth) throw new Error('Azure Recognition Service missing token');
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
-			console.log('language', language);
 			speechConfig.speechRecognitionLanguage = language;
 
 			const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();

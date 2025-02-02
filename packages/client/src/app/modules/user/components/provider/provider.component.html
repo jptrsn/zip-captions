@@ -1,0 +1,13 @@
+<div class="card bg-base-100 shadow-xl flex flex-col">
+	<div class="card-body">
+		<div class="card-title"><span translate>USER.PROVIDER.title</span></div>
+		<div class="text-sm mb-3" translate>USER.PROVIDER.description</div>
+
+		<app-recognition-engine-select></app-recognition-engine-select>
+		<ng-container *ngIf="provider() as p">
+			<div class="text-md mt-3">{{'USER.PROVIDER.' + p + '.label' | translate}}</div>
+			<p>{{'USER.PROVIDER.' + p + '.description' | translate }}</p>
+
+		</ng-container>
+	</div>
+</div>

@@ -21,7 +21,6 @@
         </div>
 				<ng-container *ngIf="patron.status === 'active_patron'">
 					<div  class="text-xs max-w-xs" translate>USER.PATREON.thanksMessage</div>
-					<app-recognition-engine-select></app-recognition-engine-select>
 				</ng-container>
         <div class="text-sm mt-1"><span translate>USER.PATREON.usernameLabel</span>: <span>{{patron.displayName}}</span></div>
         <div class="text-sm mt-1"><span translate>USER.PATREON.startDateLabel</span>: <span>{{patron.startDate | timeago }}</span></div>

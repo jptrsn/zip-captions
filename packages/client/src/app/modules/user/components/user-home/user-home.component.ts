@@ -19,8 +19,12 @@ export class UserHomeComponent implements OnInit {
   public tabIndex: Signal<number>;
   public tabNames = [
     'account',
-    'transcripts'
+    'provider'
   ]
+	public tabIcons: {[key: string]: string} = {
+		'account': 'heroUser',
+		'provider': 'heroWrenchScrewdriver'
+	}
   constructor(private store: Store<AppState>,
               private router: Router,
               private fb: FormBuilder,

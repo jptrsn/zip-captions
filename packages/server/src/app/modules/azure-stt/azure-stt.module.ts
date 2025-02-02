@@ -7,6 +7,8 @@ import { User, UserSchema } from '../user/models/user.model';
 import { Supporter, SupporterSchema } from '../../models/supporter.model';
 import { AzureSttController } from './azure-stt.controller';
 import { AzureSttService } from './services/azure-stt.service';
+import { UserService } from '../user/services/user.service';
+import { SupporterService } from '../../services/supporter/supporter.service';
 
 @Module({
 	imports: [
@@ -24,7 +26,9 @@ import { AzureSttService } from './services/azure-stt.service';
 	],
 	providers: [
 		JwtStrategy,
-		AzureSttService
+		AzureSttService,
+		UserService,
+		SupporterService,
 	],
 })
 export class AzureSttModule {}

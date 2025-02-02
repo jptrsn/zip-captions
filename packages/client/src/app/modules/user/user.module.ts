@@ -18,7 +18,7 @@ import { TranscriptsListComponent } from './components/transcripts-list/transcri
 import { ViewTranscriptComponent } from './components/view-transcript/view-transcript.component';
 import { EditableStringComponent } from '../../standalone/editable-string/editable-string.component';
 import { RecognitionEngineSelectComponent } from '../../components/recognition-engine-select/recognition-engine-select.component';
-
+import { ProviderComponent } from './components/provider/provider.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +26,7 @@ import { RecognitionEngineSelectComponent } from '../../components/recognition-e
     UserProfileComponent,
     TranscriptsListComponent,
     ViewTranscriptComponent,
+    ProviderComponent,
   ],
   imports: [
     CommonModule,
@@ -39,7 +40,7 @@ import { RecognitionEngineSelectComponent } from '../../components/recognition-e
     EffectsModule.forFeature([UserEffects, AuthEffects]),
     StoreModule.forFeature('user', userReducer),
     EditableStringComponent,
-		RecognitionEngineSelectComponent,
+    RecognitionEngineSelectComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

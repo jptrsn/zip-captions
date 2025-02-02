@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { v4 } from 'uuid';
+import { Expenditure, CreditSessionSchema as ExpenditureSchema } from './expenditure.model';
+import { CreditAdd, CreditAddSchema } from './credit-add.model';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -52,6 +54,21 @@ export class User {
     type: Boolean
   })
   syncUiSettings?: boolean;
+
+	@Prop({
+		type: Number
+	})
+	creditBalance?: number;
+
+	@Prop({
+		type: Array<typeof CreditAddSchema>,
+	})
+	acquisitions?: CreditAdd[];
+
+	@Prop({
+		type: Array<typeof ExpenditureSchema>,
+	})
+	expenditures?: Expenditure[];
 
 }
 

@@ -34,7 +34,9 @@ export {
   heroArrowsRightLeft,
   heroShare,
   heroSwatch,
-  heroDocumentText
+  heroDocumentText,
+	heroUser,
+	heroWrenchScrewdriver,
 } from '@ng-icons/heroicons/outline';
 
 export {

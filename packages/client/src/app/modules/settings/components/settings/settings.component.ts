@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   ]
 })
 export class SettingsComponent {
-  
+
   public acceptedCookies: Signal<boolean | undefined>;
   public showUnsavedChangesModal?: boolean;
   public modalClosed$: Subject<boolean> = new Subject<boolean>();
@@ -42,12 +42,12 @@ export class SettingsComponent {
     'sharing': 'heroShare',
     'obs': 'obsStudioLogo'
   }
-  
+
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
               private router: Router,
               private route: ActivatedRoute) {
-    
+
     this.acceptedCookies = toSignal(this.store.pipe(
       select(selectAppAppearance),
       map((appearance: AppAppearanceState) => appearance.cookiesAccepted)
@@ -57,21 +57,13 @@ export class SettingsComponent {
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
     this.tabsControl = this.fb.control(initialTabIndex);
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
-      takeUntilDestroyed(), 
+      takeUntilDestroyed(),
       tap((index) => {
         const params = { tabIndex: index };
         this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
       }),
       startWith(initialTabIndex)
     )) as Signal<number>;
-  }
-
-  canDeactivate(): boolean | Observable<boolean> {
-    // if (this.formGroup.dirty) {
-    //   this.showUnsavedChangesModal = true;
-    //   return this.modalClosed$.asObservable().pipe(take(1));
-    // }
-    return true;
   }
 
   modalClosed(value: boolean): void {
