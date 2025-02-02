@@ -54,7 +54,7 @@ export class UserController {
       googleConnected: !!user.googleId,
       azureConnected: !!user.msId,
       syncUiSettings: user.syncUiSettings,
-			creditBalance: user.creditBalance
+			creditBalance: user.creditBalance || 0
     }
     return userProfile;
   }

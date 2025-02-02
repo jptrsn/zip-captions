@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, of, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
+import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
@@ -46,11 +46,13 @@ export class AudioInputEnableComponent {
   toggleState(): void {
     if (this.connected() || this.error()) {
       this.store.dispatch(RecognitionActions.disconnect({id: this.streamState().id}))
+			this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
       if (this.router.url !== '/') {
         this.router.navigate(['/'])
       }
       this.store.dispatch(RecognitionActions.connect({id: this.streamState().id}))
+			this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
     }
   }
 }

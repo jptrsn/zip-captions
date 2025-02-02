@@ -59,6 +59,7 @@ export interface UserState {
   uiSettings?: SettingsState;
   rooms?: UserRoom[];
   error?: string;
+	creditBalance?: number;
 	creditAcquisitions?: CreditAdd[];
 	creditExpenditures?: CreditExpenditure[];
 }

@@ -30,6 +30,8 @@ import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs
 import { TranscriptionSettingsComponent } from './components/transcription-settings/transcription-settings.component';
 import { TranscriptEnabledComponent } from './components/transcript-enabled/transcript-enabled.component';
 import { DialectSelectorComponent } from './components/dialect-selector/dialect-selector.component';
+import { RecognitionEngineComponent } from './components/recognition-engine/recognition-engine.component';
+import { RecognitionEngineSelectComponent } from '../../components/recognition-engine-select/recognition-engine-select.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,7 @@ import { DialectSelectorComponent } from './components/dialect-selector/dialect-
     TranscriptionSettingsComponent,
     TranscriptEnabledComponent,
     DialectSelectorComponent,
+    RecognitionEngineComponent,
   ],
   imports: [
     CommonModule,
@@ -65,6 +68,7 @@ import { DialectSelectorComponent } from './components/dialect-selector/dialect-
       ...Icons,
     }),
     ClipboardModule,
+		RecognitionEngineSelectComponent,
   ],
 })
 export class SettingsModule {}

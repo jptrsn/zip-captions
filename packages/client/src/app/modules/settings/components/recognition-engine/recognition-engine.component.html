@@ -1,0 +1,20 @@
+<div class="card bg-base-100 shadow-xl flex flex-col max-w-xl" *ngIf="isLoggedIn(); else loginRequired">
+	<div class="card-body">
+		<div class="card-title"><span translate>SETTINGS.PROVIDER.title</span></div>
+		<div class="text-sm mb-3" translate>SETTINGS.PROVIDER.description</div>
+
+		<app-recognition-engine-select></app-recognition-engine-select>
+		<ng-container *ngIf="provider() as p">
+			<div class="text-md mt-3">{{'SETTINGS.PROVIDER.' + p + '.label' | translate}}</div>
+			<p>{{'SETTINGS.PROVIDER.' + p + '.description' | translate }}</p>
+			<div class="flex flex-row flex-wrap justify-between">
+				<div class="text-sm">{{'SETTINGS.PROVIDER.' + p + '.cost' | translate }}</div>
+				<div class="text-sm" *ngIf="p !== 'web'"><span translate>SETTINGS.PROVIDER.balance</span>: {{balance()}}</div>
+			</div>
+		</ng-container>
+	</div>
+</div>
+
+<ng-template #loginRequired>
+  <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']" translate>SETTINGS.SHARING.loginRequired</div>
+</ng-template>

@@ -33,8 +33,9 @@
   </button>
 
   <!-- Trigger recognition buttons -->
-  <ng-container *ngIf="activeRoute() !== '/stream'">
-    <app-recognition-enable></app-recognition-enable>
+  <ng-container *ngIf="activeRoute() !== '/stream'" [ngSwitch]="showRecordButton()">
+    <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
+    <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
     <button *ngIf="!isActive() && activeRoute() === '/'" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
       <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
     </button>

@@ -1,22 +1,6 @@
 <div class="flex flex-col items-center justify-center basis-full overflow-y-auto p-6 gap-6 flex-grow-0 bg-base-300 text-base-content">
-	<!-- Tabs header -->
-  <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
-    <div class="relative border-b-2" [ngClass]="{'text-secondary border-secondary': tabIndex() === i}" *ngFor="let name of tabNames, index as i">
-      <input [formControl]="tabsControl" type="radio" role="tab" class="tab" [attr.aria-label]="'USER.TABS.' + name | translate" [value]="i" [id]="name">
-      <label [for]="name" class="absolute top-0 left-0 right-0 cursor-pointer sm:!hidden flex items-center justify-center">
-        <ng-icon [name]="tabIcons[name]" size="24"></ng-icon>
-      </label>
-    </div>
-  </form>
 
-	<div class="text-lg text-bold text-secondary mt-2 sm:hidden">
-    {{ 'USER.TABS.' + tabNames[tabIndex()] | translate }}
-  </div>
-
-	<div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabNames[tabIndex()]">
-		<app-user-profile class="sm:basis-auto basis-full" *ngSwitchCase="'account'"></app-user-profile>
-		<app-provider class="sm:basis-auto basis-full" *ngSwitchCase="'provider'"></app-provider>
-	</div>
+	<app-user-profile class="sm:basis-auto basis-full"></app-user-profile>
 
   <div class="flex flex-row gap-3" *ngIf="!loggedIn()">
     <button class="btn btn-primary" [routerLink]="['..']" translate>ROUTES.home</button>

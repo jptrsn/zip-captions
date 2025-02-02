@@ -38,3 +38,8 @@ export const selectUserContributes = createSelector(
   selectUserState,
   (state) => !!(state.supporter?.amountCents)
 )
+
+export const selectUserBalance = createSelector(
+	selectUserState,
+	(state) => state.creditBalance
+)

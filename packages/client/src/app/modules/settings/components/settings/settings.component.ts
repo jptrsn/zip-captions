@@ -33,6 +33,7 @@ export class SettingsComponent {
     'sync',
     'sharing',
     'obs',
+		'engine'
   ];
 
   public tabIcons: {[key: string]: string} = {
@@ -40,7 +41,8 @@ export class SettingsComponent {
     'transcription': 'heroDocumentText',
     'sync': 'heroArrowsRightLeft',
     'sharing': 'heroShare',
-    'obs': 'obsStudioLogo'
+    'obs': 'obsStudioLogo',
+		'engine': 'heroWrenchScrewdriver'
   }
 
   constructor(private fb: FormBuilder,
