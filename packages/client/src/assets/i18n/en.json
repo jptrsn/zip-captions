@@ -352,6 +352,7 @@
 			"title": "Recognition API Provider",
 			"description": "Select which service providder you would like use to securely process audio and return results. Different engines will vary in speed, quality, and cost. We do our best to bring you as much choice as possible while keeping things as free as we can.",
 			"balance": "Your credits",
+			"acquire": "To get credits, you can support us on Patreon, or request accommodations (coming soon)",
 			"web": {
 				"label": "Browser (Chrome/Safari)",
 				"description": "Using the browser provider, Zip Captions will send audio data from your device directly to your browser provider using the Web Speech API.",

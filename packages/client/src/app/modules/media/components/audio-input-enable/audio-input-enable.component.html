@@ -1,11 +1,12 @@
 <button
-	class="btn btn-circle tooltip tooltip-left"
+	class="btn btn-circle tooltip tooltip-left relative"
   [ngClass]="{'btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected(), 'btn-sm': small()}"
   (click)="toggleState()"
   appBackgroundMagnitude
   [magnitude]="vol()"
   [attr.data-tip]="connected() ? ('LABELS.stop' | translate) : ('LABELS.listen' | translate)"
   >
+	<ng-icon *ngIf="provider() !== 'web' && !connected()" class="absolute -top-2 -right-2 text-success rounded-full" size="24" name="heroSparkles"></ng-icon>
   <ng-icon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>
     <ng-container *ngIf="connected(); else inactive">

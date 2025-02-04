@@ -40,6 +40,6 @@ export const selectUserContributes = createSelector(
 )
 
 export const selectUserBalance = createSelector(
-	selectUserState,
-	(state) => state.creditBalance
+	selectUserProfile,
+	(state) => state?.creditBalance
 )
