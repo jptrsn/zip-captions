@@ -10,7 +10,7 @@ import { SpeechRecognition } from '../../../models/recognition.model';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { platformSelector } from '../../../selectors/app.selector';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
-import { languageSelector, selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
+import { selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
 
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved

@@ -11,6 +11,13 @@ export class CreditAdd {
 		id: string;
 
 		@Prop({
+			type: String,
+			required: true,
+			index: true
+		})
+		userId: string;
+
+		@Prop({
 			type: Date,
 			required: true,
 			default: Date.now
@@ -31,3 +38,10 @@ export class CreditAdd {
 }
 
 export const CreditAddSchema = SchemaFactory.createForClass(CreditAdd);
+
+CreditAddSchema.pre<CreditAdd>('validate', function(next) {
+	if (!this.createdAt) {
+		this.createdAt = new Date();
+	}
+	return next();
+})

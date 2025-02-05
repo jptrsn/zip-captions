@@ -3,9 +3,9 @@
   <div *ngIf="!hasLiveResults()" @fadeOutOnLeave class="text-center h-auto fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
     <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
-  
+
   <div *ngFor="let text of renderedResults()" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()">
-    {{text | proper}}
+    {{text}}
   </div>
   <div class="absolute top-0 left-0 right-0 bottom-0 flex flex-col gap-3 items-center justify-center" *ngIf="isPaused()">
     <div class="badge badge-warning px-6 py-3 text-center h-auto" translate>HINTS.recognitionPaused</div>

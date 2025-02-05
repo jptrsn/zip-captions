@@ -38,9 +38,9 @@ export class UserController {
 
   @Get('profile/:id')
   @UseGuards(JwtAuthGuard)
-	@NoCache()
   // @UseInterceptors(CustomCacheInterceptor)
   // @CacheKey(UserController.PROFILE_CACHE_KEY)
+	@NoCache()
   async getUser(@Req() req, @Param() params: { id: string }): Promise<UserProfile> {
     this._validateParam(req, params);
     const user = await this.userService.findOne({id: req.user.id});

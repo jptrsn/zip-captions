@@ -11,11 +11,29 @@ export class Expenditure {
 	id: string;
 
 	@Prop({
+    type: String,
+    required: true,
+    index: true
+  })
+  userId: string;
+
+	@Prop({
+		type: String,
+		required: true,
+	})
+	sessionId: string;
+
+	@Prop({
     type: Date,
     required: true,
     default: Date.now
   })
   createdAt: Date;
+
+	@Prop({
+		type: Date
+	})
+	updatedAt?: Date;
 
 	@Prop({
     type: String,
@@ -35,4 +53,11 @@ export class Expenditure {
 
 }
 
-export const CreditSessionSchema = SchemaFactory.createForClass(Expenditure);
+export const ExpenditureSchema = SchemaFactory.createForClass(Expenditure);
+
+ExpenditureSchema.pre<Expenditure>('validate', function(next) {
+	if (!this.createdAt) {
+		this.createdAt = new Date();
+	}
+	return next();
+})

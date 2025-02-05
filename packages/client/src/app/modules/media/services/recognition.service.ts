@@ -61,7 +61,7 @@ export class RecognitionService {
 		if (this.provider() === 'web') {
 			this.webRecognition.connectToStream();
 		} else {
-			this.azureRecognition.connectToStream();
+			this.azureRecognition.connectToStream(this.activeLanguage());
 		}
   }
 

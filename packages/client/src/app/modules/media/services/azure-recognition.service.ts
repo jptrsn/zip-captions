@@ -54,22 +54,21 @@ export class AzureRecognitionService {
 		}
 	}
 
-	public connectToStream(): void {
-		if (!this.recognizer) {
-			throw new Error('Azure Recognition Engine not initialized!')
-		}
-
-		this.isStreaming = true;
-		this.recognizer.startContinuousRecognitionAsync(
-			() => {
-				console.log('recognizer started continuous async', this.isStreaming)
-			},
-			(err) => {
-				console.warn('start continuous error!', err)
-				this.isStreaming = false;
-				this.store.dispatch(RecognitionActions.error({error: err}))
-			}
-		)
+	public connectToStream(language: InterfaceLanguage | RecognitionDialect): void {
+		this.initialize(language).pipe(take(1)).subscribe((result) => {
+			this.store.dispatch(RecognitionActions.setToken(result))
+			this.isStreaming = true;
+			this.recognizer?.startContinuousRecognitionAsync(
+				() => {
+					console.log('recognizer started continuous async', this.isStreaming)
+				},
+				(err) => {
+					console.warn('start continuous error!', err)
+					this.isStreaming = false;
+					this.store.dispatch(RecognitionActions.error({error: err}))
+				}
+			)
+		})
 	}
 
 	public disconnectFromStream(): void {
@@ -77,6 +76,14 @@ export class AzureRecognitionService {
 		this.recognizer?.stopContinuousRecognitionAsync(
 			() => {
 				console.log('recognizer stopped continuous async')
+			},
+			(err) => {
+				this.store.dispatch(RecognitionActions.error({error: err}))
+			}
+		)
+		this.recognizer?.close(() => {
+			console.log('recognizer closed')
+			this.recognizer = undefined;
 			},
 			(err) => {
 				this.store.dispatch(RecognitionActions.error({error: err}))
@@ -103,15 +110,25 @@ export class AzureRecognitionService {
 	private _addEventListeners(): void {
 		if (this.recognizer) {
 			let segmentStart: Date | undefined;
+			this.recognizer.sessionStarted = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
+				console.log('session started', event.sessionId);
+				this._startSession(event.sessionId, Date.now()).pipe(take(1)).subscribe();
+			}
+			this.recognizer.sessionStopped = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
+				console.log('session stopped', event.sessionId);
+				this._endSession(event.sessionId, Date.now()).pipe(take(1)).subscribe(({userId, creditBalance}) => {
+					console.log('session ended');
+				});
+			}
 			this.recognizer.recognizing = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
-				console.log('recognizing', event, sender);
 				this.liveOutput.set(event.result.text);
 				if (!segmentStart) {
 					segmentStart = new Date()
 				}
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
-				console.log('recognized', event, sender);
+				console.log('recognized', event.result.text);
+				this._updateSession(event.sessionId, Date.now()).pipe(take(1)).subscribe();
 				this.recognizedText.update((current: string[]) => {
 					current.push(event.result.text);
 					return current;
@@ -119,18 +136,31 @@ export class AzureRecognitionService {
 				this.liveOutput.set('');
 				if (this.transcriptionEnabled()) {
 					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: event.result.text, start: segmentStart }))
-					segmentStart = undefined;
 				}
+				segmentStart = undefined;
 			}
 			this.recognizer.canceled = (sender: sdk.Recognizer,  event: sdk.SpeechRecognitionCanceledEventArgs) => {
-				console.log('cancelled', sender, event);
+				console.log('cancelled', event);
 				this.isStreaming = false;
+				this.store.dispatch(RecognitionActions.error({ error: 'Recognition was cancelled for some reason!'}));
 			}
 		}
 	}
 
 	private _getToken(): Observable<{token: string; region: string}> {
 		return this.http.get<{token: string; region: string}>(`${this.azureSttEndpoint}/get-token`);
+	}
+
+	private _startSession(sessionId: string, timestamp?: number): Observable<{id: string}> {
+		return this.http.post<{id: string}>(`${this.azureSttEndpoint}/start`, { sessionId, timestamp });
+	}
+
+	private _updateSession(sessionId: string, timestamp?: number): Observable<void> {
+		return this.http.post<void>(`${this.azureSttEndpoint}/track`, { sessionId, timestamp });
+	}
+
+	private _endSession(sessionId: string, timestamp?: number): Observable<{userId: string, creditBalance: number}> {
+		return this.http.post<{userId: string, creditBalance: number}>(`${this.azureSttEndpoint}/end`, { sessionId, timestamp });
 	}
 
 

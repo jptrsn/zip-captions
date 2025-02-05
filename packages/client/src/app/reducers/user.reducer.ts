@@ -97,5 +97,6 @@ export const userReducer = createReducer(
   on(UserActions.getSupporterProfileSuccess, (state: UserState, action: { profile: SupporterProfile | null}) => ({...state, supporter: action.profile || undefined })),
   on(UserActions.getSupporterProfileFailure, (state: UserState, action: { error: string }) => ({...state, error: action.error})),
 
+	on(UserActions.updateBalance, (state: UserState, action: { creditBalance: number }) => ({...state, profile: state.profile ? {...state.profile, creditBalance: action.creditBalance } : undefined }))
 );
 

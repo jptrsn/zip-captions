@@ -1,9 +1,9 @@
 <div #container class="flex max-h-full justify-end live-text-render flex-shrink flex-grow-0 text-base-content" [ngClass]="{'flex-col-reverse': textFlowDown(), 'flex-col': !textFlowDown()}">
   <ng-container *ngIf="textFlowDown(); else textFlowUp">
-    <div *ngIf="text() as txt" @slideInDownOnEnter [classList]="classList()">{{txt | proper}}</div>
+    <div *ngIf="text() as txt" @slideInDownOnEnter [classList]="classList()">{{txt}}</div>
   </ng-container>
   <ng-template #textFlowUp>
-    <div *ngIf="text() as txt"  [classList]="classList()">{{txt | proper}}</div>
+    <div *ngIf="text() as txt"  [classList]="classList()">{{txt}}</div>
   </ng-template>
 </div>
 

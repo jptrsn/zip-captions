@@ -9,6 +9,8 @@ import { AzureSttController } from './azure-stt.controller';
 import { AzureSttService } from './services/azure-stt.service';
 import { UserService } from '../user/services/user.service';
 import { SupporterService } from '../../services/supporter/supporter.service';
+import { Expenditure, ExpenditureSchema } from '../user/models/expenditure.model';
+import { CacheService } from '../../services/cache/cache.service';
 
 @Module({
 	imports: [
@@ -18,7 +20,8 @@ import { SupporterService } from '../../services/supporter/supporter.service';
 		}),
 		MongooseModule.forFeature([
 			{ name: User.name, schema: UserSchema },
-			{ name: Supporter.name, schema: SupporterSchema }
+			{ name: Supporter.name, schema: SupporterSchema },
+			{ name: Expenditure.name, schema: ExpenditureSchema }
 		])
 	],
 	controllers: [
@@ -29,6 +32,7 @@ import { SupporterService } from '../../services/supporter/supporter.service';
 		AzureSttService,
 		UserService,
 		SupporterService,
+		CacheService
 	],
 })
 export class AzureSttModule {}
