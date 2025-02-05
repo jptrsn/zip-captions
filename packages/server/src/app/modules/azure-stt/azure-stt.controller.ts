@@ -22,11 +22,10 @@ export class AzureSttController {
 	async getSpeechToken(@Req() req): Promise<{token: string; region: string}> {
 		const user = await this.userService.findOne({ id: req.user.id });
 		if (!user) {
-			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND)
+			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
 		}
-		const supporter = await this.supporterService.findOne({ email: user.primaryEmail });
-		if (!supporter || !supporter.amountCents) {
-			throw new HttpException(`User is not a supporter`, HttpStatus.BAD_REQUEST);
+		if (!user.creditBalance) {
+			throw new HttpException(`Unauthorized`, HttpStatus.UNAUTHORIZED);
 		}
 		return this.azureSttService.getToken();
 	}
