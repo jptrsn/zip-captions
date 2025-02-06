@@ -111,7 +111,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       UserEffects,
     ]),
     StoreDevtoolsModule.instrument({
-      maxAge: 10,
+      maxAge: 30,
     }),
     HttpClientModule,
     TranslateModule.forRoot({

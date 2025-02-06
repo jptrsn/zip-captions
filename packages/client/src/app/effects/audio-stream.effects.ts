@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, of, switchMap } from "rxjs";
 import { AudioStreamActions } from '../models/audio-stream.model';
 import { MediaService } from "../modules/media/services/media.service";
+import { RecognitionActions } from "../actions/recogntion.actions";
 
 @Injectable()
 export class AudioStreamEffects {
@@ -26,5 +27,14 @@ export class AudioStreamEffects {
       return AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})
     })
   ))
+
+	disconnectStreamFailure$ = createEffect(() =>
+		this.actions$.pipe(
+			ofType(RecognitionActions.disconnectFailure),
+			map((props) => {
+				this.mediaService.disconnectAllStreams();
+				return AudioStreamActions.audioStreamError({ error: props.error })
+			})
+		))
 
 }

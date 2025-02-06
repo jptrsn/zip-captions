@@ -14,6 +14,7 @@ export const defaultRecognitionState: RecognitionState = {
 export const recognitionReducers = createReducer(defaultRecognitionState,
   on(RecognitionActions.connect, (state: RecognitionState, action: { id: string}) => ({...state, id: action.id, status: RecognitionStatus.connecting})),
   on(RecognitionActions.disconnect, (state: RecognitionState, action: { id: string}) => ({...state, id: action.id, status: RecognitionStatus.disconnected, error: undefined})),
+	on(RecognitionActions.disconnectFailure, (state: RecognitionState, action: { error: string}) => ({...state, status: RecognitionStatus.disconnected, error: action.error})),
   on(RecognitionActions.pauseSuccess, (state: RecognitionState) => ({...state, status: RecognitionStatus.paused})),
   on(RecognitionActions.resumeSuccess, (state: RecognitionState) => ({...state, status: RecognitionStatus.connected, error: undefined })),
   on(RecognitionActions.error, (state: RecognitionState, action:{ error: string}) => ({...state, error: action.error })),

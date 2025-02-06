@@ -118,17 +118,4 @@ export class RecognitionEffects {
     )
   )
 
-	initAzureRecognition$ = createEffect(() =>
-		this.actions$.pipe(
-			ofType(RecognitionActions.setEngine),
-			filter(({ engine }) => engine === 'azure'),
-			switchMap(() => this.recognitionService.initializeAzure()
-				.pipe(
-					map(({token, region}) => RecognitionActions.setEngineSuccess({token, region})),
-					catchError((err) => of(RecognitionActions.setEngineFailure({error: err})))
-				)
-			)
-		)
-	)
-
 }

@@ -270,7 +270,6 @@ export class WebRecognitionService {
 	}
 
 	private _handleRecognitionError(err: any, fatal = false) {
-    console.warn('recognition error', err);
     this.store.dispatch(RecognitionActions.error({ error: err.error }))
     if (fatal) {
       this.isStreaming = false;

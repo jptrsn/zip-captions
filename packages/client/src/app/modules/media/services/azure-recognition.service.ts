@@ -8,6 +8,7 @@ import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
 import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
 import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
+import { UserActions } from "../../../actions/user.actions";
 
 @Injectable({
 	providedIn: 'root'
@@ -47,27 +48,32 @@ export class AzureRecognitionService {
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
 		if (this.recognizer) {
 			if (this.recognizer.speechRecognitionLanguage !== language) {
-				this.initialize(language).pipe(take(1)).subscribe((result) => {
-					this.store.dispatch(RecognitionActions.setToken(result))
-				})
+				this.recognizer.close();
+				this.initialize(language).pipe(take(1)).subscribe()
 			}
 		}
 	}
 
 	public connectToStream(language: InterfaceLanguage | RecognitionDialect): void {
-		this.initialize(language).pipe(take(1)).subscribe((result) => {
-			this.store.dispatch(RecognitionActions.setToken(result))
-			this.isStreaming = true;
-			this.recognizer?.startContinuousRecognitionAsync(
-				() => {
-					console.log('recognizer started continuous async', this.isStreaming)
-				},
-				(err) => {
-					console.warn('start continuous error!', err)
-					this.isStreaming = false;
-					this.store.dispatch(RecognitionActions.error({error: err}))
-				}
-			)
+		this.initialize(language).pipe(take(1)).subscribe({
+			next: (result) => {
+				this.isStreaming = true;
+				this.recognizer?.startContinuousRecognitionAsync(
+					() => {
+						console.log('recognizer started continuous async', this.isStreaming)
+					},
+					(err: any) => {
+						console.warn('start continuous error!', err)
+						this.isStreaming = false;
+						this.store.dispatch(RecognitionActions.disconnectFailure({error: err.message }))
+					}
+				)
+			},
+			error: (err: any) => {
+				console.warn('start continuous error!', err)
+				this.isStreaming = false;
+				this.store.dispatch(RecognitionActions.disconnectFailure({error: err.message }))
+			}
 		})
 	}
 
@@ -77,8 +83,8 @@ export class AzureRecognitionService {
 			() => {
 				console.log('recognizer stopped continuous async')
 			},
-			(err) => {
-				this.store.dispatch(RecognitionActions.error({error: err}))
+			(err: any) => {
+				this.store.dispatch(RecognitionActions.disconnectFailure({error: err.message }))
 			}
 		)
 		this.recognizer?.close(() => {
@@ -86,7 +92,7 @@ export class AzureRecognitionService {
 			this.recognizer = undefined;
 			},
 			(err) => {
-				this.store.dispatch(RecognitionActions.error({error: err}))
+				this.store.dispatch(RecognitionActions.disconnectFailure({error: err}))
 			}
 		)
 	}
@@ -111,14 +117,12 @@ export class AzureRecognitionService {
 		if (this.recognizer) {
 			let segmentStart: Date | undefined;
 			this.recognizer.sessionStarted = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
-				console.log('session started', event.sessionId);
-				this._startSession(event.sessionId, Date.now()).pipe(take(1)).subscribe();
+				console.log('session started', event.sessionId, this.isStreaming);
+				this._startSession(event.sessionId, Date.now());
 			}
 			this.recognizer.sessionStopped = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
 				console.log('session stopped', event.sessionId);
-				this._endSession(event.sessionId, Date.now()).pipe(take(1)).subscribe(({userId, creditBalance}) => {
-					console.log('session ended');
-				});
+				this._endSession(event.sessionId, Date.now());
 			}
 			this.recognizer.recognizing = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this.liveOutput.set(event.result.text);
@@ -128,7 +132,7 @@ export class AzureRecognitionService {
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				console.log('recognized', event.result.text);
-				this._updateSession(event.sessionId, Date.now()).pipe(take(1)).subscribe();
+				this._updateSession(event.sessionId, Date.now());
 				this.recognizedText.update((current: string[]) => {
 					current.push(event.result.text);
 					return current;
@@ -142,7 +146,7 @@ export class AzureRecognitionService {
 			this.recognizer.canceled = (sender: sdk.Recognizer,  event: sdk.SpeechRecognitionCanceledEventArgs) => {
 				console.log('cancelled', event);
 				this.isStreaming = false;
-				this.store.dispatch(RecognitionActions.error({ error: 'Recognition was cancelled for some reason!'}));
+				this.store.dispatch(RecognitionActions.disconnectFailure({ error: event.errorDetails }));
 			}
 		}
 	}
@@ -151,16 +155,35 @@ export class AzureRecognitionService {
 		return this.http.get<{token: string; region: string}>(`${this.azureSttEndpoint}/get-token`);
 	}
 
-	private _startSession(sessionId: string, timestamp?: number): Observable<{id: string}> {
-		return this.http.post<{id: string}>(`${this.azureSttEndpoint}/start`, { sessionId, timestamp });
+	private _startSession(sessionId: string, timestamp?: number): void {
+		this.http.post<{id: string}>(`${this.azureSttEndpoint}/start`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+			error: (err: any) => {
+				this.recognizer?.stopContinuousRecognitionAsync();
+				this.store.dispatch(RecognitionActions.disconnectFailure({ error: err.message }))
+			}
+		});
 	}
 
-	private _updateSession(sessionId: string, timestamp?: number): Observable<void> {
-		return this.http.post<void>(`${this.azureSttEndpoint}/track`, { sessionId, timestamp });
+	private _updateSession(sessionId: string, timestamp?: number): void {
+		this.http.post<void>(`${this.azureSttEndpoint}/track`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+			error: (err: any) => {
+				this.recognizer?.stopContinuousRecognitionAsync();
+				this.store.dispatch(RecognitionActions.disconnectFailure({ error: err.message }))
+			}
+		});
 	}
 
-	private _endSession(sessionId: string, timestamp?: number): Observable<{userId: string, creditBalance: number}> {
-		return this.http.post<{userId: string, creditBalance: number}>(`${this.azureSttEndpoint}/end`, { sessionId, timestamp });
+	private _endSession(sessionId: string, timestamp?: number) {
+		console.log('end session')
+		return this.http.post<{creditBalance: number}>(`${this.azureSttEndpoint}/end`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+			next: ({ creditBalance }) => {
+				this.store.dispatch(UserActions.updateBalance({ creditBalance }));
+			},
+			error: (err: any) => {
+				this.recognizer?.stopContinuousRecognitionAsync();
+				this.store.dispatch(RecognitionActions.disconnectFailure({ error: err.message }))
+			}
+		});
 	}
 
 

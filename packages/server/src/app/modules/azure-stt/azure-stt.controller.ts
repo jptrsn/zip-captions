@@ -45,7 +45,7 @@ export class AzureSttController {
 
 	@Post('end')
 	@UseGuards(JwtAuthGuard)
-	async endAzureSttSession(@Req() req, @Body() body: { sessionId: string, timestamp?: number }): Promise<{userId: string, creditBalance: number}> {
+	async endAzureSttSession(@Req() req, @Body() body: { sessionId: string, timestamp?: number }): Promise<{creditBalance: number}> {
 		const result = await this.azureSttService.completeExpenditure(req.user.id, body.sessionId, body.timestamp);
 		await this.userService.updateUser(result.userId, { creditBalance: result.creditBalance })
 		this._burstCacheForKey(UserController.PROFILE_CACHE_KEY, { id: result.userId });

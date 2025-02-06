@@ -107,8 +107,4 @@ export class RecognitionService {
 			return this.azureRecognition.getRecognizedText();
 		}
   }
-
-	initializeAzure(): Observable<{token: string; region: string}> {
-		return this.azureRecognition.initialize(this.activeLanguage());
-	}
 }

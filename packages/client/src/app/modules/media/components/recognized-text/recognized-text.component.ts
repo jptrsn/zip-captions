@@ -4,11 +4,12 @@ import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused } from '../../../../selectors/peer.selectors';
-import { recognitionPausedSelector } from '../../../../selectors/recognition.selector';
+import { recognitionPausedSelector, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { selectFontFamily, selectLineHeight, selectTextSize } from '../../../../selectors/settings.selector';
 import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/models/settings.model';
 import { map } from 'rxjs';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionEngineState } from '../../../../models/recognition.model';
 
 @Component({
   selector: 'app-recognized-text',
@@ -31,6 +32,7 @@ export class RecognizedTextComponent {
   public isPaused: Signal<boolean | undefined>;
   public renderedResults: Signal<string[]>;
   public recognitionPaused: Signal<boolean | undefined>;
+	public provider: Signal<RecognitionEngineState['provider'] | undefined>;
 
   private textSize: Signal<TextSize>;
   private lineHeight: Signal<LineHeight>;
@@ -44,6 +46,7 @@ export class RecognizedTextComponent {
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     const broadcastPaused = toSignal(this.store.select(selectBroadcastPaused));
     this.isPaused = computed(() => this.recognitionPaused() || broadcastPaused());
+		this.provider = toSignal(this.store.select(selectRecognitionEngineProvider))
 
     this.renderedResults = computed(() => {
       const textArray = this.textOutput();

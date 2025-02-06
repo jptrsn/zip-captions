@@ -48,3 +48,8 @@ export const selectRecognitionEngine = createSelector(
 	selectRecognition,
 	(state) => state.engine
 )
+
+export const selectRecognitionEngineProvider = createSelector(
+	selectRecognitionEngine,
+	(state) => state?.provider
+)

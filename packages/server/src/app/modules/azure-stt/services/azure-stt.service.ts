@@ -17,6 +17,7 @@ export class AzureSttService {
 	) { }
 
 	async getToken(): Promise<{token: string; region: string}> {
+		console.log('speech key', this.speechKey[0])
 		const headers = {
 			headers: {
 					'Ocp-Apim-Subscription-Key': this.speechKey,
@@ -65,7 +66,8 @@ export class AzureSttService {
 		console.log('start', spend.createdAt.getTime());
 		spend.durationMs = end - spend.createdAt.getTime()
 		console.log('duration', spend.durationMs)
-		const cost = Math.min(1, Math.ceil((spend.durationMs / 1000 / 60) * this.STT_CREDITS_PER_MINUTE ));
+
+		const cost = Math.max(1, Math.ceil((spend.durationMs / 1000 / 60) * this.STT_CREDITS_PER_MINUTE ));
 		console.log('cost', cost);
 		spend.creditsUsed = cost
 		await spend.save();
