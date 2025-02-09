@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
+import { RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
 
@@ -27,7 +27,7 @@ export const languageSelector = createSelector(
 
 export const dialectSelector = createSelector(
 	selectAppSettings,
-	(state) => state.dialect
+	(state): RecognitionDialect => state.dialect ?? 'unspecified'
 )
 
 export const wakeLockEnabledSelector = createSelector(

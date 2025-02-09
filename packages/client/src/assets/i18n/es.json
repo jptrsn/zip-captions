@@ -357,13 +357,13 @@
         "label": "El navegador (Chrome y Safari)",
         "description": "Con el proveedor de navegador, Zip Captions enviará datos de audio desde su dispositivo directamente a su proveedor de navegador utilizando la API de habla web.",
         "cost": "Tamaño: siempre libre",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "Microsoft Azure Servicios Cognitivos",
         "description": "Con el proveedor de Servicios Cognitivos de Azure, Zip Captions enviará datos de audio desde su dispositivo directamente a la API de Microsoft utilizando un socket web seguro.",
         "cost": "Rate: 60 tokens por minuto",
-        "link": "HTTPS://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },
@@ -523,7 +523,7 @@
     "title": "Título",
     "description": "Descrição",
     "date": "Data",
-    "duration": "Duração",
+    "duration": "Duración",
     "provider": "proveedor"
   },
   "HINTS": {

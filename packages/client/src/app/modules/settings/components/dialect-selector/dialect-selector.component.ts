@@ -45,23 +45,24 @@ export class DialectSelectorComponent implements OnChanges, OnDestroy {
 					startWith(languageControl.value),
 					takeUntil(this.onDestroy$)
 				).subscribe((language) => {
-					const exp = new RegExp(language);
-					const ad = this.dialects.filter((d) => exp.test(d));
-					ad.unshift('unspecified')
-					this.availableDialects.set(ad)
+					this.filterDialects(language);
 				})
 			}
 		}
 		if (changes['language']?.currentValue) {
 			const language = changes['language'].currentValue;
-			const exp = new RegExp(language);
-			const ad = this.dialects.filter((d) => exp.test(d));
-			ad.unshift('unspecified')
-			this.availableDialects.set(ad)
+			this.filterDialects(language);
 		}
 	}
 
 	ngOnDestroy(): void {
 		this.onDestroy$.next();
+	}
+
+	private filterDialects(language: string): void {
+		const exp = new RegExp(language);
+		const ad = this.dialects.filter((d) => exp.test(d));
+		ad.unshift('unspecified');
+		this.availableDialects.set(ad);
 	}
 }

@@ -357,13 +357,13 @@
         "label": "Браузер (Chrome і Safari)",
         "description": "За допомогою провайдера браузера, Zip Captions відправляє аудіо дані з вашого пристрою безпосередньо до провайдера браузера за допомогою API Web Speech.",
         "cost": "Швидкість: завжди безкоштовна",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "Microsoft Azure Cognitive Сервіси",
         "description": "За допомогою постачальника сервісів Azure Cognitive, Zip Captions відправляє аудіо дані з вашого пристрою безпосередньо до API Microsoft за допомогою безпечного веб-сокету.",
         "cost": "Швидкість: 60 токенів на хвилину",
-        "link": "https://developer.mozilla.org/en-US/docs/Web/API/Speech"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },

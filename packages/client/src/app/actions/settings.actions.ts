@@ -13,7 +13,7 @@ export const setLanguage = createAction('[Settings] Set Language', props<{langua
 export const setLanguageComplete = createAction('[Settings] Set Language Complete');
 
 export const setDialect = createAction('[Settings] Set Dialect', props<{dialect: RecognitionDialect}>());
-export const setDefaultDialect = createAction('[Settings] Set Dialect', props<{dialect: RecognitionDialect}>());
+export const setDefaultDialect = createAction('[Settings] Set Default Dialect', props<{dialect: RecognitionDialect}>());
 export const setDialectComplete = createAction('[Settings] Set Dialect Complete');
 
 export const updateWakeLockEnabled = createAction('[Settings] Update WakeLock Enabled', props<{enabled: boolean}>());

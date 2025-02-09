@@ -357,13 +357,13 @@
         "label": "Penggunaan Browser (Chrome dan Safari)",
         "description": "Dengan menggunakan penyedia browser, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke penyedia browser Anda menggunakan Web Speech API.",
         "cost": "Harga : Selalu Gratis",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "Aplikasi Microsoft Azure Cognitive",
         "description": "Menggunakan penyedia layanan kognitif Azure, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke API Microsoft menggunakan soket web yang aman.",
         "cost": "Kadar: 60 token per menit",
-        "link": "WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB WEB"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },

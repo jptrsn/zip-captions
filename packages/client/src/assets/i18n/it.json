@@ -357,13 +357,13 @@
         "label": "Il tuo browser (Chrome e Safari)",
         "description": "Utilizzando il fornitore del browser, Zip Captions invierà dati audio dal tuo dispositivo direttamente al tuo fornitore del browser utilizzando l'API Web Speech.",
         "cost": "Tasso: sempre libero",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "Servizi Microsoft Azure Cognitive",
         "description": "Utilizzando il fornitore di servizi Azure Cognitive, Zip Captions trasmetterà dati audio dal tuo dispositivo direttamente all'API di Microsoft utilizzando un socket web sicuro.",
         "cost": "Tasso: 60 tokens al minuto",
-        "link": "HTTPS://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },

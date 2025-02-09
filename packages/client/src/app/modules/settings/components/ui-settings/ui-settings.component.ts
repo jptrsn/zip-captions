@@ -26,7 +26,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
     lang: FormControl<InterfaceLanguage | null>,
-		dialect: FormControl<RecognitionDialect | null>,
+    dialect: FormControl<RecognitionDialect | null>,
     font: FormControl<FontFamily | null>,
     wakelock: FormControl<boolean | undefined | null>,
     renderHistory: FormControl<number | null>,
@@ -45,7 +45,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
   private language: Signal<InterfaceLanguage>;
-	private dialect: Signal<RecognitionDialect | undefined>;
+  private dialect: Signal<RecognitionDialect | undefined>;
   private wakeLockEnabled: Signal<boolean | undefined>;
   private currentTextSize: Signal<TextSize>;
   private currentLineHeight: Signal<LineHeight>;
@@ -66,7 +66,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
     this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     this.fontFamily = toSignal(this.store.select(selectFontFamily)) as Signal<FontFamily>;
-		this.dialect = toSignal(this.store.pipe(select(dialectSelector)));
+    this.dialect = toSignal(this.store.pipe(select(dialectSelector)));
 
     this.settingsState = toSignal(this.store.select(selectAppSettings)) as Signal<SettingsState>;
     this.syncUiSettings = toSignal(this.store.select(selectUserSettingsSync));
@@ -74,7 +74,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language()),
-			dialect: this.fb.control(this.dialect() || null),
+      dialect: this.fb.control(this.dialect() || null),
       font: this.fb.control(this.fontFamily()),
       wakelock: this.fb.control(this.wakeLockEnabled()),
       renderHistory: this.fb.control(this.renderHistory()),
@@ -82,11 +82,11 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
       lineHeight: this.fb.control(this.currentLineHeight()),
     });
 
-		this.formGroup.controls['lang'].valueChanges.pipe(takeUntilDestroyed()).subscribe((selectedLanguage) => {
-			if (selectedLanguage !== this.language()) {
-				this.formGroup.controls['dialect'].setValue('unspecified')
-			}
-		})
+    this.formGroup.controls['lang'].valueChanges.pipe(takeUntilDestroyed()).subscribe((selectedLanguage) => {
+      if (selectedLanguage !== this.language()) {
+        this.formGroup.controls['dialect'].setValue('unspecified')
+      }
+    })
 
     this.renderHistoryFormValue = toSignal(this.formGroup.controls['renderHistory'].valueChanges.pipe(
       startWith(this.renderHistory()),
@@ -155,12 +155,12 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     const language: InterfaceLanguage = this.formGroup.controls['lang'].value as InterfaceLanguage;
     this.store.dispatch(SettingsActions.setLanguage({language}))
 
-		console.log('dialect form group value', this.formGroup.controls['dialect'].value);
-		const dialect: RecognitionDialect | null = this.formGroup.controls['dialect'].value as RecognitionDialect | null;
-		if (dialect) {
-			console.log('dialect', dialect)
-			this.store.dispatch(SettingsActions.setDialect({dialect}))
-		}
+    console.log('dialect form group value', this.formGroup.controls['dialect'].value);
+    const dialect: RecognitionDialect | null = this.formGroup.controls['dialect'].value as RecognitionDialect | null;
+    if (dialect) {
+      console.log('dialect', dialect)
+      this.store.dispatch(SettingsActions.setDialect({dialect}))
+    }
 
     const wakelockEnabled: boolean = this.formGroup.controls['wakelock'].value as boolean;
     this.store.dispatch(SettingsActions.updateWakeLockEnabled({enabled: wakelockEnabled}));

@@ -357,13 +357,13 @@
         "label": "浏览器(Chrome/Safari)",
         "description": "使用浏览器提供商,Zip Captions 将从您的设备直接向您的浏览器提供商发送音频数据,使用 Web Speech API。",
         "cost": "价格:总是免费",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "微软 Azure 认知服务",
         "description": "使用 Azure Cognitive Services 提供商,Zip Captions 将从您的设备直接向 Microsoft API 发送音频数据,使用安全的 Web Socket。",
         "cost": "速度:每分钟60元",
-        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },

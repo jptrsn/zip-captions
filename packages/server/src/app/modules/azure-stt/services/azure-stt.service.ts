@@ -17,7 +17,6 @@ export class AzureSttService {
 	) { }
 
 	async getToken(): Promise<{token: string; region: string}> {
-		console.log('speech key', this.speechKey[0])
 		const headers = {
 			headers: {
 					'Ocp-Apim-Subscription-Key': this.speechKey,

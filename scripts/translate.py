@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+import re
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 # Paths
@@ -13,7 +14,7 @@ MODEL_NAME = "facebook/m2m100_418M"
 tokenizer = M2M100Tokenizer.from_pretrained(MODEL_NAME)
 model = M2M100ForConditionalGeneration.from_pretrained(MODEL_NAME)
 
-def load_json(file_path):
+def load_json(file_path: str) -> dict:
     """Loads a JSON file."""
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -22,6 +23,11 @@ def save_json(file_path, data):
     """Saves a JSON object to a file."""
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+def is_url(value):
+    """Checks if a value is a URL."""
+    url_pattern = re.compile(r"^(https?|ftp)://[^\s/$.?#].[^\s]*$", re.IGNORECASE)
+    return isinstance(value, str) and bool(url_pattern.match(value))
 
 def translate_text(text, src_lang, tgt_lang):
     """Translates text using the AI model."""
@@ -54,9 +60,13 @@ def update_translations():
                         check_and_translate(value, trans_obj[key], full_path)
                     else:
                         if key not in trans_obj:
-                            translated_text = translate_text(value, BASE_LANG, lang_code)
-                            print(f"Translated {key}: {translated_text}")
-                            trans_obj[key] = translated_text
+                            if is_url(value):
+                                trans_obj[key] = value  # Copy URL without translating
+                                print(f"Duplicated url {key}: {value}")
+                            else:
+                              translated_text = translate_text(value, BASE_LANG, lang_code)
+                              print(f"Translated {key}: {translated_text}")
+                              trans_obj[key] = translated_text
                             new_entries.append(full_path)
 
             check_and_translate(base_data, trans_data)

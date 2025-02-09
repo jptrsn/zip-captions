@@ -25,7 +25,7 @@ export class AzureSttController {
 			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
 		}
 		if (!user.creditBalance) {
-			throw new HttpException(`Unauthorized`, HttpStatus.UNAUTHORIZED);
+			throw new HttpException(`Payment required`, HttpStatus.PAYMENT_REQUIRED);
 		}
 		return this.azureSttService.getToken();
 	}

@@ -2,7 +2,7 @@
   "LANGUAGES": {
     "en": "Anglais (English)",
     "fr": "Français",
-    "es": "Espangol",
+    "es": "Espagnol",
     "de": "Allemand (Deutsch)",
     "it": "Italien (Italiano)",
     "pt": "Portugais (Português)",
@@ -50,7 +50,7 @@
     "es-PR": "Espagnol (Porto Rico)",
     "es-PY": "Espagnol (Paraguay)",
     "es-SV": "Espagnol (El Salvador)",
-    "es-US": "Espagnol (États-Unis)1",
+    "es-US": "Espagnol (États-Unis)",
     "es-UY": "Espagnol (Uruguay)",
     "es-VE": "Espagnol (Venezuela)",
     "de-AT": "Allemand (Autriche)",
@@ -357,13 +357,13 @@
         "label": "Le navigateur (Chrome et Safari)",
         "description": "En utilisant le fournisseur de navigateur, Zip Captions enverra des données audio de votre appareil directement à votre fournisseur de navigateur en utilisant l’API Web Speech.",
         "cost": "Résultat : toujours gratuit",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
       },
       "azure": {
         "label": "Microsoft Azure Cognitive Services",
         "description": "Grâce au fournisseur Azure Cognitive Services, Zip Captions envoie des données audio de votre appareil directement à l’API de Microsoft en utilisant un socket web sécurisé.",
         "cost": "Résultat : 60 tokens par minute",
-        "link": "HTTPS://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
       }
     }
   },
@@ -467,7 +467,7 @@
     "rejected": "Rejecté",
     "viewPolicy": "Voir détails",
     "saveAndClose": "Sauver et Fermer",
-    "save": "Suaver",
+    "save": "Sauver",
     "cancel": "Annuler",
     "confirm": "Oui, je suis sûr",
     "decline": "Non",

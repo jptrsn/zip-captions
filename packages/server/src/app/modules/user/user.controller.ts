@@ -40,7 +40,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   // @UseInterceptors(CustomCacheInterceptor)
   // @CacheKey(UserController.PROFILE_CACHE_KEY)
-	@NoCache()
+  @NoCache()
   async getUser(@Req() req, @Param() params: { id: string }): Promise<UserProfile> {
     this._validateParam(req, params);
     const user = await this.userService.findOne({id: req.user.id});
@@ -55,7 +55,7 @@ export class UserController {
       googleConnected: !!user.googleId,
       azureConnected: !!user.msId,
       syncUiSettings: user.syncUiSettings,
-			creditBalance: user.creditBalance || 0
+      creditBalance: user.creditBalance || 0
     }
     return userProfile;
   }

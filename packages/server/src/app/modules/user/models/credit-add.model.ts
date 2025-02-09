@@ -1,6 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { v4 } from "uuid";
 
+export enum CreditProvider {
+  MONTHLY_PATREON = 'Monthly Patreon support',
+  ONE_OFF = 'One-off Purchase',
+  COMMUNITY_GIFT = 'Community Gift'
+}
+
 @Schema()
 export class CreditAdd {
 	@Prop({
@@ -26,12 +32,15 @@ export class CreditAdd {
 
 		@Prop({
 			type: String,
-			required: true
+			required: true,
+			enum: CreditProvider
 		})
-		provider: string; // This should identify the purchase mechanism, e.g. "Monthly Patreon support", "One-off Purchase", "Community Gift", etc.
+		provider: CreditProvider; // This should identify the purchase mechanism, e.g. "Monthly Patreon support", "One-off Purchase", "Community Gift", etc.
 
 		@Prop({
-			type: Number
+			type: Number,
+			required: true,
+			min: 0
 		})
 		creditsAdded: number;
 
