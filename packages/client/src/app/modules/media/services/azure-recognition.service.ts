@@ -30,7 +30,6 @@ export class AzureRecognitionService {
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
 		this.azureSttEndpoint = `${baseUrl}/${apiVersion}/azure-stt`;
 		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
-		sdk.Diagnostics.SetLoggingLevel(sdk.LogLevel.Debug);
 	}
 
 	public initialize(language: InterfaceLanguage | RecognitionDialect): Observable<{token: string; region: string}> {
