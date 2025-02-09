@@ -2,13 +2,67 @@
   "LANGUAGES": {
     "en": "Englisch (English)",
     "fr": "Französisch (Français)",
-    "sp": "Spanisch (Espagnol)",
+    "es": "Spanisch (Espagnol)",
     "de": "Deutsch",
     "it": "Italienisch (Italiano)",
     "pt": "Portugiesisch (Português)",
     "pl": "Polnisch (Polski)",
     "id": "Indonesisch (Bahasa Indonesia)",
     "uk": "Ukranisch (Український)"
+  },
+  "DIALECTS": {
+    "unspecified": "Generisch",
+    "en-AU": "Englisch (Australien)",
+    "en-CA": "Englisch (Kanada)",
+    "en-GB": "Englisch (Vereinigtes Königreich)",
+    "en-GH": "Englisch (Ghana)",
+    "en-HK": "Englisch (SVR Hongkong)",
+    "en-IE": "Englisch (Irland)",
+    "en-IN": "Englisch (Indien)",
+    "en-KE": "Englisch (Kenia)",
+    "en-NG": "Englisch (Nigeria)",
+    "en-NZ": "Englisch (Neuseeland)",
+    "en-PH": "Englisch (Philippinen)",
+    "en-SG": "Englisch (Singapur)",
+    "en-TZ": "Englisch (Tansania)",
+    "en-US": "Englisch (USA)",
+    "en-ZA": "Englisch (Südafrika)",
+    "fr-BE": "Französisch (Belgien)",
+    "fr-CA": "Französisch (Kanada)",
+    "fr-CH": "Französisch (Schweiz)",
+    "fr-FR": "Französisch (Frankreich)",
+    "es-AR": "Spanisch (Argentinien)",
+    "es-BO": "Spanisch (Bolivien)",
+    "es-CL": "Spanisch (Chile)",
+    "es-CO": "Spanisch (Kolumbien)",
+    "es-CR": "Spanisch (Costa Rica)",
+    "es-CU": "Spanisch (Kuba)",
+    "es-DO": "Spanisch (Dominikanische Republik)",
+    "es-EC": "Spanisch (Ecuador)",
+    "es-ES": "Spanisch (Spanien)",
+    "es-GQ": "Spanisch (Äquatorialguinea)",
+    "es-GT": "Spanisch (Guatemala)",
+    "es-HN": "Spanisch (Honduras)",
+    "es-MX": "Spanisch (Mexiko)",
+    "es-NI": "Spanisch (Nicaragua)",
+    "es-PA": "Spanisch (Panama)",
+    "es-PE": "Spanisch (Peru)",
+    "es-PR": "Spanisch (Puerto Rico)",
+    "es-PY": "Spanisch (Paraguay)",
+    "es-SV": "Spanisch (El Salvador)",
+    "es-US": "Spanisch (USA)1",
+    "es-UY": "Spanisch (Uruguay)",
+    "es-VE": "Spanisch (Venezuela)",
+    "de-AT": "Deutsch (Österreich)",
+    "de-CH": "Deutsch (Schweiz)",
+    "de-DE": "Deutsch (Deutschland)",
+    "it-CH": "Italienisch (Schweiz)",
+    "it-IT": "Italienisch (Italien)",
+    "pt-BR": "Portugiesisch (Brasilien)",
+    "pt-PT": "Portugiesisch (Portugal)",
+    "id-ID": "Indonesisch (Indonesien)",
+    "pl-PL": "Polnisch (Polen)",
+    "uk-UA": "Ukrainisch (Ukraine)"
   },
   "THEMES": {
     "dark": "dunkel",
@@ -257,7 +311,8 @@
       "sync": "Synchronisieren",
       "sharing": "Teilen",
       "obs": "OBS Studio",
-      "transcription": "Transkript"
+      "transcription": "Transkript",
+      "engine": "Motoren"
     },
     "UI": {
       "t1": "Vorschau",
@@ -292,6 +347,24 @@
       "localDataWarning": "Alle Daten werden lokal auf Ihrem Gerät gespeichert, wobei ein für Ihr Konto eindeutiger Verschlüsselungsschlüssel verwendet wird. Denken Sie daran, sich anzumelden, bevor Sie mit den Untertiteln beginnen, um sicherzustellen, dass das Transkript gespeichert wird.",
       "encryptionWarning": "Wenn Sie Ihr Konto löschen, werden alle gespeicherten Daten und Verschlüsselungsschlüssel gelöscht",
       "loginRequired": "Sie müssen angemeldet sein, um Transkriptionen zu konfigurieren."
+    },
+    "PROVIDER": {
+      "title": "Anerkennung API Provider",
+      "description": "Wählen Sie aus, welcher Dienstleister Sie verwenden möchten, um sichere Audio- und Rückgabeergebnisse zu verarbeiten. Verschiedene Motoren werden in Geschwindigkeit, Qualität und Kosten unterschiedlich sein. Wir tun unser Bestes, um Ihnen so viel Wahl wie möglich zu bringen, während die Dinge so frei wie wir können.",
+      "balance": "Ihre Token",
+      "acquire": "Um Tokens zu erhalten, können Sie uns auf Patreon unterstützen oder einige von der Community Pool anfordern (kommt bald)",
+      "web": {
+        "label": "Browser (Chrome und Safari)",
+        "description": "Mit dem Browser-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an Ihren Browser-Anbieter über die Web Speech API.",
+        "cost": "Rate: immer kostenlos",
+        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+      },
+      "azure": {
+        "label": "Microsoft Azure kognitive Dienstleistungen",
+        "description": "Mit dem Azure Cognitive Services-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an die Microsoft-API mit einem sicheren Web-Socket.",
+        "cost": "Rate: 60 Tokens pro Minute",
+        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+      }
     }
   },
   "STREAM": {
@@ -378,10 +451,10 @@
     "forum": "Forum",
     "auth": "Mein Konto",
     "transcript": "Transkripte",
-		"about_us": "Über uns",
-		"advisory_board": "Beirat",
-		"testimonials": "Erfahrungsberichte",
-		"our_story": "Unsere Geschichte"
+    "about_us": "Über uns",
+    "advisory_board": "Beirat",
+    "testimonials": "Erfahrungsberichte",
+    "our_story": "Unsere Geschichte"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -424,6 +497,7 @@
     "listen": "Hören Sie",
     "lang": "Sprache",
     "theme": "Thema",
+    "dialect": "Dialekt",
     "wakelock": "Bildschirm aufwecken",
     "wakelockOn": "Verhindern, dass der Bildschirm bei aktiven Untertiteln in den Ruhezustand versetzt wird",
     "wakelockOff": "Zip Captions respektiert Ihre Systemeinstellungen für den Ruhezustand.",
@@ -449,7 +523,8 @@
     "title": "Titel",
     "description": "Beschreibung",
     "date": "Datum",
-    "duration": "Dauer"
+    "duration": "Dauer",
+    "provider": "Anbieter"
   },
   "HINTS": {
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
@@ -561,6 +636,10 @@
       "usernameLabel": "Patreon-Benutzername",
       "startDateLabel": "Beigetreten",
       "thanksMessage": "Vielen Dank für Ihre Unterstützung - ohne Ihre Hilfe könnten wir das nicht schaffen!"
+    },
+    "TABS": {
+      "account": "Konto",
+      "provider": "Anbieter"
     }
   },
   "TRANSCRIPT": {

@@ -53,6 +53,11 @@ export class User {
   })
   syncUiSettings?: boolean;
 
+	@Prop({
+		type: Number
+	})
+	creditBalance?: number;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

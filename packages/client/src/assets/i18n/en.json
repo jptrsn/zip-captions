@@ -2,7 +2,7 @@
   "LANGUAGES": {
     "en": "English",
     "fr": "French (Français)",
-    "sp": "Spanish (Espagnol)",
+    "es": "Spanish (Espagnol)",
     "de": "German (Deutsch)",
     "it": "Italian (Italiano)",
     "pt": "Portuguese (Português)",
@@ -10,6 +10,60 @@
     "pl": "Polish (Polski)",
     "uk": "Ukrainian (Український)"
   },
+	"DIALECTS": {
+		"unspecified": "Generic",
+		"en-AU":	"English (Australia)",
+		"en-CA":	"English (Canada)",
+		"en-GB":	"English (United Kingdom)",
+		"en-GH":	"English (Ghana)",
+		"en-HK":	"English (Hong Kong SAR)",
+		"en-IE":	"English (Ireland)",
+		"en-IN":	"English (India)",
+		"en-KE":	"English (Kenya)",
+		"en-NG":	"English (Nigeria)",
+		"en-NZ":	"English (New Zealand)",
+		"en-PH":	"English (Philippines)",
+		"en-SG":	"English (Singapore)",
+		"en-TZ":	"English (Tanzania)",
+		"en-US":	"English (United States)",
+		"en-ZA":	"English (South Africa)",
+		"fr-BE": "French (Belgium)",
+		"fr-CA": "French (Canada)",
+		"fr-CH": "French (Switzerland)",
+		"fr-FR": "French (France)",
+		"es-AR":	"Spanish (Argentina)",
+		"es-BO":	"Spanish (Bolivia)",
+		"es-CL":	"Spanish (Chile)",
+		"es-CO":	"Spanish (Colombia)",
+		"es-CR":	"Spanish (Costa Rica)",
+		"es-CU":	"Spanish (Cuba)",
+		"es-DO":	"Spanish (Dominican Republic)",
+		"es-EC":	"Spanish (Ecuador)",
+		"es-ES":	"Spanish (Spain)",
+		"es-GQ":	"Spanish (Equatorial Guinea)",
+		"es-GT":	"Spanish (Guatemala)",
+		"es-HN":	"Spanish (Honduras)",
+		"es-MX":	"Spanish (Mexico)",
+		"es-NI":	"Spanish (Nicaragua)",
+		"es-PA":	"Spanish (Panama)",
+		"es-PE":	"Spanish (Peru)",
+		"es-PR":	"Spanish (Puerto Rico)",
+		"es-PY":	"Spanish (Paraguay)",
+		"es-SV":	"Spanish (El Salvador)",
+		"es-US":	"Spanish (United States)",
+		"es-UY":	"Spanish (Uruguay)",
+		"es-VE":	"Spanish (Venezuela)",
+		"de-AT":	"German (Austria)",
+		"de-CH":	"German (Switzerland)",
+		"de-DE":	"German (Germany)",
+		"it-CH":	"Italian (Switzerland)",
+		"it-IT":	"Italian (Italy)",
+		"pt-BR": "Portuguese (Brazil)",
+		"pt-PT": "Portuguese (Portugal)",
+		"id-ID": "Indonesian (Indonesia)",
+		"pl-PL": "Polish (Poland)",
+		"uk-UA": "Ukrainian (Ukraine)"
+	},
   "THEMES": {
     "dark": "dark",
     "light": "light",
@@ -257,7 +311,8 @@
       "sync": "Sync",
       "sharing": "Sharing",
       "obs": "OBS Studio",
-      "transcription": "Transcript"
+      "transcription": "Transcript",
+			"engine": "Engine"
     },
     "UI": {
       "t1": "Preview",
@@ -292,7 +347,25 @@
       "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account. Remember to sign in before starting your captions to be sure the transcript is saved.",
       "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys",
       "loginRequired": "You must be signed-in to configure transcriptions."
-    }
+    },
+		"PROVIDER": {
+			"title": "Recognition API Provider",
+			"description": "Select which service providder you would like use to securely process audio and return results. Different engines will vary in speed, quality, and cost. We do our best to bring you as much choice as possible while keeping things as free as we can.",
+			"balance": "Your tokens",
+			"acquire": "To get tokens, you can support us on Patreon, or request some from the Community Pool (coming soon)",
+			"web": {
+				"label": "Browser (Chrome/Safari)",
+				"description": "Using the browser provider, Zip Captions will send audio data from your device directly to your browser provider using the Web Speech API.",
+				"cost": "Rate: always free",
+				"link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+			},
+			"azure": {
+				"label": "Microsoft Azure Cognitive Services",
+				"description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket. This provider requires a specified dialect, please ensure the setting is correct.",
+				"cost": "Rate: 60 tokens per minute",
+				"link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+			}
+		}
   },
   "STREAM": {
     "TABS": {
@@ -423,6 +496,7 @@
     "stop": "Stop",
     "listen": "Listen",
     "lang": "Language",
+		"dialect": "Dialect",
     "theme": "Theme",
     "wakelock": "Screen Wake",
     "wakelockOn": "Prevent the screen from sleeping while captions are active",
@@ -449,7 +523,8 @@
     "title": "Title",
     "description": "Description",
     "date": "Date",
-    "duration": "Duration"
+    "duration": "Duration",
+		"provider": "Provider"
   },
   "HINTS": {
     "beginSpeaking": "Start speaking...",
@@ -529,6 +604,10 @@
     "loginWithPatreon": "Sign in with Patreon"
   },
   "USER": {
+		"TABS": {
+			"account": "Account",
+			"provider": "Provider"
+		},
     "PROFILE": {
       "title": "Welcome",
       "blurb": "Here's what we know about you:",

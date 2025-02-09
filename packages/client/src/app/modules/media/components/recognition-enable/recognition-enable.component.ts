@@ -24,11 +24,11 @@ export class RecognitionEnableComponent {
   constructor(private store: Store<AppState>,
               private translate: TranslateService,
               private router: Router) {
-    this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
+    this.connected = toSignal(this.store.pipe(select(recognitionStatusSelector),
     map((status: RecognitionStatus) => (status === RecognitionStatus.connected)),
     ));
 
-    this.disconnected = toSignal(this.store.pipe(select(recognitionStatusSelector), 
+    this.disconnected = toSignal(this.store.pipe(select(recognitionStatusSelector),
     map((status: RecognitionStatus) => (status === RecognitionStatus.disconnected)),
     ));
 

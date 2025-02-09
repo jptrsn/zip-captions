@@ -21,7 +21,7 @@ import { PeerService } from '../../services/peer.service';
 })
 export class BroadcastRoomComponent implements OnInit, OnDestroy {
   public recognitionConnected: Signal<boolean | undefined>;
-  
+
   private recognitionPaused: Signal<boolean | undefined>;
   private liveText: Observable<string>;
   private recognizedText: Observable<string[]>;
@@ -32,8 +32,8 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
               private peerService: PeerService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
-    this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput('broadcast')() : ''))
-    this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText('broadcast')() : []));
+    this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : ''))
+    this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText()() : []));
     let isPaused = false;
     effect(() => {
       if (this.recognitionPaused()) {

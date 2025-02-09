@@ -29,6 +29,9 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { ObsStudioSettingsComponent } from './components/obs-studio-settings/obs-studio-settings.component';
 import { TranscriptionSettingsComponent } from './components/transcription-settings/transcription-settings.component';
 import { TranscriptEnabledComponent } from './components/transcript-enabled/transcript-enabled.component';
+import { DialectSelectorComponent } from './components/dialect-selector/dialect-selector.component';
+import { RecognitionEngineComponent } from './components/recognition-engine/recognition-engine.component';
+import { RecognitionEngineSelectComponent } from '../../components/recognition-engine-select/recognition-engine-select.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +51,8 @@ import { TranscriptEnabledComponent } from './components/transcript-enabled/tran
     ObsStudioSettingsComponent,
     TranscriptionSettingsComponent,
     TranscriptEnabledComponent,
+    DialectSelectorComponent,
+    RecognitionEngineComponent,
   ],
   imports: [
     CommonModule,
@@ -63,6 +68,7 @@ import { TranscriptEnabledComponent } from './components/transcript-enabled/tran
       ...Icons,
     }),
     ClipboardModule,
+		RecognitionEngineSelectComponent,
   ],
 })
 export class SettingsModule {}

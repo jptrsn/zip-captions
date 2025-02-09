@@ -51,7 +51,7 @@ export class EndBroadcastComponent {
     this.store.dispatch(RecognitionActions.disconnect({id: 'broadcast'}));
     const id = this.streamId();
     if (id) {
-      this.mediaService.disconnectStream(id) 
+      this.mediaService.disconnectStream(id)
     }
     this.store.select(recognitionStatusSelector).pipe(
       filter((status) => status === RecognitionStatus.disconnected),

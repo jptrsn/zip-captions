@@ -1,5 +1,7 @@
 <div class="flex flex-col items-center justify-center basis-full overflow-y-auto p-6 gap-6 flex-grow-0 bg-base-300 text-base-content">
-  <app-user-profile class="sm:basis-auto basis-full"></app-user-profile>
+
+	<app-user-profile class="sm:basis-auto basis-full"></app-user-profile>
+
   <div class="flex flex-row gap-3" *ngIf="!loggedIn()">
     <button class="btn btn-primary" [routerLink]="['..']" translate>ROUTES.home</button>
     <button class="btn btn-secondary" [routerLink]="['..', 'auth', 'login']" translate>BUTTONS.login</button>

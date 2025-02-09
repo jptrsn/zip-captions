@@ -13,6 +13,7 @@ import { selectUserProfile, selectUserSupportProfile } from '../../../../selecto
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
+	standalone: false
 })
 export class UserProfileComponent {
   public profile: Signal<UserProfile | undefined>;
@@ -22,7 +23,7 @@ export class UserProfileComponent {
   public formGroup: FormGroup;
   public loading: WritableSignal<boolean> = signal(false);
   public accountDeleted: WritableSignal<boolean> = signal(false);
-  
+
   // These must have keys in the USER.PROFILE.DELETE_REASONS translation files
   public reasons: string[] = [
     'alternative',
@@ -45,7 +46,7 @@ export class UserProfileComponent {
       }
       return undefined;
     });
-    
+
     this.formGroup = this.fb.group<{email: FormControl<string | null>, reason: FormControl<string | null>}>({
       email: this.fb.control<string | null>('', [(control) => this._validateEmail(control)]),
       reason: this.fb.control<string | null>('')
@@ -85,5 +86,5 @@ export class UserProfileComponent {
     }
     return null;
   }
-  
+
 }

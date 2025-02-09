@@ -3,12 +3,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, of, switchMap } from 'rxjs';
+import { filter, map, of, switchMap } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { AudioStreamActions, AudioStreamState, AudioStreamStatus } from '../../../../models/audio-stream.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
 import { selectAudioStream } from '../../../../selectors/audio-stream.selector';
 import { MediaService } from '../../services/media.service';
+import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionEngineState } from '../../../../models/recognition.model';
+import { selectRecognitionEngine } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-audio-input-enable',
@@ -22,6 +25,7 @@ export class AudioInputEnableComponent {
   public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
   public small: Signal<boolean | undefined>;
+	public provider: Signal<RecognitionEngineState['provider'] | undefined>;
 
   constructor(private store: Store<AppState>,
               private mediaService: MediaService,
@@ -30,7 +34,11 @@ export class AudioInputEnableComponent {
     this.streamState = toSignal(this.store.pipe(select(selectAudioStream))) as Signal<AudioStreamState>;
     this.connected = computed(() => this.streamState().status === AudioStreamStatus.connected);
     this.disconnected = computed(() => this.streamState().status === AudioStreamStatus.disconnected);
-    
+		this.provider = toSignal(this.store.pipe(
+					select(selectRecognitionEngine),
+					map((e) => e?.provider )
+				));
+
     const appError = toSignal(this.store.pipe(
       select(errorSelector),
       filter((err) => err !== 'ERRORS.liveTextMissing'),
@@ -44,12 +52,14 @@ export class AudioInputEnableComponent {
 
   toggleState(): void {
     if (this.connected() || this.error()) {
-      this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
+      this.store.dispatch(RecognitionActions.disconnect({id: this.streamState().id}))
+			this.store.dispatch(AudioStreamActions.disconnectStream({id: this.streamState().id}))
     } else {
       if (this.router.url !== '/') {
         this.router.navigate(['/'])
       }
-      this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
+      this.store.dispatch(RecognitionActions.connect({id: this.streamState().id}))
+			this.store.dispatch(AudioStreamActions.connectStream({id: this.streamState().id}))
     }
   }
 }

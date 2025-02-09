@@ -49,7 +49,7 @@ export class ObsConnectionStatusComponent {
   }
 
   startRecognition(): void {
-    this.router.navigate(['']).then(() => 
+    this.router.navigate(['']).then(() =>
       {
         if (this.isDesktop()) {
           this.store.dispatch(AudioStreamActions.connectStream({ id: 'default'}));

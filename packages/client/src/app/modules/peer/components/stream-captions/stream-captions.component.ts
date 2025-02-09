@@ -19,11 +19,11 @@ import { RecognitionService } from '../../../media/services/recognition.service'
   ]
 })
 export class StreamCaptionsComponent implements OnInit, OnDestroy {
-  
+
   public recognitionConnected: Signal<boolean | undefined>;
   public recognitionPaused: Signal<boolean | undefined>;
   public liveText: Signal<string>;
-  
+
   private liveText$: Observable<string>;
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
@@ -31,7 +31,7 @@ export class StreamCaptionsComponent implements OnInit, OnDestroy {
               private obs: ObsConnectionService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
-    this.liveText = computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput('stream')() : '')
+    this.liveText = computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : '')
     this.liveText$ = toObservable(this.liveText);
   }
 

@@ -1,31 +1,40 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, of, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap } from "rxjs";
 import { AudioStreamActions } from '../models/audio-stream.model';
-import { RecognitionActions } from '../actions/recogntion.actions';
 import { MediaService } from "../modules/media/services/media.service";
+import { RecognitionActions } from "../actions/recogntion.actions";
 
 @Injectable()
 export class AudioStreamEffects {
   constructor(private actions$: Actions,
               private mediaService: MediaService) {}
 
-  connectStream$ = createEffect(() => 
+  connectStream$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AudioStreamActions.connectStream), 
+      ofType(AudioStreamActions.connectStream),
       switchMap((props) => this.mediaService.getMediaStream(props.id)),
-      switchMap((streamId: string) => [AudioStreamActions.connectStreamSuccess({ id: streamId }), RecognitionActions.connect({id: streamId})]),
+      map((streamId: string) => AudioStreamActions.connectStreamSuccess({ id: streamId })),
       catchError((error: {message: string}) => of(AudioStreamActions.connectStreamFailure({error: error.message}))),
     )
   )
-  
-  disconnectStream$ = createEffect(() => 
+
+  disconnectStream$ = createEffect(() =>
   this.actions$.pipe(
-    ofType(AudioStreamActions.disconnectStream), 
-    switchMap((props) => {
+    ofType(AudioStreamActions.disconnectStream),
+    map((props) => {
       const disconnectedId = this.mediaService.disconnectStream(props.id);
-      return [RecognitionActions.disconnect(props), AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})]
+      return AudioStreamActions.disconnectStreamSuccess({id: disconnectedId})
     })
   ))
+
+	disconnectStreamFailure$ = createEffect(() =>
+		this.actions$.pipe(
+			ofType(RecognitionActions.disconnectFailure),
+			map((props) => {
+				this.mediaService.disconnectAllStreams();
+				return AudioStreamActions.audioStreamError({ error: props.error })
+			})
+		))
 
 }

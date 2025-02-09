@@ -51,7 +51,7 @@ export class RecognitionControlSidebarComponent {
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
-    
+
     this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
 
     this.renderHistoryLength = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
@@ -113,7 +113,7 @@ export class RecognitionControlSidebarComponent {
     } else {
       this._resumeRecognition();
     }
-    
+
   }
 
   private _pauseRecognition(): void {

@@ -47,8 +47,8 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
     this.connected = toSignal(this.store.select(recognitionConnectedSelector));
     this.paused = toSignal(this.store.select(recognitionPausedSelector));
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
-    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput(id() as string)() : '');
-    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText(id() as string)() : []);
+    this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput()() : '');
+    this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText()() : []);
     this.hasLiveResults = computed(() => {
       if (this.connected()) {
         if (this.liveText() == '' && this.textOutput().length === 0) {
@@ -59,9 +59,9 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
       return this.state()?.status != RecognitionStatus.uninitialized;
     });
     this.error = toSignal(this.store.select(recognitionErrorSelector));
-    
+
     this.textFlowDown = toSignal(this.store.pipe(
-      select(selectTextFlow), 
+      select(selectTextFlow),
       map((flow: TextFlow) => (flow === 'top-down'))));
 
     if (this.fullScreen.isAvailable) {

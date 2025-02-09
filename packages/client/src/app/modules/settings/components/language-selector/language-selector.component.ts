@@ -7,6 +7,7 @@ import { AvailableLanguages } from '../../models/settings.model';
   selector: 'app-language-selector',
   templateUrl: './language-selector.component.html',
   styleUrls: ['./language-selector.component.scss'],
+	standalone: false
 })
 export class LanguageSelectorComponent {
   @Input() group!: FormGroup
