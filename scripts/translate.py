@@ -4,7 +4,7 @@ import torch
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 # Paths
-I18N_FOLDER = "./packages/client/src/assets/i18n"
+I18N_FOLDER = "../packages/client/src/assets/i18n"
 BASE_LANG = "en"
 BASE_FILE = f"{I18N_FOLDER}/{BASE_LANG}.json"
 
@@ -38,7 +38,7 @@ def update_translations():
 
     for file in os.listdir(I18N_FOLDER):
         if file.endswith(".json") and file != f"{BASE_LANG}.json":
-            lang_code = file.split(".")[0]
+            lang_code = file.removesuffix(".json")  # Keeps full language code, including dialects
             file_path = os.path.join(I18N_FOLDER, file)
             trans_data = load_json(file_path)
 

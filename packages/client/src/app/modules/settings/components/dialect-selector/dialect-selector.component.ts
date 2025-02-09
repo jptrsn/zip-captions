@@ -1,7 +1,7 @@
 import { Component, effect, Input, OnChanges, OnDestroy, signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { startWith, Subject, takeUntil } from 'rxjs';
-import { RecognitionDialect, SupportedDialects } from '../../models/settings.model';
+import { InterfaceLanguage, RecognitionDialect, SupportedDialects } from '../../models/settings.model';
 
 @Component({
   selector: 'app-dialect-selector',
@@ -11,7 +11,8 @@ import { RecognitionDialect, SupportedDialects } from '../../models/settings.mod
 export class DialectSelectorComponent implements OnChanges, OnDestroy {
 	@Input() group!: FormGroup;
 	@Input() controlName!: string;
-	@Input() languageControlName!: string;
+	@Input({ required: false }) languageControlName?: string;
+	@Input({ required: false }) language?: InterfaceLanguage;
 
 	public availableDialects: WritableSignal<RecognitionDialect[] | undefined> = signal(undefined);
 	private dialects = SupportedDialects;
@@ -35,8 +36,9 @@ export class DialectSelectorComponent implements OnChanges, OnDestroy {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes['group'] && changes['languageControlName'] && !this.hasSubscription) {
-			const languageControl = this.group.get(this.languageControlName);
+		if (changes['group'] && changes['languageControlName']?.currentValue && !this.hasSubscription) {
+			const controlName = changes['languageControlName'].currentValue
+			const languageControl = this.group.get(controlName);
 			if (languageControl) {
 				this.hasSubscription = true;
 				languageControl.valueChanges.pipe(
@@ -49,6 +51,13 @@ export class DialectSelectorComponent implements OnChanges, OnDestroy {
 					this.availableDialects.set(ad)
 				})
 			}
+		}
+		if (changes['language']?.currentValue) {
+			const language = changes['language'].currentValue;
+			const exp = new RegExp(language);
+			const ad = this.dialects.filter((d) => exp.test(d));
+			ad.unshift('unspecified')
+			this.availableDialects.set(ad)
 		}
 	}
 

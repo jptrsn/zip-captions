@@ -43,3 +43,5 @@ export const setFontFamilyFailure = createAction('[Settings] Set Font Family Fai
 export const saveTranscriptionSettings = createAction('[Settings] Save Transcription Settings', props<{ transcription: Partial<TranscriptionSettings> }>())
 export const saveTranscriptionSettingsSuccess = createAction('[Settings] Save Transcription Settings Success');
 export const saveTranscriptionSettingsFailure = createAction('[Settings] Save Transcription Settings Failure', props<{error: string}>());
+
+export const saveEngineSuccess = createAction('[Settings] Save Engine Success');

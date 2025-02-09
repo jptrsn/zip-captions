@@ -8,6 +8,7 @@ import { SettingsActions, SettingsState } from "../modules/settings/models/setti
 import { defaultSettingsState } from "../reducers/settings.reducer";
 import { selectTranscriptionSettings } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
+import { RecognitionActions } from "../actions/recogntion.actions";
 
 @Injectable()
 export class SettingsEffects {
@@ -116,6 +117,14 @@ export class SettingsEffects {
       catchError((err) => of(SettingsActions.setFontFamilyFailure({error: err.message})))
     )
   )
+
+	saveProvider$ = createEffect(() =>
+		this.actions$.pipe(
+			ofType(RecognitionActions.setEngine),
+			map(({ engine }) => this.storage.update('settings', 'engine', engine)),
+			map(() => SettingsActions.saveEngineSuccess())
+		)
+	)
 
   saveTranscriptionSettings$ = createEffect(() =>
     this.actions$.pipe(

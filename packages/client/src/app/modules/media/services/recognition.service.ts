@@ -7,7 +7,7 @@ import { AppState } from '../../../models/app.model';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
-import { InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
+import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
 import { WebRecognitionService } from './web-recognition.service';
 import { RecognitionEngineState } from '../../../models/recognition.model';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
@@ -23,7 +23,7 @@ export class RecognitionService {
 
 
 	private activeLanguage: Signal<InterfaceLanguage | RecognitionDialect>;
-	private obsConnected: Signal<boolean | undefined>;
+	private activeDialect: Signal<RecognitionDialect>;
 	private transcriptionEnabled: Signal<boolean | undefined>;
 
 	private provider: Signal<RecognitionEngineState['provider']>;
@@ -39,9 +39,16 @@ export class RecognitionService {
 			const d = dialect();
 			if (d && d !== 'unspecified') return d;
 			return l;
+		});
+
+		this.activeDialect = computed(() => {
+			const l = language();
+			const d = dialect();
+			if (d && d !== 'unspecified') return d;
+			const fallback = DefaultDialects[l];
+			return fallback || 'en-US';
 		})
 
-		this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
 		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
 		const engine = toSignal(this.store.select(selectRecognitionEngine));
 		this.provider = computed(() => {
@@ -51,8 +58,12 @@ export class RecognitionService {
 			const al = this.activeLanguage();
 			if (this.provider() === 'web') {
 				this.webRecognition.setLanguage(al);
-			} else {
-				this.azureRecognition.setLanguage(al);
+			}
+		})
+		effect(() => {
+			const d = this.activeDialect();
+			if (this.provider() === 'azure' && d) {
+				this.azureRecognition.setLanguage(d);
 			}
 		})
 	}
@@ -61,7 +72,7 @@ export class RecognitionService {
 		if (this.provider() === 'web') {
 			this.webRecognition.connectToStream();
 		} else {
-			this.azureRecognition.connectToStream(this.activeLanguage());
+			this.azureRecognition.connectToStream(this.activeDialect());
 		}
   }
 

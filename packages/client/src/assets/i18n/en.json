@@ -361,7 +361,7 @@
 			},
 			"azure": {
 				"label": "Microsoft Azure Cognitive Services",
-				"description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket.",
+				"description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket. This provider requires a specified dialect, please ensure the setting is correct.",
 				"cost": "Rate: 60 tokens per minute",
 				"link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
 			}

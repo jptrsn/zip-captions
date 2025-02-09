@@ -12,11 +12,16 @@
 
 		<ng-container *ngIf="provider() as p">
 			<div class="text-md mt-3">{{'SETTINGS.PROVIDER.' + p + '.label' | translate}}</div>
-			<p>{{'SETTINGS.PROVIDER.' + p + '.description' | translate }}</p>
+			<p class="text-sm mb-3">{{'SETTINGS.PROVIDER.' + p + '.description' | translate }}</p>
 			<div class="flex flex-row flex-wrap justify-between">
 				<div class="text-sm">{{'SETTINGS.PROVIDER.' + p + '.cost' | translate }}</div>
 				<div class="text-sm" [ngClass]="{'text-error': group.hasError('credits')}" *ngIf="p !== 'web'"><span translate>SETTINGS.PROVIDER.balance</span>: {{balance()}}</div>
 			</div>
+		</ng-container>
+
+		<ng-container *ngIf="provider() === 'azure'">
+			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn">WARNING! This engine requires a selected dialect. With your current settings, you will use the default dialect of {{fallbackDialect()}}</div>
+			<app-dialect-selector [group]="group" controlName="dialect" [language]="language()"></app-dialect-selector>
 		</ng-container>
 		<div *ngIf="group.hasError('credits')" class="text-sm flex flex-row flex-wrap justify-between">
 			<span class="text-error" translate>SETTINGS.PROVIDER.acquire</span><a [href]="patreonUrl" target="_blank">{{patreonUrl}}</a>
