@@ -364,7 +364,9 @@
         "description": "Con el proveedor de Servicios Cognitivos de Azure, Zip Captions enviará datos de audio desde su dispositivo directamente a la API de Microsoft utilizando un socket web seguro.",
         "cost": "Rate: 60 tokens por minuto",
         "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
-      }
+      },
+      "dialectRequired": "NOTA: Este proveedor requiere un dialecto seleccionado. con sus configuraciones actuales, usará el dialecto de",
+      "setSuccess": "El proveedor cambió con éxito"
     }
   },
   "STREAM": {
@@ -557,7 +559,8 @@
       "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition.",
       "network": "Error de reconocimiento de habla: la comunicación de red necesaria para completar el reconocimiento falleció.",
       "not-allowed": "Error de reconocimiento de habla: El agente de usuario deshabilitó cualquier entrada de habla de ocurrir por razones de seguridad, privacidad o preferencia del usuario."
-    }
+    },
+    "pageNotFound": "La página no se encontró"
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",

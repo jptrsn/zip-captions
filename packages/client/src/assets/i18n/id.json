@@ -364,7 +364,9 @@
         "description": "Menggunakan penyedia layanan kognitif Azure, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke API Microsoft menggunakan soket web yang aman.",
         "cost": "Kadar: 60 token per menit",
         "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
-      }
+      },
+      "dialectRequired": "PERINGATAN!Penyedia ini membutuhkan dialek yang dipilih.Dengan pengaturan Anda saat ini, Anda akan menggunakan dialek default dari",
+      "setSuccess": "Pembekal Berubah Sukses"
     }
   },
   "STREAM": {
@@ -555,7 +557,8 @@
       "service-not-allowed": "Kesalahan Pengenalan Pidato: Agen pengguna melarang layanan pengenalan suara yang diminta, baik karena agen pengguna tidak mendukungnya atau karena alasan keamanan, privasi atau preferensi pengguna.",
       "bad-grammar": "Kesalahan pengenalan suara: Ada kesalahan dalam tata bahasa pengenalan ucapan atau tag semantik, atau format tata bahasa yang dipilih atau format tag semantik tidak didukung.",
       "language-not-supported": "Kesalahan Pengenalan Pidato: Agen Pengguna tidak mendukung bahasa yang ditentukan dalam nilai atribut Lang dari objek pidato."
-    }
+    },
+    "pageNotFound": "Halaman tidak dapat ditemukan"
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",

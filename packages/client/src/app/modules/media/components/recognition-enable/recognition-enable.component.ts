@@ -6,9 +6,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { filter, map, of, switchMap } from 'rxjs';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
-import { RecognitionStatus } from '../../../../models/recognition.model';
+import { RecognitionEngineState, RecognitionStatus } from '../../../../models/recognition.model';
 import { errorSelector, windowControlsOverlaySelector } from '../../../../selectors/app.selector';
-import { recognitionErrorSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
+import { recognitionErrorSelector, recognitionStatusSelector, selectRecognitionEngine } from '../../../../selectors/recognition.selector';
 
 @Component({
   selector: 'app-recognition-enable',
@@ -20,6 +20,7 @@ export class RecognitionEnableComponent {
   public disconnected: Signal<boolean | undefined>;
   public error: Signal<string | undefined>;
   public small: Signal<boolean | undefined>;
+  public provider: Signal<RecognitionEngineState['provider'] | undefined>;
 
   constructor(private store: Store<AppState>,
               private translate: TranslateService,
@@ -40,6 +41,10 @@ export class RecognitionEnableComponent {
     ));
     this.error = computed(() => recogError() || appError())
     this.small = toSignal(this.store.select(windowControlsOverlaySelector));
+    this.provider = toSignal(this.store.pipe(
+              select(selectRecognitionEngine),
+              map((e) => e?.provider )
+            ));
   }
 
   toggleState(): void {

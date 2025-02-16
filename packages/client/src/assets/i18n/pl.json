@@ -364,7 +364,9 @@
         "description": "Korzystając z dostawcy usług Azure Cognitive, Zip Captions wysyła dane audio z urządzenia bezpośrednio do API firmy Microsoft za pomocą bezpiecznego socketu internetowego.",
         "cost": "Wskaźnik: 60 tokenów na minutę",
         "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
-      }
+      },
+      "dialectRequired": "OSTRZEŻENIE! ten dostawca wymaga wybranego dialektu. z bieżącym ustawieniem, będziesz używać podanego dialektu",
+      "setSuccess": "Sprzedawca zmienił się z powodzeniem"
     }
   },
   "STREAM": {
@@ -555,7 +557,8 @@
       "service-not-allowed": "Błąd rozpoznawania mowy - Agent użytkownika nie zwolnił żądanej usługi rozpoznawania mowy, albo dlatego, że agent użytkownika go nie obsługuje lub z powodów bezpieczeństwa, prywatności lub preferencji użytkownika.",
       "bad-grammar": "Błąd rozpoznawania mowy - wystąpił błąd w rozpoznawaniu mowy gramatyki lub znacznikach semantycznych lub wybrany format gramatyki lub format semantyczny tag był nieobsługiwany.",
       "language-not-supported": "Błąd rozpoznawania mowy - Agent użytkownika nie obsługuje języka określonego w wartości atrybutu LANG obiektu merythognition."
-    }
+    },
+    "pageNotFound": "Strony nie można znaleźć"
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",

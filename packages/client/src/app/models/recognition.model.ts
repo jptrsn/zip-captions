@@ -16,10 +16,8 @@ export interface RecognitionState {
 }
 
 export interface RecognitionEngineState {
+  loading?: boolean;
 	provider: 'web' | 'azure';
-	initialized: boolean;
-	token?: string;
-	region?: string;
 }
 
 
