@@ -7,7 +7,6 @@ export const provideExternalUrls = () => {
   return {
     provide: externalUrlProvider,
     useValue: (route: ActivatedRouteSnapshot) => {
-      console.log('externalUrlProvider', route.data);
       const externalUrl = route.data['externalUrl'] || route.data['url'];
       if (!externalUrl) {
         throw new Error('No external URL provided')

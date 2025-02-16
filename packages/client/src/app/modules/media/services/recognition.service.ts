@@ -69,6 +69,7 @@ export class RecognitionService {
 	}
 
   public connectToStream(): void {
+    console.log('connect to stream', this.activeLanguage()) // TODO: Remove after confirmming italian bug on mobile is no longer an issue
 		if (this.provider() === 'web') {
 			this.webRecognition.connectToStream();
 		} else {

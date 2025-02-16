@@ -80,12 +80,10 @@ export class RecognitionEngineComponent {
     effect(() => {
       if (this.formProviderToSave !== null) {
         if (provider() === this.formProviderToSave) {
-          console.log('saved form provider!', this.formProviderToSave)
           this.showToastMessage();
           this.formProviderToSave = null;
         } else {
-          console.log('failed to save form provider?', provider(), this.formProviderToSave)
-          this.showToastMessage()
+          console.warn('failed to save form provider?', provider(), this.formProviderToSave)
         }
       }
     }, { allowSignalWrites: true})
