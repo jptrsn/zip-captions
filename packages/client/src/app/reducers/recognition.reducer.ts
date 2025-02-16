@@ -6,8 +6,7 @@ import { RecognitionActions } from '../actions/recogntion.actions';
 export const defaultRecognitionState: RecognitionState = {
   status: RecognitionStatus.uninitialized,
 	engine: {
-		provider: 'web',
-		initialized: true
+		provider: 'web'
 	}
 }
 
@@ -26,7 +25,9 @@ export const recognitionReducers = createReducer(defaultRecognitionState,
   on(RecognitionActions.initTranscriptFailure, (state: RecognitionState, action:  {error: string}) => ({...state, status: RecognitionStatus.error, error: action.error})),
   on(RecognitionActions.deInitTranscriptDBSuccess, (state: RecognitionState) => ({...state, transcriptInitialized: false})),
   on(RecognitionActions.deleteTranscriptDBSuccess, (state: RecognitionState) => ({...state, transcriptInitialized: false})),
-	on(RecognitionActions.setEngine, (state: RecognitionState, action: { engine: 'web' | 'azure'}) => ({...state, engine: { provider: action.engine, initialized: (action.engine === 'web'), token: undefined, region: undefined }})),
-	on(RecognitionActions.setEngineSuccess, (state: RecognitionState, action: { token: string, region: string } | undefined) => ({...state, engine: { ...state.engine, initialized: !!action, token: action?.token, region: action?.region }})),
+  on(RecognitionActions.loadEngine, (state: RecognitionState) => ({...state, engine: { ...state.engine, loading: true }})),
+  on(RecognitionActions.resetEngine, (state: RecognitionState) => ({...state, engine: { ...state.engine, loading: false, provider: "web" as 'web' } })),
+	on(RecognitionActions.setEngine, (state: RecognitionState) => ({...state, engine: { ...state.engine, loading: true }})),
+	on(RecognitionActions.setEngineSuccess, (state: RecognitionState, action: { engine: 'web' | 'azure'}) => ({...state, engine: { ...state.engine, loading: false, provider: action.engine }})),
 	on(RecognitionActions.setEngineFailure, (state: RecognitionState, action: { error: string }) => ({...state, error: action.error})),
 )

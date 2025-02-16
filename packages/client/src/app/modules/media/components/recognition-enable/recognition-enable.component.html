@@ -1,9 +1,10 @@
-<button 
-  class="btn btn-ghost btn-circle tooltip tooltip-left"
+<button
+  class="btn btn-circle tooltip tooltip-left relative"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error(), 'btn-sm': small()}"
   (click)="toggleState()"
   [attr.data-tip]="connected() ? ('LABELS.stop' | translate) : ('LABELS.listen' | translate)"
   >
+  <ng-icon *ngIf="provider() !== 'web' && !connected()" class="absolute -top-2 -right-2 text-success rounded-full" size="24" name="heroSparkles"></ng-icon>
   <ng-icon #errorIcon *ngIf="error(); else micEnabled" class="tooltip tooltip-warning tooltip-left" [attr.data-tip]="error()" name="heroExclamationTriangle"></ng-icon>
   <ng-template #micEnabled>
     <ng-container *ngIf="connected(); else inactive">

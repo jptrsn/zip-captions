@@ -118,15 +118,7 @@ export class SettingsEffects {
     )
   )
 
-	saveProvider$ = createEffect(() =>
-		this.actions$.pipe(
-			ofType(RecognitionActions.setEngine),
-			map(({ engine }) => this.storage.update('settings', 'engine', engine)),
-			map(() => SettingsActions.saveEngineSuccess())
-		)
-	)
-
-  saveTranscriptionSettings$ = createEffect(() =>
+	saveTranscriptionSettings$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.saveTranscriptionSettings),
       withLatestFrom(this.store.select(selectTranscriptionSettings)),

@@ -20,14 +20,18 @@
 		</ng-container>
 
 		<ng-container *ngIf="provider() === 'azure'">
-			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn">WARNING! This engine requires a selected dialect. With your current settings, you will use the default dialect of {{fallbackDialect()}}</div>
+			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn"><span translate>SETTINGS.PROVIDER.dialectRequired</span> {{fallbackDialect()}}</div>
 			<app-dialect-selector [group]="group" controlName="dialect" [language]="language()"></app-dialect-selector>
 		</ng-container>
 		<div *ngIf="group.hasError('credits')" class="text-sm flex flex-row flex-wrap justify-between">
 			<span class="text-error" translate>SETTINGS.PROVIDER.acquire</span><a [href]="patreonUrl" target="_blank">{{patreonUrl}}</a>
 		</div>
-		<button class="btn btn-primary" type="button" (click)="setProvider()" translate>BUTTONS.save</button>
+		<button class="btn btn-primary" type="button" (click)="setProvider()" translate [disabled]="!group.dirty || group.invalid">BUTTONS.save</button>
 	</form>
+</div>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showToast()">
+  <div class="alert alert-info" translate>SETTINGS.PROVIDER.setSuccess</div>
 </div>
 
 <ng-template #loginRequired>

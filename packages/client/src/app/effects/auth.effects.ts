@@ -20,7 +20,7 @@ export class AuthEffects {
       ofType(AuthActions.login),
       switchMap(() => this.authService.login()
         .pipe(
-          map((id) => id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess()),
+          switchMap((id) => id ? [AuthActions.loginSuccess({ id }), RecognitionActions.loadEngine()] : [AuthActions.logoutSuccess()]),
           catchError((err) => of(AuthActions.loginFailure({ error: err.message})))
         )
       )
@@ -32,7 +32,7 @@ export class AuthEffects {
       ofType(AuthActions.logout),
       switchMap(() => this.authService.logout()
         .pipe(
-          switchMap(() => [AuthActions.logoutSuccess(), UserActions.clearProfile(), RecognitionActions.setEngine({ engine: 'web' })]),
+          switchMap(() => [AuthActions.logoutSuccess(), UserActions.clearProfile(), RecognitionActions.resetEngine()]),
           catchError((err) => of(AuthActions.logoutFailure({error: err.message})))
         )
       )
@@ -44,7 +44,7 @@ export class AuthEffects {
       ofType(AuthActions.validate),
       switchMap(() => this.authService.login()
         .pipe(
-          map((id: string | null) => (id ? AuthActions.loginSuccess({ id }) : AuthActions.logoutSuccess())),
+          switchMap((id: string | null) => (id ? [AuthActions.loginSuccess({ id }), RecognitionActions.loadEngine()] : [AuthActions.logoutSuccess()])),
           catchError(() => of(AuthActions.logoutSuccess()))
         )
       )

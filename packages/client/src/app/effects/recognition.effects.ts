@@ -1,14 +1,18 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, filter, from, map, of, switchMap } from "rxjs";
+import { catchError, from, map, of, switchMap } from "rxjs";
 import { RecognitionActions } from '../actions/recogntion.actions';
 import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
+import { StorageService } from "../services/storage.service";
+import { SettingsState } from "../modules/settings/models/settings.model";
+import { RecognitionState } from "../models/recognition.model";
 
 @Injectable()
 export class RecognitionEffects {
   constructor(private actions$: Actions,
+              private storage: StorageService,
               @Inject(RecognitionService) private recognitionService: RecognitionService,
               @Inject(TranscriptionService) private transcription: TranscriptionService) {}
 
@@ -115,6 +119,27 @@ export class RecognitionEffects {
 					catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
 				)
 			)
+    )
+  )
+
+  setEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.setEngine),
+      map(({ engine }) => {
+        return engine;
+      }),
+      map((engine) => RecognitionActions.setEngineSuccess({ engine }))
+    )
+  )
+
+  loadEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.loadEngine),
+      map(() => {
+        const cached: RecognitionState['engine']['provider'] | null = this.storage.get('recognitionEngine')
+        return cached ?? 'web'
+      }),
+      map((engine) => RecognitionActions.setEngineSuccess({ engine }))
     )
   )
 
