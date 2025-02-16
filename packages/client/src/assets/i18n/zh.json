@@ -364,7 +364,9 @@
         "description": "使用 Azure Cognitive Services 提供商,Zip Captions 将从您的设备直接向 Microsoft API 发送音频数据,使用安全的 Web Socket。",
         "cost": "速度:每分钟60元",
         "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
-      }
+      },
+      "dialectRequired": "警告! 此提供商需要选择的字符串. 与您的当前设置,您将使用默认字符串",
+      "setSuccess": "供应商成功改变"
     }
   },
   "STREAM": {
@@ -555,7 +557,8 @@
       "service-not-allowed": "语音识别错误:用户代理人取消了所要求的语音识别服务,无论是因为用户代理人不支持它,还是由于安全、隐私或用户偏好原因。",
       "bad-grammar": "语言识别错误:语言识别语法或语法标签中出现错误,或者选择的语法格式或语法标签格式未支持。",
       "language-not-supported": "语音识别错误:用户代理人不支持在语音识别对象的长属值中指定的语言。"
-    }
+    },
+    "pageNotFound": "页面无法找到"
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
