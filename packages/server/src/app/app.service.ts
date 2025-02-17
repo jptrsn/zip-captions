@@ -4,10 +4,14 @@ import { Supporter, SupporterDocument } from './models/supporter.model';
 import { Model } from 'mongoose';
 import { PatreonMembersCreateWebhookPayload, PatreonPledgeCreateWebhookPayload, PatreonPledgeUpdateWebhookPayload, PatreonUserObject, PatreonWebhookPayload } from './models/patreon.model';
 import { createHmac } from 'crypto';
+import { User } from './modules/user/models/user.model';
+import { CreditAdd } from './modules/user/models/credit-add.model';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel(Supporter.name) private supporterModel: Model<Supporter>) {}
+  constructor(@InjectModel(Supporter.name) private supporterModel: Model<Supporter>,
+              @InjectModel(User.name) private userModel: Model<User>,
+              @InjectModel(CreditAdd.name) private creditAdd: Model<CreditAdd>) {}
 
   async upsertMember(payload: PatreonWebhookPayload): Promise<SupporterDocument> {
     if (payload.data.type !== 'member') {
@@ -17,7 +21,7 @@ export class AppService {
     if (!userObject) {
       console.log('no user info in body', JSON.stringify(payload.included));
     }
-    
+
     const data = payload.data as PatreonMembersCreateWebhookPayload;
     const email = userObject?.attributes?.email || data.attributes.email;
     const id = userObject?.id;
@@ -50,7 +54,7 @@ export class AppService {
     if (!userObject) {
       console.log('no user info in body', JSON.stringify(payload.included));
     }
-    
+
     const data = payload.data as PatreonMembersCreateWebhookPayload;
     const email = userObject?.attributes.email || data.attributes.email;
     const id = userObject?.id;
@@ -102,7 +106,7 @@ export class AppService {
     return this.upsertSupporter(record);
   }
 
-  async updatePledge(payload: PatreonWebhookPayload): Promise<any> {
+  async updatePledge(payload: PatreonWebhookPayload): Promise<SupporterDocument> {
     if (payload.data.type !== 'member') {
       throw new BadRequestException('Invalid payload type');
     }
@@ -113,7 +117,7 @@ export class AppService {
     }
 
     const data = payload.data as PatreonPledgeUpdateWebhookPayload;
-    
+
     const record: Partial<Supporter> = {
       id: userObject.id,
       status: data.attributes.last_charge_status === 'Paid' ? data.attributes.patron_status : 'lapsed',
@@ -127,8 +131,11 @@ export class AppService {
     if (data.relationships.currently_entitled_tiers) {
       record.tiers = JSON.stringify(data.relationships.currently_entitled_tiers.data);
     }
-    await this.upsertSupporter(record);
-    
+    const s = await this.upsertSupporter(record);
+    if (data.attributes.last_charge_status === 'Paid' && data.attributes.patron_status === 'member') {
+      await this.updateUserBalance(s, data.attributes.campaign_pledge_amount_cents, data.attributes.lifetime_support_cents)
+    }
+    return s;
   }
 
   async deletePledge(payload: PatreonWebhookPayload): Promise<any> {
@@ -183,5 +190,27 @@ export class AppService {
     const hmac = createHmac('sha256', process.env.SESSION_SECRET);
     hmac.update(input);
     return hmac.digest('hex');
+  }
+
+  private async updateUserBalance(supporter: SupporterDocument, pledgeAmount: number, totalContribution: number): Promise<any> {
+    const capStr = process.env.PATREON_TOKEN_BALANCE_CAP
+    if (pledgeAmount && totalContribution && capStr) {
+      const cap = parseInt(capStr);
+      const user = await this.userModel.findOne({ primaryEmail: supporter.email });
+      if (user) {
+        const curr = user?.creditBalance ?? 0;
+        const addAmount = cap - curr;
+        if (addAmount > 0) {
+          const balanceAdd = new this.creditAdd({
+            userId: user.id,
+            provider: "Monthly Patreon support",
+            creditsAdded: addAmount
+          });
+          await balanceAdd.save();
+          user.creditBalance = curr + addAmount;
+          await user.save();
+        }
+      }
+    }
   }
 }

@@ -2,7 +2,7 @@ import { Component, computed, effect, signal, Signal, WritableSignal } from '@an
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { map, startWith } from 'rxjs';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionEngineState } from '../../../../models/recognition.model';
@@ -12,6 +12,13 @@ import { dialectSelector, languageSelector } from '../../../../selectors/setting
 import { selectUserBalance } from '../../../../selectors/user.selector';
 import { DefaultDialects, InterfaceLanguage, RecognitionDialect, SettingsActions } from '../../models/settings.model';
 import { slideInUpOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
+
+interface ProviderOption {
+  value: string;
+  paid: boolean;
+  url: string;
+  tokensPerMinute: number;
+}
 
 @Component({
   selector: 'app-recognition-engine',
@@ -30,13 +37,14 @@ export class RecognitionEngineComponent {
 	public balance: Signal<number | undefined>;
 	public isLoggedIn: Signal<boolean | undefined>;
 	public patreonUrl = 'https://patreon.com/zipcaptions';
+  public selectedOption: Signal<ProviderOption | undefined>;
 	public group: FormGroup<{
 		provider: FormControl<RecognitionEngineState['provider'] | null | undefined>,
 		dialect: FormControl<RecognitionDialect | null | undefined>,
 	}>;
-	public providers: { value: RecognitionEngineState['provider'], paid: boolean }[] = [
-		{ value: 'web', paid: false },
-		{ value: 'azure', paid: true}
+	public providers: ProviderOption[] = [
+		{ value: 'web', paid: false, url: "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition", tokensPerMinute: 0 },
+		{ value: 'azure', paid: true, url: "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest", tokensPerMinute: 60 }
 	]
   public showToast: WritableSignal<boolean> = signal(false);
   public errorMessage: WritableSignal<string | undefined> = signal(undefined);
@@ -76,6 +84,15 @@ export class RecognitionEngineComponent {
 			return formProvider() || provider()
 		})
 
+    this.selectedOption = computed(() => {
+      const opt = formProvider();
+      if (opt) {
+        console.log('selected option', opt);
+        return this.providers.find((p) => p.value === opt)
+      }
+      return undefined;
+    })
+
     // Handle state change after saving the form, so as to show success/error message
     effect(() => {
       if (this.formProviderToSave !== null) {
@@ -90,7 +107,23 @@ export class RecognitionEngineComponent {
 
 		this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
 		const balance = toSignal(this.store.select(selectUserBalance));
-		this.balance = computed(() => this.isLoggedIn() ? balance() : undefined);
+		this.balance = computed(() => {
+      if (this.isLoggedIn()) {
+        const so = this.selectedOption();
+        const b = balance();
+        if (so?.tokensPerMinute && b) {
+          return (b/so.tokensPerMinute) * 60000;
+        }
+      }
+      return undefined;
+    });
+
+    effect(() => {
+      const p = provider();
+      if (p && p !== this.group.controls['provider'].value) {
+        this.group.controls['provider'].setValue(p, {emitEvent: true})
+      }
+    }, { allowSignalWrites: true })
 	}
 
 	setProvider(): void {

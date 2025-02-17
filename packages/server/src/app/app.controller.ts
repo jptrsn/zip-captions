@@ -17,11 +17,11 @@ export class AppController {
       if (!event || !signature || !secret) {
         throw new BadRequestException();
       }
-      console.log('webhook', event)
+
       if (!this._verifySignature(req.rawBody, secret, signature)) {
         throw new ForbiddenException();
       }
-      console.log(body)
+
       if (body.data?.included?.length) {
         const tier = body.data.included.find((incl) => incl.type === 'tier');
         if (tier) {

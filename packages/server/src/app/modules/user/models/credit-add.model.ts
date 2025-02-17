@@ -26,6 +26,7 @@ export class CreditAdd {
 		@Prop({
 			type: Date,
 			required: true,
+      index: true,
 			default: Date.now
 		})
 		createdAt: Date;

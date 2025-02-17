@@ -10,12 +10,12 @@ export class DurationPipe implements PipeTransform {
       if (!value || !args[0]) {
         return rtn;
       }
-      
+
       const d1 = new Date(value).getTime();
       const d2 = new Date(args[0]).getTime();
 
       const absDiff = Math.abs(d1 - d2);
-      
+
       if (absDiff < 1000) {
         return '0s'
       }

@@ -351,21 +351,19 @@
 		"PROVIDER": {
 			"title": "Recognition API Provider",
 			"description": "Select which service providder you would like use to securely process audio and return results. Different engines will vary in speed, quality, and cost. We do our best to bring you as much choice as possible while keeping things as free as we can.",
-			"balance": "Your tokens",
+			"balance": "Your balance",
       "dialectRequired": "WARNING! This provider requires a selected dialect. With your current settings, you will use the default dialect of",
 			"acquire": "To get tokens, you can support us on Patreon, or request some from the Community Pool (coming soon)",
       "setSuccess": "Provider changed successfully",
 			"web": {
 				"label": "Browser (Chrome/Safari)",
 				"description": "Using the browser provider, Zip Captions will send audio data from your device directly to your browser provider using the Web Speech API.",
-				"cost": "Rate: always free",
-				"link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+				"cost": "Rate: always free"
 			},
 			"azure": {
 				"label": "Microsoft Azure Cognitive Services",
 				"description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket. This provider requires a specified dialect, please ensure the setting is correct.",
-				"cost": "Rate: 60 tokens per minute",
-				"link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+				"cost": "Rate: 60 tokens per minute"
 			}
 		}
   },
