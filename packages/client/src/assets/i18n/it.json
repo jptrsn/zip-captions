@@ -351,22 +351,20 @@
     "PROVIDER": {
       "title": "Fornitore di API",
       "description": "Selezionare quale fornitore di servizi si desidera utilizzare per elaborare in modo sicuro i risultati audio e di ritorno. diversi motori variano in velocità, qualità e costo. facciamo del nostro meglio per portare il maggior numero possibile di scelte, mantenendo le cose il più libero possibile.",
-      "balance": "I tuoi token",
       "acquire": "Per ottenere i token, puoi supportarci su Patreon, o richiedere alcuni dal Community Pool (l'arrivo presto)",
       "web": {
         "label": "Il tuo browser (Chrome e Safari)",
         "description": "Utilizzando il fornitore del browser, Zip Captions invierà dati audio dal tuo dispositivo direttamente al tuo fornitore del browser utilizzando l'API Web Speech.",
-        "cost": "Tasso: sempre libero",
-        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "cost": "Tasso: sempre libero"
       },
       "azure": {
         "label": "Servizi Microsoft Azure Cognitive",
         "description": "Utilizzando il fornitore di servizi Azure Cognitive, Zip Captions trasmetterà dati audio dal tuo dispositivo direttamente all'API di Microsoft utilizzando un socket web sicuro.",
-        "cost": "Tasso: 60 tokens al minuto",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "cost": "Tasso: 60 tokens al minuto"
       },
       "dialectRequired": "ATTENZIONE: Questo fornitore richiede un dialetto selezionato. con le tue impostazioni attuali, utilizzerai il dialetto predefinito di",
-      "setSuccess": "Il fornitore è cambiato con successo"
+      "setSuccess": "Il fornitore è cambiato con successo",
+      "balance": "Il tuo equilibrio"
     }
   },
   "STREAM": {

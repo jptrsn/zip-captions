@@ -10,14 +10,20 @@
 			</select>
 		</label>
 
-		<ng-container *ngIf="provider() as p">
-			<div class="text-md mt-3">{{'SETTINGS.PROVIDER.' + p + '.label' | translate}}</div>
-			<p class="text-sm mb-3">{{'SETTINGS.PROVIDER.' + p + '.description' | translate }}</p>
-			<div class="flex flex-row flex-wrap justify-between">
-				<div class="text-sm">{{'SETTINGS.PROVIDER.' + p + '.cost' | translate }}</div>
-				<div class="text-sm" [ngClass]="{'text-error': group.hasError('credits')}" *ngIf="p !== 'web'"><span translate>SETTINGS.PROVIDER.balance</span>: {{balance()}}</div>
-			</div>
-		</ng-container>
+
+    <ng-container *ngIf="selectedOption() as so">
+      <a [href]="so.url" target="_blank">
+        <div class="text-md mt-3">{{'SETTINGS.PROVIDER.' + so.value + '.label' | translate}}</div>
+      </a>
+      <p class="text-sm mb-3">{{'SETTINGS.PROVIDER.' + so.value + '.description' | translate }}</p>
+      <div class="flex flex-row flex-wrap justify-between">
+        <div class="text-sm">{{'SETTINGS.PROVIDER.' + so.value + '.cost' | translate }}</div>
+        <div class="text-sm" [ngClass]="{'text-error': group.hasError('credits')}" *ngIf="so.value !== 'web'">
+          <span translate>SETTINGS.PROVIDER.balance</span>: {{balance() | hoursminutes }}
+        </div>
+      </div>
+    </ng-container>
+
 
 		<ng-container *ngIf="provider() === 'azure'">
 			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn"><span translate>SETTINGS.PROVIDER.dialectRequired</span> {{fallbackDialect()}}</div>

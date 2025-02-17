@@ -351,22 +351,20 @@
     "PROVIDER": {
       "title": "Anerkennung API Provider",
       "description": "Wählen Sie aus, welcher Dienstleister Sie verwenden möchten, um sichere Audio- und Rückgabeergebnisse zu verarbeiten. Verschiedene Motoren werden in Geschwindigkeit, Qualität und Kosten unterschiedlich sein. Wir tun unser Bestes, um Ihnen so viel Wahl wie möglich zu bringen, während die Dinge so frei wie wir können.",
-      "balance": "Ihre Token",
       "acquire": "Um Tokens zu erhalten, können Sie uns auf Patreon unterstützen oder einige von der Community Pool anfordern (kommt bald)",
       "web": {
         "label": "Browser (Chrome und Safari)",
         "description": "Mit dem Browser-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an Ihren Browser-Anbieter über die Web Speech API.",
-        "cost": "Rate: immer kostenlos",
-        "link": "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition"
+        "cost": "Rate: immer kostenlos"
       },
       "azure": {
         "label": "Microsoft Azure kognitive Dienstleistungen",
         "description": "Mit dem Azure Cognitive Services-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an die Microsoft-API mit einem sicheren Web-Socket.",
-        "cost": "Rate: 60 Tokens pro Minute",
-        "link": "https://learn.microsoft.com/en-us/javascript/api/overview/azure/microsoft-cognitiveservices-speech-sdk-readme?view=azure-node-latest"
+        "cost": "Rate: 60 Tokens pro Minute"
       },
       "dialectRequired": "WARNING! Dieser Anbieter erfordert einen ausgewählten Dialekt. Mit Ihren aktuellen Einstellungen werden Sie den Standarddialekt",
-      "setSuccess": "Der Anbieter hat sich erfolgreich geändert"
+      "setSuccess": "Der Anbieter hat sich erfolgreich geändert",
+      "balance": "Dein Gleichgewicht"
     }
   },
   "STREAM": {
