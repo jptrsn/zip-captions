@@ -1,17 +1,16 @@
 import { Component, computed, effect, signal, Signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
-import { map, startWith } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionEngineState } from '../../../../models/recognition.model';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
-import { selectRecognitionEngine, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
+import { selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector } from '../../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../../selectors/user.selector';
 import { DefaultDialects, InterfaceLanguage, RecognitionDialect, SettingsActions } from '../../models/settings.model';
-import { slideInUpOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
 
 interface ProviderOption {
   value: string;
@@ -85,7 +84,7 @@ export class RecognitionEngineComponent {
 		})
 
     this.selectedOption = computed(() => {
-      const opt = formProvider();
+      const opt = this.provider();
       if (opt) {
         console.log('selected option', opt);
         return this.providers.find((p) => p.value === opt)

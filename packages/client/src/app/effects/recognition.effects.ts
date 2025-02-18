@@ -126,6 +126,7 @@ export class RecognitionEffects {
     this.actions$.pipe(
       ofType(RecognitionActions.setEngine),
       map(({ engine }) => {
+        this.storage.set('recognitionEngine', engine);
         return engine;
       }),
       map((engine) => RecognitionActions.setEngineSuccess({ engine }))
