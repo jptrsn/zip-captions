@@ -19,6 +19,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Supporter, SupporterSchema } from './models/supporter.model';
 import { AzureSttModule } from './modules/azure-stt/azure-stt.module';
+import { CreditAdd, CreditAddSchema } from './modules/user/models/credit-add.model';
+import { User, UserSchema } from './modules/user/models/user.model';
 
 function getDbConnectionData(): [string, MongooseModuleOptions] {
   // TODO: Make prod more consistent and remove custom environment handlers
@@ -42,11 +44,13 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
     MongooseModule.forRoot(...getDbConnectionData()),
     MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
       { name: BroadcastSession.name, schema: BroadcastSessionSchema },
       { name: AppEvent.name, schema: AppEventSchema },
       { name: Supporter.name, schema: SupporterSchema },
+      { name: CreditAdd.name, schema: CreditAddSchema }
     ]),
     HttpModule,
     UserModule,
