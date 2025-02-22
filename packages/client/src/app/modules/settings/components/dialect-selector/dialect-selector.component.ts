@@ -13,6 +13,7 @@ export class DialectSelectorComponent implements OnChanges, OnDestroy {
 	@Input() controlName!: string;
 	@Input({ required: false }) languageControlName?: string;
 	@Input({ required: false }) language?: InterfaceLanguage;
+  @Input({ required: false }) disableUnspecified = false;
 
 	public availableDialects: WritableSignal<RecognitionDialect[] | undefined> = signal(undefined);
 	private dialects = SupportedDialects;
@@ -62,7 +63,9 @@ export class DialectSelectorComponent implements OnChanges, OnDestroy {
 	private filterDialects(language: string): void {
 		const exp = new RegExp(language);
 		const ad = this.dialects.filter((d) => exp.test(d));
-		ad.unshift('unspecified');
+    if (!this.disableUnspecified) {
+      ad.unshift('unspecified');
+    }
 		this.availableDialects.set(ad);
 	}
 }

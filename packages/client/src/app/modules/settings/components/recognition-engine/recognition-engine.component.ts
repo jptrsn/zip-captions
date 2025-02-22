@@ -1,6 +1,6 @@
 import { Component, computed, effect, signal, Signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
@@ -68,7 +68,7 @@ export class RecognitionEngineComponent {
 		this.group = this.fb.group({
 			provider: this.fb.control(provider()),
 			dialect: this.fb.control(this.dialect()),
-		});
+		}, { validators: [ (c) => this.validateProviderAndDialect(c) ]});
 
 		effect(() => {
 			const d = this.fallbackDialect()
@@ -125,18 +125,35 @@ export class RecognitionEngineComponent {
     }, { allowSignalWrites: true })
 	}
 
+  validateProviderAndDialect(control: AbstractControl): ValidationErrors | null {
+
+    const { provider, dialect } = control.getRawValue();
+
+    if (provider !== 'web' && !this.balance()) {
+      this.group.setErrors({'credits': true});
+    }
+
+    if (provider !== 'web' && dialect === 'unspecified') {
+      return {
+        dialect: true
+      }
+    }
+
+    return null;
+  }
+
 	setProvider(): void {
 		this.group.updateValueAndValidity();
+    if (!this.group.valid) {
+      console.log('form invalid', this.group.errors);
+      this.group.markAllAsTouched();
+      return;
+    }
 		const {provider, dialect} = this.group.getRawValue();
 		if (provider) {
-			if (provider !== 'web' && !this.balance()) {
-				this.group.setErrors({'credits': true});
-				this.group.markAllAsTouched();
-			} else {
-        this.formProviderToSave = provider
-        this.store.dispatch(RecognitionActions.setEngine({ engine: provider }));
-        this.group.markAsPristine();
-      }
+      this.formProviderToSave = provider
+      this.store.dispatch(RecognitionActions.setEngine({ engine: provider }));
+      this.group.markAsPristine();
     }
 		if (dialect && dialect !== this.dialect()) {
 			this.store.dispatch(SettingsActions.setDialect({dialect}))

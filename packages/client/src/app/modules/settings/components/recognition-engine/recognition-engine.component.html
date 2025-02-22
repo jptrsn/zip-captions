@@ -27,7 +27,7 @@
 
 		<ng-container *ngIf="provider() === 'azure'">
 			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn"><span translate>SETTINGS.PROVIDER.dialectRequired</span> {{fallbackDialect()}}</div>
-			<app-dialect-selector [group]="group" controlName="dialect" [language]="language()"></app-dialect-selector>
+			<app-dialect-selector [group]="group" controlName="dialect" [language]="language()" [disableUnspecified]="true"></app-dialect-selector>
 		</ng-container>
 		<div *ngIf="group.hasError('credits')" class="text-sm flex flex-row flex-wrap justify-between">
 			<span class="text-error" translate>SETTINGS.PROVIDER.acquire</span><a [href]="patreonUrl" target="_blank">{{patreonUrl}}</a>
