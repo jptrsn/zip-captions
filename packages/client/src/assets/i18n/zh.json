@@ -351,7 +351,6 @@
     "PROVIDER": {
       "title": "API 供应商",
       "description": "选择哪个服务提供商你会喜欢使用安全处理音频和返回结果. 不同的发动机将因速度,质量和成本而有所不同. 我们竭尽全力为您提供尽可能多的选择,同时保持事物尽可能自由。",
-      "acquire": "要获取代币,您可以在 Patreon 支持我们,或者请求社区游泳池的一些(即将到来)",
       "web": {
         "label": "浏览器(Chrome/Safari)",
         "description": "使用浏览器提供商,Zip Captions 将从您的设备直接向您的浏览器提供商发送音频数据,使用 Web Speech API。",
@@ -364,7 +363,9 @@
       },
       "dialectRequired": "警告! 此提供商需要选择的字符串. 与您的当前设置,您将使用默认字符串",
       "setSuccess": "供应商成功改变",
-      "balance": "你的平衡"
+      "balance": "你的平衡",
+      "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
+      "requestTokens": "请求免费代币"
     }
   },
   "STREAM": {

@@ -353,8 +353,9 @@
 			"description": "Select which service providder you would like use to securely process audio and return results. Different engines will vary in speed, quality, and cost. We do our best to bring you as much choice as possible while keeping things as free as we can.",
 			"balance": "Your balance",
       "dialectRequired": "WARNING! This provider requires a selected dialect. With your current settings, you will use the default dialect of",
-			"acquire": "To get tokens, you can support us on Patreon, or request some from the Community Pool (coming soon)",
+			"acquire": "Our Patreon supporters get tokens for free automatically every month.",
       "setSuccess": "Provider changed successfully",
+      "requestTokens": "Request free tokens",
 			"web": {
 				"label": "Browser (Chrome/Safari)",
 				"description": "Using the browser provider, Zip Captions will send audio data from your device directly to your browser provider using the Web Speech API.",

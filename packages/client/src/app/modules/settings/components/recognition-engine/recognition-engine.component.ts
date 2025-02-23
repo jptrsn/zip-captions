@@ -29,6 +29,7 @@ interface ProviderOption {
     ]
 })
 export class RecognitionEngineComponent {
+  public GET_ACCESS_LINK = "https://zipsolutions.org/givingback.html";
 	public provider: Signal<RecognitionEngineState['provider'] | undefined>;
 	public dialect: Signal<RecognitionDialect | undefined>;
 	public language: Signal<InterfaceLanguage | undefined>;
@@ -68,7 +69,7 @@ export class RecognitionEngineComponent {
 		this.group = this.fb.group({
 			provider: this.fb.control(provider()),
 			dialect: this.fb.control(this.dialect()),
-		}, { validators: [ (c) => this.validateProviderAndDialect(c) ]});
+		});
 
 		effect(() => {
 			const d = this.fallbackDialect()
@@ -143,9 +144,11 @@ export class RecognitionEngineComponent {
   }
 
 	setProvider(): void {
-		this.group.updateValueAndValidity();
-    if (!this.group.valid) {
-      console.log('form invalid', this.group.errors);
+    this.group.updateValueAndValidity();
+		const errors = this.validateProviderAndDialect(this.group);
+    if (errors) {
+      console.log('form invalid', errors);
+      this.group.setErrors(errors);
       this.group.markAllAsTouched();
       return;
     }

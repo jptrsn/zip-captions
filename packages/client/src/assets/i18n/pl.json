@@ -351,7 +351,6 @@
     "PROVIDER": {
       "title": "Rozpoznawanie dostawcy API",
       "description": "Wybierz, który dostawca usług chciałbyś użyć do bezpiecznego przetwarzania dźwięku i zwrotu wyników. Różne silniki będą się różnić w prędkości, jakości i kosztu. robimy wszystko, co w naszej mocy, aby przynieść Ci jak najwięcej wyboru, a jednocześnie utrzymywać rzeczy tak wolne, jak możemy.",
-      "acquire": "Aby uzyskać tokeny, możesz wspierać nas na Patreon, lub poprosić o niektóre z Community Pool (przyjdzie wkrótce)",
       "web": {
         "label": "Przeglądarka (Chrome / Safari)",
         "description": "Korzystając z dostawcy przeglądarki, Zip Captions wysyła dane audio z urządzenia bezpośrednio do dostawcy przeglądarki za pomocą API Web Speech.",
@@ -364,7 +363,9 @@
       },
       "dialectRequired": "OSTRZEŻENIE! ten dostawca wymaga wybranego dialektu. z bieżącym ustawieniem, będziesz używać podanego dialektu",
       "setSuccess": "Sprzedawca zmienił się z powodzeniem",
-      "balance": "Twoja równowaga"
+      "balance": "Twoja równowaga",
+      "acquire": "Nasi zwolennicy Patreon otrzymują tokeny za darmo automatycznie każdego miesiąca.",
+      "requestTokens": "Poproś o darmowe tokeny"
     }
   },
   "STREAM": {

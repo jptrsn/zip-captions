@@ -22,6 +22,7 @@
           <span translate>SETTINGS.PROVIDER.balance</span>: {{balance() | hoursminutes }}
         </div>
       </div>
+      <a class="text-sm font-medium text-blue-500 hover:underline" *ngIf="so.tokensPerMinute > 0" [href]="GET_ACCESS_LINK" translate>SETTINGS.PROVIDER.requestTokens</a>
     </ng-container>
 
 
