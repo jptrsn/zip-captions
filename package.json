@@ -1,6 +1,6 @@
 {
   "name": "zip-captions",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "license": "GPL-3.0-only",
   "scripts": {
     "ng": "nx",
