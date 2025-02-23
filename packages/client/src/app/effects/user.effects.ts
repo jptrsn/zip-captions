@@ -12,7 +12,7 @@ export class UserEffects {
   constructor(private actions$: Actions,
               private userService: UserService) {}
 
-    loadUser$ = createEffect(() => 
+    loadUser$ = createEffect(() =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
         switchMap(({id}) => this.userService.getUserProfile(id)
@@ -29,7 +29,7 @@ export class UserEffects {
     loadUserPatreon$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.getProfileSuccess),
-        switchMap(() => 
+        switchMap(() =>
           this.userService.getSupporterProfile()
             .pipe(
               map((profile) => UserActions.getSupporterProfileSuccess({ profile })),
@@ -51,7 +51,7 @@ export class UserEffects {
       )
     )
 
-    getUiSettings$ = createEffect(() => 
+    getUiSettings$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.getSettings),
         switchMap(() => this.userService.getUiSettings()
@@ -63,7 +63,7 @@ export class UserEffects {
       )
     )
 
-    loadAndApplyUiSettings$ = createEffect(() => 
+    loadAndApplyUiSettings$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.loadAndApplySettings),
         switchMap(() => this.userService.getUiSettings()
@@ -123,5 +123,5 @@ export class UserEffects {
         )
       )
     )
-              
+
 }

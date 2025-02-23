@@ -13,6 +13,7 @@ export interface UserProfile {
   googleConnected?: boolean;
   azureConnected?: boolean;
   syncUiSettings?: boolean;
+  creditBalance?: number;
 }
 
 export interface UserRoom {
@@ -36,6 +37,21 @@ export interface SupporterProfile {
   updatedAt?: Date;
 }
 
+export interface CreditAdd {
+  id: string;
+  createdAt: Date;
+  provider: string;
+  creditsAdded: number;
+}
+
+export interface CreditExpenditure {
+  id: string;
+  createdAt: Date;
+  serviceName: string;
+  durationMs?: number;
+  creditsUsed: number;
+}
+
 export interface UserState {
   id?: string;
   profile?: UserProfile;
@@ -43,6 +59,9 @@ export interface UserState {
   uiSettings?: SettingsState;
   rooms?: UserRoom[];
   error?: string;
+  creditBalance?: number;
+  creditAcquisitions?: CreditAdd[];
+  creditExpenditures?: CreditExpenditure[];
 }
 
 export const defaultUserState: UserState = {
@@ -59,7 +78,7 @@ export const userReducer = createReducer(
 
   on(UserActions.saveSettingsStateSuccess, (state: UserState, action: { settings: SettingsState }) => ({...state, uiSettings: action.settings})),
   on(UserActions.saveSettingsStateFailure, (state: UserState, action: { error: string }) => ({...state, profile: undefined, error: action.error })),
-  
+
   on(UserActions.getSettingsSuccess, (state: UserState, action: { settings: SettingsState }) => ({...state, uiSettings: action.settings})),
   on(UserActions.getSettingsFailure, (state: UserState, action: { error: string }) => ({...state, profile: undefined, error: action.error })),
 
@@ -78,5 +97,6 @@ export const userReducer = createReducer(
   on(UserActions.getSupporterProfileSuccess, (state: UserState, action: { profile: SupporterProfile | null}) => ({...state, supporter: action.profile || undefined })),
   on(UserActions.getSupporterProfileFailure, (state: UserState, action: { error: string }) => ({...state, error: action.error})),
 
+  on(UserActions.updateBalance, (state: UserState, action: { creditBalance: number }) => ({...state, profile: state.profile ? {...state.profile, creditBalance: action.creditBalance } : undefined }))
 );
 

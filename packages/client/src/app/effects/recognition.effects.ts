@@ -1,38 +1,40 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
 import { catchError, from, map, of, switchMap } from "rxjs";
-import { AppActions, AppState } from "../models/app.model";
+import { RecognitionActions } from '../actions/recogntion.actions';
+import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
-import { RecognitionActions } from '../actions/recogntion.actions';
+import { StorageService } from "../services/storage.service";
+import { SettingsState } from "../modules/settings/models/settings.model";
+import { RecognitionState } from "../models/recognition.model";
 
 @Injectable()
 export class RecognitionEffects {
   constructor(private actions$: Actions,
-              private store: Store<AppState>,
+              private storage: StorageService,
               @Inject(RecognitionService) private recognitionService: RecognitionService,
               @Inject(TranscriptionService) private transcription: TranscriptionService) {}
 
-  connectRecognition$ = createEffect(() => 
+  connectRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.connect),
-      map((props) => this.recognitionService.connectToStream(props.id)),
+      map((props) => this.recognitionService.connectToStream()),
       switchMap(() => [RecognitionActions.connectSuccess(), AppActions.hideFooter(), AppActions.applyWakeLock(), RecognitionActions.initTranscript()]),
       catchError((err: any) => of(RecognitionActions.connectFailure({error: err.message})))
     )
   )
 
-  disconnectRecognition$ = createEffect(() => 
+  disconnectRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.disconnect),
-      map((props) => this.recognitionService.disconnectFromStream(props.id)),
+      map((props) => this.recognitionService.disconnectFromStream()),
       switchMap(() => [RecognitionActions.disconnectSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
       catchError((err: any) => of(RecognitionActions.disconnectFailure({error: err.message})))
     )
   )
 
-  pauseRecognition$ = createEffect(() => 
+  pauseRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.pause),
       map(() => this.recognitionService.pauseRecognition()),
@@ -40,7 +42,7 @@ export class RecognitionEffects {
     )
   )
 
-  pauseRecognitionOnError$ = createEffect(() => 
+  pauseRecognitionOnError$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.error),
       map(() => this.recognitionService.pauseRecognition()),
@@ -96,7 +98,7 @@ export class RecognitionEffects {
     )
   )
 
-  finalizeTranscript$ = createEffect(() => 
+  finalizeTranscript$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.finalizeTranscript),
       switchMap(() => this.transcription.finalizeTranscript()
@@ -109,14 +111,36 @@ export class RecognitionEffects {
   )
 
   deleteTranscriptDatabase$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(RecognitionActions.deleteTranscriptDB),
-    switchMap(() => this.transcription.deleteDatabase()
-    .pipe(
-        map(() => RecognitionActions.deleteTranscriptDBSuccess()),
-        catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
-      )
+		this.actions$.pipe(
+			ofType(RecognitionActions.deleteTranscriptDB),
+			switchMap(() => this.transcription.deleteDatabase()
+			.pipe(
+					map(() => RecognitionActions.deleteTranscriptDBSuccess()),
+					catchError((err) => of(RecognitionActions.deleteTranscriptDBError({ error: err.message })))
+				)
+			)
     )
+  )
+
+  setEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.setEngine),
+      map(({ engine }) => {
+        this.storage.set('recognitionEngine', engine);
+        return engine;
+      }),
+      map((engine) => RecognitionActions.setEngineSuccess({ engine }))
+    )
+  )
+
+  loadEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.loadEngine),
+      map(() => {
+        const cached: RecognitionState['engine']['provider'] | null = this.storage.get('recognitionEngine')
+        return cached ?? 'web'
+      }),
+      map((engine) => RecognitionActions.setEngineSuccess({ engine }))
     )
   )
 

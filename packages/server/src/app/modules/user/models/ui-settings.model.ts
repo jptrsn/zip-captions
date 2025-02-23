@@ -23,6 +23,11 @@ export class UiSettings {
   })
   lang?: string;
 
+	@Prop({
+		type: String
+	})
+	dialect?: string;
+
   @Prop({
     type: Boolean
   })

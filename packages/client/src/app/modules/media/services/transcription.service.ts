@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@angular/core';
-import { LocalDbService } from '../../../services/local-db/local-db.service';
-import { firstValueFrom, from, Observable, Subject, tap } from 'rxjs';
-import { Transcript, TranscriptTextSegment } from 'shared-ui';
-import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom, from, Observable, tap } from 'rxjs';
+import { Transcript, TranscriptTextSegment } from 'shared-ui';
+import { LocalDbService } from '../../../services/local-db/local-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class TranscriptionService {
   constructor(@Inject(LocalDbService) private localDb: LocalDbService,
               @Inject(HttpClient) private http: HttpClient,
               @Inject(TranslateService) private translate: TranslateService) {
-    
+
     const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
     const userRoute = process.env['ZIP_USER_API_ROUTE'] || 'user';
@@ -64,7 +64,7 @@ export class TranscriptionService {
   async createTranscriptSegment(text: string, start: Date | undefined): Promise<number> {
     if (this.transcriptId === undefined) {
       throw new Error('No transcript ID set');
-    } 
+    }
     if (!this.lastTimestamp) {
       throw new Error('No start timestamp defined');
     }

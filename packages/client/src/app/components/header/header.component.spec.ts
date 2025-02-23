@@ -49,7 +49,7 @@ describe('HeaderComponent', () => {
     status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeTruthy();
     store.dispatch(RecognitionActions.disconnect({id: 'test'}));
-    status = await lastValueFrom(store.select(recognitionStatusSelector)); 
+    status = await lastValueFrom(store.select(recognitionStatusSelector));
     expect(status).toBeFalsy();
   }));
 

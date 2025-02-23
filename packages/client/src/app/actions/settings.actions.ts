@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, FontFamily, Language, LineHeight, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -9,8 +9,12 @@ export const initSettingsComplete = createAction('[Settings] Init Complete', pro
 export const setTheme = createAction('[Settings] Set Theme', props<{theme: AppTheme}>());
 export const setThemeComplete = createAction('[Settings] Set Theme Complete');
 
-export const setLanguage = createAction('[Settings] Set Language', props<{language: Language}>());
+export const setLanguage = createAction('[Settings] Set Language', props<{language: InterfaceLanguage}>());
 export const setLanguageComplete = createAction('[Settings] Set Language Complete');
+
+export const setDialect = createAction('[Settings] Set Dialect', props<{dialect: RecognitionDialect}>());
+export const setDefaultDialect = createAction('[Settings] Set Default Dialect', props<{dialect: RecognitionDialect}>());
+export const setDialectComplete = createAction('[Settings] Set Dialect Complete');
 
 export const updateWakeLockEnabled = createAction('[Settings] Update WakeLock Enabled', props<{enabled: boolean}>());
 export const updateWakeLockEnabledSuccess = createAction('[Settings] Update WakeLock Enabled Success');
@@ -39,3 +43,5 @@ export const setFontFamilyFailure = createAction('[Settings] Set Font Family Fai
 export const saveTranscriptionSettings = createAction('[Settings] Save Transcription Settings', props<{ transcription: Partial<TranscriptionSettings> }>())
 export const saveTranscriptionSettingsSuccess = createAction('[Settings] Save Transcription Settings Success');
 export const saveTranscriptionSettingsFailure = createAction('[Settings] Save Transcription Settings Failure', props<{error: string}>());
+
+export const saveEngineSuccess = createAction('[Settings] Save Engine Success');

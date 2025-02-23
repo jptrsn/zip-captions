@@ -19,15 +19,19 @@ export class UserHomeComponent implements OnInit {
   public tabIndex: Signal<number>;
   public tabNames = [
     'account',
-    'transcripts'
+    'provider'
   ]
+	public tabIcons: {[key: string]: string} = {
+		'account': 'heroUser',
+		'provider': 'heroWrenchScrewdriver'
+	}
   constructor(private store: Store<AppState>,
               private router: Router,
               private fb: FormBuilder,
-              private route: ActivatedRoute) 
+              private route: ActivatedRoute)
   {
     this.loggedIn = toSignal(this.store.select(selectUserLoggedIn));
-    
+
     if (this.loggedIn() === false) {
       this.router.navigate(['..', 'auth', 'login'])
     }
@@ -36,7 +40,7 @@ export class UserHomeComponent implements OnInit {
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
     this.tabsControl = this.fb.control(initialTabIndex)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
-      takeUntilDestroyed(), 
+      takeUntilDestroyed(),
       tap((index) => {
         const params = { tabIndex: index };
         this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})

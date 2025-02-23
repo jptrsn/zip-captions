@@ -9,10 +9,12 @@ export const UserActions = createActionGroup({
     'Get Profile Success': props<{profile: UserProfile}>(),
     'Get Profile Failure': props<{error: string}>(),
 
+		'Update Balance': props<{creditBalance: number}>(),
+
     'Set User ID': props<{id: string}>(),
 
     'Get Settings': emptyProps(),
-    'Get Settings Success': props<{ settings: SettingsState }>(), 
+    'Get Settings Success': props<{ settings: SettingsState }>(),
     'Get Settings Failure': props<{error: string}>(),
 
     'Get Rooms': emptyProps(),
@@ -30,7 +32,7 @@ export const UserActions = createActionGroup({
     'Load and Apply Settings': emptyProps(),
     'Load and Apply Settings Success': emptyProps(),
     'Load and Apply Settings Failure': props<{error: string}>(),
-    
+
     'Save Settings State': props<{ settings: SettingsState }>(),
     'Save Settings State Success': props<{ settings: SettingsState }>(),
     'Save Settings State Failure': props<{error: string}>(),

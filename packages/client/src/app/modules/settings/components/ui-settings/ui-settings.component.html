@@ -4,6 +4,7 @@
     <div>
       <app-theme-selector [group]="formGroup" controlName="theme"></app-theme-selector>
       <app-language-selector [group]="formGroup" controlName="lang"></app-language-selector>
+			<app-dialect-selector [group]="formGroup" controlName="dialect" languageControlName="lang"></app-dialect-selector>
       <app-font-family-selector [group]="formGroup" controlName="font"></app-font-family-selector>
       <app-wake-lock-enabled [group]="formGroup" controlName="wakelock"></app-wake-lock-enabled>
       <app-render-history [group]="formGroup" controlName="renderHistory"></app-render-history>
@@ -17,7 +18,7 @@
         <button class="btn btn-secondaryß rounded-xl" translate type="button" routerLink="..">
           BUTTONS.cancel
         </button>
-    
+
         <button class="btn btn-primary rounded-xl" [disabled]="acceptedCookies() === false || formGroup.pristine" type="submit" translate>
           BUTTONS.saveAndClose
         </button>
@@ -42,7 +43,7 @@
         </div>
       </div>
     </div>
-    
+
   </div>
 </form>
 <app-save-to-server-dialog [openModal]="showSaveToServerModal" (afterClosed)="saveToServerCallback($event)"></app-save-to-server-dialog>

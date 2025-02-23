@@ -18,7 +18,7 @@ export class ViewTranscriptComponent {
   @ViewChild('menu', {read: ElementRef}) menuElement!: ElementRef;
   segments: Signal<TranscriptTextSegment[] | undefined>;
   transcript: Signal<Transcript | undefined>;
-  
+
   transcriptGroup: FormGroup<{
     id: FormControl<number | null>,
     title: FormControl<string | null>,
@@ -31,7 +31,7 @@ export class ViewTranscriptComponent {
     // startMs: FormControl<number | null>,
     // endMs: FormControl<number | null>
   }>;
-  
+
   editMode: WritableSignal<boolean>;
   private transcriptId: number;
   private language: Signal<string | undefined>;

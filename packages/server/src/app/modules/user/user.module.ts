@@ -20,18 +20,20 @@ import { EventsService } from '../../services/events/events.service';
 import { PatreonStrategy } from '../../strategies/patreon.strategy';
 import { AppService } from '../../app.service';
 import { Supporter, SupporterSchema } from '../../models/supporter.model';
+import { CreditAdd, CreditAddSchema } from './models/credit-add.model';
 
 @Module({
   imports: [
     HttpModule,
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema }, 
+      { name: User.name, schema: UserSchema },
       { name: UiSettings.name, schema: UiSettingsSchema },
       { name: SocketConnection.name, schema: SocketConnectionSchema },
       { name: OwnerRoom.name, schema: OwnerRoomSchema },
       { name: BroadcastSession.name, schema: BroadcastSessionSchema },
       { name: AppEvent.name, schema: AppEventSchema },
-      { name: Supporter.name, schema: SupporterSchema }
+      { name: Supporter.name, schema: SupporterSchema },
+      { name: CreditAdd.name, schema: CreditAddSchema }
     ]
       ),
     JwtModule.registerAsync({

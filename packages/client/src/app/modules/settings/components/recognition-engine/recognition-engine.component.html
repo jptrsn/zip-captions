@@ -1,0 +1,46 @@
+<div class="card bg-base-100 shadow-xl flex flex-col max-w-xl" *ngIf="isLoggedIn(); else loginRequired">
+	<form class="card-body">
+		<div class="card-title"><span translate>SETTINGS.PROVIDER.title</span></div>
+		<div class="text-sm mb-3" translate>SETTINGS.PROVIDER.description</div>
+
+		<label class="form-control" [formGroup]="group">
+			<span class="text-accent label" translate>LABELS.provider</span>
+			<select class="select select-secondary select-lg mt-1 w-full" formControlName="provider">
+					<option *ngFor="let p of providers" [value]="p.value">{{'SETTINGS.PROVIDER.' + p.value + '.label' | translate}}</option>
+			</select>
+		</label>
+
+
+    <ng-container *ngIf="selectedOption() as so">
+      <a [href]="so.url" target="_blank">
+        <div class="text-md mt-3">{{'SETTINGS.PROVIDER.' + so.value + '.label' | translate}}</div>
+      </a>
+      <p class="text-sm mb-3">{{'SETTINGS.PROVIDER.' + so.value + '.description' | translate }}</p>
+      <div class="flex flex-row flex-wrap justify-between">
+        <div class="text-sm">{{'SETTINGS.PROVIDER.' + so.value + '.cost' | translate }}</div>
+        <div class="text-sm" [ngClass]="{'text-error': group.hasError('credits')}" *ngIf="so.value !== 'web'">
+          <span translate>SETTINGS.PROVIDER.balance</span>: {{balance() | hoursminutes }}
+        </div>
+      </div>
+      <a class="text-sm font-medium text-blue-500 hover:underline" *ngIf="so.tokensPerMinute > 0" [href]="GET_ACCESS_LINK" translate>SETTINGS.PROVIDER.requestTokens</a>
+    </ng-container>
+
+
+		<ng-container *ngIf="provider() === 'azure'">
+			<div *ngIf="dialect() === 'unspecified'" class="text-md text-warn"><span translate>SETTINGS.PROVIDER.dialectRequired</span> {{fallbackDialect()}}</div>
+			<app-dialect-selector [group]="group" controlName="dialect" [language]="language()" [disableUnspecified]="true"></app-dialect-selector>
+		</ng-container>
+		<div *ngIf="group.hasError('credits')" class="text-sm flex flex-row flex-wrap justify-between">
+			<span class="text-error" translate>SETTINGS.PROVIDER.acquire</span><a [href]="patreonUrl" target="_blank">{{patreonUrl}}</a>
+		</div>
+		<button class="btn btn-primary" type="button" (click)="setProvider()" translate [disabled]="!group.dirty || group.invalid">BUTTONS.save</button>
+	</form>
+</div>
+
+<div class="toast z-10" @slideInUpOnEnter @fadeOutOnLeave *ngIf="showToast()">
+  <div class="alert alert-info" translate>SETTINGS.PROVIDER.setSuccess</div>
+</div>
+
+<ng-template #loginRequired>
+  <div class="badge badge-warning p-3 cursor-pointer" [routerLink]="['..','auth']" translate>SETTINGS.SHARING.loginRequired</div>
+</ng-template>

@@ -86,7 +86,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;
     this.tabsControl = this.fb.control(initialTabIndex)
     this.tabIndex = toSignal(this.tabsControl.valueChanges.pipe(
-      takeUntilDestroyed(), 
+      takeUntilDestroyed(),
       tap((index) => {
         const params = { tabIndex: index };
         this.router.navigate([], { relativeTo: this.route, queryParams: params, queryParamsHandling: 'merge'})
@@ -161,7 +161,7 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
           }
         }
       }
-      
+
     })
   }
 }

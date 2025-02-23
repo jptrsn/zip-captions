@@ -10,8 +10,8 @@ export class LocalDbService {
 
   private db: LocalDb;
   private userIdHash: string;
-  
-  constructor() { 
+
+  constructor() {
     this.db = new LocalDb();
     this.userIdHash = '';
   }
@@ -34,7 +34,7 @@ export class LocalDbService {
     this.userIdHash = '';
     this.db = new LocalDb();
   }
-  
+
   listTranscripts(): Observable<Transcript[]> {
     return liveQuery(() => this.db.transcripts.where({ userIdHash: this.userIdHash }).toArray())
   }
@@ -43,8 +43,8 @@ export class LocalDbService {
     return liveQuery(() => this.db.transcriptSegments.where({ userIdHash: this.userIdHash, transcriptId }).sortBy('start'))
   }
 
-  getTranscriptById(transcriptId: number): PromiseExtended<Transcript | undefined> {
-    return this.db.transcripts.where({ userIdHash: this.userIdHash, id: transcriptId }).first();
+  getTranscriptById(transcriptId: number): Observable<Transcript | undefined> {
+    return liveQuery(() => this.db.transcripts.where({ userIdHash: this.userIdHash, id: transcriptId }).first())
   }
 
   updateTranscript(transcriptId: number, update: Partial<Transcript>): Promise<number> {

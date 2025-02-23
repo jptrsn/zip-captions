@@ -26,7 +26,7 @@ export class MediaService {
         this._watchStreamVolume(stream);
         return stream.id;
       }),
-      
+
     )
   }
 
@@ -42,6 +42,19 @@ export class MediaService {
     }
     return streamId;
   }
+
+	public disconnectAllStreams(): string {
+		let rtnId = '';
+		for (const [id, stream] of this.streamsMap) {
+			stream.dispatchEvent(new Event('stop_observation'));
+      stream.getAudioTracks().forEach((track) => {
+        track.stop();
+      });
+			rtnId = id;
+		}
+		this.streamsMap.clear()
+		return rtnId;
+	}
 
   public getVolumeForStream(streamId: string): Signal<number> {
     if (!this.volumeAnalyserMap.has(streamId)) {

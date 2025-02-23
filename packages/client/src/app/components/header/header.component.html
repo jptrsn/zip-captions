@@ -1,10 +1,10 @@
 <div class="bg-primary text-light gap-3 items-center p-2" [ngClass]="{'pwa-title-bar': windowControlsOverlay(), 'flex flex-row': !windowControlsOverlay()}" [@growshrink]="isActive() && !windowControlsOverlay()">
-  
+
   <!-- App Icon with return-to-home route -->
   <button class="flex" [routerLink]="['']" [disabled]="activeRoute() === '/'">
     <ng-icon name="zipCaptionsLogo" [size]="windowControlsOverlay() || (isActive() && !isBroadcasting()) ? '24' : '48'"></ng-icon>
   </button>
-  
+
   <!-- App Title -->
   <div class="flex-1 draggable" *ngIf="!isBroadcasting()">
     <div class="normal-case text-xl hidden sm:inline" *ngIf="!isActive(); else smallTitle">ZipCaptions</div>
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Transcript status badge-->
-  <button 
+  <button
     class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto"
     [ngClass]="{'badge-info': isLoggedIn(), 'badge-warning': !isLoggedIn()}"
     *ngIf="transcriptionEnabled() && !isViewingBroadcast()"
@@ -31,7 +31,7 @@
       <span translate class="hidden sm:inline">TRANSCRIPT.loginRequired</span>
     </ng-template>
   </button>
-  
+
   <!-- Trigger recognition buttons -->
   <ng-container *ngIf="activeRoute() !== '/stream'" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
@@ -74,13 +74,13 @@
             <ng-container *ngTemplateOutlet="routeList;context:{items: item.children}"></ng-container>
           </details>
         </ng-container>
-  
+
         <ng-template #routeButton>
-        
+
           <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
             {{'ROUTES.' + item.label | translate }}
           </button>
-  
+
           <ng-template #linkButton>
             <a [href]="item.href" target="_blank" class="flex" [ngClass]="{'text-lg': largeText}">
               <span class="flex basis-full">
@@ -89,12 +89,12 @@
               <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
             </a>
           </ng-template>
-  
+
         </ng-template>
-  
+
       </li>
     </ng-container>
-    
+
     <li *ngIf="topLevel">
       <button *ngIf="loggedIn; else loginMenuItem" [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
       <ng-template #loginMenuItem>

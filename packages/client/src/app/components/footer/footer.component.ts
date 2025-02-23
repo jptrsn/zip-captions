@@ -20,7 +20,7 @@ export class FooterComponent {
   public error$: Signal<string | undefined>;
   public activeRoute$: Signal<string | undefined>;
   public repoUrl = 'https://github.com/jptrsn/zip-captions';
-  public licenseUrl = 'https://github.com/jptrsn/zip-captions/blob/main/LICENSE';
+  public licenseUrl = 'https://www.zipsolutions.org/';
   public patreonUrl = 'https://patreon.com/zipcaptions';
   public discordUrl = 'https://discord.gg/Swe2JeHnPc';
   public copyrightYear = process.env['BUILD_YEAR'] || 2023;

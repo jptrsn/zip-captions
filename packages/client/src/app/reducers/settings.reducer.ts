@@ -1,9 +1,10 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, Language, LineHeight, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
+	dialect: 'unspecified',
   wakelock: true,
   renderHistory: 15,
   textSize: 'textSize-3xl',
@@ -18,7 +19,9 @@ export const defaultSettingsState: SettingsState = {
 export const settingsReducers = createReducer(
   defaultSettingsState,
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
-  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: Language}) => ({...state, lang: action.language})),
+  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => ({...state, lang: action.language, dialect: state.lang === action.language ? state.dialect : 'unspecified'})),
+	on(SettingsActions.setDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: action.dialect})),
+	on(SettingsActions.setDefaultDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: (state.dialect === 'unspecified' ? action.dialect : state.dialect) })),
   on(SettingsActions.initSettingsComplete, (state: SettingsState, action: { settings: SettingsState}) => ({...state, ...action.settings })),
   on(SettingsActions.updateWakeLockEnabled, (state: SettingsState, action: { enabled: boolean}) => ({...state, wakelock: action.enabled})),
   on(SettingsActions.setTextSize, (state: SettingsState, action: { size: TextSize}) => ({...state, textSize: action.size })),

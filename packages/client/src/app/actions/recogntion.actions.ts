@@ -30,6 +30,11 @@ export const RecognitionActions = createActionGroup({
     'Finalize Transcript Failure': props<{ error: string }>(),
     'Delete Transcript DB': emptyProps(),
     'Delete Transcript DB Success': emptyProps(),
-    'Delete Transcript DB Error': props<{ error: string}>()
+    'Delete Transcript DB Error': props<{ error: string}>(),
+		'Set Engine': props<{engine: 'web' | 'azure' }>(),
+		'Set Engine Success': props<{engine: 'web' | 'azure' }>(),
+		'Set Engine Failure': props<{error: string}>(),
+		'Load Engine': emptyProps(),
+    'Reset Engine': emptyProps(),
   },
 });

@@ -1,14 +1,68 @@
 {
   "LANGUAGES": {
-    "es": "Inglesa (English)",
+    "en": "Inglesa (English)",
     "fr": "Francés (Français)",
-    "sp": "Español",
+    "es": "Español",
     "de": "Alemán (Deutsch)",
     "it": "Italiano",
     "pt": "Portugués (Português)",
     "id": "Indonesia (Bahasa Indonesia)",
     "pl": "Polaco (Polski)",
     "uk": "Ucraniano (Український)"
+  },
+  "DIALECTS": {
+    "unspecified": "Genérico",
+    "en-AU": "Inglés (Australia)",
+    "en-CA": "inglés (Canadá)",
+    "en-GB": "inglés (Reino Unido)",
+    "en-GH": "inglés (Ghana)",
+    "en-HK": "Inglés (RAE de Hong Kong)",
+    "en-IE": "inglés (Irlanda)",
+    "en-IN": "inglés (India)",
+    "en-KE": "Inglés (Kenia)",
+    "en-NG": "Inglés (Nigeria)",
+    "en-NZ": "Inglés (Nueva Zelanda)",
+    "en-PH": "Inglés (Filipinas)",
+    "en-SG": "Inglés (Singapur)",
+    "en-TZ": "inglés (Tanzania)",
+    "en-US": "Inglés (Estados Unidos)",
+    "en-ZA": "Inglés (Sudáfrica)",
+    "fr-BE": "Francés (Bélgica)",
+    "fr-CA": "Francés (Canadá)",
+    "fr-CH": "Francés (Suiza)",
+    "fr-FR": "Francés (Francia)",
+    "es-AR": "Español (Argentina)",
+    "es-BO": "Español (Bolivia)",
+    "es-CL": "Español (Chile)",
+    "es-CO": "Español (Colombia)",
+    "es-CR": "Español (Costa Rica)",
+    "es-CU": "Español (Cuba)",
+    "es-DO": "Español (República Dominicana)",
+    "es-EC": "Español (Ecuador)",
+    "es-ES": "Español (España)",
+    "es-GQ": "Español (Guinea Ecuatorial)",
+    "es-GT": "Español (Guatemala)",
+    "es-HN": "Español (Honduras)",
+    "es-MX": "Español (México)",
+    "es-NI": "Español (Nicaragua)",
+    "es-PA": "Español (Panamá)",
+    "es-PE": "Español (Perú)",
+    "es-PR": "Español (Puerto Rico)",
+    "es-PY": "Español (Paraguay)",
+    "es-SV": "Español (El Salvador)",
+    "es-US": "Español (Estados Unidos)1",
+    "es-UY": "Español (Uruguay)",
+    "es-VE": "Español (Venezuela)",
+    "de-AT": "Alemán (Austria)",
+    "de-CH": "Alemán (Suiza)",
+    "de-DE": "Alemán (Alemania)",
+    "it-CH": "Italiano (Suiza)",
+    "it-IT": "Italiano (Italia)",
+    "pt-BR": "portugués (Brasil)",
+    "pt-PT": "portugués (Portugal)",
+    "id-ID": "indonesio (Indonesia)",
+    "pl-PL": "polaco (Polonia)",
+    "uk-UA": "ucraniano (Ucrania)"
   },
   "THEMES": {
     "dark": "oscuro",
@@ -257,7 +311,8 @@
       "sync": "Sincronización",
       "sharing": "Intercambio",
       "obs": "Estudio OBS",
-      "transcription": "Transcripción"
+      "transcription": "Transcripción",
+      "engine": "El motor"
     },
     "UI": {
       "t1": "Avance",
@@ -292,6 +347,25 @@
       "localDataWarning": "Todos los datos se almacenarán localmente en su dispositivo, utilizando una clave de cifrado que es exclusiva de su cuenta. Recuerde iniciar sesión antes de comenzar con los subtítulos para asegurarse de que la transcripción se guarde.",
       "encryptionWarning": "Si elige eliminar su cuenta, eliminará todos los datos guardados y las claves de cifrado",
       "loginRequired": "Debes iniciar sesión para configurar las transcripciones"
+    },
+    "PROVIDER": {
+      "title": "Proveedor de API",
+      "description": "Seleccione cuál proveedor de servicios le gustaría utilizar para procesar de forma segura los resultados de audio y devolución. Los diferentes motores varían en velocidad, calidad y coste. Nosotros hacemos lo mejor posible para traerle la mayor cantidad de opciones posible mientras mantendremos las cosas tan libres como podemos.",
+      "web": {
+        "label": "El navegador (Chrome y Safari)",
+        "description": "Con el proveedor de navegador, Zip Captions enviará datos de audio desde su dispositivo directamente a su proveedor de navegador utilizando la API de habla web.",
+        "cost": "Tamaño: siempre libre"
+      },
+      "azure": {
+        "label": "Microsoft Azure Servicios Cognitivos",
+        "description": "Con el proveedor de Servicios Cognitivos de Azure, Zip Captions enviará datos de audio desde su dispositivo directamente a la API de Microsoft utilizando un socket web seguro.",
+        "cost": "Rate: 60 tokens por minuto"
+      },
+      "dialectRequired": "NOTA: Este proveedor requiere un dialecto seleccionado. con sus configuraciones actuales, usará el dialecto de",
+      "setSuccess": "El proveedor cambió con éxito",
+      "balance": "tu equilibrio",
+      "acquire": "Nuestros seguidores de Patreon reciben tokens gratuitos automáticamente cada mes.",
+      "requestTokens": "Solicitar tokens gratuitos"
     }
   },
   "STREAM": {
@@ -378,10 +452,10 @@
     "forum": "Foro",
     "auth": "Mi Cuenta",
     "transcript": "Transcripciones",
-		"about_us": "Sobre nosotros",
-		"advisory_board": "Consejo Asesor",
-		"testimonials": "Testimonios",
-		"our_story": "Nuestra Historia"
+    "about_us": "Sobre nosotros",
+    "advisory_board": "Consejo Asesor",
+    "testimonials": "Testimonios",
+    "our_story": "Nuestra Historia"
   },
   "FOOTER": {
     "copyright": "Copyright"
@@ -424,6 +498,7 @@
     "listen": "Escuchar",
     "lang": "Idioma",
     "theme": "Theme",
+    "dialect": "Dialecto",
     "wakelock": "Sveglia schermo",
     "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
     "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
@@ -449,7 +524,8 @@
     "title": "Título",
     "description": "Descrição",
     "date": "Data",
-    "duration": "Duração"
+    "duration": "Duración",
+    "provider": "proveedor"
   },
   "HINTS": {
     "beginSpeaking": "Habla y te escucharemos",
@@ -479,8 +555,11 @@
       "no permitido": "Error de reconocimiento de voz: El agente de usuario no permitió que se produjera ninguna entrada de voz por motivos de seguridad, privacidad o preferencias del usuario.",
       "service-not-allowed": "Error de reconocimiento de voz: El agente de usuario no permitió el servicio de reconocimiento de voz solicitado, ya sea porque el agente de usuario no lo admite o por motivos de seguridad, privacidad o preferencia del usuario.",
       "bad-grammar": "Error de reconocimiento de voz: Se ha producido un error en la gramática o en las etiquetas semánticas de reconocimiento del habla, o el formato de gramática o de etiqueta semántica elegido no es compatible.",
-      "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition."
-    }
+      "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition.",
+      "network": "Error de reconocimiento de habla: la comunicación de red necesaria para completar el reconocimiento falleció.",
+      "not-allowed": "Error de reconocimiento de habla: El agente de usuario deshabilitó cualquier entrada de habla de ocurrir por razones de seguridad, privacidad o preferencia del usuario."
+    },
+    "pageNotFound": "La página no se encontró"
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
@@ -561,6 +640,10 @@
       "usernameLabel": "Nombre de usuario de Patreon",
       "startDateLabel": "Unido",
       "thanksMessage": "Gracias por apoyarnos. ¡No podríamos hacer esto sin su ayuda!"
+    },
+    "TABS": {
+      "account": "Cuentas",
+      "provider": "proveedor"
     }
   },
   "TRANSCRIPT": {
