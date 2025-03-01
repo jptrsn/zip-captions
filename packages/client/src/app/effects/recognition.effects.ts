@@ -144,4 +144,14 @@ export class RecognitionEffects {
     )
   )
 
+  fallbackEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.fallbackEngine),
+      map(() => {
+        this.recognitionService.fallbackToWebEngine()
+      }),
+      map(() => RecognitionActions.setEngineSuccess({ engine: 'web' }))
+    )
+  )
+
 }

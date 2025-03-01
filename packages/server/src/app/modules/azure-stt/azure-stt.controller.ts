@@ -39,7 +39,7 @@ export class AzureSttController {
 
 	@Post('track')
 	@UseGuards(JwtAuthGuard)
-	async trackAzureSttSession(@Req() req, @Body() body: { sessionId: string, timestamp: number }): Promise<void> {
+	async trackAzureSttSession(@Req() req, @Body() body: { sessionId: string, timestamp: number }): Promise<boolean> {
 		return this.azureSttService.pingExpenditure(req.user.id, body.sessionId, body.timestamp);
 	}
 

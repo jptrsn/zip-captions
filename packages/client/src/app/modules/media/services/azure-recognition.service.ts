@@ -81,9 +81,10 @@ export class AzureRecognitionService {
 		this.isStreaming = false;
 		this.recognizer?.stopContinuousRecognitionAsync(
 			() => {
-				// console.log('recognizer stopped continuous async')
+				console.log('recognizer stopped continuous async')
 			},
 			(err: any) => {
+        console.warn('azure stt disconnect error', err);
 				this.store.dispatch(RecognitionActions.disconnectFailure({error: err.message }))
 			}
 		)
@@ -164,7 +165,13 @@ export class AzureRecognitionService {
 	}
 
 	private _updateSession(sessionId: string, timestamp?: number): void {
-		this.http.post<void>(`${this.azureSttEndpoint}/track`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+		this.http.post<boolean>(`${this.azureSttEndpoint}/track`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+      next: (success: boolean) => {
+        console.log('track response', success);
+        if (!success) {
+          this.store.dispatch(RecognitionActions.fallbackEngine());
+        }
+      },
 			error: (err: any) => {
 				this.recognizer?.stopContinuousRecognitionAsync();
 				this.store.dispatch(RecognitionActions.disconnectFailure({ error: err.message }))
@@ -172,9 +179,9 @@ export class AzureRecognitionService {
 		});
 	}
 
-	private _endSession(sessionId: string, timestamp?: number) {
+	private _endSession(sessionId: string, timestamp?: number): void {
 		console.log('end session')
-		return this.http.post<{creditBalance: number}>(`${this.azureSttEndpoint}/end`, { sessionId, timestamp }).pipe(take(1)).subscribe({
+		this.http.post<{creditBalance: number}>(`${this.azureSttEndpoint}/end`, { sessionId, timestamp }).pipe(take(1)).subscribe({
 			next: ({ creditBalance }) => {
 				this.store.dispatch(UserActions.updateBalance({ creditBalance }));
 			},

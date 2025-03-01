@@ -128,11 +128,16 @@ export class RecognitionService {
 		}
   }
 
-  getRecognizedText(): Signal<string[]> {
+  public getRecognizedText(): Signal<string[]> {
 		if (this.provider() === 'web') {
 			return this.webRecognition.getRecognizedText();
 		} else {
 			return this.azureRecognition.getRecognizedText();
 		}
+  }
+
+  public fallbackToWebEngine(): void {
+    this.azureRecognition.disconnectFromStream();
+    this.webRecognition.connectToStream();
   }
 }
