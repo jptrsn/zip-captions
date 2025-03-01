@@ -113,7 +113,7 @@ export class RecognitionEngineComponent {
       if (this.isLoggedIn()) {
         const so = this.selectedOption();
         const b = balance();
-        if (b == 0) return 0;
+        if (b === 0) return 0;
         if (so?.tokensPerMinute && b) {
           return (b/so.tokensPerMinute) * 60000;
         }
