@@ -22,6 +22,7 @@ export class AzureRecognitionService {
 	private readonly MAX_RECOGNITION_LENGTH = 15;
 	private transcriptionEnabled: Signal<boolean | undefined>;
 	private readonly STT_CREDITS_PER_MINUTE = 60;
+  private tokenRefreshTimerId?: number;
 
 	constructor(private store: Store<AppState>,
 							private http: HttpClient
@@ -42,7 +43,7 @@ export class AzureRecognitionService {
 			this.recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 			this._addEventListeners();
 			return auth;
-		}))
+		}));
 	}
 
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
@@ -60,6 +61,9 @@ export class AzureRecognitionService {
 				this.isStreaming = true;
 				this.recognizer?.startContinuousRecognitionAsync(
 					() => {
+            this.tokenRefreshTimerId = window.setInterval(() => {
+              this._refreshToken()
+            }, (18 * 60 * 1000));
 						console.log('recognizer started continuous async', this.isStreaming)
 					},
 					(err: any) => {
@@ -82,6 +86,7 @@ export class AzureRecognitionService {
 		this.recognizer?.stopContinuousRecognitionAsync(
 			() => {
 				console.log('recognizer stopped continuous async')
+        window.clearInterval(this.tokenRefreshTimerId);
 			},
 			(err: any) => {
         console.warn('azure stt disconnect error', err);
@@ -113,15 +118,22 @@ export class AzureRecognitionService {
 		return this.recognizedText;
 	}
 
+  private _refreshToken(): void {
+      this._getToken().pipe(take(1)).subscribe((auth) => {
+        if (this.recognizer !== undefined) {
+          this.recognizer.authorizationToken = auth.token;
+          console.log('token refreshed');
+        }
+      })
+  }
+
 	private _addEventListeners(): void {
 		if (this.recognizer) {
 			let segmentStart: Date | undefined;
 			this.recognizer.sessionStarted = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
-				console.log('session started', event.sessionId, this.isStreaming);
 				this._startSession(event.sessionId, Date.now());
 			}
 			this.recognizer.sessionStopped = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
-				console.log('session stopped', event.sessionId);
 				this._endSession(event.sessionId, Date.now());
 			}
 			this.recognizer.recognizing = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
@@ -131,7 +143,6 @@ export class AzureRecognitionService {
 				}
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
-				console.log('recognized', event.result.text);
 				this._updateSession(event.sessionId, Date.now());
 				this.recognizedText.update((current: string[]) => {
 					current.push(event.result.text);
@@ -191,7 +202,5 @@ export class AzureRecognitionService {
 			}
 		});
 	}
-
-
 
 }

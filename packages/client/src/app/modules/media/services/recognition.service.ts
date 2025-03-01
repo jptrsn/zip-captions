@@ -1,18 +1,15 @@
 import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
-import { ObsConnectionState } from '../../../reducers/obs.reducer';
-import { selectObsConnected } from '../../../selectors/obs.selectors';
-import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
-import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
-import { WebRecognitionService } from './web-recognition.service';
 import { RecognitionEngineState, RecognitionState } from '../../../models/recognition.model';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
-import { AzureRecognitionService } from './azure-recognition.service';
+import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../selectors/user.selector';
+import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
+import { AzureRecognitionService } from './azure-recognition.service';
+import { WebRecognitionService } from './web-recognition.service';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
