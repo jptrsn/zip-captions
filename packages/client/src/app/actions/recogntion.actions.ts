@@ -36,5 +36,6 @@ export const RecognitionActions = createActionGroup({
 		'Set Engine Failure': props<{error: string}>(),
 		'Load Engine': emptyProps(),
     'Reset Engine': emptyProps(),
+    'Fallback Engine': emptyProps()
   },
 });

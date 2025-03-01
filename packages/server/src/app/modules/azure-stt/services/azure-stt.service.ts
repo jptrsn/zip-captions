@@ -34,20 +34,23 @@ export class AzureSttService {
 			throw new Error("Invalid user")
 		}
 		const createdAt = startedAtTimestamp ? new Date(startedAtTimestamp) : new Date();
-		const session = new this.expenditureModel({ userId, sessionId, createdAt, serviceName: 'Azure-STT' });
+		const session = new this.expenditureModel({ userId, sessionId, createdAt, serviceName: 'Azure-STT', creditCap: user.creditBalance });
 		await session.save();
 		return { id: session.id }
 	}
 
-	async pingExpenditure(userId: string, sessionId: string, pingTimestamp?: number): Promise<void> {
+	async pingExpenditure(userId: string, sessionId: string, pingTimestamp?: number): Promise<boolean> {
 		console.log('ping expenditure!', sessionId);
 		const updatedAt = pingTimestamp ? new Date(pingTimestamp) : new Date();
 		const spend = await this.expenditureModel.findOne({ userId, sessionId });
 		if (!spend) {
 			throw new Error('Not found')
 		}
+    const dur = updatedAt.getTime() - spend.createdAt.getTime();
+    const cost = this._calculateSpend(dur);
 		spend.updatedAt = updatedAt;
 		await spend.save();
+    return (spend.creditCap && cost < spend.creditCap)
 	}
 
 	async completeExpenditure(userId: string, sessionId: string, timestamp?: number): Promise<{userId: string, creditBalance: number}> {
@@ -60,20 +63,20 @@ export class AzureSttService {
 		if (!user) {
 			throw new Error("User not found")
 		}
+    const start = spend.createdAt.getTime();
 		const end = spend.updatedAt ? Math.max(spend.updatedAt.getTime(), timestamp) : timestamp;
-		console.log('end', end);
-		console.log('start', spend.createdAt.getTime());
-		spend.durationMs = end - spend.createdAt.getTime()
-		console.log('duration', spend.durationMs)
-
-		const cost = Math.max(1, Math.ceil((spend.durationMs / 1000 / 60) * this.STT_CREDITS_PER_MINUTE ));
-		console.log('cost', cost);
-		spend.creditsUsed = cost
+    spend.durationMs = end - start;
+		const cost = this._calculateSpend(spend.durationMs);
+		spend.creditsUsed = cost;
 		await spend.save();
 		const curr = user.creditBalance || 0;
 		user.creditBalance = Math.max(0, curr - cost);
 		await user.save();
-		return { userId: user.id, creditBalance: user.creditBalance }
+		return { userId: user.id, creditBalance: user.creditBalance };
 	}
+
+  private _calculateSpend(ms: number): number {
+		return Math.max(1, Math.ceil((ms / 1000 / 60) * this.STT_CREDITS_PER_MINUTE ));
+  }
 
 }
