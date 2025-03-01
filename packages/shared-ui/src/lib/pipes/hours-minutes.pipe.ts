@@ -6,7 +6,8 @@ import { Pipe, PipeTransform } from "@angular/core";
 export class HoursMinutesPipe implements PipeTransform {
   transform(milliseconds: number | undefined) {
     let rtn = '';
-    if (!milliseconds) return rtn;
+    if (milliseconds === undefined) return rtn;
+    if (milliseconds === 0) return 0;
     const totalSeconds = Math.floor(milliseconds / 1000);
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
     const totalHours = Math.floor(milliseconds / (1000 * 60 * 60));

@@ -138,7 +138,7 @@ export class RecognitionEffects {
       ofType(RecognitionActions.loadEngine),
       map(() => {
         const cached: RecognitionState['engine']['provider'] | null = this.storage.get('recognitionEngine')
-        return cached ?? 'web'
+        return this.recognitionService.initEngine(cached ?? 'web')
       }),
       map((engine) => RecognitionActions.setEngineSuccess({ engine }))
     )
