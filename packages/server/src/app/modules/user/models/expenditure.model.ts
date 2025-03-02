@@ -51,6 +51,11 @@ export class Expenditure {
 	})
 	creditsUsed: number;
 
+  @Prop({
+    type: Number
+  })
+  creditCap?: number;
+
 }
 
 export const ExpenditureSchema = SchemaFactory.createForClass(Expenditure);

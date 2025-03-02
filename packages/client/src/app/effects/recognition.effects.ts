@@ -138,9 +138,19 @@ export class RecognitionEffects {
       ofType(RecognitionActions.loadEngine),
       map(() => {
         const cached: RecognitionState['engine']['provider'] | null = this.storage.get('recognitionEngine')
-        return cached ?? 'web'
+        return this.recognitionService.initEngine(cached ?? 'web')
       }),
       map((engine) => RecognitionActions.setEngineSuccess({ engine }))
+    )
+  )
+
+  fallbackEngine = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.fallbackEngine),
+      map(() => {
+        this.recognitionService.fallbackToWebEngine()
+      }),
+      map(() => RecognitionActions.setEngineSuccess({ engine: 'web' }))
     )
   )
 

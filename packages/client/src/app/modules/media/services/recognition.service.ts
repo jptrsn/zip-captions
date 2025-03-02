@@ -1,17 +1,15 @@
 import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
-import { ObsConnectionState } from '../../../reducers/obs.reducer';
-import { selectObsConnected } from '../../../selectors/obs.selectors';
-import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
-import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
-import { WebRecognitionService } from './web-recognition.service';
-import { RecognitionEngineState } from '../../../models/recognition.model';
+import { RecognitionEngineState, RecognitionState } from '../../../models/recognition.model';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
+import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
+import { selectUserBalance } from '../../../selectors/user.selector';
+import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
 import { AzureRecognitionService } from './azure-recognition.service';
+import { WebRecognitionService } from './web-recognition.service';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -27,12 +25,15 @@ export class RecognitionService {
 	private transcriptionEnabled: Signal<boolean | undefined>;
 
 	private provider: Signal<RecognitionEngineState['provider']>;
+  private tokenBalance: Signal<number | undefined>;
   constructor(private store: Store<AppState>,
 		private webRecognition: WebRecognitionService,
 		private azureRecognition: AzureRecognitionService,
 	) {
 		const language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
 		const dialect = toSignal(this.store.select(dialectSelector));
+
+    this.tokenBalance = toSignal(this.store.select(selectUserBalance))
 
 		this.activeLanguage = computed(() => {
 			const l = language();
@@ -53,20 +54,32 @@ export class RecognitionService {
 		const engine = toSignal(this.store.select(selectRecognitionEngine));
 		this.provider = computed(() => {
 			return engine()?.provider || 'web'
-		})
+		});
+
 		effect(() => {
 			const al = this.activeLanguage();
 			if (this.provider() === 'web') {
 				this.webRecognition.setLanguage(al);
 			}
-		})
+		});
+
 		effect(() => {
 			const d = this.activeDialect();
 			if (this.provider() === 'azure' && d) {
 				this.azureRecognition.setLanguage(d);
 			}
-		})
+		});
 	}
+
+  public initEngine(provider: RecognitionState['engine']['provider']): RecognitionState['engine']['provider'] {
+    if (provider !== 'web') {
+      const b = this.tokenBalance();
+      if (b) {
+        return provider;
+      }
+    }
+    return 'web';
+  }
 
   public connectToStream(): void {
     console.log('connect to stream', this.activeLanguage()) // TODO: Remove after confirmming italian bug on mobile is no longer an issue
@@ -112,11 +125,16 @@ export class RecognitionService {
 		}
   }
 
-  getRecognizedText(): Signal<string[]> {
+  public getRecognizedText(): Signal<string[]> {
 		if (this.provider() === 'web') {
 			return this.webRecognition.getRecognizedText();
 		} else {
 			return this.azureRecognition.getRecognizedText();
 		}
+  }
+
+  public fallbackToWebEngine(): void {
+    this.azureRecognition.disconnectFromStream();
+    this.webRecognition.connectToStream();
   }
 }

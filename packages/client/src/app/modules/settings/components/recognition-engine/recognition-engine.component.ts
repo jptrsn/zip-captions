@@ -71,6 +71,8 @@ export class RecognitionEngineComponent {
 			dialect: this.fb.control(this.dialect()),
 		});
 
+    this.group.setValidators((c) => this.validateProviderAndDialect(c))
+
 		effect(() => {
 			const d = this.fallbackDialect()
 			const sd = this.dialect();
@@ -111,6 +113,7 @@ export class RecognitionEngineComponent {
       if (this.isLoggedIn()) {
         const so = this.selectedOption();
         const b = balance();
+        if (b === 0) return 0;
         if (so?.tokensPerMinute && b) {
           return (b/so.tokensPerMinute) * 60000;
         }
@@ -123,7 +126,7 @@ export class RecognitionEngineComponent {
       if (p && p !== this.group.controls['provider'].value) {
         this.group.controls['provider'].setValue(p, {emitEvent: true})
       }
-    }, { allowSignalWrites: true })
+    }, { allowSignalWrites: true });
 	}
 
   validateProviderAndDialect(control: AbstractControl): ValidationErrors | null {
@@ -131,7 +134,7 @@ export class RecognitionEngineComponent {
     const { provider, dialect } = control.getRawValue();
 
     if (provider !== 'web' && !this.balance()) {
-      this.group.setErrors({'credits': true});
+      return {'credits': true};
     }
 
     if (provider !== 'web' && dialect === 'unspecified') {
@@ -145,10 +148,7 @@ export class RecognitionEngineComponent {
 
 	setProvider(): void {
     this.group.updateValueAndValidity();
-		const errors = this.validateProviderAndDialect(this.group);
-    if (errors) {
-      console.log('form invalid', errors);
-      this.group.setErrors(errors);
+    if (!this.group.valid) {
       this.group.markAllAsTouched();
       return;
     }
