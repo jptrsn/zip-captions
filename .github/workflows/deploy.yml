@@ -112,17 +112,17 @@ jobs:
           disableTelemetry: true
           ingress: external
           environmentVariables: >
-            MONGO_DB_USER=secretref:mongo-db-user 
-            MONGO_DB_PASSWORD=secretref:mongo-db-password 
-            MONGO_DB_URL=secretref:mongo-db-url 
-            MONGO_DB_PORT=10255 
-            MONGO_DB_NAME=secretref:mongo-db-name 
-            AZURE_CLIENT_ID=secretref:azure-client-id 
-            AZURE_CLIENT_SECRET=secretref:azure-client-secret 
-            AZURE_REDIRECT_URI=secretref:azure-redirect-url 
-            GOOGLE_CLIENT_ID=secretref:google-client-id 
-            GOOGLE_CLIENT_SECRET=secretref:google-client-secret 
-            GOOGLE_REDIRECT_URI=secretref:google-redirect-uri 
+            MONGO_DB_USER=secretref:mongo-db-user
+            MONGO_DB_PASSWORD=secretref:mongo-db-password
+            MONGO_DB_URL=secretref:mongo-db-url
+            MONGO_DB_PORT=10255
+            MONGO_DB_NAME=secretref:mongo-db-name
+            AZURE_CLIENT_ID=secretref:azure-client-id
+            AZURE_CLIENT_SECRET=secretref:azure-client-secret
+            AZURE_REDIRECT_URI=secretref:azure-redirect-url
+            GOOGLE_CLIENT_ID=secretref:google-client-id
+            GOOGLE_CLIENT_SECRET=secretref:google-client-secret
+            GOOGLE_REDIRECT_URI=secretref:google-redirect-uri
             SESSION_SECRET=secretref:session-secret
             JWT_SECRET=secretref:jwt-secret
             APP_ORIGIN=https://zipcaptions.app
@@ -130,6 +130,9 @@ jobs:
             PATREON_CLIENT_SECRET=secretref:patreon-client-secret
             PATREON_REDIRECT_URI=secretref:patreon-redirect-uri
             PATREON_SUPPORTER_WEBHOOK_SECRET=secretref:patreon-supporter-webhook-secret
+            AZURE_SPEECH_KEY=secretref:azure-speech-key
+            AZURE_SPEECH_REGION=eastus
+            PATREON_TOKEN_BALANCE_CAP=180000
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
