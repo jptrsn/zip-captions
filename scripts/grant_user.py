@@ -1,20 +1,23 @@
 import argparse
 from pymongo import MongoClient
 
-def lookup_user(email, grant_amount):
+def lookup_user(email, grant_amount, conn=None):
     database_name = "zipcaptions"
 
-    # Prod config
-    # connection_string = "" # Get from the azure console
-    # client = MongoClient(f"{connection_string}&tlsAllowInvalidCertificates=true")
+    if conn:
+        client = MongoClient(f"{conn}&tlsAllowInvalidCertificates=true")
+    else:
+      # Prod config
+      connection_string = "" # Get from the azure console
+      client = MongoClient(f"{connection_string}&tlsAllowInvalidCertificates=true")
 
     # Dev config
-    host = "localhost"
-    username = ""
-    password = ""
-    port = 27017
-    mongo_uri = f"mongodb://{username}:{password}@{host}:{port}/{database_name}?authSource=admin"
-    client = MongoClient(mongo_uri)
+    # host = "localhost"
+    # username = ""
+    # password = ""
+    # port = 27017
+    # mongo_uri = f"mongodb://{username}:{password}@{host}:{port}/{database_name}?authSource=admin"
+    # client = MongoClient(mongo_uri)
 
     db = client[database_name]  # Replace with your database name
     users_collection = db["users"]
@@ -41,9 +44,11 @@ def lookup_user(email, grant_amount):
         print("No user found with that email.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Look up a user by email in MongoDB.")
+    parser = argparse.ArgumentParser(description="Grant tokens to a user by email in MongoDB.")
     parser.add_argument("email", type=str, help="The email address to look up.")
     parser.add_argument("grant_amount", type=int, help="The grant amount associated with the user.")
+    # Optional argument for connection string
+    parser.add_argument("--conn", type=str, help="MongoDB Connection String")
     args = parser.parse_args()
 
-    lookup_user(args.email, args.grant_amount)
+    lookup_user(args.email, args.grant_amount, args.conn)
