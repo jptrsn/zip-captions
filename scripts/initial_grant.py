@@ -21,11 +21,10 @@ def grant_amount_to_supporters():
     # mongo_uri = f"mongodb://{username}:{password}@{host}:{port}/{database_name}?authSource=admin"
     # client = MongoClient(mongo_uri)
 
-    database_name = "zipcaptions"
     db = client[database_name]
     supporters_collection = db["supporters"]
     users_collection = db["users"]
-    creditadd_collection = db["creditadd"]
+    creditadd_collection = db["creditadds"]
 
     # Fetch all documents from the supporters collection
     supporters = list(supporters_collection.find())
