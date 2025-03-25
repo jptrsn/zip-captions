@@ -8,7 +8,7 @@ import { AppTheme, AvailableLanguages, InterfaceLanguage, RecognitionDialect, Su
 import { windowControlsOverlaySelector } from './selectors/app.selector';
 import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
-import { selectUserId } from './selectors/user.selector';
+import { selectUserBalance, selectUserId } from './selectors/user.selector';
 import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
@@ -86,11 +86,18 @@ export class AppComponent {
     const userIdSignal = toSignal(this.store.select(selectUserId));
     const transcriptsEnabledSignal = toSignal(this.store.select(selectTranscriptionEnabled));
     const loggedInSignal = toSignal(this.store.select(selectUserLoggedIn));
+    const balanceSignal = toSignal(this.store.select(selectUserBalance))
     effect(() => {
       const userId = userIdSignal();
-      if (userId && transcriptsEnabledSignal() && loggedInSignal()) {
-        this.store.dispatch(RecognitionActions.initTranscriptDB({userId}))
-        transcriptDbInitialized = true;
+      const bal = balanceSignal();
+      if (userId && loggedInSignal()) {
+        if (transcriptsEnabledSignal()) {
+          this.store.dispatch(RecognitionActions.initTranscriptDB({userId}));
+          transcriptDbInitialized = true;
+        }
+        if (bal) {
+          this.store.dispatch(RecognitionActions.setEngine({engine: 'azure'}));
+        }
       } else if (transcriptDbInitialized) {
         this.store.dispatch(RecognitionActions.deInitTranscriptDB())
       }
