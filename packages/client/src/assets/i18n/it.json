@@ -9,8 +9,8 @@
     "id": "Indonesiana (Bahasa Indonesia)",
     "pl": "Polacco (Polski)",
     "uk": "Ucraino (Український)",
-    "ar": "Arabico (عربي)",
-    "zh": "Mandarino Semplificato"
+    "ar": "Arabo (عربي)",
+    "zh": "Mandarino Semplificato (简体中文)"
   },
   "DIALECTS": {
     "unspecified": "Generico",
@@ -75,12 +75,12 @@
     "ar-KW": "Arabo (Kuwait)",
     "ar-LB": "Arabo (Libano)",
     "ar-LY": "Arabo (Libia)",
-    "ar-MA": "Arabo (Morocco)",
+    "ar-MA": "Arabo (Marocco)",
     "ar-OM": "Arabo (Oman)",
     "ar-PS": "Arabo (Autorità palestinese)",
     "ar-QA": "Arabo (Qatar)",
     "ar-SA": "Arabo (Arabia Saudita)",
-    "ar-SY": "Arabo (la Siria)",
+    "ar-SY": "Arabo (Siria)",
     "ar-TN": "Arabo (Tunisia)",
     "ar-YE": "Arabo (Yemen)",
     "zh-CN": "Cinese (Mandarin, semplificato)",
