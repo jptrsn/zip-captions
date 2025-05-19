@@ -8,7 +8,9 @@
     "pt": "Portugis (Portugis)",
     "id": "Bahasa Indonesia (Bahasa Indonesia)",
     "pl": "Polandia (Polski)",
-    "uk": "Ukrania (Український)"
+    "uk": "Ukrania (Український)",
+    "ar": "Bahasa Arab (عربي)",
+    "zh": "Bahasa Mandarin Sederhana (简体中文)"
   },
   "DIALECTS": {
     "unspecified": "Umum",
@@ -62,7 +64,30 @@
     "pt-PT": "Portugis (Portugal)",
     "id-ID": "Bahasa Indonesia (Indonesia)",
     "pl-PL": "Polandia (Polandia)",
-    "uk-UA": "Ukraina (Ukraina)"
+    "uk-UA": "Ukraina (Ukraina)",
+    "ar-AE": "Bahasa Arab (Uni Emirat Arab)",
+    "ar-BH": "Bahasa Arab (Bahrain)",
+    "ar-DZ": "Bahasa Arab (Aljazair)",
+    "ar-EG": "Bahasa Arab (Mesir)",
+    "ar-IL": "Bahasa Arab (Israel)",
+    "ar-IQ": "Bahasa Arab (Irak)",
+    "ar-JO": "Bahasa Arab (Yordania)",
+    "ar-KW": "Bahasa Arab (Kuwait)",
+    "ar-LB": "Bahasa Arab (Lebanon)",
+    "ar-LY": "Bahasa Arab (Libya)",
+    "ar-MA": "Bahasa Arab (Maroko)",
+    "ar-OM": "Bahasa Arab (Oman)",
+    "ar-PS": "Bahasa Arab (Otoritas Palestina)",
+    "ar-QA": "Bahasa Arab (Katar)",
+    "ar-SA": "Bahasa Arab (Arab Saudi)",
+    "ar-SY": "Bahasa Arab (Suriah)",
+    "ar-TN": "Bahasa Arab (Tunisia)",
+    "ar-YE": "Bahasa Arab (Yaman)",
+    "zh-CN": "Bahasa Cina (Mandarin, Sederhana)",
+    "zh-CN-shandong": "Bahasa Cina (Jilu Mandarin, Sederhana)",
+    "zh-CN-sichuan": "Cina (Mandarin Barat Selatan, Simplified)",
+    "zh-HK": "Bahasa Cina (Cantonese dan Tradisional)",
+    "zh-TW": "Cina (Taiwan Mandarin, Tradisional)"
   },
   "THEMES": {
     "dark": "gelap",
