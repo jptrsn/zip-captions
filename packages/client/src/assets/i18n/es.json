@@ -8,7 +8,9 @@
     "pt": "Portugués (Português)",
     "id": "Indonesia (Bahasa Indonesia)",
     "pl": "Polaco (Polski)",
-    "uk": "Ucraniano (Український)"
+    "uk": "Ucraniano (Український)",
+    "ar": "Árabe (عربي)",
+    "zh": "Mandarín Simplificado (简体中文)"
   },
   "DIALECTS": {
     "unspecified": "Genérico",
@@ -62,7 +64,30 @@
     "pt-PT": "portugués (Portugal)",
     "id-ID": "indonesio (Indonesia)",
     "pl-PL": "polaco (Polonia)",
-    "uk-UA": "ucraniano (Ucrania)"
+    "uk-UA": "ucraniano (Ucrania)",
+    "ar-AE": "Árabe (Emiratos Árabes Unidos)",
+    "ar-BH": "Árabe (Baréin)",
+    "ar-DZ": "Árabe (Argelia)",
+    "ar-EG": "Árabe (Egipto)",
+    "ar-IL": "Árabe (Israel)",
+    "ar-IQ": "Árabe (Irak)",
+    "ar-JO": "Árabe (Jordania)",
+    "ar-KW": "Árabe (Kuwait)",
+    "ar-LB": "Árabe (Libán)",
+    "ar-LY": "Árabe (Libya)",
+    "ar-MA": "Árabe (Marruecos)",
+    "ar-OM": "Árabe (Omán)",
+    "ar-PS": "Árabe (Autoridad Palestina)",
+    "ar-QA": "Árabe (Qatar)",
+    "ar-SA": "Árabe (Arabia Saudita)",
+    "ar-SY": "Árabe (Siria)",
+    "ar-TN": "Árabe (Túnez)",
+    "ar-YE": "Árabe (Yemen)",
+    "zh-CN": "Chino (Mandarin, Simplificado)",
+    "zh-CN-shandong": "Chino (Jilu Mandarin, Simplificado)",
+    "zh-CN-sichuan": "China (Mandarin del suroeste, Simplificado)",
+    "zh-HK": "Chino (Cantonés y tradicional)",
+    "zh-TW": "Chino (Taiwan Mandarin, Tradicional)"
   },
   "THEMES": {
     "dark": "oscuro",

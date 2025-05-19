@@ -8,7 +8,9 @@
     "pt": "Portuguese (Português)",
     "id": "Bahasa Indonesia",
     "pl": "Polaco (Polski)",
-    "uk": "Ucraniano (Український)"
+    "uk": "Ucraniano (Український)",
+    "ar": "Língua Árabe (عربي)",
+    "zh": "Mandarim Simplificado"
   },
   "DIALECTS": {
     "unspecified": "Genérico",
@@ -62,7 +64,30 @@
     "pt-PT": "Português (Portugal)",
     "id-ID": "Indonésio (Indonésia)",
     "pl-PL": "Polonês (Polônia)",
-    "uk-UA": "Ucraniano (Ucrânia)"
+    "uk-UA": "Ucraniano (Ucrânia)",
+    "ar-AE": "Língua Árabe (Emirados Árabes Unidos)",
+    "ar-BH": "Língua Árabe (Bahrain)",
+    "ar-DZ": "Língua Árabe (Algéria)",
+    "ar-EG": "Língua Árabe ( Egito )",
+    "ar-IL": "Língua Árabe (Israel)",
+    "ar-IQ": "Língua Árabe (Iraq)",
+    "ar-JO": "Língua Árabe (Jordânia)",
+    "ar-KW": "Língua Árabe (Kuwait)",
+    "ar-LB": "Líbano ( Líbano )",
+    "ar-LY": "Líbia ( Líbia )",
+    "ar-MA": "Língua Árabe (Marrocos)",
+    "ar-OM": "Língua Árabe (Oman)",
+    "ar-PS": "Língua Árabe (Autoridade Palestina)",
+    "ar-QA": "Língua Árabe ( Qatar )",
+    "ar-SA": "Língua Árabe (Arabia Saudita)",
+    "ar-SY": "Língua Árabe (Síria)",
+    "ar-TN": "Língua Árabe ( Tunísia )",
+    "ar-YE": "Língua Árabe (Yemen)",
+    "zh-CN": "Chinês (Mandarin, Simplificado)",
+    "zh-CN-shandong": "Chinês (Jilu Mandarin, Simplificado)",
+    "zh-CN-sichuan": "Chinês (Mandarin do Sudeste, Simplificado)",
+    "zh-HK": "Chinês (Cantonês e Tradicional)",
+    "zh-TW": "Chinês (Taiwan Mandarin, Tradicional)"
   },
   "THEMES": {
     "dark": "dark",

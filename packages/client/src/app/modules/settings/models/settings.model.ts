@@ -32,7 +32,7 @@ export enum AppTheme {
   ZipLight = 'Zip-Light',
 }
 
-export type InterfaceLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'id' | 'pl' | 'uk' | 'zh';
+export type InterfaceLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'id' | 'pl' | 'uk' | 'ar' | 'zh';
 
 export const AvailableLanguages: InterfaceLanguage[] = [
   'en',
@@ -44,12 +44,31 @@ export const AvailableLanguages: InterfaceLanguage[] = [
   'id',
   'pl',
   'uk',
-	// 'zh'
+  'ar',
+	'zh'
 ]
 
-export type RecognitionDialect = 'unspecified' | 'en-AU' | 'en-CA' | 'en-GB' | 'en-GH' | 'en-HK' | 'en-IE' | 'en-IN' | 'en-KE' | 'en-NG' | 'en-NZ' | 'en-PH' | 'en-SG' | 'en-TZ' | 'en-US' | 'en-ZA' | 'fr-BE' | 'fr-CA' | 'fr-CH' | 'fr-FR' | 'es-AR' | 'es-BO' | 'es-CL' | 'es-CO' | 'es-CR' | 'es-CU' | 'es-DO' | 'es-EC' | 'es-ES' | 'es-GQ' | 'es-GT' | 'es-HN' | 'es-MX' | 'es-NI' | 'es-PA' | 'es-PE' | 'es-PR' | 'es-PY' | 'es-SV' | 'es-US' | 'es-UY' | 'es-VE' | 'de-AT' | 'de-CH' | 'de-DE' | 'it-CH' | 'it-IT' | 'pt-BR' | 'pt-PT' | 'id-ID' | 'pl-PL' | 'uk-UA' | 'zh-CN' | 'zh-HK';
+export type RecognitionDialect = 'unspecified' | 'en-AU' | 'en-CA' | 'en-GB' | 'en-GH' | 'en-HK' | 'en-IE' | 'en-IN' | 'en-KE' | 'en-NG' | 'en-NZ' | 'en-PH' | 'en-SG' | 'en-TZ' | 'en-US' | 'en-ZA' | 'fr-BE' | 'fr-CA' | 'fr-CH' | 'fr-FR' | 'es-AR' | 'es-BO' | 'es-CL' | 'es-CO' | 'es-CR' | 'es-CU' | 'es-DO' | 'es-EC' | 'es-ES' | 'es-GQ' | 'es-GT' | 'es-HN' | 'es-MX' | 'es-NI' | 'es-PA' | 'es-PE' | 'es-PR' | 'es-PY' | 'es-SV' | 'es-US' | 'es-UY' | 'es-VE' | 'de-AT' | 'de-CH' | 'de-DE' | 'it-CH' | 'it-IT' | 'pt-BR' | 'pt-PT' | 'id-ID' | 'pl-PL' | 'uk-UA' | "ar-AE" | "ar-BH" | "ar-DZ" | "ar-EG" | "ar-IL" | "ar-IQ" | "ar-JO" | "ar-KW" | "ar-LB" | "ar-LY" | "ar-MA" | "ar-OM" | "ar-PS" | "ar-QA" | "ar-SA" | "ar-SY" | "ar-TN" | "ar-YE" | "zh-CN" | "zh-CN-shandong" |"zh-CN-sichuan" |"zh-HK" |"zh-TW";
 
 export const SupportedDialects: RecognitionDialect[] = [
+  'ar-AE',
+  'ar-BH',
+  'ar-DZ',
+  'ar-EG',
+  'ar-IL',
+  'ar-IQ',
+  'ar-JO',
+  'ar-KW',
+  'ar-LB',
+  'ar-LY',
+  'ar-MA',
+  'ar-OM',
+  'ar-PS',
+  'ar-QA',
+  'ar-SA',
+  'ar-SY',
+  'ar-TN',
+  'ar-YE',
 	'en-AU',
 	'en-CA',
 	'en-GB',
@@ -101,8 +120,11 @@ export const SupportedDialects: RecognitionDialect[] = [
 	'id-ID',
 	'pl-PL',
 	'uk-UA',
-	// 'zh-CN',
-	// 'zh-HK'
+	'zh-CN',
+  'zh-CN-shandong',
+  'zh-CN-sichuan',
+	'zh-HK',
+  'zh-TW'
 ]
 
 export const DefaultDialects: { [key in InterfaceLanguage]: RecognitionDialect } = {
@@ -115,7 +137,8 @@ export const DefaultDialects: { [key in InterfaceLanguage]: RecognitionDialect }
   'id': 'id-ID',
   'pl': 'pl-PL',
   'uk': 'uk-UA',
-	'zh': 'zh-CN'
+	'zh': 'zh-CN',
+  'ar': 'ar-EG'
 }
 
 export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';

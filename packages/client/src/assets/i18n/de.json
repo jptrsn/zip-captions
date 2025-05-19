@@ -8,7 +8,9 @@
     "pt": "Portugiesisch (Português)",
     "pl": "Polnisch (Polski)",
     "id": "Indonesisch (Bahasa Indonesia)",
-    "uk": "Ukranisch (Український)"
+    "uk": "Ukrainisch (Український)",
+    "ar": "Arabisch (عربي)",
+    "zh": "Mandarin Vereinfacht (简体中文)"
   },
   "DIALECTS": {
     "unspecified": "Generisch",
@@ -62,7 +64,30 @@
     "pt-PT": "Portugiesisch (Portugal)",
     "id-ID": "Indonesisch (Indonesien)",
     "pl-PL": "Polnisch (Polen)",
-    "uk-UA": "Ukrainisch (Ukraine)"
+    "uk-UA": "Ukrainisch (Ukraine)",
+    "ar-AE": "Arabische (Vereinigte Arabische Emirate)",
+    "ar-BH": "Arabisch (Bahrain)",
+    "ar-DZ": "Arabische Sprache (Algerien)",
+    "ar-EG": "Arabische Sprache (Egypt)",
+    "ar-IL": "Arabische Sprache (Israel)",
+    "ar-IQ": "Arabisch (Irak)",
+    "ar-JO": "Arabische Sprache (Jordan)",
+    "ar-KW": "Arabische Sprache (Kuwait)",
+    "ar-LB": "Arabische Sprache (Lebanon)",
+    "ar-LY": "Arabische Sprache (Libien)",
+    "ar-MA": "Arabische Sprache (Morocco)",
+    "ar-OM": "Arabisch (Oman)",
+    "ar-PS": "Arabisch (Palästinensische Behörde)",
+    "ar-QA": "Arabische Sprache (Katar)",
+    "ar-SA": "Arabisch (Saudi Arabische Sprache)",
+    "ar-SY": "Arabische Sprache (Syria)",
+    "ar-TN": "Arabische Sprache (Tunisia)",
+    "ar-YE": "Arabische Sprache (Jemen)",
+    "zh-CN": "Chinesisch (Mandarin, vereinfacht)",
+    "zh-CN-shandong": "Chinesisch (Jilu Mandarin, vereinfacht)",
+    "zh-CN-sichuan": "Chinesisch (Southwestern Mandarin, vereinfacht)",
+    "zh-HK": "Chinesisch (Cantonisch und traditionell)",
+    "zh-TW": "Chinesisch (Taiwanisch Mandarin, Traditionell)"
   },
   "THEMES": {
     "dark": "dunkel",
