@@ -8,7 +8,9 @@
     "pt": "Portugais (Português)",
     "id": "Indonesio (Bahasa Indonesia)",
     "pl": "Polonais (Polski)",
-    "uk": "Ukrainien (Український)"
+    "uk": "Ukrainien (Український)",
+    "ar": "La langue arabe (عربي)",
+    "zh": "Mandarin Simplifié"
   },
   "DIALECTS": {
     "unspecified": "Générique",
@@ -62,7 +64,30 @@
     "pt-PT": "Portugais (Portugal)",
     "id-ID": "Indonésien (Indonésie)",
     "pl-PL": "Polonais (Pologne)",
-    "uk-UA": "Ukrainien (Ukraine)"
+    "uk-UA": "Ukrainien (Ukraine)",
+    "ar-AE": "Émirats arabes unis (United Arab Emirates)",
+    "ar-BH": "La langue arabe (Bahreïn)",
+    "ar-DZ": "Les Arabes (Algérie)",
+    "ar-EG": "Les Arabes (Egypte)",
+    "ar-IL": "Les Arabes (Israël)",
+    "ar-IQ": "La langue arabe (Irak)",
+    "ar-JO": "Arabes du Nord (Jordanie)",
+    "ar-KW": "Les Arabes (Kuwait)",
+    "ar-LB": "La langue arabe (le Liban)",
+    "ar-LY": "Les Arabes (Libye)",
+    "ar-MA": "La langue arabe (Maroc)",
+    "ar-OM": "Les Arabes (Oman)",
+    "ar-PS": "Arabes (Autorité palestinienne)",
+    "ar-QA": "La langue arabe (Qatar)",
+    "ar-SA": "L’Arabie Saoudite (Arabie Saoudite)",
+    "ar-SY": "Les Arabes (Syrie)",
+    "ar-TN": "La Tunisie ( Tunisie )",
+    "ar-YE": "La langue arabe (Yémen)",
+    "zh-CN": "Chinois (Mandarin, simplifié)",
+    "zh-CN-shandong": "Chinois (Jilu Mandarin, Simplifié)",
+    "zh-CN-sichuan": "Chinois (Mandarin du sud-ouest, simplifié)",
+    "zh-HK": "Chinois (Canton et traditionnel)",
+    "zh-TW": "Chinois (Mandarin thaïlandais, traditionnel)"
   },
   "THEMES": {
     "dark": "sombre",

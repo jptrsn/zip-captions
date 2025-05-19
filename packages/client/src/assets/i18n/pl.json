@@ -8,7 +8,9 @@
     "pt": "Portugalski (Português)",
     "id": "Indonezyjski (Bahasa Indonesia)",
     "pl": "Polski",
-    "uk": "Ukraiński (Український)"
+    "uk": "Ukraiński (Український)",
+    "ar": "Arabski (عربي)",
+    "zh": "Mandaryński Uproszczony"
   },
   "DIALECTS": {
     "unspecified": "Ogólny",
@@ -62,7 +64,30 @@
     "pt-PT": "Portugalski (Portugalia)",
     "id-ID": "Indonezyjski (Indonezja)",
     "pl-PL": "polski (Polska)",
-    "uk-UA": "Ukraiński (Ukraina)"
+    "uk-UA": "Ukraiński (Ukraina)",
+    "ar-AE": "Język arabski (Zjednoczone Emiraty Arabskie)",
+    "ar-BH": "W języku arabskim (Bahrain)",
+    "ar-DZ": "w języku arabskim (Algeria)",
+    "ar-EG": "Język arabski (Egipt)",
+    "ar-IL": "w języku arabskim (Izrael)",
+    "ar-IQ": "Język arabski (Irak)",
+    "ar-JO": "W języku arabskim (Jordan)",
+    "ar-KW": "W języku arabskim (Kuwait)",
+    "ar-LB": "W języku arabskim (Libanon)",
+    "ar-LY": "W języku arabskim (Libja)",
+    "ar-MA": "w języku arabskim (Maroko)",
+    "ar-OM": "W języku arabskim (Oman)",
+    "ar-PS": "Arabski (Władza Palestyńska)",
+    "ar-QA": "w języku arabskim (Katar)",
+    "ar-SA": "Język arabski (Arabia Saudyjska)",
+    "ar-SY": "Arabski język (Syria)",
+    "ar-TN": "Język arabski ( Tunezja )",
+    "ar-YE": "W języku arabskim (Jemen)",
+    "zh-CN": "Chiński (Mandaryna i Simplified)",
+    "zh-CN-shandong": "Chiński (Jilu Mandarin, Simplified)",
+    "zh-CN-sichuan": "Chiński (Południowo-zachodni Mandaryński, Simplified)",
+    "zh-HK": "Chiński (Cantonese i tradycyjny)",
+    "zh-TW": "Chiński (Taiwan Mandaryński, Tradycyjny)"
   },
   "THEMES": {
     "dark": "ciemny",

@@ -8,7 +8,9 @@
     "pt": "Portoghese (Português)",
     "id": "Indonesiana (Bahasa Indonesia)",
     "pl": "Polacco (Polski)",
-    "uk": "Ukrainian (Український)"
+    "uk": "Ukrainian (Український)",
+    "ar": "Arabico (عربي)",
+    "zh": "Mandarino Semplificato"
   },
   "DIALECTS": {
     "unspecified": "Generico",
@@ -62,7 +64,30 @@
     "pt-PT": "Portoghese (Portogallo)",
     "id-ID": "Indonesiano (Indonesia)",
     "pl-PL": "Polacco (Polonia)",
-    "uk-UA": "Ucraino (Ucraina)"
+    "uk-UA": "Ucraino (Ucraina)",
+    "ar-AE": "Arabica (Emirati Arabi Uniti)",
+    "ar-BH": "La lingua araba (Bahrain)",
+    "ar-DZ": "La lingua araba (Algeria)",
+    "ar-EG": "La lingua araba (Egitto)",
+    "ar-IL": "La lingua araba (Israele)",
+    "ar-IQ": "Il linguaggio arabo (Iraq)",
+    "ar-JO": "Il Giappone (Giordania)",
+    "ar-KW": "La lingua araba (Kuwait)",
+    "ar-LB": "Il Libano (Libano)",
+    "ar-LY": "Il linguaggio arabo (Libia)",
+    "ar-MA": "Il Marocco (Morocco)",
+    "ar-OM": "La lingua araba (Oman)",
+    "ar-PS": "L’Arabico (Autorità palestinese)",
+    "ar-QA": "La lingua araba (Qatar)",
+    "ar-SA": "La lingua araba (Arabia Saudita)",
+    "ar-SY": "L’Arabia ( la Siria )",
+    "ar-TN": "Il linguaggio arabo (Tunisia)",
+    "ar-YE": "La lingua araba (Yemen)",
+    "zh-CN": "Cinese (Mandarin, semplificato)",
+    "zh-CN-shandong": "Cinese (Jilu Mandarin, semplificato)",
+    "zh-CN-sichuan": "Cinese (Mandarin del Sud-Ovest, semplificato)",
+    "zh-HK": "Cinese (Cantonese e tradizionale)",
+    "zh-TW": "Cinese (Taiwanese Mandarin, Tradizionale)"
   },
   "THEMES": {
     "dark": "buio",
