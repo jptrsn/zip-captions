@@ -63,7 +63,7 @@ export class AzureRecognitionService {
 					() => {
             this.tokenRefreshTimerId = window.setInterval(() => {
               this._refreshToken()
-            }, (18 * 60 * 1000));
+            }, (8 * 60 * 1000));
 						console.log('recognizer started continuous async', this.isStreaming)
 					},
 					(err: any) => {
