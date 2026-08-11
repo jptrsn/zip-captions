@@ -41,6 +41,10 @@ export class TranscriptionSettingsComponent {
 
   }
 
+  /**
+   * Dispatches the updated profanity filter setting state.
+   * Persisted locally via StorageService in RecognitionEffects and restored on startup in defaultRecognitionState.
+   */
   public toggleProfanityFilter(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     this.store.dispatch(RecognitionActions.setProfanityFilter({ enabled: isChecked }));
