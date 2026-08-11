@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, from, map, of, switchMap } from "rxjs";
+import { catchError, from, map, of, switchMap, tap } from "rxjs";
 import { RecognitionActions } from '../actions/recogntion.actions';
 import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
@@ -152,6 +152,16 @@ export class RecognitionEffects {
       }),
       map(() => RecognitionActions.setEngineSuccess({ engine: 'web' }))
     )
+  )
+
+  saveProfanityFilter$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.setProfanityFilter),
+      tap(({ enabled }) => {
+        this.storage.set('profanityFilterEnabled', enabled);
+      })
+    ),
+    { dispatch: false }
   )
 
 }

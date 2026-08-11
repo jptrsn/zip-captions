@@ -3,12 +3,21 @@ import { RecognitionState, RecognitionStatus } from '../models/recognition.model
 import { RecognitionActions } from '../actions/recogntion.actions';
 
 
+const getInitialProfanityFilterEnabled = (): boolean => {
+  try {
+    const item = localStorage.getItem('profanityFilterEnabled');
+    return item !== null ? JSON.parse(item) : true;
+  } catch {
+    return true;
+  }
+};
+
 export const defaultRecognitionState: RecognitionState = {
   status: RecognitionStatus.uninitialized,
 	engine: {
 		provider: 'web'
 	},
-  profanityFilterEnabled: true
+  profanityFilterEnabled: getInitialProfanityFilterEnabled()
 }
 
 export const recognitionReducers = createReducer(defaultRecognitionState,
