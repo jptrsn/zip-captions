@@ -7,7 +7,8 @@ export const defaultRecognitionState: RecognitionState = {
   status: RecognitionStatus.uninitialized,
 	engine: {
 		provider: 'web'
-	}
+	},
+  profanityFilterEnabled: true
 }
 
 export const recognitionReducers = createReducer(defaultRecognitionState,
@@ -30,4 +31,5 @@ export const recognitionReducers = createReducer(defaultRecognitionState,
 	on(RecognitionActions.setEngine, (state: RecognitionState) => ({...state, engine: { ...state.engine, loading: true }})),
 	on(RecognitionActions.setEngineSuccess, (state: RecognitionState, action: { engine: 'web' | 'azure'}) => ({...state, engine: { ...state.engine, loading: false, provider: action.engine }})),
 	on(RecognitionActions.setEngineFailure, (state: RecognitionState, action: { error: string }) => ({...state, error: action.error})),
+  on(RecognitionActions.setProfanityFilter, (state: RecognitionState, action: { enabled: boolean }) => ({...state, profanityFilterEnabled: action.enabled})),
 )

@@ -371,7 +371,9 @@
       "subheader": "Você pode optar por salvar os resultados do texto reconhecido como uma transcrição e baixá-los mais tarde",
       "localDataWarning": "Todos os dados serão armazenados localmente no seu dispositivo, usando uma chave de criptografia exclusiva da sua conta. Lembre-se de fazer login antes de iniciar as legendas para garantir que a transcrição seja salva.",
       "encryptionWarning": "Se você optar por excluir sua conta, você excluirá todos os dados salvos e chaves de criptografia",
-      "loginRequired": "Você deve estar conectado para configurar as transcrições."
+      "loginRequired": "Você deve estar conectado para configurar as transcrições.",
+      "profanityFilter": "Filtrar profanidade",
+      "profanityFilterDesc": "Substitui palavras profanas por asteriscos na transcrição."
     },
     "PROVIDER": {
       "title": "Provedor de API",

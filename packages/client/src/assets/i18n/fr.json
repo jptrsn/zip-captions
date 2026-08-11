@@ -371,7 +371,9 @@
       "subheader": "Vous pouvez choisir d'enregistrer les résultats textuels reconnus sous forme de transcription et de les télécharger plus tard",
       "localDataWarning": "Toutes les données seront stockées localement sur votre appareil, à l'aide d'une clé de cryptage unique à votre compte. N'oubliez pas de vous connecter avant de commencer vos sous-titres pour vous assurer que la transcription est enregistrée.",
       "encryptionWarning": "Si vous choisissez de supprimer votre compte, vous supprimerez toutes les données enregistrées et les clés de cryptage",
-      "loginRequired": "Vous devez être connecté pour configurer les transcriptions."
+      "loginRequired": "Vous devez être connecté pour configurer les transcriptions.",
+      "profanityFilter": "Masquer la vulgarité",
+      "profanityFilterDesc": "Remplace les mots vulgaires par des astérisques dans la transcription."
     },
     "PROVIDER": {
       "title": "Le fournisseur d’API",

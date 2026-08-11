@@ -13,6 +13,7 @@ export interface RecognitionState {
   transcriptInitialized?: boolean;
   transcriptId?: number;
 	engine: RecognitionEngineState;
+  profanityFilterEnabled?: boolean;
 }
 
 export interface RecognitionEngineState {

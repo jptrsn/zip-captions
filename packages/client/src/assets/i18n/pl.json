@@ -371,7 +371,9 @@
       "subheader": "Możesz zapisać rozpoznane wyniki tekstowe jako transkrypcję i pobrać je później",
       "localDataWarning": "Wszystkie dane będą przechowywane lokalnie na Twoim urządzeniu, przy użyciu klucza szyfrowania unikalnego dla Twojego konta. Pamiętaj, aby zalogować się przed rozpoczęciem napisów, aby mieć pewność, że transkrypcja została zapisana.",
       "encryptionWarning": "Jeśli zdecydujesz się usunąć swoje konto, usuniesz wszystkie zapisane dane i klucze szyfrujące",
-      "loginRequired": "Aby skonfigurować transkrypcje, musisz się zalogować"
+      "loginRequired": "Aby skonfigurować transkrypcje, musisz się zalogować",
+      "profanityFilter": "Maskuj wulgaryzmy",
+      "profanityFilterDesc": "Zastępuje wulgarne słowa gwiazdkami w transkrypcji."
     },
     "PROVIDER": {
       "title": "Rozpoznawanie dostawcy API",
