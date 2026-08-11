@@ -6,7 +6,11 @@ import { RecognitionActions } from '../actions/recogntion.actions';
 const getInitialProfanityFilterEnabled = (): boolean => {
   try {
     const item = localStorage.getItem('profanityFilterEnabled');
-    return item !== null ? JSON.parse(item) : true;
+    if (item !== null) {
+      const parsed = JSON.parse(item);
+      return typeof parsed === 'boolean' ? parsed : true;
+    }
+    return true;
   } catch {
     return true;
   }
