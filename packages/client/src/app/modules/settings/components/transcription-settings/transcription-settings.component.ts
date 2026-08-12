@@ -21,6 +21,7 @@ export class TranscriptionSettingsComponent {
   public transcriptionEnabled: Signal<boolean | undefined>;
   public titlePattern: Signal<string | undefined>;
   public loading: Signal<boolean | undefined>;
+
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) {
     this.isLoggedIn = toSignal(this.store.select(selectUserLoggedIn));

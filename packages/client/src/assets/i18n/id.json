@@ -371,7 +371,9 @@
       "subheader": "Anda dapat memilih untuk menyimpan hasil teks yang dikenali sebagai transkrip, dan mendownloadnya nanti",
       "localDataWarning": "Semua data akan disimpan secara lokal di perangkat Anda, menggunakan kunci enkripsi yang unik untuk akun Anda. Ingatlah untuk masuk sebelum memulai teks untuk memastikan transkrip disimpan.",
       "encryptionWarning": "Jika Anda memilih untuk menghapus akun Anda, Anda akan menghapus semua data tersimpan dan kunci enkripsi",
-      "loginRequired": "Anda harus masuk untuk mengonfigurasi transkripsi."
+      "loginRequired": "Anda harus masuk untuk mengonfigurasi transkripsi.",
+      "profanityFilter": "Filter Kata Kasar",
+      "profanityFilterDesc": "Mengganti kata-kata kasar dengan tanda bintang dalam transkrip."
     },
     "PROVIDER": {
       "title": "Penyedia API",

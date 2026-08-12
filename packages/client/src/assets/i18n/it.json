@@ -371,7 +371,9 @@
       "subheader": "Puoi scegliere di salvare i risultati del testo riconosciuto come trascrizione e scaricarli in seguito",
       "localDataWarning": "Tutti i dati verranno archiviati localmente sul tuo dispositivo, utilizzando una chiave di crittografia univoca per il tuo account. Ricordati di accedere prima di iniziare i sottotitoli per essere sicuro che la trascrizione venga salvata.",
       "encryptionWarning": "Se scegli di eliminare il tuo account, eliminerai tutti i dati salvati e le chiavi di crittografia",
-      "loginRequired": "Devi aver effettuato l'accesso per configurare le trascrizioni."
+      "loginRequired": "Devi aver effettuato l'accesso per configurare le trascrizioni.",
+      "profanityFilter": "Filtra turpiloquio",
+      "profanityFilterDesc": "Sostituisce le parole volgari con asterischi nella trascrizione."
     },
     "PROVIDER": {
       "title": "Fornitore di API",

@@ -53,3 +53,8 @@ export const selectRecognitionEngineProvider = createSelector(
 	selectRecognitionEngine,
 	(state) => state?.provider
 )
+
+export const selectProfanityFilterEnabled = createSelector(
+  selectRecognition,
+  (state) => state.profanityFilterEnabled ?? true
+);

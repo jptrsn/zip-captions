@@ -6,6 +6,7 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { map, Observable, take } from "rxjs";
 import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
+import { selectProfanityFilterEnabled } from "../../../selectors/recognition.selector";
 import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
 import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
 import { UserActions } from "../../../actions/user.actions";
@@ -21,6 +22,7 @@ export class AzureRecognitionService {
 	private azureSttEndpoint: string;
 	private readonly MAX_RECOGNITION_LENGTH = 15;
 	private transcriptionEnabled: Signal<boolean | undefined>;
+	private profanityFilterEnabled: Signal<boolean | undefined>;
 	private readonly STT_CREDITS_PER_MINUTE = 60;
   private tokenRefreshTimerId?: number;
 
@@ -30,7 +32,8 @@ export class AzureRecognitionService {
 		const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
 		this.azureSttEndpoint = `${baseUrl}/${apiVersion}/azure-stt`;
-		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
+		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
+		this.profanityFilterEnabled = toSignal(this.store.select(selectProfanityFilterEnabled));
 	}
 
 	public initialize(language: InterfaceLanguage | RecognitionDialect): Observable<{token: string; region: string}> {
@@ -38,6 +41,12 @@ export class AzureRecognitionService {
 			if (!auth) throw new Error('Azure Recognition Service missing token');
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
 			speechConfig.speechRecognitionLanguage = language;
+
+			if (this.profanityFilterEnabled() === false) {
+				speechConfig.setProfanity(sdk.ProfanityOption.Raw);
+			} else {
+				speechConfig.setProfanity(sdk.ProfanityOption.Masked);
+			}
 
 			const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
 			this.recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
