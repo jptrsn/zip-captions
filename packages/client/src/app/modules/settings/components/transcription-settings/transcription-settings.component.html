@@ -7,13 +7,6 @@
     <p class="text-sm" translate>SETTINGS.TRANSCRIPTION.localDataWarning</p>
     <p class="text-sm" translate>SETTINGS.TRANSCRIPTION.encryptionWarning</p>
     <app-transcript-enabled [group]="formGroup" controlName="enabled"></app-transcript-enabled>
-    <div class="form-control mt-4 flex flex-row items-center justify-between" *ngIf="engineProvider() === 'azure'">
-      <label for="profanity-filter-toggle" class="label flex flex-col items-start cursor-pointer text-left">
-        <span class="label-text font-semibold">{{ 'SETTINGS.TRANSCRIPTION.profanityFilter' | translate }}</span>
-        <span class="label-text-alt text-base-content/70">{{ 'SETTINGS.TRANSCRIPTION.profanityFilterDesc' | translate }}</span>
-      </label>
-      <input id="profanity-filter-toggle" type="checkbox" class="toggle toggle-primary" [checked]="profanityFilterEnabled()" [disabled]="isRecognitionActive()" (change)="toggleProfanityFilter($event)" />
-    </div>
     <div class="flex flex-row gap-3 basis-full justify-between">
       <button class="btn btn-primary" (click)="saveSettings()" [disabled]="formGroup.pristine || loading()" translate>BUTTONS.save</button>
     </div>

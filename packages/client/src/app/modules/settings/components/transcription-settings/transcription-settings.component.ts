@@ -2,10 +2,8 @@ import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
-import { recognitionActiveSelector, selectProfanityFilterEnabled, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { selectTranscriptionEnabled, selectTranscriptSettingsLoading, selectTranscriptTitlePattern } from '../../../../selectors/settings.selector';
 import { SettingsActions, TranscriptionSettings } from '../../models/settings.model';
 
@@ -23,9 +21,6 @@ export class TranscriptionSettingsComponent {
   public transcriptionEnabled: Signal<boolean | undefined>;
   public titlePattern: Signal<string | undefined>;
   public loading: Signal<boolean | undefined>;
-  public profanityFilterEnabled = this.store.selectSignal(selectProfanityFilterEnabled);
-  public engineProvider = this.store.selectSignal(selectRecognitionEngineProvider);
-  public isRecognitionActive = this.store.selectSignal(recognitionActiveSelector);
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) {
@@ -39,15 +34,6 @@ export class TranscriptionSettingsComponent {
       titlePattern: this.fb.control(this.titlePattern())
     });
 
-  }
-
-  /**
-   * Dispatches the updated profanity filter setting state.
-   * Persisted locally via StorageService in RecognitionEffects and restored on startup in defaultRecognitionState.
-   */
-  public toggleProfanityFilter(event: Event): void {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    this.store.dispatch(RecognitionActions.setProfanityFilter({ enabled: isChecked }));
   }
 
   public saveSettings(): void {
