@@ -1,0 +1,14 @@
+<div class="form-control mt-3" [formGroup]="group">
+  <label for="profanity-filter-checkbox" class="label cursor-pointer flex flex-row items-center justify-between">
+    <div class="flex flex-col items-start text-left">
+      <span class="label-text font-semibold">{{ 'SETTINGS.TRANSCRIPTION.profanityFilter' | translate }}</span>
+      <span class="label-text-alt text-base-content/70">{{ 'SETTINGS.TRANSCRIPTION.profanityFilterDesc' | translate }}</span>
+    </div>
+    <input
+      id="profanity-filter-checkbox"
+      type="checkbox"
+      class="checkbox checkbox-primary"
+      [formControlName]="controlName"
+    />
+  </label>
+</div>

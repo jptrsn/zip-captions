@@ -3,11 +3,25 @@ import { RecognitionState, RecognitionStatus } from '../models/recognition.model
 import { RecognitionActions } from '../actions/recogntion.actions';
 
 
+const getInitialProfanityFilterEnabled = (): boolean => {
+  try {
+    const item = localStorage.getItem('profanityFilterEnabled');
+    if (item !== null) {
+      const parsed = JSON.parse(item);
+      return typeof parsed === 'boolean' ? parsed : true;
+    }
+    return true;
+  } catch {
+    return true;
+  }
+};
+
 export const defaultRecognitionState: RecognitionState = {
   status: RecognitionStatus.uninitialized,
 	engine: {
 		provider: 'web'
-	}
+	},
+  profanityFilterEnabled: getInitialProfanityFilterEnabled()
 }
 
 export const recognitionReducers = createReducer(defaultRecognitionState,
@@ -30,4 +44,5 @@ export const recognitionReducers = createReducer(defaultRecognitionState,
 	on(RecognitionActions.setEngine, (state: RecognitionState) => ({...state, engine: { ...state.engine, loading: true }})),
 	on(RecognitionActions.setEngineSuccess, (state: RecognitionState, action: { engine: 'web' | 'azure'}) => ({...state, engine: { ...state.engine, loading: false, provider: action.engine }})),
 	on(RecognitionActions.setEngineFailure, (state: RecognitionState, action: { error: string }) => ({...state, error: action.error})),
+  on(RecognitionActions.setProfanityFilter, (state: RecognitionState, action: { enabled: boolean }) => ({...state, profanityFilterEnabled: action.enabled})),
 )

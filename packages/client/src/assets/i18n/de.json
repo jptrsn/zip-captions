@@ -371,7 +371,9 @@
       "subheader": "Sie können die erkannten Textergebnisse als Transkript speichern und später herunterladen",
       "localDataWarning": "Alle Daten werden lokal auf Ihrem Gerät gespeichert, wobei ein für Ihr Konto eindeutiger Verschlüsselungsschlüssel verwendet wird. Denken Sie daran, sich anzumelden, bevor Sie mit den Untertiteln beginnen, um sicherzustellen, dass das Transkript gespeichert wird.",
       "encryptionWarning": "Wenn Sie Ihr Konto löschen, werden alle gespeicherten Daten und Verschlüsselungsschlüssel gelöscht",
-      "loginRequired": "Sie müssen angemeldet sein, um Transkriptionen zu konfigurieren."
+      "loginRequired": "Sie müssen angemeldet sein, um Transkriptionen zu konfigurieren.",
+      "profanityFilter": "Fluchfilter aktivieren",
+      "profanityFilterDesc": "Ersetzt Anstößigkeiten im Transkript durch Sternchen."
     },
     "PROVIDER": {
       "title": "Anerkennung API Provider",

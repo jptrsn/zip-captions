@@ -371,7 +371,9 @@
       "subheader": "您可以选择将已认可的文本结果保存为翻译,然后随后下载。",
       "localDataWarning": "所有数据将本地存储在您的设备上,使用一个密码密钥,这是独一无二的您的帐户. 请记住,在开始您的密码之前登录,以确保密码被保存。",
       "encryptionWarning": "如果您选择删除您的帐户,您将删除所有存储的数据和加密密钥",
-      "loginRequired": "您必须签名,以便设置翻译。"
+      "loginRequired": "您必须登录才能配置转录。",
+      "profanityFilter": "屏蔽不文明用语",
+      "profanityFilterDesc": "在转录文本中将不文明用语替换为星号。"
     },
     "PROVIDER": {
       "title": "API 供应商",

@@ -7,7 +7,7 @@ import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionEngineState } from '../../../../models/recognition.model';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
-import { selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
+import { selectProfanityFilterEnabled, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector } from '../../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../../selectors/user.selector';
 import { DefaultDialects, InterfaceLanguage, RecognitionDialect, SettingsActions } from '../../models/settings.model';
@@ -36,11 +36,13 @@ export class RecognitionEngineComponent {
 	public fallbackDialect: Signal<RecognitionDialect>;
 	public balance: Signal<number | undefined>;
 	public isLoggedIn: Signal<boolean | undefined>;
+	public profanityFilterEnabled: Signal<boolean | undefined>;
 	public patreonUrl = 'https://patreon.com/zipcaptions';
   public selectedOption: Signal<ProviderOption | undefined>;
 	public group: FormGroup<{
 		provider: FormControl<RecognitionEngineState['provider'] | null | undefined>,
 		dialect: FormControl<RecognitionDialect | null | undefined>,
+		profanityFilterEnabled: FormControl<boolean | null | undefined>,
 	}>;
 	public providers: ProviderOption[] = [
 		{ value: 'web', paid: false, url: "https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition", tokensPerMinute: 0 },
@@ -57,6 +59,7 @@ export class RecognitionEngineComponent {
 
 		this.dialect = toSignal(this.store.select(dialectSelector));
 		this.language = toSignal(this.store.select(languageSelector));
+		this.profanityFilterEnabled = toSignal(this.store.select(selectProfanityFilterEnabled));
 
 		this.fallbackDialect = computed(() => {
 			const l = this.language();
@@ -69,6 +72,7 @@ export class RecognitionEngineComponent {
 		this.group = this.fb.group({
 			provider: this.fb.control(provider()),
 			dialect: this.fb.control(this.dialect()),
+			profanityFilterEnabled: this.fb.control(this.profanityFilterEnabled()),
 		});
 
     this.group.setValidators((c) => this.validateProviderAndDialect(c))
@@ -152,7 +156,7 @@ export class RecognitionEngineComponent {
       this.group.markAllAsTouched();
       return;
     }
-		const {provider, dialect} = this.group.getRawValue();
+		const {provider, dialect, profanityFilterEnabled} = this.group.getRawValue();
 		if (provider) {
       this.formProviderToSave = provider
       this.store.dispatch(RecognitionActions.setEngine({ engine: provider }));
@@ -160,6 +164,9 @@ export class RecognitionEngineComponent {
     }
 		if (dialect && dialect !== this.dialect()) {
 			this.store.dispatch(SettingsActions.setDialect({dialect}))
+		}
+		if (profanityFilterEnabled !== undefined && profanityFilterEnabled !== null && profanityFilterEnabled !== this.profanityFilterEnabled()) {
+			this.store.dispatch(RecognitionActions.setProfanityFilter({ enabled: profanityFilterEnabled }));
 		}
 	}
 

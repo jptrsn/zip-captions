@@ -371,7 +371,9 @@
       "subheader": "You can choose to save the recognized text results as a transcript, and download them later",
       "localDataWarning": "All data will be stored locally on your device, using an encryption key that is unique to your account. Remember to sign in before starting your captions to be sure the transcript is saved.",
       "encryptionWarning": "If you choose to delete your account, you will delete all saved data and encryption keys",
-      "loginRequired": "You must be signed-in to configure transcriptions."
+      "loginRequired": "You must be signed-in to configure transcriptions.",
+      "profanityFilter": "Mask Profanity",
+      "profanityFilterDesc": "Replaces profane words with asterisks in the transcript."
     },
 		"PROVIDER": {
 			"title": "Recognition API Provider",
