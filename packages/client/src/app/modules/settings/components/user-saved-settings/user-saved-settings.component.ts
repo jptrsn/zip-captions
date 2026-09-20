@@ -57,7 +57,7 @@ export class UserSavedSettingsComponent {
       if (saved && current) {
         return Object.keys(saved).length === Object.keys(current).length &&
         (Object.keys(saved) as (keyof SettingsState)[]).every((key) => 
-          (key in current && saved[key] == current[key])
+          (key in current && JSON.stringify(saved[key]) === JSON.stringify(current[key]))
         )
       }
       return false;
