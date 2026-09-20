@@ -38,7 +38,7 @@ export class SettingsEffects {
           ...settings,
           transcription: settings.transcription
             ? { ...(existing.transcription ?? {}), ...settings.transcription }
-            : existing.transcription,
+            : existing.transcription ?? defaultSettingsState.transcription,
         };
         if (merged.transcription) {
           delete (merged.transcription as { loading?: unknown }).loading;
