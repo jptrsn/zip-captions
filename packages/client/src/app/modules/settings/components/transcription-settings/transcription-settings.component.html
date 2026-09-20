@@ -8,7 +8,7 @@
     <p class="text-sm" translate>SETTINGS.TRANSCRIPTION.encryptionWarning</p>
     <app-transcript-enabled [group]="formGroup" controlName="enabled"></app-transcript-enabled>
     <div class="flex flex-row gap-3 basis-full justify-between">
-      <button class="btn btn-primary" (click)="saveSettings()" [disabled]="formGroup.pristine || loading()" translate>BUTTONS.save</button>
+      <button data-testid="zc-transcript-save" class="btn btn-primary" (click)="saveSettings()" [disabled]="formGroup.pristine || loading()" translate>BUTTONS.save</button>
     </div>
   </div>
 </div>

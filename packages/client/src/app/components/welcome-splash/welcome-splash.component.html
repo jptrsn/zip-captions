@@ -8,7 +8,7 @@
 
   <app-supporter-render class="flex max-w-2xl text-base leading-relaxed text-center"></app-supporter-render>
   
-  <button *ngIf="!isLoggedIn()" class="btn btn-secondary text btn-wide btn-xl rounded-full" [routerLink]="['auth', 'login']">
+  <button data-testid="zc-home-login" *ngIf="!isLoggedIn()" class="btn btn-secondary text btn-wide btn-xl rounded-full" [routerLink]="['auth', 'login']">
     <span translate>BUTTONS.login</span>
   </button>
   

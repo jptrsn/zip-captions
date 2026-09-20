@@ -1,4 +1,4 @@
-<button
+<button data-testid="zc-recog-toggle"
   class="btn btn-circle tooltip tooltip-left relative"
   [ngClass]="{'btn-accent': disconnected(), 'btn-primary': connected(), 'btn-error': !!error(), 'btn-sm': small()}"
   (click)="toggleState()"

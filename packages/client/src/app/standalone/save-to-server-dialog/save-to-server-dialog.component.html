@@ -8,8 +8,8 @@
       MODAL.syncSettingsP2
     </p>
     <div class="modal-action gap-3">
-      <button class="btn" (click)="decline()" translate>BUTTONS.decline</button>
-      <button class="btn btn-primary" (click)="accept()" translate>BUTTONS.saveAndClose</button>
+      <button data-testid=\"zc-settings-save-server-cancel\" class="btn" (click)="decline()" translate>BUTTONS.decline</button>
+      <button data-testid="zc-settings-save-server-confirm" class="btn btn-primary" (click)="accept()" translate>BUTTONS.saveAndClose</button>
     </div>
   </div>
 </dialog>

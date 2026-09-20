@@ -14,7 +14,7 @@
     <label class="label">
       <span class="label-text tooltip tooltip-right tooltip-warning" [attr.data-tip]="'HINTS.advancedWarning' | translate" [ngClass]="{'text-error': formGroup.invalid && formGroup.touched}" translate>CONNECTIONS.obsStudioIP <ng-icon name="heroExclamationTriangle" size="18"></ng-icon></span>
     </label>
-    <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
+    <input data-testid=\"zc-obs-host\" type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
     <label class="label no-height">
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('invalid') && formGroup.touched" translate>ERRORS.invalidUrl</span>
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
@@ -25,7 +25,7 @@
     <label class="label">
       <span class="label-text" [ngClass]="{'text-error': formGroup.invalid && formGroup.touched}" translate>CONNECTIONS.obsStudioPort</span>
     </label>
-    <input type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="4455" formControlName="port" />
+    <input data-testid="zc-obs-port" type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="4455" formControlName="port" />
     <label class="label no-height">
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('invalid') && formGroup.touched" translate>ERRORS.invalidUrl</span>
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['port'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
@@ -36,13 +36,13 @@
     <label class="label">
       <span class="label-text" translate>LABELS.password</span>
     </label>
-    <input type="password" class="input input-bordered input-lg" [placeholder]="'LABELS.optPassword' | translate" formControlName="password" />
+    <input data-testid="zc-obs-password" type="password" class="input input-bordered input-lg" [placeholder]="'LABELS.optPassword' | translate" formControlName="password" />
     <label class="label no-height"></label>
   </div>
 
   <div class="flex flex-col self-end pb-6 gap-3">
-    <button class="btn btn-secondary" [ngClass]="{'btn-error': formGroup.invalid && formGroup.touched}" [disabled]="isConnecting()" *ngIf="!isConnected()" translate>BUTTONS.connect</button>
-    <button class="btn btn-secondary" [disabled]="isConnecting()" *ngIf="isConnected()" type="button" (click)="disconnect()" translate>BUTTONS.disconnect</button>
+    <button data-testid="zc-obs-connect" class="btn btn-secondary" [ngClass]="{'btn-error': formGroup.invalid && formGroup.touched}" [disabled]="isConnecting()" *ngIf="!isConnected()" translate>BUTTONS.connect</button>
+    <button data-testid="zc-obs-disconnect" class="btn btn-secondary" [disabled]="isConnecting()" *ngIf="isConnected()" type="button" (click)="disconnect()" translate>BUTTONS.disconnect</button>
   </div>
 
 </form>
