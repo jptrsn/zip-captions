@@ -15,7 +15,7 @@
       </span>
       <ng-icon class="tooltip tooltip-left tooltip-warning text-xs" [attr.data-tip]="'HINTS.advancedWarning' | translate" name="heroExclamationTriangle" size="18"></ng-icon>
     </label>
-    <input data-testid=\"zc-obs-host\" type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
+    <input data-testid="zc-obs-host-settings" type="text" class="input input-bordered input-lg" [ngClass]="{'input-error': formGroup.invalid && formGroup.touched}" placeholder="127.0.0.1" formControlName="ip" />
     <label class="label no-height">
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('invalid') && formGroup.touched" translate>ERRORS.invalidUrl</span>
       <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['ip'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
