@@ -26,7 +26,7 @@
         <div class="text-sm mt-1"><span translate>USER.PATREON.startDateLabel</span>: <span>{{patron.startDate | timeago }}</span></div>
       </div>
     </div>
-    <button #delete class="btn btn-accent" (click)="modal.showModal()">
+    <button data-testid="zc-account-delete" #delete class="btn btn-accent" (click)="modal.showModal()">
       <ng-icon name="heroTrash"></ng-icon>
       <span translate>USER.PROFILE.delete</span>
     </button>
@@ -41,7 +41,7 @@
       <p class="mb-3" translate>USER.PROFILE.deleteWarnP3</p>
       <div class="form-control">
         <label class="label text-xs" translate>USER.PROFILE.confirmLabel</label>
-        <input type="text" class="input input-accent input-bordered bg-white" [placeholder]="profile.primaryEmail" formControlName="email">
+        <input data-testid="zc-account-delete-email" type="text" class="input input-accent input-bordered bg-white" [placeholder]="profile.primaryEmail" formControlName="email">
         <label class="label no-height">
           <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('invalid') && formGroup.touched" translate>USER.PROFILE.emailDeleteError</span>
           <span class="label-alt-text text-error text-xs" *ngIf="formGroup.controls['email'].hasError('required') && formGroup.touched" translate>ERRORS.required</span>
@@ -49,13 +49,13 @@
       </div>
       <div class="form-control">
         <label class="label text-xs" translate>USER.PROFILE.reasonLabel</label>
-        <select class="select select-bordered select-accent bg-white" formControlName="reason">
+        <select data-testid="zc-account-delete-reason" class="select select-bordered select-accent bg-white" formControlName="reason">
           <option *ngFor="let reason of reasons" [value]="reason" translate>{{ "USER.PROFILE.DELETE_REASONS." + reason}}</option>
         </select>
       </div>
       <div class="modal-action">
         <button class="btn btn-secondary" tabindex="1" [disabled]="loading()" translate>BUTTONS.cancel</button>
-        <button class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()" translate>BUTTONS.confirm</button>
+        <button data-testid="zc-account-delete-confirm" class="btn btn-primary" tabindex="0" type="button" [disabled]="formGroup.invalid || loading()" (click)="deleteAccount()" translate>BUTTONS.confirm</button>
       </div>
     </form>
   </dialog>
