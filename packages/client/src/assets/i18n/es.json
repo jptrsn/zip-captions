@@ -534,6 +534,8 @@
     "lineHeight": "Interlineado",
     "textFlow": "Flujo de texto",
     "fullScreen": "Pantalla completa",
+    "documentPip": "Imagen en imagen",
+    "documentPipExit": "Salir de imagen en imagen",
     "increase": "Aumentar",
     "decrease": "Reducir",
     "password": "Contraseña",
@@ -555,6 +557,8 @@
     "provider": "proveedor"
   },
   "HINTS": {
+    "pipActive": "Los subtítulos se muestran en imagen en imagen",
+    "pipReturn": "Volver a la ventana",
     "beginSpeaking": "Habla y te escucharemos",
     "streamConnected": "El texto aparecerá cuando sepamos algo...",
     "verifyingConnection": "Verificando código de unión...",

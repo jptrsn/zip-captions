@@ -1,0 +1,8 @@
+<button data-testid="zc-recog-doc-pip"
+        class="btn btn-md btn-primary w-full tooltip tooltip-left tooltip-info"
+        [ngClass]="{'bg-secondary': isPip()}"
+        [attr.data-tip]="(isPip() ? 'LABELS.documentPipExit' : 'LABELS.documentPip') | translate"
+        *ngIf="show"
+        (click)="toggle()">
+  <ng-icon name="pipIcon"></ng-icon>
+</button>
