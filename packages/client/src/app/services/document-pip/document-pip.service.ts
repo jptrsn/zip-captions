@@ -85,11 +85,18 @@ export class DocumentPipService {
       return;
     }
 
+    const registeredEl = this.el;
+
     try {
       const pipWindow = await window.documentPictureInPicture!.requestWindow({
         width: 640,
         height: 320,
       });
+
+      if (!this.el || this.el !== registeredEl || !this.el.nativeElement) {
+        pipWindow.close();
+        return;
+      }
 
       this.pipWindow = pipWindow;
 
@@ -174,8 +181,8 @@ export class DocumentPipService {
       }
     });
 
-    // Also clone link tags (fonts, preconnect, stylesheets)
-    document.querySelectorAll('link[rel="stylesheet"], link[rel="preconnect"]').forEach((el) => {
+    // Also clone preconnect links (e.g. fonts)
+    document.querySelectorAll('link[rel="preconnect"]').forEach((el) => {
       targetDoc.head.appendChild(el.cloneNode(true));
     });
   }

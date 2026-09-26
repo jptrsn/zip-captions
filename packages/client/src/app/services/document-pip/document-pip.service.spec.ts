@@ -42,7 +42,7 @@ describe('DocumentPipService', () => {
     }
   });
 
-  it('should toggle state or attempt toggle without error', async () => {
+  it('should leave PiP inactive when toggling with no registered element', async () => {
     await service.toggle();
     expect(service.isPipActive()).toBe(false);
   });
