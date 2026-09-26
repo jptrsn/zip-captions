@@ -534,6 +534,8 @@
     "lineHeight": "Zeilenabstand",
     "textFlow": "Textfluss",
     "fullScreen": "Vollbild",
+    "documentPip": "Bild-in-Bild",
+    "documentPipExit": "Bild-in-Bild beenden",
     "increase": "Erhöhen",
     "decrease": "Verringern",
     "password": "Kennwort",
@@ -555,6 +557,8 @@
     "provider": "Anbieter"
   },
   "HINTS": {
+    "pipActive": "Untertitel werden im Bild-in-Bild-Fenster angezeigt",
+    "pipReturn": "Zurück zum Fenster",
     "beginSpeaking": "Beginnen sie zu sprechen, damit der text erscheint.",
     "streamConnected": "Text wird erscheinen, sobald wir etwas hören...",
     "verifyingConnection": "Verifizierung des Beitrittscodes...",

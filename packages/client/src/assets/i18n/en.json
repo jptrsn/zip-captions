@@ -534,6 +534,8 @@
     "lineHeight": "Line Spacing",
     "textFlow": "Text Flow",
     "fullScreen": "Full Screen",
+    "documentPip": "Picture in Picture",
+    "documentPipExit": "Exit Picture in Picture",
     "increase": "Increase",
     "decrease": "Decrease",
     "password": "Password",
@@ -555,6 +557,8 @@
 		"provider": "Provider"
   },
   "HINTS": {
+    "pipActive": "Captions are displaying in Picture-in-Picture",
+    "pipReturn": "Return to Window",
     "beginSpeaking": "Start speaking...",
     "streamConnected": "Text will appear once we hear something...",
     "verifyingConnection": "Verifying join code...",
