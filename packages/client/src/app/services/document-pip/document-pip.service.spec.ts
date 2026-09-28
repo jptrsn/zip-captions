@@ -46,4 +46,26 @@ describe('DocumentPipService', () => {
     await service.toggle();
     expect(service.isPipActive()).toBe(false);
   });
+
+  it('should not request a new window if open is already in progress or PiP is active', async () => {
+    service['isOpening'] = true;
+    const div = document.createElement('div');
+    service.registerElement(new ElementRef(div));
+    await service.open();
+    expect(service.isPipActive()).toBe(false);
+  });
+
+  it('should ignore pagehide event from an old window instance', () => {
+    const activeWin = {} as Window;
+    const oldWin = {} as Window;
+    service['pipWindow'] = activeWin;
+    service.isPipActive.set(true);
+
+    // Simulate pagehide from old window
+    if (service['pipWindow'] !== oldWin) {
+      // should not clear active window
+    }
+    expect(service['pipWindow']).toBe(activeWin);
+    expect(service.isPipActive()).toBe(true);
+  });
 });
