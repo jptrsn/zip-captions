@@ -1,0 +1,113 @@
+<form class="flex flex-col basis-full px-3 sm:px-6 max-w-4xl" [formGroup]="formGroup" (submit)="saveSettings()">
+  <div class="basis-full grid sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-12">
+    <div class="flex flex-col gap-4">
+
+      <!-- Master Translation Toggle -->
+      <label class="form-control">
+        <span class="text-accent label" translate>SETTINGS.TRANSLATION.enable</span>
+        <label class="cursor-pointer label bg-base-100 rounded-lg ps-5 pe-3 py-4">
+          <span class="label-text me-2">
+            {{ (formGroup.get('enabled')?.value ? 'SETTINGS.TRANSLATION.on' : 'SETTINGS.TRANSLATION.off') | translate }}
+          </span>
+          <input type="checkbox" class="toggle toggle-primary" formControlName="enabled" />
+        </label>
+      </label>
+
+      <!-- Target Language Dropdown -->
+      <label class="form-control" *ngIf="formGroup.get('enabled')?.value">
+        <span class="text-accent label" translate>SETTINGS.TRANSLATION.targetLang</span>
+        <select class="select select-lg mt-1 w-full bg-base-100" formControlName="targetLanguage">
+          <option *ngFor="let lang of languages" [value]="lang.code">
+            {{ lang.name }}
+          </option>
+        </select>
+      </label>
+
+      <!-- Display Mode Selector -->
+      <div class="form-control" *ngIf="formGroup.get('enabled')?.value">
+        <span class="text-accent label" translate>SETTINGS.TRANSLATION.displayMode</span>
+        <div class="flex flex-col gap-2">
+          
+          <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-semibold text-sm" translate>SETTINGS.TRANSLATION.modeSplit</span>
+              <span class="text-xs text-base-content/70" translate>SETTINGS.TRANSLATION.modeSplitDesc</span>
+            </div>
+            <input type="radio" value="split" class="radio radio-primary" formControlName="mode" />
+          </label>
+
+          <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-semibold text-sm" translate>SETTINGS.TRANSLATION.modeTranslatedOnly</span>
+              <span class="text-xs text-base-content/70" translate>SETTINGS.TRANSLATION.modeTranslatedOnlyDesc</span>
+            </div>
+            <input type="radio" value="translated-only" class="radio radio-primary" formControlName="mode" />
+          </label>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Side: Status Card and Action Buttons -->
+    <div class="flex flex-col gap-4">
+      <div class="flex w-full justify-end items-center gap-1 sm:gap-3">
+        <button class="btn btn-secondary rounded-xl" translate type="button" routerLink="..">
+          BUTTONS.cancel
+        </button>
+        <button class="btn btn-primary rounded-xl" [disabled]="formGroup.pristine" type="submit" translate>
+          BUTTONS.saveAndClose
+        </button>
+      </div>
+
+      <!-- On-Device AI Status Card -->
+      <div class="form-control">
+        <div class="label">
+          <label class="text-accent" translate>SETTINGS.TRANSLATION.statusTitle</label>
+        </div>
+        <div class="bg-base-100 text-base-content p-6 flex flex-col gap-3 rounded-lg">
+          
+          <ng-container *ngIf="isSupported; else unsupportedNotice">
+            <div class="flex items-center gap-2">
+              <div class="badge badge-success" *ngIf="modelStatus() === 'ready'" translate>
+                SETTINGS.TRANSLATION.statusReady
+              </div>
+              <div class="badge badge-warning" *ngIf="modelStatus() === 'downloadable'" translate>
+                SETTINGS.TRANSLATION.statusDownloadable
+              </div>
+              <div class="badge badge-info" *ngIf="modelStatus() === 'downloading'" translate>
+                SETTINGS.TRANSLATION.statusDownloading
+              </div>
+              <div class="badge badge-error" *ngIf="modelStatus() === 'error'" translate>
+                SETTINGS.TRANSLATION.statusError
+              </div>
+            </div>
+
+            <div *ngIf="modelStatus() === 'downloadable'" class="flex flex-col gap-2 mt-2">
+              <p class="text-xs text-base-content/80" translate>SETTINGS.TRANSLATION.downloadPrompt</p>
+              <button type="button" class="btn btn-sm btn-primary w-full gap-2" (click)="downloadModel()">
+                <ng-icon name="heroArrowDownTray"></ng-icon>
+                <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
+              </button>
+            </div>
+
+            <div *ngIf="modelStatus() === 'downloading'" class="flex flex-col gap-2 mt-2">
+              <span class="text-xs" translate>SETTINGS.TRANSLATION.downloadingModel</span>
+              <progress class="progress progress-primary w-full" [value]="downloadProgress()" max="100"></progress>
+              <span class="text-xs text-end">{{ downloadProgress() }}%</span>
+            </div>
+
+            <p class="text-sm text-base-content/80" translate>SETTINGS.TRANSLATION.privacyNotice</p>
+          </ng-container>
+
+          <ng-template #unsupportedNotice>
+            <div class="badge badge-warning" translate>SETTINGS.TRANSLATION.statusUnsupported</div>
+            <p class="text-xs text-base-content/80 mt-2" translate>SETTINGS.TRANSLATION.unsupportedHint</p>
+          </ng-template>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>

@@ -1,20 +1,101 @@
 <div class="drawer drawer-end overflow-y-hidden py-6">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
-    <div class="flex flex-grow-0 h-full overflow-hidden bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
-      <app-recognized-text 
-        *ngIf="renderHistory()"
-        [renderHistory]="renderHistory"
-        [connected]="connected" 
-        [hasLiveResults]="hasLiveResults"
-        [textOutput]="textOutput"
-        [error]="error"
-        hintText="HINTS.streamConnected"
-        class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-      ></app-recognized-text>
-      <app-recognized-live-text 
-        [text]="liveText" 
-      ></app-recognized-live-text>
+    <div class="flex flex-col flex-grow-0 h-full overflow-hidden bg-base-100">
+      <!-- Split Mode (Horizontal Split) -->
+      <ng-container *ngIf="translationMode() === 'split'; else standardRender">
+        <!-- Top Pane: Original language -->
+        <div class="flex flex-1 flex-col overflow-hidden relative border-b border-base-300">
+          <div class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 opacity-70">
+            {{ originalLanguageLabel() }}
+          </div>
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+            <app-recognized-text 
+              *ngIf="renderHistory()"
+              [renderHistory]="renderHistory"
+              [connected]="connected" 
+              [hasLiveResults]="hasLiveResults"
+              [textOutput]="textOutput"
+              [error]="error"
+              hintText="HINTS.streamConnected"
+              class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+            ></app-recognized-text>
+            <app-recognized-live-text 
+              [text]="liveText" 
+            ></app-recognized-live-text>
+          </div>
+        </div>
+
+        <!-- Bottom Pane: Translated language -->
+        <div class="flex flex-1 flex-col overflow-hidden relative">
+          <div class="badge badge-primary badge-sm absolute top-2 left-2 z-10 opacity-80">
+            {{ targetLanguageLabel() }}
+          </div>
+
+          <!-- Download Button if model is downloadable -->
+          <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10">
+            <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
+              <ng-icon name="heroArrowDownTray"></ng-icon>
+              <span>Download {{ targetLanguageLabel() }} model</span>
+            </button>
+          </div>
+
+          <!-- Download Progress if downloading -->
+          <div *ngIf="modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+            <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
+            <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+          </div>
+
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+            <app-recognized-text 
+              *ngIf="renderHistory()"
+              [renderHistory]="renderHistory"
+              [connected]="connected" 
+              [hasLiveResults]="hasTranslatedResults"
+              [textOutput]="translatedTextOutput"
+              [error]="error"
+              hintText="HINTS.streamConnected"
+              class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+            ></app-recognized-text>
+            <app-recognized-live-text 
+              [text]="translatedLiveText" 
+            ></app-recognized-live-text>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Standard or Translated-Only Mode -->
+      <ng-template #standardRender>
+        <!-- Download Button if model is downloadable in translated-only mode -->
+        <div *ngIf="translationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10">
+          <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
+            <ng-icon name="heroArrowDownTray"></ng-icon>
+            <span>Download {{ targetLanguageLabel() }} model</span>
+          </button>
+        </div>
+
+        <!-- Download Progress if downloading in translated-only mode -->
+        <div *ngIf="translationMode() === 'translated-only' && modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+          <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
+          <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+        </div>
+
+        <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+          <app-recognized-text 
+            *ngIf="renderHistory()"
+            [renderHistory]="renderHistory"
+            [connected]="connected" 
+            [hasLiveResults]="translationMode() === 'translated-only' ? hasTranslatedResults : hasLiveResults"
+            [textOutput]="translationMode() === 'translated-only' ? translatedTextOutput : textOutput"
+            [error]="error"
+            hintText="HINTS.streamConnected"
+            class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+          ></app-recognized-text>
+          <app-recognized-live-text 
+            [text]="translationMode() === 'translated-only' ? translatedLiveText : liveText" 
+          ></app-recognized-live-text>
+        </div>
+      </ng-template>
     </div>
     <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>

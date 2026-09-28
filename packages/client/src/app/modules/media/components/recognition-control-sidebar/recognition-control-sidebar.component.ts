@@ -2,13 +2,14 @@ import { Component, Input, Renderer2, Signal, ViewChildren, computed } from '@an
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectRenderHistoryLength, selectTextSize } from '../../../../selectors/settings.selector';
-import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
+import { selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
+import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
+import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
 import { map } from 'rxjs';
 
 @Component({
@@ -37,11 +38,21 @@ export class RecognitionControlSidebarComponent {
   public renderHistoryMin: Signal<boolean>;
   public renderHistoryMax: Signal<boolean>;
 
+  // Translation signals
+  public isTranslatorSupported: boolean;
+  public translationSettings: Signal<TranslationSettings | undefined>;
+  public translationMode: Signal<TranslationDisplayMode>;
+
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
 
   constructor(private store: Store<AppState>,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private translatorService: ChromeTranslatorService) {
+    this.isTranslatorSupported = this.translatorService.isSupported();
+    this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
+    this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.textSizeMax = computed(() => this.textSize() === this.availableTextSizes[this.availableTextSizes.length - 1]);
     this.textSizeMin = computed(() => this.textSize() === this.availableTextSizes[0]);
@@ -59,6 +70,21 @@ export class RecognitionControlSidebarComponent {
     this.renderHistoryMin = computed(() => this.renderHistoryLength() < 1);
     this.renderHistoryMax = computed(() => this.renderHistoryLength() > 24);
   }
+
+  setTranslationMode(mode: TranslationDisplayMode): void {
+    this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
+    this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: mode !== 'off' }));
+  }
+
+  cycleTranslationMode(): void {
+    const current = this.translationMode();
+    let next: TranslationDisplayMode = 'split';
+    if (current === 'split') next = 'translated-only';
+    else if (current === 'translated-only') next = 'off';
+    else next = 'split';
+    this.setTranslationMode(next);
+  }
+
 
   hideElements(elements: HTMLElement[]) {
     for (const el of elements) {

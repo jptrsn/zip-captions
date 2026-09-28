@@ -67,6 +67,32 @@
       </div>
     </details>
     
+    <details #translationMenu class="dropdown dropdown-left" *ngIf="isTranslatorSupported">
+      <summary class="btn btn-md btn-primary flex flex-col items-center" [ngClass]="{'bg-secondary': translationMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !translationMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'SETTINGS.TABS.translation' | translate" (click)="hideElements([fontSizeMenu, lineSpacingMenu, renderHistoryMenu])">
+        <ng-icon name="heroGlobeAlt"></ng-icon>
+        <div class="text-[10px] text-base-100 uppercase" *ngIf="translationMenu.hasAttribute('open')">{{ translationMode() === 'split' ? 'SPLIT' : (translationMode() === 'translated-only' ? 'TRANS' : 'OFF') }}</div>
+      </summary>
+      <div class="dropdown-content">
+        <ul class="menu bg-secondary rounded-s-xl gap-2 p-2 min-w-max text-xs">
+          <li>
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'split'}" (click)="setTranslationMode('split')">
+              {{ 'SETTINGS.TRANSLATION.modeSplit' | translate }}
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'translated-only'}" (click)="setTranslationMode('translated-only')">
+              {{ 'SETTINGS.TRANSLATION.modeTranslatedOnly' | translate }}
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'off'}" (click)="setTranslationMode('off')">
+              {{ 'SETTINGS.TRANSLATION.off' | translate }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </details>
+
     <app-flow-direction *ngIf="showTextFlow"></app-flow-direction>
     
     <app-full-screen *ngIf="showFullscreen"></app-full-screen>

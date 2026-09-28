@@ -206,8 +206,43 @@ export interface TranscriptionSettings {
   loading?: boolean;
   titlePattern?: string;
 }
+
+export type TranslationDisplayMode = 'off' | 'split' | 'translated-only';
+
+export interface TranslationSettings {
+  enabled: boolean;
+  mode: TranslationDisplayMode;
+  targetLanguage: string;
+}
+
+export interface SupportedTranslationLanguage {
+  code: string;
+  name: string;
+}
+
+export const AvailableTranslationLanguages: SupportedTranslationLanguage[] = [
+  { code: 'es', name: 'Spanish (Español)' },
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'French (Français)' },
+  { code: 'de', name: 'German (Deutsch)' },
+  { code: 'it', name: 'Italian (Italiano)' },
+  { code: 'pt', name: 'Portuguese (Português)' },
+  { code: 'uk', name: 'Ukrainian (Українська)' },
+  { code: 'ar', name: 'Arabic (العربية)' },
+  { code: 'zh', name: 'Chinese (中文)' },
+  { code: 'ja', name: 'Japanese (日本語)' },
+  { code: 'ko', name: 'Korean (한국어)' },
+  { code: 'hi', name: 'Hindi (हिन्दी)' },
+  { code: 'vi', name: 'Vietnamese (Tiếng Việt)' },
+  { code: 'ru', name: 'Russian (Русский)' },
+  { code: 'nl', name: 'Dutch (Nederlands)' },
+  { code: 'pl', name: 'Polish (Polski)' },
+  { code: 'tr', name: 'Turkish (Türkçe)' }
+];
+
 export interface SettingsState extends SyncableSettings {
   transcription: TranscriptionSettings;
+  translation: TranslationSettings;
 }
 
 export interface SyncableSettings {
@@ -220,6 +255,7 @@ export interface SyncableSettings {
   lineHeight: LineHeight;
   textFlow: TextFlow;
   fontFamily: FontFamily;
+  translation: TranslationSettings;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

@@ -333,12 +333,36 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "Look & Feel",
+      "transcription": "Transcript",
+      "translation": "Translation",
       "sync": "Sync",
       "sharing": "Sharing",
       "obs": "OBS Studio",
-      "transcription": "Transcript",
 			"engine": "Engine"
     },
+    "TRANSLATION": {
+      "enable": "Live Translation",
+      "on": "Translation Enabled",
+      "off": "Translation Disabled",
+      "targetLang": "Translate To",
+      "displayMode": "Caption Display Layout",
+      "modeSplit": "Horizontal Split (Bilingual)",
+      "modeSplitDesc": "Original instruction on top, translated captions below",
+      "modeTranslatedOnly": "Translated Only",
+      "modeTranslatedOnlyDesc": "Display only the translated captions",
+      "statusTitle": "Chrome On-Device AI Status",
+      "statusReady": "Model Ready (On-Device)",
+      "statusDownloadable": "Download Required",
+      "statusDownloading": "Downloading Model...",
+      "statusError": "Model Error",
+      "statusUnsupported": "Browser Not Supported",
+      "downloadButton": "Download Translation Model",
+      "downloadPrompt": "Download on-device language model to enable translation",
+      "downloadingModel": "Downloading AI translation model directly to your device...",
+      "privacyNotice": "Powered by Chrome's built-in on-device AI. Zero audio or translated text leaves your machine.",
+      "unsupportedHint": "The Chrome Translator API is only available in supported desktop Chromium browsers (Chrome 138+ / Edge). You may need to enable chrome://flags/#translation-api."
+    },
+
     "UI": {
       "t1": "Preview",
       "p1": "Each segment of previously-recognized text will appear like this.",
