@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ElementRef } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { DocumentPipService } from './document-pip.service';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 
@@ -47,12 +48,41 @@ describe('DocumentPipService', () => {
     expect(service.isPipActive()).toBe(false);
   });
 
-  it('should not request a new window if open is already in progress or PiP is active', async () => {
-    service['isOpening'] = true;
-    const div = document.createElement('div');
-    service.registerElement(new ElementRef(div));
-    await service.open();
-    expect(service.isPipActive()).toBe(false);
+  it('should not request a new window if open is already in progress', async () => {
+    const originalDocPip = (window as any).documentPictureInPicture;
+    const originalSpeech = (window as any).SpeechRecognition;
+    const requestWindowMock = jest.fn();
+
+    try {
+      (window as any).documentPictureInPicture = {
+        requestWindow: requestWindowMock,
+      };
+      (window as any).SpeechRecognition = jest.fn();
+
+      const store = TestBed.inject(Store);
+      const testService = TestBed.runInInjectionContext(() => new DocumentPipService(store));
+      expect(testService.isSupported).toBe(true);
+
+      const div = document.createElement('div');
+      testService.registerElement(new ElementRef(div));
+
+      testService['isOpening'] = true;
+      await testService.open();
+
+      expect(requestWindowMock).not.toHaveBeenCalled();
+      expect(testService.isPipActive()).toBe(false);
+    } finally {
+      if (originalDocPip !== undefined) {
+        (window as any).documentPictureInPicture = originalDocPip;
+      } else {
+        delete (window as any).documentPictureInPicture;
+      }
+      if (originalSpeech !== undefined) {
+        (window as any).SpeechRecognition = originalSpeech;
+      } else {
+        delete (window as any).SpeechRecognition;
+      }
+    }
   });
 
   it('should ignore pagehide event from an old window instance', () => {

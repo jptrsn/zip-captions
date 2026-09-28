@@ -170,9 +170,9 @@ export class DocumentPipService {
 
   private _copyStyles(targetDoc: Document): void {
     // Copy stylesheets from main document
-    [...document.styleSheets].forEach((styleSheet) => {
+    Array.from(document.styleSheets).forEach((styleSheet) => {
       try {
-        const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+        const cssRules = Array.from(styleSheet.cssRules).map((rule) => rule.cssText).join('');
         const style = targetDoc.createElement('style');
         style.textContent = cssRules;
         targetDoc.head.appendChild(style);

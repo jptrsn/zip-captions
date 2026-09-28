@@ -13,7 +13,7 @@ import * as DE_TRANSLATIONS from '../assets/i18n/de.json';
 import * as EN_TRANSLATIONS from '../assets/i18n/en.json';
 import * as FR_TRANSLATIONS from '../assets/i18n/fr.json';
 import * as IT_TRANSLATIONS from '../assets/i18n/it.json';
-import * as SP_TRANSLATIONS from '../assets/i18n/sp.json';
+import * as SP_TRANSLATIONS from '../assets/i18n/es.json';
 
 const actions$ = new Observable<Action>();
 
