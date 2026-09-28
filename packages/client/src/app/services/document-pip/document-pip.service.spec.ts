@@ -85,17 +85,67 @@ describe('DocumentPipService', () => {
     }
   });
 
-  it('should ignore pagehide event from an old window instance', () => {
-    const activeWin = {} as Window;
-    const oldWin = {} as Window;
-    service['pipWindow'] = activeWin;
-    service.isPipActive.set(true);
+  it('should ignore pagehide event from an old window instance', async () => {
+    const originalDocPip = (window as any).documentPictureInPicture;
+    const originalSpeech = (window as any).SpeechRecognition;
+    let pagehideListener: (() => void) | undefined;
 
-    // Simulate pagehide from old window
-    if (service['pipWindow'] !== oldWin) {
-      // should not clear active window
+    const mockPipWindow = {
+      document: {
+        documentElement: { setAttribute: jest.fn() },
+        body: {
+          style: {},
+          appendChild: jest.fn(),
+        },
+        createElement: (tag: string) => document.createElement(tag),
+        head: { appendChild: jest.fn() },
+      },
+      addEventListener: jest.fn((event: string, handler: () => void) => {
+        if (event === 'pagehide') {
+          pagehideListener = handler;
+        }
+      }),
+      close: jest.fn(),
+    };
+
+    try {
+      (window as any).documentPictureInPicture = {
+        requestWindow: jest.fn().mockResolvedValue(mockPipWindow),
+      };
+      (window as any).SpeechRecognition = jest.fn();
+
+      const store = TestBed.inject(Store);
+      const testService = TestBed.runInInjectionContext(() => new DocumentPipService(store));
+
+      const div = document.createElement('div');
+      testService.registerElement(new ElementRef(div));
+
+      await testService.open();
+      expect(pagehideListener).toBeDefined();
+      expect(testService['pipWindow']).toBe(mockPipWindow as any);
+      expect(testService.isPipActive()).toBe(true);
+
+      // Simulate a replacement window having been set
+      const replacementWindow = {} as Window;
+      testService['pipWindow'] = replacementWindow;
+
+      // Invoke the old window's pagehide listener
+      pagehideListener!();
+
+      // Verify the old window's handler does not affect the replacement window or PiP state
+      expect(testService['pipWindow']).toBe(replacementWindow);
+      expect(testService.isPipActive()).toBe(true);
+    } finally {
+      if (originalDocPip !== undefined) {
+        (window as any).documentPictureInPicture = originalDocPip;
+      } else {
+        delete (window as any).documentPictureInPicture;
+      }
+      if (originalSpeech !== undefined) {
+        (window as any).SpeechRecognition = originalSpeech;
+      } else {
+        delete (window as any).SpeechRecognition;
+      }
     }
-    expect(service['pipWindow']).toBe(activeWin);
-    expect(service.isPipActive()).toBe(true);
   });
 });
