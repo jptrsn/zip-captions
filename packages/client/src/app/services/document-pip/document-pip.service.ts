@@ -33,6 +33,7 @@ export class DocumentPipService {
   private el?: ElementRef<HTMLElement>;
   private placeholder?: Comment;
   private pipWindow?: Window;
+  private isOpening = false;
   private theme: Signal<AppTheme | undefined>;
 
   constructor(private store: Store<AppState>) {
@@ -81,10 +82,11 @@ export class DocumentPipService {
       return;
     }
 
-    if (this.isPipActive()) {
+    if (this.isPipActive() || this.isOpening) {
       return;
     }
 
+    this.isOpening = true;
     const registeredEl = this.el;
 
     try {
@@ -128,26 +130,31 @@ export class DocumentPipService {
 
       // Handle PiP window closing (user clicked 'X' or closed window)
       pipWindow.addEventListener('pagehide', () => {
-        this._restoreElement();
-        this.isPipActive.set(false);
-        this.pipWindow = undefined;
+        if (this.pipWindow === pipWindow) {
+          this._restoreElement();
+          this.isPipActive.set(false);
+          this.pipWindow = undefined;
+        }
       });
     } catch (err) {
       console.error('Failed to open Document Picture-in-Picture window:', err);
       this._restoreElement();
       this.isPipActive.set(false);
       this.pipWindow = undefined;
+    } finally {
+      this.isOpening = false;
     }
   }
 
   public close(): void {
     if (this.pipWindow) {
+      const win = this.pipWindow;
+      this.pipWindow = undefined;
       try {
-        this.pipWindow.close();
+        win.close();
       } catch (e) {
         console.error('Error closing PiP window:', e);
       }
-      this.pipWindow = undefined;
     }
     this._restoreElement();
     this.isPipActive.set(false);
@@ -163,9 +170,9 @@ export class DocumentPipService {
 
   private _copyStyles(targetDoc: Document): void {
     // Copy stylesheets from main document
-    [...document.styleSheets].forEach((styleSheet) => {
+    Array.from(document.styleSheets).forEach((styleSheet) => {
       try {
-        const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+        const cssRules = Array.from(styleSheet.cssRules).map((rule) => rule.cssText).join('');
         const style = targetDoc.createElement('style');
         style.textContent = cssRules;
         targetDoc.head.appendChild(style);
