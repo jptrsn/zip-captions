@@ -7,7 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { SettingsActions } from '../../models/settings.model';
 import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
-import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 
 @Component({
   selector: 'app-translation-settings',
@@ -21,6 +21,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
   public isSupported: boolean;
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
+  public systemRequirements: Signal<SystemRequirementsStatus>;
 
   public currentSettings: Signal<TranslationSettings | undefined>;
   public sourceDialect: Signal<string | undefined>;
@@ -35,6 +36,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.isSupported = this.translatorService.isSupported();
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
+    this.systemRequirements = this.translatorService.systemRequirements;
 
     this.currentSettings = toSignal(this.store.select(selectTranslationSettings));
     this.sourceDialect = toSignal(this.store.select(dialectSelector));
@@ -76,6 +78,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
     const tgt = this.formGroup.get('targetLanguage')?.value || 'es';
     this.translatorService.checkModelStatus(src, tgt);
+    this.translatorService.checkSystemRequirements();
   }
 
   ngOnDestroy(): void {

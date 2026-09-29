@@ -415,7 +415,14 @@
       "unsupportedHint": "API Penerjemah Chrome hanya tersedia di browser Chromium desktop yang didukung (Chrome 138+ / Edge). Anda mungkin perlu mengaktifkan chrome://flags/#translation-api.",
       "statusDownloadable": "Perlu Diunduh",
       "downloadButton": "Unduh Model Terjemahan",
-      "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan"
+      "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",
+      "requirementsTitle": "Persyaratan Sistem",
+      "reqRam": "Memerlukan RAM 16 GB",
+      "reqStorage": "Memerlukan ruang disk kosong 20 GB+ untuk unduhan & cache model",
+      "reqNotice": "Perlu 20GB+ & 16GB RAM",
+      "lowResourcesWarningTitle": "Penyimpanan atau Memori Rendah Terdeteksi",
+      "lowResourcesWarning": "Perangkat Anda mungkin memiliki penyimpanan atau memori kosong yang terbatas. Chrome memerlukan RAM 16 GB dan setidaknya 20 GB ruang disk kosong, jika tidak pengunduhan model dapat macet di 0%.",
+      "externalDriveTip": "Tip: Jika disk internal kehabisan ruang, Anda dapat menjalankan Chrome yang mengarah ke drive eksternal dengan --user-data-dir."
     }
   },
   "STREAM": {

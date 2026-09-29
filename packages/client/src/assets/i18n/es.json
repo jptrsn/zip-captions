@@ -415,7 +415,14 @@
       "downloadPrompt": "Descargue el modelo de idioma en el dispositivo para habilitar la traducción",
       "downloadingModel": "Descargando el modelo de traducción por IA directamente en su dispositivo...",
       "privacyNotice": "Desarrollado con la IA integrada en el dispositivo de Chrome. Ningún audio ni texto traducido sale de su dispositivo.",
-      "unsupportedHint": "La API de traducción de Chrome solo está disponible en navegadores Chromium de escritorio compatibles (Chrome 138+ / Edge). Es posible que deba activar chrome://flags/#translation-api."
+      "unsupportedHint": "La API de traducción de Chrome solo está disponible en navegadores Chromium de escritorio compatibles (Chrome 138+ / Edge). Es posible que deba activar chrome://flags/#translation-api.",
+      "requirementsTitle": "Requisitos del sistema",
+      "reqRam": "Se requieren 16 GB de RAM",
+      "reqStorage": "Se requieren 20 GB+ de espacio libre para descargar y almacenar el modelo",
+      "reqNotice": "Requiere 20GB+ y 16GB RAM",
+      "lowResourcesWarningTitle": "Poco espacio o memoria detectados",
+      "lowResourcesWarning": "Es posible que su dispositivo tenga poco espacio o memoria. Chrome requiere 16 GB de RAM y al menos 20 GB de espacio libre; de lo contrario, la descarga del modelo puede detenerse al 0%.",
+      "externalDriveTip": "Consejo: Si su disco interno tiene poco espacio, puede iniciar Chrome apuntando a una unidad externa con --user-data-dir."
     }
   },
   "STREAM": {

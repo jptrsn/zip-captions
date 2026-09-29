@@ -10,7 +10,7 @@ import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSe
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
@@ -52,6 +52,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
+  public systemRequirements: Signal<SystemRequirementsStatus>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
   @ViewChild('captionContainer') captionContainer!: ElementRef<HTMLElement>;
@@ -118,6 +119,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
+    this.systemRequirements = this.translatorService.systemRequirements;
 
     // Handle live text translation
     toObservable(this.liveText).pipe(

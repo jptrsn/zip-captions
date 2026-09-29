@@ -415,7 +415,14 @@
       "unsupportedHint": "Chrome 翻译 API 仅在受支持的桌面 Chromium 浏览器（Chrome 138+ / Edge）中可用。您可能需要在 chrome://flags/#translation-api 中启用该功能。",
       "statusDownloadable": "需要下载",
       "downloadButton": "下载翻译模型",
-      "downloadPrompt": "在设备上下载语言模型以启用翻译"
+      "downloadPrompt": "在设备上下载语言模型以启用翻译",
+      "requirementsTitle": "系统要求",
+      "reqRam": "需要 16 GB 内存 (RAM)",
+      "reqStorage": "模型下载和缓存需要 20 GB 以上的可用磁盘空间",
+      "reqNotice": "需要 20GB+ 空间和 16GB 内存",
+      "lowResourcesWarningTitle": "检测到存储空间或内存不足",
+      "lowResourcesWarning": "您的设备可能可用存储或内存有限。Chrome 需要 16 GB 内存以及至少 20 GB 的可用磁盘空间，否则模型下载可能会停留在 0%。",
+      "externalDriveTip": "提示：如果内置硬盘空间不足，您可以使用 --user-data-dir 将 Chrome 启动到外接磁盘。"
     }
   },
   "STREAM": {

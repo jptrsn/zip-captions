@@ -98,6 +98,26 @@
             </div>
 
             <p class="text-sm text-base-content/80" translate>SETTINGS.TRANSLATION.privacyNotice</p>
+
+            <!-- System Requirements & Disclaimers -->
+            <div class="divider my-1"></div>
+            <div class="flex flex-col gap-1 text-xs">
+              <span class="font-semibold text-base-content/90" translate>SETTINGS.TRANSLATION.requirementsTitle</span>
+              <ul class="list-disc list-inside text-base-content/70 flex flex-col gap-0.5">
+                <li>{{ 'SETTINGS.TRANSLATION.reqRam' | translate }}</li>
+                <li>{{ 'SETTINGS.TRANSLATION.reqStorage' | translate }}</li>
+              </ul>
+            </div>
+
+            <!-- Warning if system resources are insufficient -->
+            <div *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="alert alert-warning text-xs p-3 rounded-lg flex flex-col items-start gap-1">
+              <div class="flex items-center gap-1.5 font-semibold">
+                <ng-icon name="heroExclamationTriangle" class="text-base"></ng-icon>
+                <span translate>SETTINGS.TRANSLATION.lowResourcesWarningTitle</span>
+              </div>
+              <p class="text-xs opacity-90" translate>SETTINGS.TRANSLATION.lowResourcesWarning</p>
+              <p class="text-xs opacity-80 italic mt-0.5" translate>SETTINGS.TRANSLATION.externalDriveTip</p>
+            </div>
           </ng-container>
 
           <ng-template #unsupportedNotice>

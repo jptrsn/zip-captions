@@ -33,11 +33,14 @@
           </div>
 
           <!-- Download Button if model is downloadable -->
-          <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10">
+          <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
             <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
               <ng-icon name="heroArrowDownTray"></ng-icon>
               <span>Download {{ targetLanguageLabel() }} model</span>
             </button>
+            <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
+              {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
+            </span>
           </div>
 
           <!-- Download Progress if downloading -->
@@ -51,7 +54,7 @@
               *ngIf="renderHistory()"
               [renderHistory]="renderHistory"
               [connected]="connected" 
-              [hasLiveResults]="hasTranslatedResults"
+              [hasLiveResults]="hasLiveResults"
               [textOutput]="translatedTextOutput"
               [error]="error"
               hintText="HINTS.streamConnected"
@@ -67,11 +70,14 @@
       <!-- Standard or Translated-Only Mode -->
       <ng-template #standardRender>
         <!-- Download Button if model is downloadable in translated-only mode -->
-        <div *ngIf="translationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10">
+        <div *ngIf="translationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
           <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
             <ng-icon name="heroArrowDownTray"></ng-icon>
             <span>Download {{ targetLanguageLabel() }} model</span>
           </button>
+          <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
+            {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
+          </span>
         </div>
 
         <!-- Download Progress if downloading in translated-only mode -->

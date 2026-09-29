@@ -415,7 +415,14 @@
       "unsupportedHint": "L'API Translator di Chrome è disponibile solo sui browser Chromium desktop supportati (Chrome 138+ / Edge). Potrebbe essere necessario abilitare chrome://flags/#translation-api.",
       "statusDownloadable": "Download richiesto",
       "downloadButton": "Scarica il modello di traduzione",
-      "downloadPrompt": "Scarica il modello linguistico sul dispositivo per attivare la traduzione"
+      "downloadPrompt": "Scarica il modello linguistico sul dispositivo per attivare la traduzione",
+      "requirementsTitle": "Requisiti di sistema",
+      "reqRam": "16 GB di RAM richiesti",
+      "reqStorage": "20 GB+ di spazio libero su disco richiesti per il download e la cache del modello",
+      "reqNotice": "Richiesti 20 GB+ e 16 GB di RAM",
+      "lowResourcesWarningTitle": "Spazio o memoria insufficienti rilevati",
+      "lowResourcesWarning": "Il dispositivo potrebbe avere memoria o spazio di archiviazione limitati. Chrome richiede 16 GB di RAM e almeno 20 GB di spazio libero, altrimenti il download del modello potrebbe bloccarsi allo 0%.",
+      "externalDriveTip": "Suggerimento: Se il disco interno è quasi pieno, puoi avviare Chrome su un'unità esterna con --user-data-dir."
     }
   },
   "STREAM": {
