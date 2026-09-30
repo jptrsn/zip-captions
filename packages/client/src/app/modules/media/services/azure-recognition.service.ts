@@ -154,8 +154,7 @@ export class AzureRecognitionService {
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
 				this.recognizedText.update((current: string[]) => {
-					current.push(event.result.text);
-					return current;
+					return [...current, event.result.text].slice(this.MAX_RECOGNITION_LENGTH * -1);
 				});
 				this.liveOutput.set('');
 				if (this.transcriptionEnabled()) {

@@ -24,8 +24,37 @@ export const defaultSettingsState: SettingsState = {
 export const settingsReducers = createReducer(
   defaultSettingsState,
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
-  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => ({...state, lang: action.language, dialect: state.lang === action.language ? state.dialect : 'unspecified'})),
-	on(SettingsActions.setDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: action.dialect})),
+  on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => {
+    const langCode = action.language.split('-')[0].toLowerCase();
+    let target = state.translation.targetLanguage;
+    if (target === langCode) {
+      target = langCode === 'es' ? 'en' : 'es';
+    }
+    return {
+      ...state,
+      lang: action.language,
+      dialect: state.lang === action.language ? state.dialect : 'unspecified',
+      translation: {
+        ...state.translation,
+        targetLanguage: target
+      }
+    };
+  }),
+	on(SettingsActions.setDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => {
+    const langCode = (action.dialect !== 'unspecified' ? action.dialect : state.lang).split('-')[0].toLowerCase();
+    let target = state.translation.targetLanguage;
+    if (target === langCode) {
+      target = langCode === 'es' ? 'en' : 'es';
+    }
+    return {
+      ...state,
+      dialect: action.dialect,
+      translation: {
+        ...state.translation,
+        targetLanguage: target
+      }
+    };
+  }),
 	on(SettingsActions.setDefaultDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: (state.dialect === 'unspecified' ? action.dialect : state.dialect) })),
   on(SettingsActions.initSettingsComplete, (state: SettingsState, action: { settings: SettingsState}) => ({...state, ...action.settings })),
   on(SettingsActions.updateWakeLockEnabled, (state: SettingsState, action: { enabled: boolean}) => ({...state, wakelock: action.enabled})),

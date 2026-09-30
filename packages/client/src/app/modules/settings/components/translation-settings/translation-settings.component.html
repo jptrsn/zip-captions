@@ -17,7 +17,7 @@
       <label class="form-control" *ngIf="formGroup.get('enabled')?.value">
         <span class="text-accent label" translate>SETTINGS.TRANSLATION.targetLang</span>
         <select class="select select-lg mt-1 w-full bg-base-100" formControlName="targetLanguage">
-          <option *ngFor="let lang of languages" [value]="lang.code">
+          <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
             {{ lang.name }}
           </option>
         </select>

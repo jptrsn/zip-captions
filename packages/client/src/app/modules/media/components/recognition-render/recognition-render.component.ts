@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, Signal, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
@@ -64,7 +64,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
               private fullScreen: FullScreenService,
               private documentPip: DocumentPipService,
               private recognitionService: RecognitionService,
-              private translatorService: ChromeTranslatorService) {
+              private translatorService: ChromeTranslatorService,
+              private ngZone: NgZone,
+              private cd: ChangeDetectorRef) {
     this.isPipActive = this.documentPip.isPipActive;
     this.state = toSignal(this.store.select(selectRecognition));
     this.connected = toSignal(this.store.select(recognitionConnectedSelector));
@@ -133,27 +135,35 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       if (mode !== 'off' && live && this.translatorService.isSupported()) {
         this.translatorService.queueLiveTranslation(live, src, tgt);
       } else if (!live) {
-        this.translatedLiveText.set('');
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.cd.detectChanges();
+        });
       }
     });
 
     // Handle finalized segment translations
     toObservable(this.textOutput).pipe(
-      takeUntil(this.onDestroy$),
-      distinctUntilChanged((p, c) => p.length === c.length && (p.length === 0 || p[p.length - 1] === c[c.length - 1]))
+      takeUntil(this.onDestroy$)
     ).subscribe((segments) => {
       const mode = this.translationMode();
       const src = this.sourceLanguage();
       const tgt = this.targetLanguage();
 
-      if (mode !== 'off' && segments.length > 0 && this.translatorService.isSupported()) {
+      if (mode !== 'off' && segments && segments.length > 0 && this.translatorService.isSupported()) {
         this.translatorService.translateSegments(segments, src, tgt).then((translated) => {
-          this.translatedTextOutput.set(translated);
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
         }).catch((err) => {
           console.warn('Segment translation failed:', err);
         });
-      } else if (segments.length === 0) {
-        this.translatedTextOutput.set([]);
+      } else if (!segments || segments.length === 0) {
+        this.ngZone.run(() => {
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
       }
     });
 
@@ -168,16 +178,22 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       }
       if (settings?.enabled && settings.mode !== 'off') {
         const segments = this.textOutput();
-        if (segments.length > 0 && this.translatorService.isSupported()) {
+        if (segments && segments.length > 0 && this.translatorService.isSupported()) {
           this.translatorService.translateSegments(segments, src, tgt).then((translated) => {
-            this.translatedTextOutput.set(translated);
+            this.ngZone.run(() => {
+              this.translatedTextOutput.set(translated);
+              this.cd.detectChanges();
+            });
           }).catch((err) => {
             console.warn('Segment translation failed:', err);
           });
         }
       } else if (!settings?.enabled || settings?.mode === 'off') {
-        this.translatedLiveText.set('');
-        this.translatedTextOutput.set([]);
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
       }
     });
 
@@ -188,9 +204,12 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       const segments = this.textOutput();
       const src = this.sourceLanguage();
       const tgt = this.targetLanguage();
-      if (segments.length > 0 && this.translationMode() !== 'off') {
+      if (segments && segments.length > 0 && this.translationMode() !== 'off') {
         this.translatorService.translateSegments(segments, src, tgt).then((translated) => {
-          this.translatedTextOutput.set(translated);
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
         });
       }
       const live = this.liveText();
@@ -203,7 +222,10 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.translatorService.liveOutput$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((translated) => {
-      this.translatedLiveText.set(translated);
+      this.ngZone.run(() => {
+        this.translatedLiveText.set(translated);
+        this.cd.detectChanges();
+      });
     });
 
     if (this.fullScreen.isAvailable) {
