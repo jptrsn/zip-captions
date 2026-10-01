@@ -43,6 +43,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   // Translation signals
   public translationSettings: Signal<TranslationSettings | undefined>;
   public translationMode: Signal<TranslationDisplayMode>;
+  public effectiveTranslationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
   public translatedLiveText: WritableSignal<string> = signal('');
@@ -92,6 +93,14 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     // Translation setup
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
     this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+    this.effectiveTranslationMode = computed(() => {
+      const mode = this.translationMode();
+      // When in Picture-in-Picture and translation is active (split or translated-only), show only translated captions
+      if (this.isPipActive() && mode !== 'off') {
+        return 'translated-only';
+      }
+      return mode;
+    });
     this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
 
     const dialect = toSignal(this.store.select(dialectSelector));

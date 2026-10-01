@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
 import { Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -58,6 +58,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
               private fullScreen: FullScreenService,
               private peerService: PeerService,
               private cd: ChangeDetectorRef,
+              private ngZone: NgZone,
               private translatorService: ChromeTranslatorService) {
 
     this.isTranslatorSupported = this.translatorService.isSupported();
@@ -131,7 +132,10 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       if (this.translationMode() !== 'off' && text && this.isTranslatorSupported) {
         this.translatorService.queueLiveTranslation(text, this.sourceLanguage(), this.targetLanguage());
       } else if (!text) {
-        this.translatedLiveText.set('');
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.cd.detectChanges();
+        });
       }
       this.cd.detectChanges();
     });
@@ -142,13 +146,18 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       this.textOutput.set(results);
       if (this.translationMode() !== 'off' && results.length > 0 && this.isTranslatorSupported) {
         this.translatorService.translateSegments(results, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
-          this.translatedTextOutput.set(translated);
-          this.cd.detectChanges();
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
         }).catch((err) => {
           console.warn('Broadcast segment translation failed:', err);
         });
       } else if (results.length === 0) {
-        this.translatedTextOutput.set([]);
+        this.ngZone.run(() => {
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
       }
       this.cd.detectChanges();
     });
@@ -164,16 +173,20 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
         const segments = this.textOutput();
         if (segments.length > 0 && this.isTranslatorSupported) {
           this.translatorService.translateSegments(segments, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
-            this.translatedTextOutput.set(translated);
-            this.cd.detectChanges();
+            this.ngZone.run(() => {
+              this.translatedTextOutput.set(translated);
+              this.cd.detectChanges();
+            });
           }).catch((err) => {
             console.warn('Broadcast segment translation failed:', err);
           });
         }
       } else if (!settings?.enabled || settings?.mode === 'off') {
-        this.translatedLiveText.set('');
-        this.translatedTextOutput.set([]);
-        this.cd.detectChanges();
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
       }
     });
 
@@ -184,8 +197,10 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       const segments = this.textOutput();
       if (segments.length > 0 && this.translationMode() !== 'off') {
         this.translatorService.translateSegments(segments, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
-          this.translatedTextOutput.set(translated);
-          this.cd.detectChanges();
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
         });
       }
       const live = this.liveText();
@@ -197,8 +212,10 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.translatorService.liveOutput$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((translated) => {
-      this.translatedLiveText.set(translated);
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.translatedLiveText.set(translated);
+        this.cd.detectChanges();
+      });
     });
 
     if (this.fullScreen.isAvailable) {
