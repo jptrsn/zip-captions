@@ -50,10 +50,13 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
   public systemRequirements: Signal<SystemRequirementsStatus>;
+  public controlsVisible: WritableSignal<boolean> = signal(true);
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
+  private idleTimeoutId: any = null;
+  private readonly IDLE_TIMEOUT_MS = 3500;
   constructor(private store: Store<AppState>,
               private el: ElementRef,
               private fullScreen: FullScreenService,
@@ -130,6 +133,8 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.onUserActivity();
+
     if (this.isTranslatorSupported) {
       this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
     }
@@ -269,6 +274,29 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onUserActivity(): void {
+    if (!this.controlsVisible()) {
+      this.controlsVisible.set(true);
+    }
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
+    this.idleTimeoutId = setTimeout(() => {
+      this.ngZone.run(() => {
+        this.controlsVisible.set(false);
+        this.cd.detectChanges();
+      });
+    }, this.IDLE_TIMEOUT_MS);
+  }
+
+  public onControlsFocus(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+      this.idleTimeoutId = null;
+    }
+    this.controlsVisible.set(true);
+  }
+
   public downloadModel(): void {
     const src = this.sourceLanguage();
     const tgt = this.targetLanguage();
@@ -276,6 +304,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
     if (this.fullScreen.isAvailable) {
       this.fullScreen.deregisterElement();
       this.store.select(selectBroadcastPaused).pipe(

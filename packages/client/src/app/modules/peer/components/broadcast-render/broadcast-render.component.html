@@ -1,4 +1,4 @@
-<div class="drawer drawer-end overflow-y-hidden py-6">
+<div class="drawer drawer-end overflow-y-hidden py-6" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
     <div class="flex flex-col flex-grow-0 h-full overflow-hidden bg-base-100">
@@ -6,7 +6,8 @@
       <ng-container *ngIf="translationMode() === 'split'; else standardRender">
         <!-- Top Pane: Original language -->
         <div class="flex flex-1 flex-col overflow-hidden relative border-b border-base-300">
-          <div class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 opacity-70">
+          <div class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
+               [ngClass]="controlsVisible() ? 'opacity-70' : 'opacity-0 pointer-events-none'">
             {{ originalLanguageLabel() }}
           </div>
           <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
@@ -28,11 +29,15 @@
 
         <!-- Bottom Pane: Translated language -->
         <div class="flex flex-1 flex-col overflow-hidden relative">
-          <div class="absolute top-2 left-2 z-10 flex items-center gap-1">
+          <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+               [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+               (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
             <select
-              class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer opacity-90 hover:opacity-100 shadow"
+              class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
               [value]="targetLanguage()"
               (change)="setTargetLanguage($any($event.target).value)"
+              (focus)="onControlsFocus()"
+              (blur)="onUserActivity()"
               [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
             >
               <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
@@ -79,11 +84,15 @@
       <!-- Standard or Translated-Only Mode -->
       <ng-template #standardRender>
         <!-- Target Language Selector in translated-only mode -->
-        <div *ngIf="translationMode() === 'translated-only'" class="absolute top-2 left-2 z-10 flex items-center gap-1">
+        <div *ngIf="translationMode() === 'translated-only'" class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+             (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
           <select
-            class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer opacity-90 hover:opacity-100 shadow"
+            class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
             [value]="targetLanguage()"
             (change)="setTargetLanguage($any($event.target).value)"
+            (focus)="onControlsFocus()"
+            (blur)="onUserActivity()"
             [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
           >
             <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
@@ -126,7 +135,9 @@
         </div>
       </ng-template>
     </div>
-    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once transition-opacity duration-500"
+           [ngClass]="controlsVisible() ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+           *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
     </label>
   </div>

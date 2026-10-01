@@ -55,11 +55,14 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
   public systemRequirements: Signal<SystemRequirementsStatus>;
+  public controlsVisible: WritableSignal<boolean> = signal(true);
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
   @ViewChild('captionContainer') captionContainer!: ElementRef<HTMLElement>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
+  private idleTimeoutId: any = null;
+  private readonly IDLE_TIMEOUT_MS = 3500;
 
   constructor(private store: Store<AppState>,
               private el: ElementRef,
@@ -264,12 +267,37 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnInit(): void {
+    this.onUserActivity();
+
     if (this.fullScreen.isAvailable) {
       this.fullScreen.registerElement(this.el);
     }
     if (this.translatorService.isSupported()) {
       this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
     }
+  }
+
+  public onUserActivity(): void {
+    if (!this.controlsVisible()) {
+      this.controlsVisible.set(true);
+    }
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
+    this.idleTimeoutId = setTimeout(() => {
+      this.ngZone.run(() => {
+        this.controlsVisible.set(false);
+        this.cd.detectChanges();
+      });
+    }, this.IDLE_TIMEOUT_MS);
+  }
+
+  public onControlsFocus(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+      this.idleTimeoutId = null;
+    }
+    this.controlsVisible.set(true);
   }
 
   public setTargetLanguage(targetLanguage: string): void {
@@ -293,6 +321,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnDestroy(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
     this.onDestroy$.next();
     this.onDestroy$.complete();
     if (this.fullScreen.isAvailable) {
