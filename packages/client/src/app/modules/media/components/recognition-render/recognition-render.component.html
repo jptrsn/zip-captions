@@ -27,8 +27,17 @@
 
           <!-- Bottom Pane: Translated language -->
           <div class="flex flex-1 flex-col overflow-hidden relative">
-            <div class="badge badge-primary badge-sm absolute top-2 left-2 z-10 opacity-80">
-              {{ targetLanguageLabel() }}
+            <div class="absolute top-2 left-2 z-10 flex items-center gap-1">
+              <select
+                class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer opacity-90 hover:opacity-100 shadow"
+                [value]="targetLanguage()"
+                (change)="setTargetLanguage($any($event.target).value)"
+                [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+              >
+                <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                  {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                </option>
+              </select>
             </div>
 
             <!-- Download Button if model is downloadable -->
@@ -67,6 +76,20 @@
 
         <!-- Standard or Translated-Only Mode -->
         <ng-template #standardRender>
+          <!-- Target Language Selector in translated-only mode -->
+          <div *ngIf="effectiveTranslationMode() === 'translated-only'" class="absolute top-2 left-2 z-10 flex items-center gap-1">
+            <select
+              class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer opacity-90 hover:opacity-100 shadow"
+              [value]="targetLanguage()"
+              (change)="setTargetLanguage($any($event.target).value)"
+              [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+            >
+              <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                {{ lang.code.toUpperCase() }} - {{ lang.name }}
+              </option>
+            </select>
+          </div>
+
           <!-- Download Button if model is downloadable in translated-only mode -->
           <div *ngIf="effectiveTranslationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
             <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">

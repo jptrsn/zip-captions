@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
 import { Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Subject, map, takeUntil } from 'rxjs';
@@ -11,7 +11,7 @@ import { recognitionErrorSelector } from '../../../../selectors/recognition.sele
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -41,6 +41,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public translationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
+  public availableLanguages: Signal<SupportedTranslationLanguage[]>;
   public translatedLiveText: WritableSignal<string> = signal('');
   public translatedTextOutput: WritableSignal<string[]> = signal([]);
   public hasTranslatedResults: Signal<boolean>;
@@ -69,12 +70,20 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
     this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
 
+    const hostLang = toSignal(this.peerService.hostLanguage$);
     const dialect = toSignal(this.store.select(dialectSelector));
     const lang = toSignal(this.store.select(languageSelector));
     this.sourceLanguage = computed(() => {
+      const hl = hostLang();
+      if (hl) return hl;
       const d = dialect();
       if (d && d !== 'unspecified') return d;
       return lang() || 'en';
+    });
+
+    this.availableLanguages = computed(() => {
+      const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
+      return AvailableTranslationLanguages.filter((l) => l.code !== srcCode);
     });
 
     this.hasTranslatedResults = computed(() => {
@@ -166,13 +175,14 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.store.select(selectTranslationSettings).pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((settings) => {
+      const targetLang = settings?.targetLanguage ?? 'es';
       if (this.isTranslatorSupported) {
-        this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
+        this.translatorService.checkModelStatus(this.sourceLanguage(), targetLang);
       }
       if (settings?.enabled && settings.mode !== 'off') {
         const segments = this.textOutput();
         if (segments.length > 0 && this.isTranslatorSupported) {
-          this.translatorService.translateSegments(segments, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
+          this.translatorService.translateSegments(segments, this.sourceLanguage(), targetLang).then((translated) => {
             this.ngZone.run(() => {
               this.translatedTextOutput.set(translated);
               this.cd.detectChanges();
@@ -187,6 +197,34 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
           this.translatedTextOutput.set([]);
           this.cd.detectChanges();
         });
+      }
+    });
+
+    // Observe source language changes from host and update translation/avoid collision
+    toObservable(this.sourceLanguage).pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((src) => {
+      const srcCode = this.translatorService.normalizeLanguageCode(src);
+      const tgtCode = this.translatorService.normalizeLanguageCode(this.targetLanguage());
+      if (srcCode && tgtCode && srcCode === tgtCode) {
+        const alt = srcCode === 'es' ? 'en' : 'es';
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+      }
+      if (this.isTranslatorSupported) {
+        this.translatorService.checkModelStatus(src, this.targetLanguage());
+      }
+      if (this.translationMode() !== 'off') {
+        const segments = this.textOutput();
+        if (segments.length > 0 && this.isTranslatorSupported) {
+          this.translatorService.translateSegments(segments, src, this.targetLanguage()).then((translated) => {
+            this.ngZone.run(() => {
+              this.translatedTextOutput.set(translated);
+              this.cd.detectChanges();
+            });
+          }).catch((err) => {
+            console.warn('Broadcast segment translation failed on source update:', err);
+          });
+        }
       }
     });
 
@@ -220,6 +258,14 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
     if (this.fullScreen.isAvailable) {
       this.fullScreen.registerElement(this.el);
+    }
+  }
+
+  public setTargetLanguage(targetLanguage: string): void {
+    this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
+    if (this.translationMode() === 'off') {
+      this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
+      this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: true }));
     }
   }
 

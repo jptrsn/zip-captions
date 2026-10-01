@@ -1,6 +1,6 @@
 <div class="flex flex-col p-3 gap-3 drop-shadow bg-base-300 rounded-s-xl">
   
-    <button class="btn btn-md btn-primary" [ngClass]="{'bg-secondary': !recognitionActive()}" (click)="toggleRecognition()">
+    <button *ngIf="showRecognitionToggle" class="btn btn-md btn-primary" [ngClass]="{'bg-secondary': !recognitionActive()}" (click)="toggleRecognition()">
       <ng-icon name="heroPause"></ng-icon>
     </button>
 
@@ -73,23 +73,33 @@
         <div class="text-[10px] text-base-100 uppercase" *ngIf="translationMenu.hasAttribute('open')">{{ translationMode() === 'split' ? 'SPLIT' : (translationMode() === 'translated-only' ? 'TRANS' : 'OFF') }}</div>
       </summary>
       <div class="dropdown-content">
-        <ul class="menu bg-secondary rounded-s-xl gap-2 p-2 min-w-max text-xs">
-          <li>
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'split'}" (click)="setTranslationMode('split')">
+        <div class="bg-secondary rounded-s-xl p-3 min-w-[220px] text-xs flex flex-col gap-2 shadow-xl border border-base-content/10">
+          <div class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
+            {{ 'SETTINGS.TRANSLATION.displayMode' | translate }}
+          </div>
+          <div class="grid grid-cols-3 gap-1">
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'split', 'btn-ghost text-base-100': translationMode() !== 'split'}" (click)="setTranslationMode('split')">
               {{ 'SETTINGS.TRANSLATION.modeSplit' | translate }}
             </button>
-          </li>
-          <li>
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'translated-only'}" (click)="setTranslationMode('translated-only')">
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'translated-only', 'btn-ghost text-base-100': translationMode() !== 'translated-only'}" (click)="setTranslationMode('translated-only')">
               {{ 'SETTINGS.TRANSLATION.modeTranslatedOnly' | translate }}
             </button>
-          </li>
-          <li>
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'off'}" (click)="setTranslationMode('off')">
+            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'off', 'btn-ghost text-base-100': translationMode() !== 'off'}" (click)="setTranslationMode('off')">
               {{ 'SETTINGS.TRANSLATION.off' | translate }}
             </button>
-          </li>
-        </ul>
+          </div>
+
+          <div class="flex flex-col gap-1 mt-1">
+            <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
+              {{ 'SETTINGS.TRANSLATION.targetLang' | translate }}
+            </label>
+            <select class="select select-bordered select-xs w-full text-base-content bg-base-100" [value]="targetLanguage()" (change)="onTargetLanguageSelect($event)">
+              <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                {{ lang.name }}
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
     </details>
 

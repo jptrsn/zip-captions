@@ -11,7 +11,7 @@ import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTex
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
 import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -46,6 +46,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public effectiveTranslationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
+  public availableLanguages: Signal<SupportedTranslationLanguage[]>;
   public translatedLiveText: WritableSignal<string> = signal('');
   public translatedTextOutput: WritableSignal<string[]> = signal([]);
   public hasTranslatedResults: Signal<boolean>;
@@ -126,6 +127,11 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.targetLanguageLabel = computed(() => {
       const t = this.targetLanguage();
       return (t ? t.split('-')[0] : 'ES').toUpperCase();
+    });
+
+    this.availableLanguages = computed(() => {
+      const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
+      return AvailableTranslationLanguages.filter((l) => l.code !== srcCode);
     });
 
     this.modelStatus = this.translatorService.modelStatus;
@@ -263,6 +269,14 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     }
     if (this.translatorService.isSupported()) {
       this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
+    }
+  }
+
+  public setTargetLanguage(targetLanguage: string): void {
+    this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
+    if (this.translationMode() === 'off') {
+      this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
+      this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: true }));
     }
   }
 
