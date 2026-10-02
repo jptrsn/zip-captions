@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RecognitionControlSidebarComponent } from './components/recognition-control-sidebar/recognition-control-sidebar.component';
 import { FullScreenComponent } from './components/full-screen/full-screen.component';
 import { FlowDirectionComponent } from './components/flow-direction/flow-direction.component';
+import { DocumentPipComponent } from './components/document-pip/document-pip.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FlowDirectionComponent } from './components/flow-direction/flow-directi
     RecognitionControlSidebarComponent,
     FullScreenComponent,
     FlowDirectionComponent,
+    DocumentPipComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import { FlowDirectionComponent } from './components/flow-direction/flow-directi
     RecognitionEnableComponent,
     RecognitionRenderComponent,
     RecognitionControlSidebarComponent,
+    DocumentPipComponent,
   ]
 })
 export class MediaModule {}

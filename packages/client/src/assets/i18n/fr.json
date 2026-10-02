@@ -534,6 +534,8 @@
     "lineHeight": "Espacement des lignes",
     "textFlow": "Flux de Texte",
     "fullScreen": "Plein écran",
+    "documentPip": "Image dans l'image",
+    "documentPipExit": "Quitter l'image dans l'image",
     "increase": "Augmenter",
     "decrease": "Diminuer",
     "password": "Mot de passe",
@@ -555,6 +557,8 @@
     "provider": "Fournisseur"
   },
   "HINTS": {
+    "pipActive": "Les sous-titres sont affichés en incrustation d'image",
+    "pipReturn": "Revenir à la fenêtre",
     "beginSpeaking": "Allez-y, dites quelque chose, nous vous écoutons...",
     "streamConnected": "Le texte apparaîtra dès que nous aurons entendu quelque chose...",
     "verifyingConnection": "Vérification du code d'adhésion...",
