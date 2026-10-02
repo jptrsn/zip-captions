@@ -534,6 +534,8 @@
     "lineHeight": "Interlinea",
     "textFlow": "Flusso del testo",
     "fullScreen": "Schermo intero",
+    "documentPip": "Picture-in-Picture",
+    "documentPipExit": "Esci da Picture-in-Picture",
     "increase": "Aumenta",
     "decrease": "Diminuisci",
     "password": "Password",
@@ -555,6 +557,8 @@
     "provider": "Fornitore"
   },
   "HINTS": {
+    "pipActive": "I sottotitoli sono visualizzati in Picture-in-Picture",
+    "pipReturn": "Torna alla finestra",
     "beginSpeaking": "Non siate timidi, dite quello che vi passa per la testa!",
     "streamConnected": "Il testo apparirà quando avremo notizie...",
     "verifyingConnection": "Verifica del codice di adesione...",

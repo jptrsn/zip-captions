@@ -552,7 +552,9 @@
     "description": "Opis",
     "date": "Data",
     "duration": "Czas trwania",
-    "provider": "dostawca"
+    "provider": "dostawca",
+    "documentPip": "Zdjęcie w obrazie",
+    "documentPipExit": "Zdjęcie wyjścia w obrazie"
   },
   "HINTS": {
     "beginSpeaking": "Zacznij mówić ...",
@@ -563,7 +565,9 @@
     "resume": "Kontynuować",
     "viewStream": "Odwiedź zipcaptions.app i użyj identyfikatora sesji i dołącz do kodu, aby wyświetlić podpisy na własnym urządzeniu.",
     "offlineWarning": "Wygląda na to, że jesteś offline - zipcaptions wymaga połączenia z Internetem do działania.",
-    "advancedWarning": "Nie zmień, chyba że jesteś pewien, że wiesz, co robisz"
+    "advancedWarning": "Nie zmień, chyba że jesteś pewien, że wiesz, co robisz",
+    "pipActive": "Zdjęcia są wyświetlane w Picture-in-Picture",
+    "pipReturn": "Powrót do okna"
   },
   "ERRORS": {
     "missingApi": "Przepraszam, Twoja przeglądarka nie wdrożyła jeszcze interfejsów API niezbędnych do uruchomienia zipcaptions. Zalecamy Chrome lub Safari na komputerze.",

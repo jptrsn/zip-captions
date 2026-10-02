@@ -5,7 +5,7 @@
 
 		<label class="form-control" [formGroup]="group">
 			<span class="text-accent label" translate>LABELS.provider</span>
-			<select class="select select-secondary select-lg mt-1 w-full" formControlName="provider">
+			<select data-testid="zc-engine-select-settings" class="select select-secondary select-lg mt-1 w-full" formControlName="provider">
 					<option *ngFor="let p of providers" [value]="p.value">{{'SETTINGS.PROVIDER.' + p.value + '.label' | translate}}</option>
 			</select>
 		</label>

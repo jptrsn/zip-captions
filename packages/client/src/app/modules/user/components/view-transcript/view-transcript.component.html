@@ -1,7 +1,7 @@
 <div class="flex flex-col bg-base-300 overflow-hidden">
   <ng-container *ngIf="transcript() as t">
     <div class="flex flex-row items-center gap-3 px-3 sm:px-6 mb-1">
-      <button class="hidden sm:block btn btn-sm rounded-full" [routerLink]="['..']">
+      <button data-testid="zc-transcripts-view-close" class="hidden sm:block btn btn-sm rounded-full" [routerLink]="['..']">
         <ng-icon name="heroArrowLeft"></ng-icon>
       </button>
       <app-editable-string

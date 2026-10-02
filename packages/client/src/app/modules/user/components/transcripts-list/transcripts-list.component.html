@@ -24,7 +24,7 @@
           <td *ngIf="editMode()">
             <input type="checkbox" class="checkbox">
           </td>
-          <td class="sm:w-[25%] cursor-pointer" [routerLink]="[t.id]">{{t.title}}</td>
+          <td class="sm:w-[25%] cursor-pointer" [attr.data-testid]="'zc-transcripts-open-' + t.id" [routerLink]="[t.id]">{{t.title}}</td>
           <td class="sm:w-[45%] cursor-pointer" [routerLink]="[t.id]">
             <div class="truncate">{{t.description}}</div>
           </td>
@@ -35,7 +35,7 @@
               <button class="btn btn-xs btn-ghost rounded-full"  (click)="editTranscript(t); edit.showModal()">
                 <ng-icon name="heroPencil" size="16"></ng-icon>
               </button>
-              <button class="btn btn-xs btn-ghost rounded-full" (click)="promptDeleteTranscript(t); delete.showModal()">
+              <button [attr.data-testid]="'zc-transcripts-delete-' + t.id" class="btn btn-xs btn-ghost rounded-full" (click)="promptDeleteTranscript(t); delete.showModal()">
                 <ng-icon name="heroTrash" size="16"></ng-icon>
               </button>
             </div>

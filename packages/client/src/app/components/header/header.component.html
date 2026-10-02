@@ -14,7 +14,7 @@
   </div>
 
   <!-- Transcript status badge-->
-  <button
+  <button data-testid="zc-header-transcript-chip"
     class="badge badge-info text-xs text-center sm:text-sm text-wrap h-auto"
     [ngClass]="{'badge-info': isLoggedIn(), 'badge-warning': !isLoggedIn()}"
     *ngIf="transcriptionEnabled() && !isViewingBroadcast()"
@@ -52,7 +52,7 @@
 
   <!-- Nav menu -->
   <details #menu class="dropdown dropdown-end flex z-10" *ngIf="!isActive()">
-    <summary class="btn btn-circle btn-ghost text-2xl" role="button" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.aria-label]="'LABELS.menu' | translate">
+    <summary data-testid="zc-header-menu" class="btn btn-circle btn-ghost text-2xl" role="button" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.aria-label]="'LABELS.menu' | translate">
       <ng-icon name="heroBars3"></ng-icon>
     </summary>
     <div class="dropdown-content w-64">
@@ -77,7 +77,7 @@
 
         <ng-template #routeButton>
 
-          <button *ngIf="item.routerOutlet; else linkButton" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
+          <button *ngIf="item.routerOutlet; else linkButton" [attr.data-testid]="'zc-header-nav-' + (item.label === 'auth' ? 'account' : (item.label === 'about_us' ? 'about' : item.label))" [routerLink]="activeRoute() === item.routerOutlet ? null : item.routerOutlet" [ngClass]="{'text-lg': largeText}">
             {{'ROUTES.' + item.label | translate }}
           </button>
 
@@ -96,9 +96,9 @@
     </ng-container>
 
     <li *ngIf="topLevel">
-      <button *ngIf="loggedIn; else loginMenuItem" [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
+      <button data-testid="zc-header-logout" *ngIf="loggedIn; else loginMenuItem" [ngClass]="{'text-lg': largeText}" (click)="logout()" translate>BUTTONS.logout</button>
       <ng-template #loginMenuItem>
-        <button [ngClass]="{'text-lg': largeText}" [routerLink]="['/auth']" translate>BUTTONS.login</button>
+        <button data-testid="zc-header-login" [ngClass]="{'text-lg': largeText}" [routerLink]="['/auth']" translate>BUTTONS.login</button>
       </ng-template>
     </li>
   </ul>

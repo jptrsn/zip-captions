@@ -2,7 +2,7 @@
   <!-- Tabs header -->
   <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
     <div class="relative border-b-2" [ngClass]="{'text-secondary border-secondary': tabIndex() === i}" *ngFor="let name of tabNames, index as i">
-      <input [formControl]="tabsControl" type="radio" role="tab" class="tab" [attr.aria-label]="'SETTINGS.TABS.' + name | translate" [value]="i" [id]="name">
+      <input [formControl]="tabsControl" type="radio" role="tab" class="tab" [attr.aria-label]="'SETTINGS.TABS.' + name | translate" [value]="i" [id]="name" [attr.data-testid]="'zc-settings-tab-' + name">
       <label [for]="name" class="absolute top-0 left-0 right-0 cursor-pointer sm:!hidden flex items-center justify-center">
         <ng-icon [name]="tabIcons[name]" size="24"></ng-icon>
       </label>

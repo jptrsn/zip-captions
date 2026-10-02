@@ -1,4 +1,4 @@
-<button
+<button data-testid="zc-recog-audio-enable"
 	class="btn btn-circle tooltip tooltip-left relative"
   [ngClass]="{'btn-xs': connected(), 'btn-error': error(), 'btn-accent': disconnected(), 'btn-sm': small()}"
   (click)="toggleState()"

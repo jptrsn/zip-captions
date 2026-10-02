@@ -7,11 +7,8 @@ export const selectAppSettings = (state: AppState): SettingsState => state.setti
 export const selectSyncSettings = createSelector(
   selectAppSettings,
   (state) => {
-    const clone: SyncableSettings = {...state}
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore cloning to delete transcription property is allowed, but typescript gets mad
-    delete clone.transcription;
-    return clone
+    const { loading, ...transcription } = state.transcription ?? { enabled: false };
+    return { ...state, transcription };
   }
 )
 

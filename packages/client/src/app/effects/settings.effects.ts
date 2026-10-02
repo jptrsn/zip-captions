@@ -32,8 +32,19 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.applySettings),
       map(({ settings }) => {
-        this.storage.set('settings', settings);
-        return this._applySettingsToDefault(settings);
+        const existing = (this.storage.get('settings') as Partial<SettingsState> | null) ?? {};
+        const merged: Partial<SettingsState> = {
+          ...existing,
+          ...settings,
+          transcription: settings.transcription
+            ? { ...(existing.transcription ?? {}), ...settings.transcription }
+            : existing.transcription ?? defaultSettingsState.transcription,
+        };
+        if (merged.transcription) {
+          delete (merged.transcription as { loading?: unknown }).loading;
+        }
+        this.storage.set('settings', merged);
+        return this._applySettingsToDefault(merged);
       }),
       map((settings) => SettingsActions.initSettingsComplete({settings}))
     )

@@ -17,7 +17,7 @@
                 <span class="label" translate>SETTINGS.SYNC.inSync</span>
 
                 <div class="flex flex-row items-center gap-2">
-                  <input type="checkbox" class="checkbox checkbox-sm" [formControl]="syncControl" />
+                  <input data-testid="zc-sync-apply-globally" type="checkbox" class="checkbox checkbox-sm" [formControl]="syncControl" />
                   <span class="label-text" translate>
                     SETTINGS.SYNC.applyGlobally
                   </span>
@@ -32,7 +32,7 @@
               <span class="label-text">
                 <span class="badge badge-accent" [ngClass]="{'badge-outline': viewingSaved}" translate>SETTINGS.SYNC.local</span>
               </span>
-              <input type="checkbox" class="toggle toggle-sm" (click)="toggleView()" />
+              <input data-testid="zc-sync-view-toggle" type="checkbox" class="toggle toggle-sm" (click)="toggleView()" />
               <span class="label-alt-text">
                 <span class="badge badge-primary" [ngClass]="{'badge-outline': !viewingSaved}" translate>SETTINGS.SYNC.server</span>
               </span>
@@ -57,9 +57,9 @@
     </ng-template>
     
     <div class="card-actions mt-3 justify-between">
-      <button class="btn btn-sm btn-accent" [disabled]="settingsMatch() || viewingSaved || !userLoggedIn()" (click)="saveCurrent()" translate>BUTTONS.saveCurrent</button>
-      <button class="btn btn-sm btn-secondary" *ngIf="savedUiSettings()" [disabled]="settingsMatch() || !viewingSaved" (click)="applySaved()" translate>BUTTONS.applySaved</button>
+      <button data-testid="zc-sync-save-current" class="btn btn-sm btn-accent" [disabled]="settingsMatch() || viewingSaved || !userLoggedIn()" (click)="saveCurrent()" translate>BUTTONS.saveCurrent</button>
+      <button data-testid="zc-sync-apply-saved" class="btn btn-sm btn-secondary" *ngIf="savedUiSettings()" [disabled]="settingsMatch() || !viewingSaved" (click)="applySaved()" translate>BUTTONS.applySaved</button>
     </div>
-    <div class="badge badge-warning p-3 cursor-pointer" *ngIf="!userLoggedIn()" [routerLink]="['..','auth']" translate>SETTINGS.SYNC.loginRequired</div>
+    <div class="badge badge-warning p-3 cursor-pointer" data-testid="zc-sync-login-required" *ngIf="!userLoggedIn()" [routerLink]="['..','auth']" translate>SETTINGS.SYNC.loginRequired</div>
   </div>
 </div>

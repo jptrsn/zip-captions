@@ -1,7 +1,7 @@
 <div class="drawer drawer-end overflow-y-hidden relative">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
-      <div class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+      <div #captionContainer class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
         <app-recognized-text 
           *ngIf="renderHistory()"
           [renderHistory]="renderHistory"
@@ -14,6 +14,10 @@
         <app-recognized-live-text
           [text]="liveText" 
         ></app-recognized-live-text>
+      </div>
+      <div *ngIf="isPipActive()" class="flex flex-col items-center justify-center absolute top-0 bottom-0 left-0 right-0 gap-4 p-6 text-center bg-base-100" @fadeInOnEnter>
+        <div class="text-xl font-semibold opacity-90" translate>HINTS.pipActive</div>
+        <button class="btn btn-outline btn-primary" (click)="exitPip()" translate>HINTS.pipReturn</button>
       </div>
     <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>

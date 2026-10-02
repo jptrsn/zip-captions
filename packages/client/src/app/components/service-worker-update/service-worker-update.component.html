@@ -6,7 +6,7 @@
 
     <ng-container *ngIf="text === 'VERSION_READY'">
 
-      <button class="btn btn-xs btn-circle btn-primary tooltip" [attr.aria-label]="'BUTTONS.accept' | translate" (click)="reload()">
+      <button data-testid="zc-sw-update" class="btn btn-xs btn-circle btn-primary tooltip" [attr.aria-label]="'BUTTONS.accept' | translate" (click)="reload()">
         <ng-icon name="heroArrowPath"></ng-icon>
       </button>
 

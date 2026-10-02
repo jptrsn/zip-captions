@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, effect } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
@@ -9,6 +9,7 @@ import { windowControlsOverlaySelector } from '../../../../selectors/app.selecto
 import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
 import { selectRenderHistoryLength, selectTextFlow } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
 import { TextFlow } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
@@ -24,7 +25,7 @@ import { RecognitionService } from '../../services/recognition.service';
     fadeInOnEnterAnimation(),
   ]
 })
-export class RecognitionRenderComponent implements OnInit, OnDestroy {
+export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public state: Signal<RecognitionState | undefined>;
   public connected: Signal<boolean | undefined>;
@@ -36,13 +37,17 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
   public textFlowDown: Signal<boolean | undefined>;
   public windowControlsOverlay: Signal<boolean | undefined>;
   public renderHistory: Signal<number | undefined>;
+  public isPipActive: Signal<boolean>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
+  @ViewChild('captionContainer') captionContainer!: ElementRef<HTMLElement>;
 
   constructor(private store: Store<AppState>,
               private el: ElementRef,
               private fullScreen: FullScreenService,
+              private documentPip: DocumentPipService,
               private recognitionService: RecognitionService) {
+    this.isPipActive = this.documentPip.isPipActive;
     this.state = toSignal(this.store.select(selectRecognition));
     this.connected = toSignal(this.store.select(recognitionConnectedSelector));
     this.paused = toSignal(this.store.select(recognitionPausedSelector));
@@ -72,6 +77,14 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
       })
     }
 
+    if (this.documentPip.isSupported) {
+      effect(() => {
+        if (this.documentPip.isPipActive()) {
+          this.sidebarCheckbox.nativeElement.checked = false;
+        }
+      })
+    }
+
     this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector))
     this.renderHistory = toSignal(this.store.select(selectRenderHistoryLength))
   }
@@ -82,9 +95,22 @@ export class RecognitionRenderComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    if (this.documentPip.isSupported && this.captionContainer) {
+      this.documentPip.registerElement(this.captionContainer);
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.fullScreen.isAvailable) {
       this.fullScreen.deregisterElement();
     }
+    if (this.documentPip.isSupported) {
+      this.documentPip.deregisterElement();
+    }
+  }
+
+  exitPip(): void {
+    this.documentPip.close();
   }
 }
