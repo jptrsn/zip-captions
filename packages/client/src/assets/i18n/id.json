@@ -552,7 +552,9 @@
     "description": "Keterangan",
     "date": "Tanggal",
     "duration": "Lamanya",
-    "provider": "Penyedia"
+    "provider": "Penyedia",
+    "documentPip": "Gambar dalam Gambar",
+    "documentPipExit": "Gambar keluar dalam gambar"
   },
   "HINTS": {
     "beginSpeaking": "Mulailah berbicara ...",
@@ -563,7 +565,9 @@
     "resume": "Melanjutkan",
     "viewStream": "Kunjungi zipcaptions.app dan gunakan ID sesi dan bergabunglah dengan kode untuk melihat teks di perangkat Anda sendiri.",
     "offlineWarning": "Anda tampaknya offline - zipcaptions memerlukan koneksi ke internet untuk beroperasi.",
-    "advancedWarning": "Jangan berubah kecuali Anda yakin Anda tahu apa yang Anda lakukan"
+    "advancedWarning": "Jangan berubah kecuali Anda yakin Anda tahu apa yang Anda lakukan",
+    "pipActive": "Gambar-gambar yang ditampilkan dalam Picture-in-Picture",
+    "pipReturn": "Kembali ke jendela"
   },
   "ERRORS": {
     "missingApi": "Maaf, browser Anda belum mengimplementasikan API yang diperlukan untuk menjalankan zipcaptions. Kami merekomendasikan Chrome atau Safari di Desktop.",

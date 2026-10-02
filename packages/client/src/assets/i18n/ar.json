@@ -552,7 +552,9 @@
     "description": "الوصف",
     "date": "التاريخ",
     "duration": "المدة",
-    "provider": "المزود"
+    "provider": "المزود",
+    "documentPip": "صورة في الصورة",
+    "documentPipExit": "الخروج في الصورة"
   },
   "HINTS": {
     "beginSpeaking": "ابدأ بالتحدث...",
@@ -563,7 +565,9 @@
     "resume": "استئناف",
     "viewStream": "قم بزيارة ZipCaptions.app واستخدم معرف الجلسة والرمز للانضمام من جهازك الشخصي",
     "offlineWarning": "يبدو أنك غير متصل بالإنترنت – يتطلب استخدام ZipCaptions اتصالاً نشطًا.",
-    "advancedWarning": "لا تقم بتعديل هذه الإعدادات إلا إذا كنت متأكدًا مما تفعله."
+    "advancedWarning": "لا تقم بتعديل هذه الإعدادات إلا إذا كنت متأكدًا مما تفعله.",
+    "pipActive": "فيديوهات متعلقة بـ “ Picture in Picture ”",
+    "pipReturn": "العودة إلى النافذة"
   },
   "ERRORS": {
     "missingApi": "عذرًا، متصفحك لا يدعم حاليًا واجهات برمجة التطبيقات المطلوبة لتشغيل ZipCaptions. نوصي باستخدام Chrome أو Safari على سطح المكتب.",
