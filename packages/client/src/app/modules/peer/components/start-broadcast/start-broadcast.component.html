@@ -27,11 +27,11 @@
       </label>
       <label class="label gap-2">
         <span class="label-text text-xs" translate>STREAM.authDescription</span>
-        <input type="checkbox" class="checkbox checkbox-primary" formControlName="useAuthentication">
+        <input data-testid="zc-share-join-code-required" type="checkbox" class="checkbox checkbox-primary" formControlName="useAuthentication">
       </label>
   </div>
 
-  <button class="btn btn-primary mt-5 w-96" [disabled]="disabled" type="submit" translate>STREAM.createBroadcast</button>
+  <button data-testid="zc-share-start-broadcast" class="btn btn-primary mt-5 w-96" [disabled]="disabled" type="submit" translate>STREAM.createBroadcast</button>
 
 </form>
 
