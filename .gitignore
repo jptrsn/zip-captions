@@ -2,6 +2,7 @@
 
 # compiled output
 dist
+/docs
 tmp
 /out-tsc
 
@@ -34,6 +35,13 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+
+# logs and test results
+logs/
+*.log
+test-results/
+*test-results*.json
+*-results.json
 
 # System Files
 .DS_Store

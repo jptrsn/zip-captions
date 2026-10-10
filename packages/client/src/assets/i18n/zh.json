@@ -582,7 +582,9 @@
     "description": "描述",
     "date": "日期",
     "duration": "长度",
-    "provider": "供应商"
+    "provider": "供应商",
+    "documentPip": "图片在图片中",
+    "documentPipExit": "外出图片在图片中"
   },
   "HINTS": {
     "beginSpeaking": "开始说话......",
@@ -593,7 +595,9 @@
     "resume": "回复",
     "viewStream": "访问 ZipCaptions.app 并使用会话 ID 并加入代码在您的设备上查看字符串。",
     "offlineWarning": "您似乎离线 - ZipCaptions 需要连接到互联网来运行。",
-    "advancedWarning": "不要改变,除非你相信你知道你在做什么。"
+    "advancedWarning": "不要改变,除非你相信你知道你在做什么。",
+    "pipActive": "图片显示在Picture-in-Picture中",
+    "pipReturn": "回到窗口"
   },
   "ERRORS": {
     "missingApi": "对不起,您的浏览器尚未实施 ZipCaptions 运行所需的 API. 我们建议在桌面上使用 Chrome 或 Safari。",

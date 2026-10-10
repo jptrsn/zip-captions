@@ -41,7 +41,7 @@
     <div class="flex flex-col basis-full items-center justify-start w-full overflow-hidden bg-base-300">
       <!-- Tabs header -->
       <form class="flex flex-row items-center justify-center gap-3 self-stretch tabs-bordered">
-        <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="'STREAM.TABS.' + name | translate" [value]="i">
+        <input [formControl]="tabsControl" type="radio" role="tab" class="tab" *ngFor="let name of tabNames, index as i" [attr.aria-label]="'STREAM.TABS.' + name | translate" [attr.data-testid]="name === 'broadcast' ? 'zc-share-tab-share' : 'zc-share-tab-watch'" [value]="i">
       </form>
 
       <!-- Tabs body -->

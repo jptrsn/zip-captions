@@ -582,7 +582,9 @@
     "description": "Descrição",
     "date": "Data",
     "duration": "Duração",
-    "provider": "Fornecedor"
+    "provider": "Fornecedor",
+    "documentPip": "Imagem em Imagem",
+    "documentPipExit": "Imagem de saída em imagem"
   },
   "HINTS": {
     "beginSpeaking": "Comece a falar ...",
@@ -593,7 +595,9 @@
     "resume": "Continuar",
     "viewStream": "Visite Zipcaptions.App e use o ID da sessão e participe do código para visualizar legendas em seu próprio dispositivo.",
     "offlineWarning": "Você parece estar offline - o ZipCaptions requer uma conexão com a Internet para operar.",
-    "advancedWarning": "Não Mude A Menos Que Você Esteja Confiante De Que Sabe O Que Está Fazendo"
+    "advancedWarning": "Não Mude A Menos Que Você Esteja Confiante De Que Sabe O Que Está Fazendo",
+    "pipActive": "As imagens são exibidas em Picture-in-Picture",
+    "pipReturn": "Voltar para a janela"
   },
   "ERRORS": {
     "missingApi": "Desculpe, seu navegador ainda não implementou as APIs necessárias para a execução do ZipCaptions. Recomendamos o Chrome ou o Safari na área de trabalho.",
