@@ -6,7 +6,7 @@
 | Branch | `feature/on-device-translation` (from `develop` @ `7e0f8a4`) |
 | Project type | Brownfield (Angular 16 / NgRx / Nx client in `packages/client`) |
 | Current phase | **Inception → Construction** |
-| Current stage | Baseline merged (crippit `translations`); Construction starts with U0 (baseline hardening) |
+| Current stage | Release 1 Construction — U0 (baseline hardening) in progress; NG0203 + reducer fixes done |
 
 ## Phase / stage tracker
 

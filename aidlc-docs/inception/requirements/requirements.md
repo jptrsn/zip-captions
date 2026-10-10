@@ -73,7 +73,7 @@ A segment that mixes both languages within one sentence goes to the translator u
 - **FR-1:** `TranslationService` with an injectable `BrowserTranslatorAdapter`. It caches one translator per pair, queues requests, and exposes signals for translated segments and the translated live line.
 - **FR-2:** An **Experimental** toggle in Settings → Translation. It is **disabled** (visible, with an explanation) when the API is missing or the platform is mobile, and captioning is never affected.
 - **FR-3:** A "Prepare languages" button downloads packs ahead of time, showing progress, errors and retry.
-- **FR-4:** Translation targets are limited to the **11 interface languages**. Maps each dialect to a translator code.
+- **FR-4:** Translation targets are the **17 languages** in `AvailableTranslationLanguages` (inherited from the merged baseline), excluding the current source language. Maps each dialect to a translator code. *(Release 2 conversation pairs will be limited to recognizable interface languages.)*
 - **FR-5:** Finalized segments are always translated. Interim text uses a throttled "latest wins" rule, with a setting to turn it off.
 - **FR-6:** Translated output has the correct `lang` and `dir` attributes (Arabic is RTL).
 - **FR-7:** Settings persist: enabled, target, display mode, split orientation, interim on/off, conversation pair, OBS feed.
@@ -87,7 +87,8 @@ A segment that mixes both languages within one sentence goes to the translator u
 - **FR-AZ-4:** Translation uses the per-segment language (FR-9). In a French-to-English feed, English segments pass through, and the reverse holds too.
 - **FR-AZ-5:** The settings UI says that the selected locale also recognizes English (Azure only).
 
-### Conversation (Epic A)
+### Conversation (Epic A) — **deferred to Release 2**
+> Descoped from Release 1 on 2026-10-10. These requirements are kept for the next release and aren't built in Release 1.
 - **FR-C1:** Choose a language pair A↔B, limited to the interface languages.
 - **FR-C2:** The **default turn control is manual**: a large Switch control plus a keyboard shortcut. A switch finalizes the live line, then restarts recognition in the other language.
 - **FR-C3:** **Automatic turns with bilingual locales:** when Azure is active with a bilingual locale that covers the pair (`fr-CA` + en↔fr, `es-US` + en↔es, `ar-*` + en↔ar), recognition already hears both speakers. Each segment's detected language (FR-AZ-3) sets the translation direction and the turn indicator, and the manual Switch is hidden. In every other case the manual Switch is used.
@@ -126,22 +127,25 @@ Platform constraint: the Document PiP spec (WICG §6.5) allows **at most one PiP
 - **NFR-1 Privacy:** Browser translation stays on the device. When Azure is active, the UI must not claim the session is fully on-device.
 - **NFR-2 Latency:** A finalized segment's translation appears ≤ 1 s p95 after the original. Interim translation never shows stale text in place of newer text.
 - **NFR-3 Resilience:** If translation fails, original captions keep working. If per-segment language detection is unavailable, segments keep the configured dialect's language.
-- **NFR-4 A11y:** Labeled pane regions, keyboard-operable Switch, `lang`/`dir` on all text.
+- **NFR-4 A11y:** Labeled pane regions, `lang`/`dir` on all text, and (Release 2) a keyboard-operable Switch.
 - **NFR-5 i18n:** New strings go into all 11 locale files.
 - **NFR-6 Testability:** Translator and Azure SDK construction sit behind seams that Jest can mock.
 - **NFR-7 Bounded memory:** Segment history is capped in **both** engines.
 
 Risks: R-1 desktop only. R-2 the sequential queue can back up (mitigated by dropping stale interim requests). R-3 `LanguageDetector` can be inaccurate on very short segments from bilingual locales (mitigated by restricting it to the pair and keeping the last language when confidence is low). R-4 pack downloads are large (mitigated by preparing packs ahead of time).
 
-## 6. Out of scope (MVP)
-Server or cloud translation fallback. Translating transcripts after the session. Conversations with more than two languages. Mobile. Rotated face-to-face layout. Language detection in Web Speech.
+## 6. Release plan & out of scope
+- **Release 1:** foundation, Azure bilingual-locale tagging, presenter (translated-only), split view, broadcast (both feeds plus viewer fallback), PiP and per-language windows, OBS feed.
+- **Release 2:** conversation / two-way translation (Epic A, FR-C*), with conversation pairs limited to recognizable languages.
+- **Out of scope:** Server or cloud translation fallback. Translating transcripts after the session. Conversations with more than two languages. Mobile. Rotated face-to-face layout. Language detection in Web Speech.
 
 ## 7. Decisions log (from verification answers)
 | Q | Decision |
 |---|---|
 | Q1 | Manual turn switching. *Amended 2026-10-10:* automatic turns are used when the engine reports per-segment language (Azure bilingual profiles such as `fr-CA`); see FR-C3. |
 | Q2 | Split view for conversation, **without** the rotation option (desktop only). |
-| Q3 | Targets are limited to the 11 interface languages. |
+| Q3 | ~~Targets limited to the 11 interface languages.~~ *Amended 2026-10-10:* Release 1 keeps all 17 targets from the merged baseline. The 11-language limit applies only to Release 2 conversation pairs. |
+| — | *2026-10-10:* conversation / two-way translation deferred to Release 2. |
 | Q4 | Interim translation throttled with "latest wins", and it can be turned off. |
 | Q5 | Both engines. |
 | Q6 | OBS feed setting: original or translated. |

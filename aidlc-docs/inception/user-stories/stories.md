@@ -1,6 +1,6 @@
 # User Stories — On-Device Translation
 
-Priority: **M** = MVP, **S** = should, **C** = could. FR/NFR IDs refer to `../requirements/requirements.md`.
+Priority: **M** = Release 1 must, **S** = should, **C** = could, **R2** = deferred to Release 2. FR/NFR IDs refer to `../requirements/requirements.md`.
 
 ---
 
@@ -37,22 +37,22 @@ As a user selecting French (Canada), US Spanish or an Arabic dialect with Azure,
 
 ---
 
-## Epic A — Speak-and-translate conversation
+## Epic A — Speak-and-translate conversation (**Release 2**, deferred 2026-10-10)
 
-### US-A1 Set up a conversation pair (M)
+### US-A1 Set up a conversation pair (R2)
 As Dana, I want to pick "My language" and "Their language" from the interface languages, and have both directions prepared.
 
-### US-A2 Switch turns manually (M)
+### US-A2 Switch turns manually (R2)
 As Dana using Web Speech (or Azure without a bilingual profile), I want a large Switch control and a keyboard shortcut to change who is speaking.
 - **When** I press Switch, **then** the current live line is finalized, recognition restarts in the other language, translation reverses direction, and the active speaker is highlighted.
 - The control is keyboard reachable and has an accessible label that names the active language.
 
-### US-A3 Automatic turns with a bilingual engine (M)
+### US-A3 Automatic turns with a bilingual engine (R2)
 As Dana using Azure with French (Canada) and an English↔French pair, I want the turn to follow whoever is speaking.
 - **Given** Azure, `fr-CA` and pair en↔fr, **when** a segment is detected as `en-CA`, **then** it's translated en→fr, and the turn indicator shows English. The reverse also holds.
 - The manual Switch is hidden in this mode.
 
-### US-A4 Two-pane conversation view (M)
+### US-A4 Two-pane conversation view (R2)
 As Dana and my partner, we each want a pane showing the conversation in our own language, with a language label on each line. No rotation option.
 
 ---
