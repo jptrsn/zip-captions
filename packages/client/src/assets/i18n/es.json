@@ -415,17 +415,13 @@
       "downloadPrompt": "Descargue el modelo de idioma en el dispositivo para habilitar la traducción",
       "downloadingModel": "Descargando el modelo de traducción por IA directamente en su dispositivo...",
       "unsupportedHint": "La API de traducción de Chrome solo está disponible en navegadores Chromium de escritorio compatibles (Chrome 138+ / Edge). Es posible que deba activar chrome://flags/#translation-api.",
-      "requirementsTitle": "Requisitos del sistema",
-      "reqRam": "Se requieren 16 GB de RAM",
-      "reqStorage": "Se requieren 20 GB+ de espacio libre para descargar y almacenar el modelo",
-      "reqNotice": "Requiere 20GB+ y 16GB RAM",
-      "lowResourcesWarningTitle": "Poco espacio o memoria detectados",
-      "lowResourcesWarning": "Es posible que su dispositivo tenga poco espacio o memoria. Chrome requiere 16 GB de RAM y al menos 20 GB de espacio libre; de lo contrario, la descarga del modelo puede detenerse al 0%.",
-      "externalDriveTip": "Consejo: Si su disco interno tiene poco espacio, puede iniciar Chrome apuntando a una unidad externa con --user-data-dir.",
       "privacyNoticeSpeech": "El reconocimiento de habla es separado, y dependiendo del motor de habla que elija, el audio puede ser procesado en la nube.",
       "experimental": "Características Experimentales",
       "unsupportedMobileHint": "La traducción en dispositivo sólo está disponible en los navegadores de escritorio (Chrome 138+ o Edge 148+) y no se apoya en teléfonos o tabletas.",
-      "privacyNotice": "La traducción funciona en su dispositivo utilizando los modelos de idiomas integrados de Chrome, y el texto traducido nunca se envía a ningún servidor."
+      "privacyNotice": "La traducción funciona en su dispositivo utilizando los modelos de idiomas integrados de Chrome, y el texto traducido nunca se envía a ningún servidor.",
+      "modelsTitle": "Modelo de traducción",
+      "modelsPerPair": "Cada pareja de idiomas utiliza su propio modelo de traducción, que Chrome descarga una vez que lo usa por primera vez.",
+      "modelPerPairNotice": "Descargar una vez para esta pareja de idiomas"
     }
   },
   "STREAM": {

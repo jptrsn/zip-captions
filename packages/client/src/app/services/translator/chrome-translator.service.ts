@@ -13,14 +13,6 @@ export interface TranslationCapability {
   status: 'readily' | 'after-download' | 'no';
 }
 
-export interface SystemRequirementsStatus {
-  checked: boolean;
-  hasSufficientSpace: boolean;
-  hasSufficientRam: boolean;
-  estimatedFreeGb?: number;
-  reportedRamGb?: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -29,12 +21,6 @@ export class ChromeTranslatorService {
   public modelStatus: WritableSignal<TranslationModelStatus> = signal('unavailable');
   public downloadProgress: WritableSignal<number> = signal(0);
   public lastError: WritableSignal<string | undefined> = signal(undefined);
-
-  public systemRequirements: WritableSignal<SystemRequirementsStatus> = signal({
-    checked: false,
-    hasSufficientSpace: true,
-    hasSufficientRam: true
-  });
 
   // Emits when a model becomes ready to trigger re-translation of active captions
   private modelReadySubject = new Subject<{ sourceLang: string; targetLang: string }>();
@@ -61,7 +47,6 @@ export class ChromeTranslatorService {
   constructor(private translatorApi: TranslatorApiAdapter,
               private platform: Platform) {
     this.checkInitialSupport();
-    this.checkSystemRequirements();
 
     this.liveOutput$ = this.liveInputSubject.pipe(
       debounceTime(150),
@@ -75,58 +60,6 @@ export class ChromeTranslatorService {
         );
       })
     );
-  }
-
-  /**
-   * Evaluates client memory and estimated storage against Chrome AI requirements
-   */
-  public async checkSystemRequirements(): Promise<SystemRequirementsStatus> {
-    let hasSufficientRam = true;
-    let reportedRamGb: number | undefined;
-
-    if (typeof navigator !== 'undefined') {
-      const ram = (navigator as any).deviceMemory;
-      if (typeof ram === 'number') {
-        reportedRamGb = ram;
-        // In Chromium, deviceMemory returns values like 0.25, 0.5, 1, 2, 4, 8, 16, 32.
-        // If reported RAM is less than 8, device definitely has less than 16GB.
-        if (ram < 8) {
-          hasSufficientRam = false;
-        }
-      }
-    }
-
-    let hasSufficientSpace = true;
-    let estimatedFreeGb: number | undefined;
-
-    if (typeof navigator !== 'undefined' && navigator.storage && typeof navigator.storage.estimate === 'function') {
-      try {
-        const estimate = await navigator.storage.estimate();
-        if (estimate.quota !== undefined) {
-          const availableBytes = (estimate.quota || 0) - (estimate.usage || 0);
-          estimatedFreeGb = Math.round((availableBytes / (1024 * 1024 * 1024)) * 10) / 10;
-          // In Chrome, quota is approximately 60% of available disk space on the partition.
-          // Chrome's AI component updater requires ~20-22GB of free disk space.
-          // If available quota is under 12GB (indicating < 20GB actual free disk space), it's insufficient.
-          if (estimatedFreeGb < 12) {
-            hasSufficientSpace = false;
-          }
-        }
-      } catch {
-        // Storage estimate failed, keep default
-      }
-    }
-
-    const status: SystemRequirementsStatus = {
-      checked: true,
-      hasSufficientSpace,
-      hasSufficientRam,
-      estimatedFreeGb,
-      reportedRamGb
-    };
-
-    this.safeSetSignal(this.systemRequirements, status);
-    return status;
   }
 
   /**

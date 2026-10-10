@@ -11,7 +11,7 @@ import { recognitionErrorSelector } from '../../../../selectors/recognition.sele
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { textDirection } from '../../../../services/translator/text-direction';
-import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 
 @Component({
@@ -52,7 +52,6 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
-  public systemRequirements: Signal<SystemRequirementsStatus>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
@@ -72,7 +71,6 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
-    this.systemRequirements = this.translatorService.systemRequirements;
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
     this.translationMode = computed(() => this.isTranslatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
     this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');

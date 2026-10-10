@@ -52,9 +52,7 @@
               <ng-icon name="heroArrowDownTray"></ng-icon>
               <span>Download {{ targetLanguageLabel() }} model</span>
             </button>
-            <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
-              {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
-            </span>
+            <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
           </div>
 
           <!-- Download Progress if downloading -->
@@ -107,9 +105,7 @@
             <ng-icon name="heroArrowDownTray"></ng-icon>
             <span>Download {{ targetLanguageLabel() }} model</span>
           </button>
-          <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
-            {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
-          </span>
+          <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
         </div>
 
         <!-- Download Progress if downloading in translated-only mode -->

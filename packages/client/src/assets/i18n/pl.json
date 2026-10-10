@@ -415,17 +415,13 @@
       "statusDownloadable": "Wymagane pobranie",
       "downloadButton": "Pobierz model tłumaczenia",
       "downloadPrompt": "Pobierz model językowy na urządzenie, aby włączyć tłumaczenie",
-      "requirementsTitle": "Wymagania systemowe",
-      "reqRam": "Wymagane 16 GB pamięci RAM",
-      "reqStorage": "Wymagane ponad 20 GB wolnego miejsca na dysku na pobranie i buforowanie modelu",
-      "reqNotice": "Wymagane 20 GB+ i 16 GB RAM",
-      "lowResourcesWarningTitle": "Wykryto mało miejsca na dysku lub pamięci",
-      "lowResourcesWarning": "Twoje urządzenie może mieć ograniczoną ilość wolnego miejsca lub pamięci RAM. Chrome wymaga 16 GB pamięci RAM i co najmniej 20 GB wolnego miejsca, w przeciwnym razie pobieranie modelu może zatrzymać się na 0%.",
-      "externalDriveTip": "Wskazówka: Jeśli na dysku wewnętrznym brakuje miejsca, możesz uruchomić Chrome ze wskazaniem na dysk zewnętrzny za pomocą --user-data-dir.",
       "privacyNoticeSpeech": "Rozpoznawanie mowy jest oddzielone, a w zależności od wybranego silnika mowy, audio może być przetwarzane w chmurze.",
       "experimental": "Funkcja eksperymentalna",
       "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne tylko w przeglądarkach stacjonarnych (Chrome 138+ lub Edge 148+) i nie jest obsługiwane na telefonach lub tabletach.",
-      "privacyNotice": "Tłumaczenie działa w całości na urządzeniu za pomocą wbudowanych modeli językowych Chrome, a tłumaczone teksty nigdy nie są wysyłane do żadnego serwera."
+      "privacyNotice": "Tłumaczenie działa w całości na urządzeniu za pomocą wbudowanych modeli językowych Chrome, a tłumaczone teksty nigdy nie są wysyłane do żadnego serwera.",
+      "modelsTitle": "Modele tłumaczeń",
+      "modelsPerPair": "Każda para językowa używa własnego modelu tłumaczenia, który Chrome pobiera po raz pierwszy, gdy go używasz.",
+      "modelPerPairNotice": "Jednorazowe pobieranie dla tej pary językowych"
     }
   },
   "STREAM": {

@@ -415,17 +415,13 @@
       "statusDownloadable": "Téléchargement requis",
       "downloadButton": "Télécharger le modèle de traduction",
       "downloadPrompt": "Téléchargez le modèle linguistique sur votre appareil pour activer la traduction",
-      "requirementsTitle": "Configuration requise",
-      "reqRam": "16 Go de RAM requis",
-      "reqStorage": "20 Go+ d'espace libre requis pour le téléchargement et le cache du modèle",
-      "reqNotice": "20 Go+ et 16 Go de RAM requis",
-      "lowResourcesWarningTitle": "Stockage ou mémoire faible détecté",
-      "lowResourcesWarning": "Votre appareil dispose peut-être d'un espace libre ou d'une mémoire limitée. Chrome nécessite 16 Go de RAM et au moins 20 Go d'espace libre, sinon le téléchargement du modèle peut bloquer à 0%.",
-      "externalDriveTip": "Astuce : Si votre disque interne est plein, vous pouvez lancer Chrome sur un disque externe avec --user-data-dir.",
       "privacyNoticeSpeech": "La reconnaissance de la parole est séparée, et en fonction du moteur de la parole que vous choisissez, l'audio peut être traité dans le cloud.",
       "experimental": "caractéristiques expérimentales",
       "unsupportedMobileHint": "La traduction sur appareil n’est disponible que dans les navigateurs de bureau (Chrome 138+ ou Edge 148+) et n’est pas supportée sur les téléphones ou les tablettes.",
-      "privacyNotice": "La traduction fonctionne entièrement sur votre appareil en utilisant les modèles linguistiques intégrés de Chrome, et le texte traduit n’est jamais envoyé à aucun serveur."
+      "privacyNotice": "La traduction fonctionne entièrement sur votre appareil en utilisant les modèles linguistiques intégrés de Chrome, et le texte traduit n’est jamais envoyé à aucun serveur.",
+      "modelsTitle": "Modèles de traduction",
+      "modelsPerPair": "Chaque couple de langues utilise son propre modèle de traduction, que Chrome télécharge une fois que vous l’utilisez pour la première fois.",
+      "modelPerPairNotice": "Télécharger une fois pour ce couple de langues"
     }
   },
   "STREAM": {

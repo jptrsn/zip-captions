@@ -415,17 +415,13 @@
       "statusDownloadable": "Perlu Diunduh",
       "downloadButton": "Unduh Model Terjemahan",
       "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",
-      "requirementsTitle": "Persyaratan Sistem",
-      "reqRam": "Memerlukan RAM 16 GB",
-      "reqStorage": "Memerlukan ruang disk kosong 20 GB+ untuk unduhan & cache model",
-      "reqNotice": "Perlu 20GB+ & 16GB RAM",
-      "lowResourcesWarningTitle": "Penyimpanan atau Memori Rendah Terdeteksi",
-      "lowResourcesWarning": "Perangkat Anda mungkin memiliki penyimpanan atau memori kosong yang terbatas. Chrome memerlukan RAM 16 GB dan setidaknya 20 GB ruang disk kosong, jika tidak pengunduhan model dapat macet di 0%.",
-      "externalDriveTip": "Tip: Jika disk internal kehabisan ruang, Anda dapat menjalankan Chrome yang mengarah ke drive eksternal dengan --user-data-dir.",
       "privacyNoticeSpeech": "Pengenalan bicara terpisah, dan tergantung pada mesin bicara yang Anda pilih, audio dapat diproses di awan.",
       "experimental": "Fitur Eksperimen",
       "unsupportedMobileHint": "Terjemahan pada perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung pada ponsel atau tablet.",
-      "privacyNotice": "Terjemahan berjalan sepenuhnya pada perangkat Anda menggunakan model bahasa Chrome yang terintegrasi, dan teks terjemahan tidak pernah dikirim ke server apa pun."
+      "privacyNotice": "Terjemahan berjalan sepenuhnya pada perangkat Anda menggunakan model bahasa Chrome yang terintegrasi, dan teks terjemahan tidak pernah dikirim ke server apa pun.",
+      "modelsTitle": "Model Terjemahan",
+      "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan mereka sendiri, yang Chrome download sekali pertama kali Anda menggunakannya.",
+      "modelPerPairNotice": "Satu kali download untuk pasangan bahasa ini"
     }
   },
   "STREAM": {

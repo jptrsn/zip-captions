@@ -7,7 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { SettingsActions } from '../../models/settings.model';
 import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
-import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
 
 @Component({
   selector: 'app-translation-settings',
@@ -22,7 +22,6 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
   public unsupportedReason: TranslationUnsupportedReason | undefined;
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
-  public systemRequirements: Signal<SystemRequirementsStatus>;
 
   public currentSettings: Signal<TranslationSettings | undefined>;
   public sourceDialect: Signal<string | undefined>;
@@ -39,7 +38,6 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.unsupportedReason = this.translatorService.unsupportedReason();
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
-    this.systemRequirements = this.translatorService.systemRequirements;
 
     this.currentSettings = toSignal(this.store.select(selectTranslationSettings));
     this.sourceDialect = toSignal(this.store.select(dialectSelector));
@@ -126,7 +124,6 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     }
     const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
     this.translatorService.checkModelStatus(src, target);
-    this.translatorService.checkSystemRequirements();
   }
 
   ngOnDestroy(): void {
