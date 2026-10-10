@@ -1,6 +1,10 @@
+import { Platform } from '@angular/cdk/platform';
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, Subject, from, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { BrowserTranslator, TranslatorApiAdapter, TranslatorCreateOptions } from './translator-api.adapter';
+
+export type TranslationUnsupportedReason = 'mobile' | 'browser';
 
 export type TranslationModelStatus = 'ready' | 'downloadable' | 'downloading' | 'unavailable' | 'error';
 
@@ -36,12 +40,12 @@ export class ChromeTranslatorService {
   private modelReadySubject = new Subject<{ sourceLang: string; targetLang: string }>();
   public modelReady$: Observable<{ sourceLang: string; targetLang: string }> = this.modelReadySubject.asObservable();
 
-  private currentTranslator: any = null;
+  private currentTranslator: BrowserTranslator | null = null;
   private currentSourceLang = '';
   private currentTargetLang = '';
 
   // Prevent duplicate concurrent initialization requests to Chrome
-  private pendingInitPromise: Promise<any> | null = null;
+  private pendingInitPromise: Promise<BrowserTranslator | null> | null = null;
   private pendingPair = '';
 
   // Track language pairs that Chrome explicitly reported as unsupported
@@ -54,7 +58,8 @@ export class ChromeTranslatorService {
   private liveInputSubject = new Subject<{ text: string; sourceLang: string; targetLang: string }>();
   public liveOutput$: Observable<string>;
 
-  constructor() {
+  constructor(private translatorApi: TranslatorApiAdapter,
+              private platform: Platform) {
     this.checkInitialSupport();
     this.checkSystemRequirements();
 
@@ -136,21 +141,20 @@ export class ChromeTranslatorService {
   }
 
   /**
-   * Returns true if the browser supports on-device Chrome Translator API
+   * Returns true if on-device translation can be used here: the browser exposes the
+   * Translator API and the device is not mobile (the API is desktop-only).
    */
   public isSupported(): boolean {
-    if (typeof window === 'undefined') return false;
-    const win = window as any;
-    const selfObj = typeof self !== 'undefined' ? (self as any) : win;
-    return !!(
-      (selfObj.translation && (selfObj.translation.canTranslate || selfObj.translation.createTranslator)) ||
-      (win.translation && (win.translation.canTranslate || win.translation.createTranslator)) ||
-      (win.Translator && (win.Translator.create || win.Translator.availability)) ||
-      (selfObj.Translator && (selfObj.Translator.create || selfObj.Translator.availability)) ||
-      (selfObj.translator && (selfObj.translator.create || selfObj.translator.canTranslate)) ||
-      (win.translator && (win.translator.create || win.translator.canTranslate)) ||
-      (win.ai && win.ai.translator)
-    );
+    return this.unsupportedReason() === undefined;
+  }
+
+  /**
+   * Why on-device translation is unavailable, or undefined when it is supported.
+   */
+  public unsupportedReason(): TranslationUnsupportedReason | undefined {
+    if (this.platform.ANDROID || this.platform.IOS) return 'mobile';
+    if (!this.translatorApi.isAvailable()) return 'browser';
+    return undefined;
   }
 
   private checkInitialSupport(): void {
@@ -159,21 +163,6 @@ export class ChromeTranslatorService {
     } else {
       this.safeSetSignal(this.modelStatus, 'unavailable');
     }
-  }
-
-  private getTranslationApi(): any {
-    if (typeof window === 'undefined') return null;
-    const win = window as any;
-    const selfObj = typeof self !== 'undefined' ? (self as any) : win;
-    return (
-      selfObj.translation ||
-      win.translation ||
-      selfObj.Translator ||
-      win.Translator ||
-      selfObj.translator ||
-      win.translator ||
-      (win.ai && win.ai.translator)
-    );
   }
 
   public normalizeLanguageCode(lang: string | undefined): string {
@@ -198,26 +187,13 @@ export class ChromeTranslatorService {
       return { available: false, status: 'no' };
     }
 
-    const api = this.getTranslationApi();
-    if (!api) {
-      return { available: false, status: 'no' };
-    }
-
     try {
-      let result: any = null;
-      if (typeof api.canTranslate === 'function') {
-        result = await api.canTranslate({ sourceLanguage: s, targetLanguage: t });
-      } else if (typeof api.availability === 'function') {
-        result = await api.availability({ sourceLanguage: s, targetLanguage: t });
-      } else if (api.capabilities && typeof api.capabilities === 'function') {
-        const caps = await api.capabilities();
-        result = caps?.available;
-      }
+      const result = await this.translatorApi.availability(s, t);
 
       // Check for available / readily
-      const isReadily = result === 'readily' || result === 'available' || result === true;
+      const isReadily = result === 'available';
       // Check for downloadable / after-download
-      const isAfterDownload = result === 'after-download' || result === 'downloadable' || result === 'downloading';
+      const isAfterDownload = result === 'downloadable' || result === 'downloading';
 
       if (isReadily) {
         return { available: true, status: 'readily' };
@@ -225,7 +201,7 @@ export class ChromeTranslatorService {
       if (isAfterDownload) {
         return { available: true, status: 'after-download' };
       }
-      if (result === 'no' || result === 'unavailable' || result === false) {
+      if (result === 'unavailable') {
         this.unsupportedPairs.add(pairKey);
         return { available: false, status: 'no' };
       }
@@ -277,36 +253,12 @@ export class ChromeTranslatorService {
     const pairKey = `${s}->${t}`;
 
     if (!this.isSupported()) return false;
-    const api = this.getTranslationApi();
-    if (!api) return false;
 
     this.safeSetSignal(this.modelStatus, 'downloading');
     this.safeSetSignal(this.downloadProgress, 0);
 
-    const options: any = {
-      sourceLanguage: s,
-      targetLanguage: t,
-      monitor: (m: any) => {
-        if (m && m.addEventListener) {
-          m.addEventListener('downloadprogress', (e: any) => {
-            if (e.total && e.total > 0) {
-              const pct = Math.round((e.loaded / e.total) * 100);
-              this.safeSetSignal(this.downloadProgress, pct);
-            }
-          });
-        }
-      }
-    };
-
     try {
-      let translator: any = null;
-      if (typeof api.createTranslator === 'function') {
-        translator = await api.createTranslator(options);
-      } else if (typeof api.create === 'function') {
-        translator = await api.create(options);
-      } else if (typeof api === 'function') {
-        translator = await api(options);
-      }
+      const translator = await this.translatorApi.create(this.createOptions(s, t));
 
       if (translator) {
         this.currentTranslator = translator;
@@ -332,7 +284,7 @@ export class ChromeTranslatorService {
    * Initializes or re-uses a Translator instance for the specified language pair.
    * If userInitiated is false and the model requires download, returns null to avoid NotAllowedError.
    */
-  public async getOrCreateTranslator(sourceLang: string, targetLang: string, userInitiated = false): Promise<any> {
+  public async getOrCreateTranslator(sourceLang: string, targetLang: string, userInitiated = false): Promise<BrowserTranslator | null> {
     const s = this.normalizeLanguageCode(sourceLang);
     const t = this.normalizeLanguageCode(targetLang);
     const pairKey = `${s}->${t}`;
@@ -381,34 +333,11 @@ export class ChromeTranslatorService {
         this.currentTranslator = null;
       }
 
-      const api = this.getTranslationApi();
       this.safeSetSignal(this.modelStatus, 'downloading');
       this.safeSetSignal(this.downloadProgress, 0);
 
-      const options: any = {
-        sourceLanguage: s,
-        targetLanguage: t,
-        monitor: (m: any) => {
-          if (m && m.addEventListener) {
-            m.addEventListener('downloadprogress', (e: any) => {
-              if (e.total && e.total > 0) {
-                const pct = Math.round((e.loaded / e.total) * 100);
-                this.safeSetSignal(this.downloadProgress, pct);
-              }
-            });
-          }
-        }
-      };
-
       try {
-        let translator: any = null;
-        if (typeof api.createTranslator === 'function') {
-          translator = await api.createTranslator(options);
-        } else if (typeof api.create === 'function') {
-          translator = await api.create(options);
-        } else if (typeof api === 'function') {
-          translator = await api(options);
-        }
+        const translator = await this.translatorApi.create(this.createOptions(s, t));
 
         this.currentTranslator = translator;
         this.currentSourceLang = s;
@@ -433,6 +362,21 @@ export class ChromeTranslatorService {
     })();
 
     return this.pendingInitPromise;
+  }
+
+  private createOptions(sourceLanguage: string, targetLanguage: string): TranslatorCreateOptions {
+    return {
+      sourceLanguage,
+      targetLanguage,
+      monitor: (m: EventTarget) => {
+        m.addEventListener('downloadprogress', (e: Event) => {
+          // Chrome reports loaded as a 0..1 fraction (total is 1); tolerate byte counts too
+          const { loaded, total } = e as ProgressEvent;
+          const fraction = total > 0 ? loaded / total : loaded;
+          this.safeSetSignal(this.downloadProgress, Math.round(Math.min(Math.max(fraction, 0), 1) * 100));
+        });
+      }
+    };
   }
 
   public async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {

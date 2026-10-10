@@ -361,6 +361,8 @@
       "downloadingModel": "Downloading AI translation model directly to your device...",
       "privacyNotice": "Powered by Chrome's built-in on-device AI. Zero audio or translated text leaves your machine.",
       "unsupportedHint": "The Chrome Translator API is only available in supported desktop Chromium browsers (Chrome 138+ / Edge). You may need to enable chrome://flags/#translation-api.",
+      "experimental": "Experimental",
+      "unsupportedMobileHint": "On-device translation is only available in desktop browsers (Chrome 138+ or Edge 148+). It is not supported on phones or tablets.",
       "requirementsTitle": "System Requirements",
       "reqRam": "16 GB RAM required",
       "reqStorage": "20 GB+ free disk space required for model download & caching",

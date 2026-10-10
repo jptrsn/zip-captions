@@ -10,6 +10,7 @@ import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSe
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
@@ -46,6 +47,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public effectiveTranslationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
+  public originalTextDir: Signal<'ltr' | 'rtl'>;
+  public translatedTextDir: Signal<'ltr' | 'rtl'>;
   public availableLanguages: Signal<SupportedTranslationLanguage[]>;
   public translatedLiveText: WritableSignal<string> = signal('');
   public translatedTextOutput: WritableSignal<string[]> = signal([]);
@@ -96,7 +99,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
     // Translation setup
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+    const translatorSupported = this.translatorService.isSupported();
+    this.translationMode = computed(() => translatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
     this.effectiveTranslationMode = computed(() => {
       const mode = this.translationMode();
       // When in Picture-in-Picture and translation is active (split or translated-only), show only translated captions
@@ -121,6 +125,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       }
       return false;
     });
+
+    this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
+    this.translatedTextDir = computed(() => textDirection(this.targetLanguage()));
 
     this.originalLanguageLabel = computed(() => {
       const s = this.sourceLanguage();

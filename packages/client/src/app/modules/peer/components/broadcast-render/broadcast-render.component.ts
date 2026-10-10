@@ -10,6 +10,7 @@ import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } fr
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 
@@ -41,6 +42,8 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public translationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
+  public originalTextDir: Signal<'ltr' | 'rtl'>;
+  public translatedTextDir: Signal<'ltr' | 'rtl'>;
   public availableLanguages: Signal<SupportedTranslationLanguage[]>;
   public translatedLiveText: WritableSignal<string> = signal('');
   public translatedTextOutput: WritableSignal<string[]> = signal([]);
@@ -71,7 +74,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.downloadProgress = this.translatorService.downloadProgress;
     this.systemRequirements = this.translatorService.systemRequirements;
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+    this.translationMode = computed(() => this.isTranslatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
     this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
 
     const hostLang = toSignal(this.peerService.hostLanguage$);
@@ -94,6 +97,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.hasTranslatedResults = computed(() => {
       return this.translatedLiveText() !== '' || this.translatedTextOutput().length > 0;
     });
+
+    this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
+    this.translatedTextDir = computed(() => textDirection(this.targetLanguage()));
 
     this.originalLanguageLabel = computed(() => {
       const s = this.sourceLanguage();

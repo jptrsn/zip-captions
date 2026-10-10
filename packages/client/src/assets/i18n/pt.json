@@ -413,6 +413,8 @@
       "downloadingModel": "Baixando o modelo de tradução de IA diretamente para o seu dispositivo...",
       "privacyNotice": "Desenvolvido com a IA integrada no dispositivo do Chrome. Nenhum dado sai do seu dispositivo.",
       "unsupportedHint": "A API Translator do Chrome está disponível apenas em navegadores Chromium de desktop suportados (Chrome 138+ / Edge). Pode ser necessário ativar chrome://flags/#translation-api.",
+      "experimental": "Experimental",
+      "unsupportedMobileHint": "A tradução no dispositivo só está disponível em navegadores de computador (Chrome 138+ ou Edge 148+). Não é compatível com telemóveis nem tablets.",
       "statusDownloadable": "Download necessário",
       "downloadButton": "Baixar modelo de tradução",
       "downloadPrompt": "Baixe o modelo de idioma no dispositivo para habilitar a tradução",

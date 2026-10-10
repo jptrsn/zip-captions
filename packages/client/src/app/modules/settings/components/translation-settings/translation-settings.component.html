@@ -4,13 +4,19 @@
 
       <!-- Master Translation Toggle -->
       <label class="form-control">
-        <span class="text-accent label" translate>SETTINGS.TRANSLATION.enable</span>
-        <label class="cursor-pointer label bg-base-100 rounded-lg ps-5 pe-3 py-4">
+        <span class="text-accent label justify-start gap-2">
+          <span translate>SETTINGS.TRANSLATION.enable</span>
+          <span class="badge badge-outline badge-sm" translate>SETTINGS.TRANSLATION.experimental</span>
+        </span>
+        <label class="label bg-base-100 rounded-lg ps-5 pe-3 py-4" [ngClass]="isSupported ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'">
           <span class="label-text me-2">
             {{ (formGroup.get('enabled')?.value ? 'SETTINGS.TRANSLATION.on' : 'SETTINGS.TRANSLATION.off') | translate }}
           </span>
-          <input type="checkbox" class="toggle toggle-primary" formControlName="enabled" />
+          <input type="checkbox" class="toggle toggle-primary" formControlName="enabled" data-testid="zc-translation-enable" />
         </label>
+        <span *ngIf="!isSupported" class="label-text-alt text-warning mt-1" data-testid="zc-translation-unsupported-reason">
+          {{ (unsupportedReason === 'mobile' ? 'SETTINGS.TRANSLATION.unsupportedMobileHint' : 'SETTINGS.TRANSLATION.unsupportedHint') | translate }}
+        </span>
       </label>
 
       <!-- Target Language Dropdown -->
@@ -122,7 +128,9 @@
 
           <ng-template #unsupportedNotice>
             <div class="badge badge-warning" translate>SETTINGS.TRANSLATION.statusUnsupported</div>
-            <p class="text-xs text-base-content/80 mt-2" translate>SETTINGS.TRANSLATION.unsupportedHint</p>
+            <p class="text-xs text-base-content/80 mt-2">
+              {{ (unsupportedReason === 'mobile' ? 'SETTINGS.TRANSLATION.unsupportedMobileHint' : 'SETTINGS.TRANSLATION.unsupportedHint') | translate }}
+            </p>
           </ng-template>
 
         </div>

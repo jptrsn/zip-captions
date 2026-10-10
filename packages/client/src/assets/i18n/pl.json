@@ -413,6 +413,8 @@
       "downloadingModel": "Pobieranie modelu tłumaczenia AI bezpośrednio na Twoje urządzenie...",
       "privacyNotice": "Zasilane przez wbudowaną lokalną sztuczną inteligencję Chrome. Żadne dane nie opuszczają Twojego urządzenia.",
       "unsupportedHint": "Chrome Translator API jest dostępne tylko w obsługiwanych przeglądarkach Chromium na komputery (Chrome 138+ / Edge). Może być konieczne włączenie chrome://flags/#translation-api.",
+      "experimental": "Eksperymentalne",
+      "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne tylko w przeglądarkach na komputerach (Chrome 138+ lub Edge 148+). Nie jest obsługiwane na telefonach ani tabletach.",
       "statusDownloadable": "Wymagane pobranie",
       "downloadButton": "Pobierz model tłumaczenia",
       "downloadPrompt": "Pobierz model językowy na urządzenie, aby włączyć tłumaczenie",

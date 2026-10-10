@@ -7,7 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { SettingsActions } from '../../models/settings.model';
 import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
-import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
 
 @Component({
   selector: 'app-translation-settings',
@@ -19,6 +19,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
   public availableLanguages: Signal<SupportedTranslationLanguage[]>;
   public isSupported: boolean;
+  public unsupportedReason: TranslationUnsupportedReason | undefined;
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
   public systemRequirements: Signal<SystemRequirementsStatus>;
@@ -35,6 +36,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     public translatorService: ChromeTranslatorService
   ) {
     this.isSupported = this.translatorService.isSupported();
+    this.unsupportedReason = this.translatorService.unsupportedReason();
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
     this.systemRequirements = this.translatorService.systemRequirements;
@@ -72,6 +74,11 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
         mode: settings.mode === 'off' ? 'split' : settings.mode,
         targetLanguage: initialTarget
       });
+    }
+
+    // Translation can't run on this device, so the stored settings are shown read-only
+    if (!this.isSupported) {
+      this.formGroup.disable();
     }
 
     // Check model status when target language changes

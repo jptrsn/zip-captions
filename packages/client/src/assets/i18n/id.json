@@ -413,6 +413,8 @@
       "downloadingModel": "Mengunduh model terjemahan AI langsung ke perangkat Anda...",
       "privacyNotice": "Didukung oleh AI bawaan di perangkat Chrome. Tidak ada data yang keluar dari perangkat Anda.",
       "unsupportedHint": "API Penerjemah Chrome hanya tersedia di browser Chromium desktop yang didukung (Chrome 138+ / Edge). Anda mungkin perlu mengaktifkan chrome://flags/#translation-api.",
+      "experimental": "Eksperimental",
+      "unsupportedMobileHint": "Terjemahan di perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+). Fitur ini tidak didukung di ponsel atau tablet.",
       "statusDownloadable": "Perlu Diunduh",
       "downloadButton": "Unduh Model Terjemahan",
       "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",

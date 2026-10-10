@@ -10,7 +10,7 @@
                [ngClass]="controlsVisible() ? 'opacity-70' : 'opacity-0 pointer-events-none'">
             {{ originalLanguageLabel() }}
           </div>
-          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="sourceLanguage()" [attr.dir]="originalTextDir()">
             <app-recognized-text 
               *ngIf="renderHistory()"
               [renderHistory]="renderHistory"
@@ -63,7 +63,7 @@
             <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
           </div>
 
-          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="targetLanguage()" [attr.dir]="translatedTextDir()">
             <app-recognized-text 
               *ngIf="renderHistory()"
               [renderHistory]="renderHistory"
@@ -118,7 +118,7 @@
           <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
         </div>
 
-        <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+        <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="translationMode() === 'translated-only' ? targetLanguage() : sourceLanguage()" [attr.dir]="translationMode() === 'translated-only' ? translatedTextDir() : originalTextDir()">
           <app-recognized-text 
             *ngIf="renderHistory()"
             [renderHistory]="renderHistory"

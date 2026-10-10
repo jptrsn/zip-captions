@@ -413,6 +413,8 @@
       "downloadingModel": "正在将 AI 翻译模型直接下载到您的设备...",
       "privacyNotice": "由 Chrome 内置端侧 AI 提供支持。音频和文本绝不会离开您的设备。",
       "unsupportedHint": "Chrome 翻译 API 仅在受支持的桌面 Chromium 浏览器（Chrome 138+ / Edge）中可用。您可能需要在 chrome://flags/#translation-api 中启用该功能。",
+      "experimental": "实验性",
+      "unsupportedMobileHint": "设备端翻译仅适用于桌面浏览器（Chrome 138+ 或 Edge 148+），不支持手机或平板电脑。",
       "statusDownloadable": "需要下载",
       "downloadButton": "下载翻译模型",
       "downloadPrompt": "在设备上下载语言模型以启用翻译",

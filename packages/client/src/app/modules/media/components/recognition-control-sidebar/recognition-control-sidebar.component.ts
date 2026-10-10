@@ -57,7 +57,7 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
               private peerService: PeerService) {
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+    this.translationMode = computed(() => this.isTranslatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
 
     const hostLang = toSignal(this.peerService.hostLanguage$);
     const dialect = toSignal(this.store.select(dialectSelector));
