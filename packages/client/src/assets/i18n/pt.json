@@ -411,10 +411,7 @@
       "statusError": "Erro no modelo",
       "statusUnsupported": "Navegador não suportado",
       "downloadingModel": "Baixando o modelo de tradução de IA diretamente para o seu dispositivo...",
-      "privacyNotice": "Desenvolvido com a IA integrada no dispositivo do Chrome. Nenhum dado sai do seu dispositivo.",
       "unsupportedHint": "A API Translator do Chrome está disponível apenas em navegadores Chromium de desktop suportados (Chrome 138+ / Edge). Pode ser necessário ativar chrome://flags/#translation-api.",
-      "experimental": "Experimental",
-      "unsupportedMobileHint": "A tradução no dispositivo só está disponível em navegadores de computador (Chrome 138+ ou Edge 148+). Não é compatível com telemóveis nem tablets.",
       "statusDownloadable": "Download necessário",
       "downloadButton": "Baixar modelo de tradução",
       "downloadPrompt": "Baixe o modelo de idioma no dispositivo para habilitar a tradução",
@@ -424,7 +421,11 @@
       "reqNotice": "20 GB+ e 16 GB de RAM necessários",
       "lowResourcesWarningTitle": "Pouco espaço ou memória detectados",
       "lowResourcesWarning": "Seu dispositivo pode ter espaço livre ou memória limitados. O Chrome requer 16 GB de RAM e pelo menos 20 GB de espaço livre; caso contrário, o download do modelo pode travar em 0%.",
-      "externalDriveTip": "Dica: Se o disco interno tiver pouco espaço, você pode iniciar o Chrome apontando para uma unidade externa com --user-data-dir."
+      "externalDriveTip": "Dica: Se o disco interno tiver pouco espaço, você pode iniciar o Chrome apontando para uma unidade externa com --user-data-dir.",
+      "privacyNoticeSpeech": "O reconhecimento de fala é separado e, dependendo do motor de fala que você escolher, o áudio pode ser processado na nuvem.",
+      "experimental": "Caracterização Experimental",
+      "unsupportedMobileHint": "A tradução on-device só está disponível em navegadores de desktop (Chrome 138+ ou Edge 148+) e não é suportada em telefones ou tablets.",
+      "privacyNotice": "A tradução funciona inteiramente no seu dispositivo usando os modelos de idiomas integrados do Chrome, e o texto traduzido nunca é enviado a qualquer servidor."
     }
   },
   "STREAM": {

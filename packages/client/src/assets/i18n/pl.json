@@ -411,10 +411,7 @@
       "statusError": "Błąd modelu",
       "statusUnsupported": "Przeglądarka nieobsługiwana",
       "downloadingModel": "Pobieranie modelu tłumaczenia AI bezpośrednio na Twoje urządzenie...",
-      "privacyNotice": "Zasilane przez wbudowaną lokalną sztuczną inteligencję Chrome. Żadne dane nie opuszczają Twojego urządzenia.",
       "unsupportedHint": "Chrome Translator API jest dostępne tylko w obsługiwanych przeglądarkach Chromium na komputery (Chrome 138+ / Edge). Może być konieczne włączenie chrome://flags/#translation-api.",
-      "experimental": "Eksperymentalne",
-      "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne tylko w przeglądarkach na komputerach (Chrome 138+ lub Edge 148+). Nie jest obsługiwane na telefonach ani tabletach.",
       "statusDownloadable": "Wymagane pobranie",
       "downloadButton": "Pobierz model tłumaczenia",
       "downloadPrompt": "Pobierz model językowy na urządzenie, aby włączyć tłumaczenie",
@@ -424,7 +421,11 @@
       "reqNotice": "Wymagane 20 GB+ i 16 GB RAM",
       "lowResourcesWarningTitle": "Wykryto mało miejsca na dysku lub pamięci",
       "lowResourcesWarning": "Twoje urządzenie może mieć ograniczoną ilość wolnego miejsca lub pamięci RAM. Chrome wymaga 16 GB pamięci RAM i co najmniej 20 GB wolnego miejsca, w przeciwnym razie pobieranie modelu może zatrzymać się na 0%.",
-      "externalDriveTip": "Wskazówka: Jeśli na dysku wewnętrznym brakuje miejsca, możesz uruchomić Chrome ze wskazaniem na dysk zewnętrzny za pomocą --user-data-dir."
+      "externalDriveTip": "Wskazówka: Jeśli na dysku wewnętrznym brakuje miejsca, możesz uruchomić Chrome ze wskazaniem na dysk zewnętrzny za pomocą --user-data-dir.",
+      "privacyNoticeSpeech": "Rozpoznawanie mowy jest oddzielone, a w zależności od wybranego silnika mowy, audio może być przetwarzane w chmurze.",
+      "experimental": "Funkcja eksperymentalna",
+      "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne tylko w przeglądarkach stacjonarnych (Chrome 138+ lub Edge 148+) i nie jest obsługiwane na telefonach lub tabletach.",
+      "privacyNotice": "Tłumaczenie działa w całości na urządzeniu za pomocą wbudowanych modeli językowych Chrome, a tłumaczone teksty nigdy nie są wysyłane do żadnego serwera."
     }
   },
   "STREAM": {

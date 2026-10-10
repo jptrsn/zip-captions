@@ -411,10 +411,7 @@
       "statusError": "模型错误",
       "statusUnsupported": "浏览器不支持",
       "downloadingModel": "正在将 AI 翻译模型直接下载到您的设备...",
-      "privacyNotice": "由 Chrome 内置端侧 AI 提供支持。音频和文本绝不会离开您的设备。",
       "unsupportedHint": "Chrome 翻译 API 仅在受支持的桌面 Chromium 浏览器（Chrome 138+ / Edge）中可用。您可能需要在 chrome://flags/#translation-api 中启用该功能。",
-      "experimental": "实验性",
-      "unsupportedMobileHint": "设备端翻译仅适用于桌面浏览器（Chrome 138+ 或 Edge 148+），不支持手机或平板电脑。",
       "statusDownloadable": "需要下载",
       "downloadButton": "下载翻译模型",
       "downloadPrompt": "在设备上下载语言模型以启用翻译",
@@ -424,7 +421,11 @@
       "reqNotice": "需要 20GB+ 空间和 16GB 内存",
       "lowResourcesWarningTitle": "检测到存储空间或内存不足",
       "lowResourcesWarning": "您的设备可能可用存储或内存有限。Chrome 需要 16 GB 内存以及至少 20 GB 的可用磁盘空间，否则模型下载可能会停留在 0%。",
-      "externalDriveTip": "提示：如果内置硬盘空间不足，您可以使用 --user-data-dir 将 Chrome 启动到外接磁盘。"
+      "externalDriveTip": "提示：如果内置硬盘空间不足，您可以使用 --user-data-dir 将 Chrome 启动到外接磁盘。",
+      "privacyNoticeSpeech": "语音识别是单独的,根据您选择的语音引擎,音频可以在云中处理。",
+      "experimental": "实验特性",
+      "unsupportedMobileHint": "在设备上的翻译仅在桌面浏览器(Chrome 138+或Edge 148+)上可用,并且在手机或平板电脑上不支持。",
+      "privacyNotice": "翻译完全运行在您的设备上使用Chrome的内置语言模型,翻译的文本从未发送到任何服务器。"
     }
   },
   "STREAM": {

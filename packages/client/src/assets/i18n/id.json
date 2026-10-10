@@ -411,10 +411,7 @@
       "statusError": "Kesalahan Model",
       "statusUnsupported": "Browser Tidak Didukung",
       "downloadingModel": "Mengunduh model terjemahan AI langsung ke perangkat Anda...",
-      "privacyNotice": "Didukung oleh AI bawaan di perangkat Chrome. Tidak ada data yang keluar dari perangkat Anda.",
       "unsupportedHint": "API Penerjemah Chrome hanya tersedia di browser Chromium desktop yang didukung (Chrome 138+ / Edge). Anda mungkin perlu mengaktifkan chrome://flags/#translation-api.",
-      "experimental": "Eksperimental",
-      "unsupportedMobileHint": "Terjemahan di perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+). Fitur ini tidak didukung di ponsel atau tablet.",
       "statusDownloadable": "Perlu Diunduh",
       "downloadButton": "Unduh Model Terjemahan",
       "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",
@@ -424,7 +421,11 @@
       "reqNotice": "Perlu 20GB+ & 16GB RAM",
       "lowResourcesWarningTitle": "Penyimpanan atau Memori Rendah Terdeteksi",
       "lowResourcesWarning": "Perangkat Anda mungkin memiliki penyimpanan atau memori kosong yang terbatas. Chrome memerlukan RAM 16 GB dan setidaknya 20 GB ruang disk kosong, jika tidak pengunduhan model dapat macet di 0%.",
-      "externalDriveTip": "Tip: Jika disk internal kehabisan ruang, Anda dapat menjalankan Chrome yang mengarah ke drive eksternal dengan --user-data-dir."
+      "externalDriveTip": "Tip: Jika disk internal kehabisan ruang, Anda dapat menjalankan Chrome yang mengarah ke drive eksternal dengan --user-data-dir.",
+      "privacyNoticeSpeech": "Pengenalan bicara terpisah, dan tergantung pada mesin bicara yang Anda pilih, audio dapat diproses di awan.",
+      "experimental": "Fitur Eksperimen",
+      "unsupportedMobileHint": "Terjemahan pada perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung pada ponsel atau tablet.",
+      "privacyNotice": "Terjemahan berjalan sepenuhnya pada perangkat Anda menggunakan model bahasa Chrome yang terintegrasi, dan teks terjemahan tidak pernah dikirim ke server apa pun."
     }
   },
   "STREAM": {
