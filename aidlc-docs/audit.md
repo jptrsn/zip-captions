@@ -71,3 +71,18 @@
 **AI actions:**
 - Indexed Chrome built-in AI docs as docs-mcp library `chrome-built-in-ai`. They confirm the 22 GB / 16 GB / 4 GB VRAM requirements apply only to the Gemini Nano APIs. Translator packs are "downloaded on demand", **with no size published**.
 - `da8445b`: removed `checkSystemRequirements()` and its warnings. Added a "Translation models" note in settings and a "One-time download for this language pair" note under the download buttons. No "~5GB" figure, because it isn't supported by the docs.
+
+## 2026-10-10 — U1 caption segment model complete
+
+**Human:** proceed with U1. Approved the design with three decisions: filter empty Azure segments now (an existing bug); keep translations in memory for the current session only; 4 translators and 500 cached segments are fine.
+
+**AI actions:**
+- Design: `construction/u1-caption-segment-model/functional-design.md`.
+- `CaptionSegment` and `CaptionSegmentHistory`. IDs are `${engine}-${epoch}-${seq}`, assigned once, so they are stable across rollover. Both engines publish `Signal<CaptionSegment[]>`, and `getRecognizedText()` is derived from it, so existing consumers are unchanged. Web `lang` is captured at each recognition `start`. Azure `lang` is the configured locale, and Azure config is unchanged.
+- Azure `NoMatch`/empty results no longer append a blank caption or dispatch an empty transcript segment.
+- `ChromeTranslatorService`: an LRU cache of up to 4 translators per pair. Segment translations are capped at 500 and cleared on `RecognitionActions.disconnect` (via an effect) and when a viewer leaves (`broadcast-render`). Public API is unchanged, plus `clearSessionCache()`.
+- Found by the new tests and fixed: concurrent `getOrCreateTranslator` calls for the same pair each created a translator, because the pending promise was registered after an `await`. A user-initiated request no longer joins a background one.
+- `recognition-render`: translations are keyed by segment ID, so late results can't land on the wrong line. Previous translations stay visible until re-translation completes. `broadcast-render` (viewer) stays index-aligned until U4.
+- Corrected requirements §3: Azure history was already capped at 15 in the baseline.
+- Tests: 6 new or extended suites (segment history, alignment helpers, Web and Azure engines, facade compatibility, translator cache). Full client suite: 45 of 103 failing vs 46 of 99 at `97216ea`. Compared by name: **no new failures**, and `recognition.service.spec` is fixed (stub engines). Typecheck is clean.
+- Note: a full run once hung with idle workers. A rerun completed normally.

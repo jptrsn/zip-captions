@@ -14,17 +14,17 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 
 | Spec item | Status in baseline |
 |---|---|
-| FR-1, FR-3, FR-5 | Mostly done. A single translator instance thrashes when the pair changes. |
+| FR-1, FR-3, FR-5 | Done. The single-translator thrash was fixed in U1 with a per-pair translator cache. |
 | FR-2 / Q9 eligibility | Done in U0 (`3c53761`) |
 | FR-4 targets | Done: 17 targets kept for Release 1 (Q3 amended) |
 | FR-6 `lang`/`dir` | Done in U0 (`3c53761`) |
-| FR-9, FR-AZ-* | **Gap:** the source language is always the global dialect |
+| FR-9, FR-AZ-* | **Gap:** the source language is always the global dialect. U1 added per-segment `lang`; U2 tags it. |
 | FR-C* conversation | Deferred to Release 2 |
 | FR-P1/P2 | Done |
 | FR-P3 OBS feed | **Gap** |
 | FR-D1, FR-D4 | Done (stacked) |
 | FR-D2 orientation/swap | **Gap** |
-| FR-D3 alignment | Partial: index-aligned per render; no IDs |
+| FR-D3 alignment | Partial: segments have IDs (U1) and the broadcaster's render is ID-aligned. Viewer alignment is U4 and placeholders are U3. |
 | FR-B1, FR-B2, FR-B4, FR-B5 | **Gap** (FR-B3 done) |
 | FR-W* | Partial: PiP is forced translated-only |
 | NFR-7 | Done |
@@ -42,9 +42,20 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 - ~~16 GB RAM / 20 GB disk warning~~. **Fixed in `da8445b`**: the hardware probe and warning are removed, replaced by a per-language-pair model note in settings and caption views. No size figure is shown because Chrome doesn't publish pack sizes.
 - *Out of scope (handled separately):* machine-translation quality of `scripts/translate.py` output.
 
-## U1 — Caption segment model
+## U1 — Caption segment model ✅
 `CaptionSegment { id, text, lang }` from both engines, with `getRecognizedText()` derived from it for existing consumers. Translator cache keyed by pair (multiple live translators), not a single instance.
 *Enables:* FR-9, FR-D3, FR-B1, and Release 2 conversation mode.
+
+Design: `construction/u1-caption-segment-model/functional-design.md`. Done:
+- IDs survive history rollover (`CaptionSegmentHistory`).
+- Web segments use the language captured at each recognition `start`. Azure segments use the configured locale, and Azure configuration is unchanged.
+- `recognition-render` translations are keyed by segment ID.
+- Up to 4 translators are cached per pair, least recently used first out.
+- Translated segments are cached in memory for the current session only (cleared on disconnect and when a viewer leaves), up to 500.
+- Fixed: Azure `NoMatch`/empty results no longer add blank captions or empty transcript entries.
+- Fixed: concurrent translator creation for the same pair.
+
+*Noted for U4:* `broadcast-render` (viewer) still aligns by index, because the payload has no IDs.
 
 ## U2 — Bilingual-locale language tagging
 `BilingualDialects` metadata. `LanguageDetector`, restricted to the pair, tags final segments. Per-segment translation source, with pass-through when source = target. Azure config is unchanged, with a regression test proving it.

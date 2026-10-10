@@ -63,7 +63,7 @@ RecognitionRenderComponent      StreamCaptionsComponent         BroadcastRoomCom
 ```
 
 Constraints this places on the design:
-- **Segment identity:** finals are a bare `string[]`. Web trims it to 15 items; Azure **never trims** (it grows without bound, which is a latent bug). Translation and split alignment need stable segment IDs and a per-segment `lang`.
+- **Segment identity:** finals are a bare `string[]`. Web trims it to 15 items. *(Azure was noted here as never trimming; the merged baseline already caps it at 15, per the correction in U1.)* Translation and split alignment need stable segment IDs and a per-segment `lang`.
 - **Single active language:** Web Speech uses one `lang`, and a change only takes effect on the next `start()`. Azure rebuilds the recognizer when the language changes.
 - **Fan-out:** OBS, broadcast and transcripts all consume original text.
 
