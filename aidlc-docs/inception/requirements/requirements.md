@@ -22,7 +22,7 @@ The feature also delivers **automatic English/French language switching for the 
 
 crippit's PoC called this same API. Its extra probes (`window.translation.createTranslator`, `ai.translator`) were **pre-release origin-trial names of the same API** that current Chrome no longer exposes. U0 kept the shipped `self.Translator` and dropped the stale names. No model or approach changed.
 
-**Hardware:** Chrome's built-in AI docs list GPU / 16 GB RAM / 22 GB disk requirements **only for the Gemini Nano APIs** (Prompt, Summarizer, Writer, Rewriter, Proofreader). The Translator and Language Detector use smaller expert models, and no requirements are listed for them. The inherited 16 GB / 20 GB warning in the settings UI is therefore inaccurate (open item).
+**Hardware:** Chrome's built-in AI docs list GPU / 16 GB RAM / 22 GB disk requirements **only for the Gemini Nano APIs** (Prompt, Summarizer, Writer, Rewriter, Proofreader). The Translator and Language Detector use smaller expert models, and no requirements are listed for them. The inherited 16 GB / 20 GB warning was removed in `da8445b`. Chrome doesn't publish per-pack sizes, so the UI describes per-pair downloads without a size figure.
 
 **Speech recognition is separate and not on-device:** Web Speech (Chrome) and Azure both process audio in the cloud. Only *translation* is on-device.
 

@@ -39,7 +39,8 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 
 **Open copy issues found in U0 (need maintainer decision):**
 - ~~`privacyNotice` claimed no audio leaves the machine~~. **Fixed in `191d2da`**: the notice now says translation is on-device, plus a separate line saying speech recognition may use the cloud. Regenerated with `scripts/translate.py`.
-- `reqRam` / `reqStorage` and the low-resource warning claim 16 GB RAM / 20 GB disk. **Confirmed:** Chrome's docs list those figures only for the Gemini Nano APIs; the Translator API uses expert models and no requirements are listed (requirements §2.0). The warning may wrongly discourage eligible users.
+- ~~16 GB RAM / 20 GB disk warning~~. **Fixed in `da8445b`**: the hardware probe and warning are removed, replaced by a per-language-pair model note in settings and caption views. No size figure is shown because Chrome doesn't publish pack sizes.
+- *Out of scope (handled separately):* machine-translation quality of `scripts/translate.py` output.
 
 ## U1 — Caption segment model
 `CaptionSegment { id, text, lang }` from both engines, with `getRecognizedText()` derived from it for existing consumers. Translator cache keyed by pair (multiple live translators), not a single instance.

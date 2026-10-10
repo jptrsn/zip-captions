@@ -63,3 +63,11 @@
 **AI actions:**
 - Clarified that "Translator API" is Chrome's built-in **on-device** translation (the same API crippit's PoC calls), not a paid cloud service. Added requirements §2.0.
 - `191d2da`: accurate privacy notice plus a speech-recognition line. Locale strings regenerated with `scripts/translate.py`, replacing my earlier hand translations. English split into single sentences because M2M100 dropped trailing sentences. Rephrased "never leaves" after the Ukrainian output inverted it.
+
+## 2026-10-10 — Hardware warning replaced
+
+**Human:** remove the settings-page hardware warning and describe per-language models in the views (suggested "~5GB per translation file"). Translation-script quality is out of scope. Index docs into docs-mcp and use it rather than fetching.
+
+**AI actions:**
+- Indexed Chrome built-in AI docs as docs-mcp library `chrome-built-in-ai`. They confirm the 22 GB / 16 GB / 4 GB VRAM requirements apply only to the Gemini Nano APIs. Translator packs are "downloaded on demand", **with no size published**.
+- `da8445b`: removed `checkSystemRequirements()` and its warnings. Added a "Translation models" note in settings and a "One-time download for this language pair" note under the download buttons. No "~5GB" figure, because it isn't supported by the docs.
