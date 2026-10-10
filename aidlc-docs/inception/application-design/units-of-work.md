@@ -2,33 +2,65 @@
 
 Each unit is a separately reviewable PR into `feature/on-device-translation`, in this order.
 
-## U1 — Caption segment model (prerequisite, no UI change)
-Introduce `CaptionSegment { id, text, lang, start? }`. Both engines publish `Signal<CaptionSegment[]>`, and both cap history at `MAX_RECOGNITION_LENGTH` (this fixes the unbounded Azure array). `RecognitionService` exposes `getRecognizedSegments()`, and the existing `getRecognizedText()` is derived from it, so current consumers are unchanged.
-*Enables:* FR-9, FR-AZ-3, FR-D3, FR-B1.
+## Baseline (merged 2026-10-10, `507fe2a`)
+crippit/zip-captions `translations` (Chris Webb) provides:
+- `ChromeTranslatorService` (download and progress, debounced "latest wins" live translation, segment cache)
+- Translation settings panel with RAM/disk checks
+- `split` (stacked) and `translated-only` modes
+- Translated-only Document PiP
+- Viewer-side broadcast translation (FR-B3)
+- Azure and Web history caps
+- i18n strings
+
+| Spec item | Status in baseline |
+|---|---|
+| FR-1, FR-3, FR-5 | Mostly done. A single translator instance thrashes when the pair changes. |
+| FR-2 / Q9 eligibility | **Gap:** the toggle isn't disabled when ineligible, there's no mobile check, and there's no "Experimental" label |
+| FR-4 / Q3 targets | **Deviation:** 17 targets, not the 11 interface languages |
+| FR-6 `lang`/`dir` | **Gap** |
+| FR-9, FR-AZ-* | **Gap:** the source language is always the global dialect |
+| FR-C* conversation | **Gap** |
+| FR-P1/P2 | Done |
+| FR-P3 OBS feed | **Gap** |
+| FR-D1, FR-D4 | Done (stacked) |
+| FR-D2 orientation/swap | **Gap** |
+| FR-D3 alignment | Partial: index-aligned per render; no IDs |
+| FR-B1, FR-B2, FR-B4, FR-B5 | **Gap** (FR-B3 done) |
+| FR-W* | Partial: PiP is forced translated-only |
+| NFR-7 | Done |
+| Regression | `saveTranscriptionSettingsFailure` reducer handler removed |
+
+## U0 — Baseline hardening
+Restore the `saveTranscriptionSettingsFailure` handler. Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Limit targets to the interface languages (Q3). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
+*Stories:* US-0.1, US-0.3.
+
+## U1 — Caption segment model
+`CaptionSegment { id, text, lang }` from both engines, with `getRecognizedText()` derived from it for existing consumers. Translator cache keyed by pair (multiple live translators), not a single instance.
+*Enables:* FR-9, FR-D3, FR-B1, conversation mode.
 
 ## U2 — Bilingual-locale language tagging
-`BilingualDialects` metadata (`fr-CA`, `es-US`, `ar-*`, `en-IN`). A `SegmentLanguageTagger` that runs `LanguageDetector`, restricted to the locale's pair, on final segments when translation is on, and keeps the last language when confidence is low. A settings hint. **No change to Azure recognizer construction**; add a regression test proving that.
-*Stories:* US-AZ1, US-AZ2, US-AZ3.
+`BilingualDialects` metadata. `LanguageDetector`, restricted to the pair, tags final segments. Per-segment translation source, with pass-through when source = target. Azure config is unchanged, with a regression test proving it.
+*Stories:* US-AZ1–AZ3.
 
-## U3 — `TranslationService` + browser adapter
-Adapter over `self.Translator`. Eligibility check (API present and desktop). Translator cache per pair, sequential queue with "latest wins" for interim text, translation keyed by segment `lang`, pass-through when source = target, dialect → code map.
-*Stories:* US-0.1 (logic), US-0.2 (logic), US-B3.
+## U3 — Split orientation, swap & PiP content
+Horizontal/vertical, pane swap, language labels. A PiP content setting (FR-W1).
+*Stories:* US-C1–C3, US-W1.
 
-## U4 — Settings & state
-NgRx translation slice: enabled, target, displayMode, splitOrientation, swapPanes, interim, conversationPair, obsFeed. Settings → Translation panel with the Experimental toggle (disabled when ineligible) and Prepare languages. i18n in 11 locales.
-*Stories:* US-0.1, US-0.2, US-0.3, US-A1.
+## U4 — Conversation mode
+Language pair, manual Switch (finalize, then restart), automatic turns on bilingual locales, two-pane conversation view.
+*Stories:* US-A1–A4.
 
-## U5 — Translated & split rendering
-`RecognitionRenderComponent` handles `original | translated | split(horizontal|vertical)`, reusing the existing text components for each pane. PiP and full-screen.
-*Stories:* US-B1, US-B2, US-C1–C3.
+## U5 — Broadcast both feeds
+Versioned payload carrying `{ id, text, lang }` for both original and translated segments, plus `translations: [targetLang]`. Viewer picker merges the broadcaster's languages with local ones (FR-B4/B5). Old viewers still get `recognition` as before.
+*Stories:* US-D1–D3.
 
-## U6 — Conversation mode
-Runtime input-language override in `RecognitionService`. Manual Switch (finalize, then restart) plus a shortcut. Automatic direction when segments carry a detected `lang` matching the pair. Two-pane view with language badges.
-*Stories:* US-A2–A4.
+## U6 — Per-language windows
+**Spike first:** can two top-level windows hold Document PiP windows at the same time in Chrome? Then: a popup per language synced over `BroadcastChannel`, full-screen on any display, closing with the opener, and its own PiP window if the spike passes. Settings → "Display windows".
+*Stories:* US-W2, US-W3.
 
-## U7 — Output routing
-OBS feed setting, and a broadcast payload carrying both feeds (backward compatible). Viewer display choice.
-*Stories:* US-B4, US-D1, US-D2.
+## U7 — OBS feed
+OBS caption source setting: original or translated.
+*Stories:* US-B4.
 
 ## Follow-ups
-US-C4 draggable divider. More bilingual profiles (for example `en-IN` + `hi-IN`) once more recognition languages exist.
+US-C4 draggable divider. More bilingual profiles.

@@ -104,9 +104,20 @@ A segment that mixes both languages within one sentence goes to the translator u
 - **FR-D3:** Segments are aligned by ID. A pending translation shows a placeholder.
 - **FR-D4:** Works in full-screen and PiP.
 
-### Broadcast (Q7 = B)
-- **FR-B1:** The broadcaster sends **both** original and translated segments, with matching IDs and languages.
+### Broadcast (Q7 = B, refined 2026-10-10)
+- **FR-B1:** When the broadcaster is translating, the broadcaster sends **both** original and translated segments, with matching segment IDs and per-segment languages, plus the target language. Viewers then get the translation **without needing translation support themselves** (any browser, including mobile).
 - **FR-B2:** Viewers choose original, translated or split locally. Old viewers that don't understand the new payload keep receiving original text.
+- **FR-B3:** **Viewer-side fallback:** if a viewer prefers a language the broadcaster isn't translating into, and the viewer's device is eligible (FR-2), the viewer can translate on their own device from the original feed. The merged branch already implements this path.
+- **FR-B4:** The viewer's language picker lists the broadcaster's language(s) first, marked "from broadcaster", then languages available locally. Ineligible viewers see only what the broadcaster sends.
+- **FR-B5:** Whenever the broadcaster's translation exists for the viewer's chosen language, viewers use it, so the same text isn't translated twice.
+
+### Picture-in-Picture & multi-window (added 2026-10-10)
+Platform constraint: the Document PiP spec (WICG §6.5) allows **at most one PiP window per top-level browsing context**. `requestWindow()` closes the opener's existing PiP window. Whether a *different* tab or window may hold a second PiP window at the same time is left to the browser.
+- **FR-W1:** Single PiP window, configurable content: `original` | `translated` | `split` (stacked). The merged branch forces translated-only in PiP; this becomes a setting, defaulting to translated-only.
+- **FR-W2:** **Per-language windows (option):** "Open <language> in a new window" opens a same-origin popup (`window.open`) that renders exactly one feed (original or translated) with the user's typography settings. It's synced live from the main window through `BroadcastChannel`, with no second recognition or translation run.
+- **FR-W3:** A per-language popup can (a) go full-screen on its current or another display, for example a projector, and (b) request its **own** Document PiP window, *if the browser allows a second PiP window across top-level windows*. **Spike required** to verify Chrome behavior. If Chrome closes the other PiP window, (b) is dropped and the popup works as a normal window.
+- **FR-W4:** Closing the main window closes its per-language popups. Closing a popup never stops recognition.
+- **FR-W5:** Configuration: Settings → Translation → "Display windows", choosing a single window (split or translated-only) or separate windows per language.
 
 ### Transcripts (Q8 = A)
 - **FR-T1:** Transcripts store the original text only. They store per-segment `lang` once FR-AZ-3 is in place.
@@ -134,7 +145,8 @@ Server or cloud translation fallback. Translating transcripts after the session.
 | Q4 | Interim translation throttled with "latest wins", and it can be turned off. |
 | Q5 | Both engines. |
 | Q6 | OBS feed setting: original or translated. |
-| Q7 | Broadcast both feeds, and the viewer chooses. |
+| Q7 | Broadcast both feeds, and the viewer chooses. *Refined:* viewer-side translation (FR-B3) is kept as a fallback for languages the broadcaster isn't translating into. |
+| — | *Added 2026-10-10:* per-language windows (FR-W*). Built on crippit/zip-captions `translations` (merged `507fe2a`). |
 | Q8 | Transcripts store original text only. |
 | Q9 | Experimental toggle, **disabled on ineligible platforms**. |
 | Q10 | "Prepare languages" button in Settings. |

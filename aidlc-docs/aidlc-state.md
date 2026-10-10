@@ -6,7 +6,7 @@
 | Branch | `feature/on-device-translation` (from `develop` @ `7e0f8a4`) |
 | Project type | Brownfield (Angular 16 / NgRx / Nx client in `packages/client`) |
 | Current phase | **Inception → Construction** |
-| Current stage | Inception approved; Construction starts with U1 (caption segment model) |
+| Current stage | Baseline merged (crippit `translations`); Construction starts with U0 (baseline hardening) |
 
 ## Phase / stage tracker
 

@@ -94,7 +94,31 @@ Drag the divider.
 ## Epic D — Broadcast viewers
 
 ### US-D1 Broadcast both feeds (M)
-As a broadcaster with translation on, I want viewers to receive both original and translated segments.
+As a broadcaster with translation on, I want viewers to receive both original and translated segments, so viewers on any device, including phones, can read the translation.
+- **Given** the broadcaster translates en→fr, **when** a viewer on mobile Safari picks French, **then** they see the broadcaster's French text, with no local translation needed.
 
 ### US-D2 Viewer chooses display (M)
 As a viewer, I want to pick original, translated or split on my own device. Older clients still show the original.
+
+### US-D3 Translate on my own device when needed (M)
+As a viewer whose preferred language isn't the one the broadcaster translates into, I want to translate the original feed on my device, if it's supported.
+- **Given** the broadcaster translates en→fr and I'm on eligible desktop Chrome, **when** I pick Spanish, **then** my device translates the original into Spanish locally.
+- **Given** an ineligible device, **then** the picker offers only the broadcaster's languages.
+- **Given** I pick French while the broadcaster's French exists, **then** no local translation runs.
+
+---
+
+## Epic W — Picture-in-Picture & per-language windows
+
+### US-W1 Choose what the PiP window shows (M)
+As Marco, I want the PiP window to show translated-only, original-only or split, so I can choose what floats over my other apps.
+
+### US-W2 Open a separate window per language (S)
+As Marco presenting to a bilingual room, I want to open the translated feed in its own window, so I can drag it full-screen onto the projector and keep the original on my laptop.
+- Opens a popup that shows one feed, synced live from the main window. Recognition and translation run only once.
+- The popup can go full-screen on any connected display.
+- Closing the main window closes the popup.
+
+### US-W3 Each language window floats on top (C, spike-gated)
+As Marco, I want each language window to have its own always-on-top PiP window.
+- Only if the spike shows Chrome allows PiP windows in two top-level windows at once. Otherwise this story is dropped and US-W1 split-PiP is the floating option.
