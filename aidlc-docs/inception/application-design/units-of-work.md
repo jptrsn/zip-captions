@@ -38,8 +38,8 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 *Stories:* US-0.1, US-0.3.
 
 **Open copy issues found in U0 (need maintainer decision):**
-- `SETTINGS.TRANSLATION.privacyNotice` says "Zero audio or translated text leaves your machine". Translation is on-device, but Web Speech (Chrome) and Azure recognition both send audio to a cloud service. This conflicts with NFR-1.
-- `reqRam` / `reqStorage` and the low-resource warning claim 16 GB RAM / 20 GB disk. Those figures match Chrome's Gemini Nano (Prompt API) requirements; the Translator API docs list no hardware requirements, and its language packs are much smaller. The warning may wrongly discourage eligible users.
+- ~~`privacyNotice` claimed no audio leaves the machine~~. **Fixed in `191d2da`**: the notice now says translation is on-device, plus a separate line saying speech recognition may use the cloud. Regenerated with `scripts/translate.py`.
+- `reqRam` / `reqStorage` and the low-resource warning claim 16 GB RAM / 20 GB disk. **Confirmed:** Chrome's docs list those figures only for the Gemini Nano APIs; the Translator API uses expert models and no requirements are listed (requirements §2.0). The warning may wrongly discourage eligible users.
 
 ## U1 — Caption segment model
 `CaptionSegment { id, text, lang }` from both engines, with `getRecognizedText()` derived from it for existing consumers. Translator cache keyed by pair (multiple live translators), not a single instance.

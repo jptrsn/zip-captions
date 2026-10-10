@@ -55,3 +55,11 @@
 - i18n: 2 new keys × 11 locales. Removed dead duplicate `SETTINGS.TRANSLATION` blocks in de/es/fr/it (verified identical parsed JSON).
 - Tests: translator service 16 cases, settings 4 cases. Full client suite: 46/99 suites failing vs 46/96 on `develop`, with **no new failures**.
 - Flagged two copy issues for a maintainer decision (privacy notice; RAM/disk requirements). See units-of-work.
+
+## 2026-10-10 — Privacy notice fix; translation approach clarified
+
+**Human:** fix the privacy notice. Clarify the translation approach: adopt crippit's on-device PoC, with free, privacy-respecting methods only. Use `scripts/translate.py` for locale strings.
+
+**AI actions:**
+- Clarified that "Translator API" is Chrome's built-in **on-device** translation (the same API crippit's PoC calls), not a paid cloud service. Added requirements §2.0.
+- `191d2da`: accurate privacy notice plus a speech-recognition line. Locale strings regenerated with `scripts/translate.py`, replacing my earlier hand translations. English split into single sentences because M2M100 dropped trailing sentences. Rephrased "never leaves" after the Ukrainian output inverted it.

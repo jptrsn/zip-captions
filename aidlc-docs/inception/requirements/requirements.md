@@ -10,6 +10,24 @@ The feature also delivers **automatic English/French language switching for the 
 
 ## 2. Platform capability (researched 2026-10-10)
 
+### 2.0 Translation approach (clarified 2026-10-10)
+**Zip Captions uses Chrome's built-in, on-device translation**, the approach in crippit's PoC. "Translator API" in this spec is the **web-platform JavaScript API name** (`self.Translator.create()` / `.translate()`) that Chrome exposes for that built-in model. It is **not** a cloud translation service.
+
+| | Chrome built-in Translator API (**what we use**) | Cloud translation services (**not used**) |
+|---|---|---|
+| Examples | `self.Translator` in Chrome 138+ / Edge 148+ | Google Cloud Translation API, Azure AI Translator, DeepL API |
+| Where it runs | On the user's device. Chrome downloads per-language "expert model" packs once. | Vendor servers |
+| Cost | Free, with no API key or account | Paid per character |
+| Privacy | "No data is sent to Google or any third party when using the model." The network is used only to download the model. | Text is sent to the vendor |
+
+crippit's PoC called this same API. Its extra probes (`window.translation.createTranslator`, `ai.translator`) were **pre-release origin-trial names of the same API** that current Chrome no longer exposes. U0 kept the shipped `self.Translator` and dropped the stale names. No model or approach changed.
+
+**Hardware:** Chrome's built-in AI docs list GPU / 16 GB RAM / 22 GB disk requirements **only for the Gemini Nano APIs** (Prompt, Summarizer, Writer, Rewriter, Proofreader). The Translator and Language Detector use smaller expert models, and no requirements are listed for them. The inherited 16 GB / 20 GB warning in the settings UI is therefore inaccurate (open item).
+
+**Speech recognition is separate and not on-device:** Web Speech (Chrome) and Azure both process audio in the cloud. Only *translation* is on-device.
+
+Source: [Get started with built-in AI](https://developer.chrome.com/docs/ai/get-started).
+
 ### 2.1 Browser Translator / Language Detector
 | Fact | Implication |
 |---|---|
