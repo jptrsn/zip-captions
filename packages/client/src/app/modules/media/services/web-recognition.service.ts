@@ -140,13 +140,12 @@ export class WebRecognitionService {
 								segmentStart = new Date();
 							}
 							this.recognizedText.update((current: string[]) => {
-								current.push(partialTranscript);
 								if (this.transcriptionEnabled()) {
 									// console.log('segmentStart', segmentStart)
 									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
 									segmentStart = undefined;
 								}
-								return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
+								return [...current, partialTranscript].slice(this.MAX_RECOGNITION_LENGTH * -1);
 							});
 							transcript = '';
 							this.liveOutput.set('');

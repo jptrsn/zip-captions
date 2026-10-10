@@ -1,16 +1,17 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, WritableSignal, computed, effect, signal } from '@angular/core';
 import { PeerService } from '../../services/peer.service';
 import { Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
 import { Subject, map, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
-import { selectRenderHistoryLength, selectTextFlow } from '../../../../selectors/settings.selector';
+import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
-import { TextFlow } from '../../../settings/models/settings.model';
+import { ChromeTranslatorService, SystemRequirementsStatus, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -32,16 +33,75 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public hasLiveResults: Signal<boolean>;
   public error: Signal<string | undefined>;
   public textFlowDown: Signal<boolean | undefined>;
-  public renderHistory: Signal<number | undefined>
+  public renderHistory: Signal<number | undefined>;
+
+  // Translation signals
+  public isTranslatorSupported: boolean;
+  public translationSettings: Signal<TranslationSettings | undefined>;
+  public translationMode: Signal<TranslationDisplayMode>;
+  public targetLanguage: Signal<string>;
+  public sourceLanguage: Signal<string>;
+  public availableLanguages: Signal<SupportedTranslationLanguage[]>;
+  public translatedLiveText: WritableSignal<string> = signal('');
+  public translatedTextOutput: WritableSignal<string[]> = signal([]);
+  public hasTranslatedResults: Signal<boolean>;
+  public originalLanguageLabel: Signal<string>;
+  public targetLanguageLabel: Signal<string>;
+  public modelStatus: Signal<TranslationModelStatus>;
+  public downloadProgress: Signal<number>;
+  public systemRequirements: Signal<SystemRequirementsStatus>;
+  public controlsVisible: WritableSignal<boolean> = signal(true);
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
+  private idleTimeoutId: any = null;
+  private readonly IDLE_TIMEOUT_MS = 3500;
   constructor(private store: Store<AppState>,
               private el: ElementRef,
               private fullScreen: FullScreenService,
               private peerService: PeerService,
-              private cd: ChangeDetectorRef) {
+              private cd: ChangeDetectorRef,
+              private ngZone: NgZone,
+              private translatorService: ChromeTranslatorService) {
+
+    this.isTranslatorSupported = this.translatorService.isSupported();
+    this.modelStatus = this.translatorService.modelStatus;
+    this.downloadProgress = this.translatorService.downloadProgress;
+    this.systemRequirements = this.translatorService.systemRequirements;
+    this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
+    this.translationMode = computed(() => this.translationSettings()?.mode ?? 'off');
+    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
+
+    const hostLang = toSignal(this.peerService.hostLanguage$);
+    const dialect = toSignal(this.store.select(dialectSelector));
+    const lang = toSignal(this.store.select(languageSelector));
+    this.sourceLanguage = computed(() => {
+      const hl = hostLang();
+      if (hl) return hl;
+      const d = dialect();
+      if (d && d !== 'unspecified') return d;
+      return lang() || 'en';
+    });
+
+    this.availableLanguages = computed(() => {
+      const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
+      return AvailableTranslationLanguages.filter((l) => l.code !== srcCode);
+    });
+
+    this.hasTranslatedResults = computed(() => {
+      return this.translatedLiveText() !== '' || this.translatedTextOutput().length > 0;
+    });
+
+    this.originalLanguageLabel = computed(() => {
+      const s = this.sourceLanguage();
+      return (s ? s.split('-')[0] : 'EN').toUpperCase();
+    });
+
+    this.targetLanguageLabel = computed(() => {
+      const t = this.targetLanguage();
+      return (t ? t.split('-')[0] : 'ES').toUpperCase();
+    });
 
     const peerConnected = toSignal(this.store.select(selectPeerServerConnected));
     const hostOnline = toSignal(this.store.select(selectHostOnline));
@@ -73,24 +133,180 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.onUserActivity();
+
+    if (this.isTranslatorSupported) {
+      this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
+    }
+
     this.peerService.liveText$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((text) => {
       this.liveText.set(text);
+      if (this.translationMode() !== 'off' && text && this.isTranslatorSupported) {
+        this.translatorService.queueLiveTranslation(text, this.sourceLanguage(), this.targetLanguage());
+      } else if (!text) {
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.cd.detectChanges();
+        });
+      }
       this.cd.detectChanges();
     });
+
     this.peerService.textOutput$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((results) => {
       this.textOutput.set(results);
+      if (this.translationMode() !== 'off' && results.length > 0 && this.isTranslatorSupported) {
+        this.translatorService.translateSegments(results, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
+        }).catch((err) => {
+          console.warn('Broadcast segment translation failed:', err);
+        });
+      } else if (results.length === 0) {
+        this.ngZone.run(() => {
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
+      }
       this.cd.detectChanges();
     });
+
+    // Re-translate when broadcast viewer changes translation settings
+    this.store.select(selectTranslationSettings).pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((settings) => {
+      const targetLang = settings?.targetLanguage ?? 'es';
+      if (this.isTranslatorSupported) {
+        this.translatorService.checkModelStatus(this.sourceLanguage(), targetLang);
+      }
+      if (settings?.enabled && settings.mode !== 'off') {
+        const segments = this.textOutput();
+        if (segments.length > 0 && this.isTranslatorSupported) {
+          this.translatorService.translateSegments(segments, this.sourceLanguage(), targetLang).then((translated) => {
+            this.ngZone.run(() => {
+              this.translatedTextOutput.set(translated);
+              this.cd.detectChanges();
+            });
+          }).catch((err) => {
+            console.warn('Broadcast segment translation failed:', err);
+          });
+        }
+      } else if (!settings?.enabled || settings?.mode === 'off') {
+        this.ngZone.run(() => {
+          this.translatedLiveText.set('');
+          this.translatedTextOutput.set([]);
+          this.cd.detectChanges();
+        });
+      }
+    });
+
+    // Observe source language changes from host and update translation/avoid collision
+    toObservable(this.sourceLanguage).pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((src) => {
+      const srcCode = this.translatorService.normalizeLanguageCode(src);
+      const tgtCode = this.translatorService.normalizeLanguageCode(this.targetLanguage());
+      if (srcCode && tgtCode && srcCode === tgtCode) {
+        const alt = srcCode === 'es' ? 'en' : 'es';
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+      }
+      if (this.isTranslatorSupported) {
+        this.translatorService.checkModelStatus(src, this.targetLanguage());
+      }
+      if (this.translationMode() !== 'off') {
+        const segments = this.textOutput();
+        if (segments.length > 0 && this.isTranslatorSupported) {
+          this.translatorService.translateSegments(segments, src, this.targetLanguage()).then((translated) => {
+            this.ngZone.run(() => {
+              this.translatedTextOutput.set(translated);
+              this.cd.detectChanges();
+            });
+          }).catch((err) => {
+            console.warn('Broadcast segment translation failed on source update:', err);
+          });
+        }
+      }
+    });
+
+    // Automatically re-translate when the model finishes downloading
+    this.translatorService.modelReady$.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe(() => {
+      const segments = this.textOutput();
+      if (segments.length > 0 && this.translationMode() !== 'off') {
+        this.translatorService.translateSegments(segments, this.sourceLanguage(), this.targetLanguage()).then((translated) => {
+          this.ngZone.run(() => {
+            this.translatedTextOutput.set(translated);
+            this.cd.detectChanges();
+          });
+        });
+      }
+      const live = this.liveText();
+      if (live && this.translationMode() !== 'off') {
+        this.translatorService.queueLiveTranslation(live, this.sourceLanguage(), this.targetLanguage());
+      }
+    });
+
+    this.translatorService.liveOutput$.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((translated) => {
+      this.ngZone.run(() => {
+        this.translatedLiveText.set(translated);
+        this.cd.detectChanges();
+      });
+    });
+
     if (this.fullScreen.isAvailable) {
       this.fullScreen.registerElement(this.el);
     }
   }
 
+  public setTargetLanguage(targetLanguage: string): void {
+    this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
+    if (this.translationMode() === 'off') {
+      this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
+      this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: true }));
+    }
+  }
+
+  public onUserActivity(): void {
+    if (!this.controlsVisible()) {
+      this.controlsVisible.set(true);
+    }
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
+    this.idleTimeoutId = setTimeout(() => {
+      this.ngZone.run(() => {
+        this.controlsVisible.set(false);
+        this.cd.detectChanges();
+      });
+    }, this.IDLE_TIMEOUT_MS);
+  }
+
+  public onControlsFocus(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+      this.idleTimeoutId = null;
+    }
+    this.controlsVisible.set(true);
+  }
+
+  public downloadModel(): void {
+    const src = this.sourceLanguage();
+    const tgt = this.targetLanguage();
+    this.translatorService.downloadModel(src, tgt);
+  }
+
   ngOnDestroy(): void {
+    if (this.idleTimeoutId) {
+      clearTimeout(this.idleTimeoutId);
+    }
     if (this.fullScreen.isAvailable) {
       this.fullScreen.deregisterElement();
       this.store.select(selectBroadcastPaused).pipe(

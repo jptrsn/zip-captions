@@ -1,25 +1,144 @@
-<div class="drawer drawer-end overflow-y-hidden relative">
+<div class="drawer drawer-end overflow-y-hidden relative" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
-      <div #captionContainer class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
-        <app-recognized-text 
-          *ngIf="renderHistory()"
-          [renderHistory]="renderHistory"
-          [connected]="connected"
-          [hasLiveResults]="hasLiveResults"
-          [textOutput]="textOutput"
-          [error]="error"
-          class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-        ></app-recognized-text>
-        <app-recognized-live-text
-          [text]="liveText" 
-        ></app-recognized-live-text>
+      <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100">
+        <!-- Split Mode (Horizontal Split) -->
+        <ng-container *ngIf="effectiveTranslationMode() === 'split'; else standardRender">
+          <!-- Top Pane: Original language -->
+          <div class="flex flex-1 flex-col overflow-hidden relative border-b border-base-300">
+            <div class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
+                 [ngClass]="controlsVisible() ? 'opacity-70' : 'opacity-0 pointer-events-none'">
+              {{ originalLanguageLabel() }}
+            </div>
+            <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+              <app-recognized-text 
+                *ngIf="renderHistory()"
+                [renderHistory]="renderHistory"
+                [connected]="connected"
+                [hasLiveResults]="hasLiveResults"
+                [textOutput]="textOutput"
+                [error]="error"
+                class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+              ></app-recognized-text>
+              <app-recognized-live-text
+                [text]="liveText" 
+              ></app-recognized-live-text>
+            </div>
+          </div>
+
+          <!-- Bottom Pane: Translated language -->
+          <div class="flex flex-1 flex-col overflow-hidden relative">
+            <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+                 [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+                 (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+              <select
+                class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
+                [value]="targetLanguage()"
+                (change)="setTargetLanguage($any($event.target).value)"
+                (focus)="onControlsFocus()"
+                (blur)="onUserActivity()"
+                [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+              >
+                <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                  {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Download Button if model is downloadable -->
+            <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
+                <ng-icon name="heroArrowDownTray"></ng-icon>
+                <span>Download {{ targetLanguageLabel() }} model</span>
+              </button>
+              <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
+                {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
+              </span>
+            </div>
+
+            <!-- Download Progress if downloading -->
+            <div *ngIf="modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+              <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
+              <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+            </div>
+
+            <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+              <app-recognized-text 
+                *ngIf="renderHistory()"
+                [renderHistory]="renderHistory"
+                [connected]="connected" 
+                [hasLiveResults]="hasLiveResults"
+                [textOutput]="translatedTextOutput"
+                [error]="error"
+                class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+              ></app-recognized-text>
+              <app-recognized-live-text
+                [text]="translatedLiveText" 
+              ></app-recognized-live-text>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Standard or Translated-Only Mode -->
+        <ng-template #standardRender>
+          <!-- Target Language Selector in translated-only mode -->
+          <div *ngIf="effectiveTranslationMode() === 'translated-only'" class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+               [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+               (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+            <select
+              class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
+              [value]="targetLanguage()"
+              (change)="setTargetLanguage($any($event.target).value)"
+              (focus)="onControlsFocus()"
+              (blur)="onUserActivity()"
+              [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+            >
+              <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                {{ lang.code.toUpperCase() }} - {{ lang.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Download Button if model is downloadable in translated-only mode -->
+          <div *ngIf="effectiveTranslationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+            <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
+              <ng-icon name="heroArrowDownTray"></ng-icon>
+              <span>Download {{ targetLanguageLabel() }} model</span>
+            </button>
+            <span *ngIf="systemRequirements().checked && (!systemRequirements().hasSufficientSpace || !systemRequirements().hasSufficientRam)" class="badge badge-warning badge-xs font-normal shadow" [title]="'SETTINGS.TRANSLATION.lowResourcesWarning' | translate">
+              {{ 'SETTINGS.TRANSLATION.reqNotice' | translate }}
+            </span>
+          </div>
+
+          <!-- Download Progress if downloading in translated-only mode -->
+          <div *ngIf="effectiveTranslationMode() === 'translated-only' && modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+            <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
+            <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+          </div>
+
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
+            <app-recognized-text 
+              *ngIf="renderHistory()"
+              [renderHistory]="renderHistory"
+              [connected]="connected" 
+              [hasLiveResults]="effectiveTranslationMode() === 'translated-only' ? hasTranslatedResults : hasLiveResults"
+              [textOutput]="effectiveTranslationMode() === 'translated-only' ? translatedTextOutput : textOutput"
+              [error]="error"
+              class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+            ></app-recognized-text>
+            <app-recognized-live-text
+              [text]="effectiveTranslationMode() === 'translated-only' ? translatedLiveText : liveText" 
+            ></app-recognized-live-text>
+          </div>
+        </ng-template>
       </div>
       <div *ngIf="isPipActive()" class="flex flex-col items-center justify-center absolute top-0 bottom-0 left-0 right-0 gap-4 p-6 text-center bg-base-100" @fadeInOnEnter>
         <div class="text-xl font-semibold opacity-90" translate>HINTS.pipActive</div>
         <button data-testid="zc-pip-return" class="btn btn-outline btn-primary" (click)="exitPip()" translate>HINTS.pipReturn</button>
       </div>
-    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once transition-opacity duration-500"
+           [ngClass]="controlsVisible() ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+           *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
     </label>
   </div>

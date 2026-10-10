@@ -7,6 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { RecognitionStatus } from '../../../../models/recognition.model';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
+import { dialectSelector, languageSelector } from '../../../../selectors/settings.selector';
 import { RecognitionService } from '../../../media/services/recognition.service';
 import { PeerService } from '../../services/peer.service';
 
@@ -23,6 +24,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
   public recognitionConnected: Signal<boolean | undefined>;
 
   private recognitionPaused: Signal<boolean | undefined>;
+  private sourceLanguage: Signal<string>;
   private liveText: Observable<string>;
   private recognizedText: Observable<string[]>;
   private onDestroy$: Subject<void> = new Subject<void>();
@@ -32,6 +34,15 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
               private peerService: PeerService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
+
+    const dialect = toSignal(this.store.select(dialectSelector));
+    const lang = toSignal(this.store.select(languageSelector));
+    this.sourceLanguage = computed(() => {
+      const d = dialect();
+      if (d && d !== 'unspecified') return d;
+      return lang() || 'en';
+    });
+
     this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : ''))
     this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText()() : []));
     let isPaused = false;
@@ -53,12 +64,17 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
     this.liveText.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((live) => {
-      this.peerService.broadcastData({ recognition: live, type: 'live' })
+      this.peerService.broadcastData({ recognition: live, type: 'live', lang: this.sourceLanguage() })
     });
     this.recognizedText.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((recognized) => {
-      this.peerService.broadcastData({ recognition: recognized, type: 'segment'})
+      this.peerService.broadcastData({ recognition: recognized, type: 'segment', lang: this.sourceLanguage() })
+    });
+    toObservable(this.sourceLanguage).pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((lang) => {
+      this.peerService.broadcastData({ type: 'hostLanguage', lang });
     });
   }
 

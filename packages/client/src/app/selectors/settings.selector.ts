@@ -76,3 +76,23 @@ export const selectTranscriptSettingsLoading = createSelector(
   selectAppSettings,
   (state) => state.transcription.loading
 )
+
+export const selectTranslationSettings = createSelector(
+  selectAppSettings,
+  (state) => state.translation
+)
+
+export const selectTranslationEnabled = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.enabled ?? false
+)
+
+export const selectTranslationMode = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.mode ?? 'off'
+)
+
+export const selectTranslationTargetLanguage = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.targetLanguage ?? 'es'
+)

@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { AppState } from "../models/app.model";
 import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { defaultSettingsState } from "../reducers/settings.reducer";
-import { selectTranscriptionSettings } from "../selectors/settings.selector";
+import { selectTranscriptionSettings, selectTranslationSettings } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
 import { RecognitionActions } from "../actions/recogntion.actions";
 
@@ -39,6 +39,9 @@ export class SettingsEffects {
           transcription: settings.transcription
             ? { ...(existing.transcription ?? {}), ...settings.transcription }
             : existing.transcription ?? defaultSettingsState.transcription,
+          translation: settings.translation
+            ? { ...(existing.translation ?? {}), ...settings.translation }
+            : existing.translation ?? defaultSettingsState.translation,
         };
         if (merged.transcription) {
           delete (merged.transcription as { loading?: unknown }).loading;
@@ -143,6 +146,26 @@ export class SettingsEffects {
     )
   )
 
+  saveTranslationSettings$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        SettingsActions.setTranslationEnabled,
+        SettingsActions.setTranslationMode,
+        SettingsActions.setTranslationTargetLanguage,
+        SettingsActions.saveTranslationSettings,
+        SettingsActions.setLanguage,
+        SettingsActions.setDialect
+      ),
+      withLatestFrom(this.store.select(selectTranslationSettings)),
+      map(([_, translation]) => {
+        if (translation) {
+          this.storage.update('settings', 'translation', translation);
+        }
+      })
+    ),
+    { dispatch: false }
+  )
+
   private _applySettingsToDefault(partial: Partial<SettingsState> | null): SettingsState {
     const defaults = {...defaultSettingsState};
     // This ensures that any deprecated properties are pruned from the saved object
@@ -153,6 +176,9 @@ export class SettingsEffects {
           // @ts-ignore Keys are iteratble
           defaults[k] = partial[k];
         }
+      }
+      if (partial.translation) {
+        defaults.translation = { ...defaultSettingsState.translation, ...partial.translation };
       }
     }
     return defaults;
