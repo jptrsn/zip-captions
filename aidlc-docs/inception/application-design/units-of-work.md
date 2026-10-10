@@ -29,9 +29,12 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-W* | Partial: PiP is forced translated-only |
 | NFR-7 | Done |
 | Regression | `saveTranscriptionSettingsFailure` reducer handler removed |
+| **Bug** | `broadcast-render.component.ts:209` calls `toObservable()` in `ngOnInit`, which throws NG0203 at runtime, so the viewer page fails to initialize. This is the only suite newly failing vs `develop`. |
+
+**Test baseline (2026-10-10):** `develop` has 46 of 96 suites failing (pre-existing missing-provider test setup: `Store`, `HttpClient`, `ActivatedRoute`, `TranslateService`, plus `webkitSpeechRecognition` undefined). The merged branch has 47 of 98 failing. The only new failure is `broadcast-render` (the NG0203 bug above), and the two new translation suites pass.
 
 ## U0 — Baseline hardening
-Restore the `saveTranscriptionSettingsFailure` handler. Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Limit targets to the interface languages (Q3). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
+Fix the NG0203 bug in `broadcast-render` (move `toObservable` to the constructor or pass `{ injector }`). Restore the `saveTranscriptionSettingsFailure` handler. Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Limit targets to the interface languages (Q3). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
 *Stories:* US-0.1, US-0.3.
 
 ## U1 — Caption segment model
