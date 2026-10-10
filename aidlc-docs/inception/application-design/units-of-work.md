@@ -15,9 +15,9 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | Spec item | Status in baseline |
 |---|---|
 | FR-1, FR-3, FR-5 | Mostly done. A single translator instance thrashes when the pair changes. |
-| FR-2 / Q9 eligibility | **Gap:** the toggle isn't disabled when ineligible, there's no mobile check, and there's no "Experimental" label |
+| FR-2 / Q9 eligibility | Done in U0 (`3c53761`) |
 | FR-4 targets | Done: 17 targets kept for Release 1 (Q3 amended) |
-| FR-6 `lang`/`dir` | **Gap** |
+| FR-6 `lang`/`dir` | Done in U0 (`3c53761`) |
 | FR-9, FR-AZ-* | **Gap:** the source language is always the global dialect |
 | FR-C* conversation | Deferred to Release 2 |
 | FR-P1/P2 | Done |
@@ -33,9 +33,13 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 
 **Test baseline (2026-10-10):** `develop` has 46 of 96 suites failing (pre-existing missing-provider test setup: `Store`, `HttpClient`, `ActivatedRoute`, `TranslateService`, plus `webkitSpeechRecognition` undefined). The merged branch has 47 of 98 failing. The only new failure is `broadcast-render` (the NG0203 bug above), and the two new translation suites pass.
 
-## U0 — Baseline hardening
+## U0 — Baseline hardening ✅ (done: `2292605`, `3c53761`)
 ~~Fix the NG0203 bug; restore the `saveTranscriptionSettingsFailure` handler~~ (done, `2292605`). Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
 *Stories:* US-0.1, US-0.3.
+
+**Open copy issues found in U0 (need maintainer decision):**
+- `SETTINGS.TRANSLATION.privacyNotice` says "Zero audio or translated text leaves your machine". Translation is on-device, but Web Speech (Chrome) and Azure recognition both send audio to a cloud service. This conflicts with NFR-1.
+- `reqRam` / `reqStorage` and the low-resource warning claim 16 GB RAM / 20 GB disk. Those figures match Chrome's Gemini Nano (Prompt API) requirements; the Translator API docs list no hardware requirements, and its language packs are much smaller. The warning may wrongly discourage eligible users.
 
 ## U1 — Caption segment model
 `CaptionSegment { id, text, lang }` from both engines, with `getRecognizedText()` derived from it for existing consumers. Translator cache keyed by pair (multiple live translators), not a single instance.
