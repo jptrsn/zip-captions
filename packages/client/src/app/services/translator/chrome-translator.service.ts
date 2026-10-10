@@ -26,19 +26,19 @@ export class ChromeTranslatorService {
   private modelReadySubject = new Subject<{ sourceLang: string; targetLang: string }>();
   public modelReady$: Observable<{ sourceLang: string; targetLang: string }> = this.modelReadySubject.asObservable();
 
-  private currentTranslator: BrowserTranslator | null = null;
-  private currentSourceLang = '';
-  private currentTargetLang = '';
+  // One live translator per language pair; Map insertion order is least-recently-used first
+  private translators: Map<string, BrowserTranslator> = new Map();
+  private readonly MAX_TRANSLATORS = 4;
 
-  // Prevent duplicate concurrent initialization requests to Chrome
-  private pendingInitPromise: Promise<BrowserTranslator | null> | null = null;
-  private pendingPair = '';
+  // Prevent duplicate concurrent initialization requests to Chrome, per pair
+  private pendingInits: Map<string, { promise: Promise<BrowserTranslator | null>; userInitiated: boolean }> = new Map();
 
   // Track language pairs that Chrome explicitly reported as unsupported
   private unsupportedPairs: Set<string> = new Set();
 
-  // Cache of translated historical segments
+  // Translated segments for the current recognition session only; cleared by clearSessionCache()
   private segmentCache: Map<string, string> = new Map();
+  private readonly MAX_CACHED_SEGMENTS = 500;
 
   // Subject for live caption streaming with debounce
   private liveInputSubject = new Subject<{ text: string; sourceLang: string; targetLang: string }>();
@@ -191,16 +191,13 @@ export class ChromeTranslatorService {
     this.safeSetSignal(this.downloadProgress, 0);
 
     try {
-      const translator = await this.translatorApi.create(this.createOptions(s, t));
+      const translator = this.cachedTranslator(pairKey) ?? await this.translatorApi.create(this.createOptions(s, t));
 
       if (translator) {
-        this.currentTranslator = translator;
-        this.currentSourceLang = s;
-        this.currentTargetLang = t;
+        this.cacheTranslator(pairKey, translator);
         this.safeSetSignal(this.modelStatus, 'ready');
         this.safeSetSignal(this.downloadProgress, 100);
         this.safeSetSignal(this.lastError, undefined);
-        this.segmentCache.clear();
         this.modelReadySubject.next({ sourceLang: s, targetLang: t });
         return true;
       }
@@ -222,17 +219,20 @@ export class ChromeTranslatorService {
     const t = this.normalizeLanguageCode(targetLang);
     const pairKey = `${s}->${t}`;
 
-    if (this.currentTranslator && this.currentSourceLang === s && this.currentTargetLang === t) {
-      return this.currentTranslator;
+    const cached = this.cachedTranslator(pairKey);
+    if (cached) {
+      return cached;
     }
 
     if (this.unsupportedPairs.has(pairKey)) {
       return null;
     }
 
-    // Reuse pending initialization promise if one is already running for this pair
-    if (this.pendingInitPromise && this.pendingPair === pairKey) {
-      return this.pendingInitPromise;
+    // Reuse pending initialization if one is already running for this pair. A user-initiated
+    // request must not join a background one, which would skip a needed download.
+    const pending = this.pendingInits.get(pairKey);
+    if (pending && (pending.userInitiated || !userInitiated)) {
+      return pending.promise;
     }
 
     if (!this.isSupported()) {
@@ -240,45 +240,34 @@ export class ChromeTranslatorService {
       return null;
     }
 
-    const capability = await this.canTranslate(s, t);
-    if (!capability.available || capability.status === 'no') {
-      this.safeSetSignal(this.modelStatus, 'error');
-      this.safeSetSignal(this.lastError, `Translation pair ${s.toUpperCase()} -> ${t.toUpperCase()} is not supported by Chrome AI.`);
-      return null;
-    }
-
-    // If download is needed and this is not user-initiated, do not trigger background creation
-    if (capability.status === 'after-download') {
-      if (!userInitiated) {
-        this.safeSetSignal(this.modelStatus, 'downloadable');
-        return null;
-      }
-    }
-
-    this.pendingPair = pairKey;
-    this.pendingInitPromise = (async () => {
-      if (this.currentTranslator && typeof this.currentTranslator.destroy === 'function') {
-        try {
-          this.currentTranslator.destroy();
-        } catch (e) {
-          // ignore cleanup error
-        }
-        this.currentTranslator = null;
-      }
-
-      this.safeSetSignal(this.modelStatus, 'downloading');
-      this.safeSetSignal(this.downloadProgress, 0);
-
+    // Registered before the first await so concurrent callers share one creation
+    const entry: { promise: Promise<BrowserTranslator | null>; userInitiated: boolean } = { promise: Promise.resolve(null), userInitiated };
+    entry.promise = (async () => {
       try {
+        const capability = await this.canTranslate(s, t);
+        if (!capability.available || capability.status === 'no') {
+          this.safeSetSignal(this.modelStatus, 'error');
+          this.safeSetSignal(this.lastError, `Translation pair ${s.toUpperCase()} -> ${t.toUpperCase()} is not supported by Chrome AI.`);
+          return null;
+        }
+
+        // If download is needed and this is not user-initiated, do not trigger background creation
+        if (capability.status === 'after-download') {
+          if (!userInitiated) {
+            this.safeSetSignal(this.modelStatus, 'downloadable');
+            return null;
+          }
+        }
+
+        this.safeSetSignal(this.modelStatus, 'downloading');
+        this.safeSetSignal(this.downloadProgress, 0);
+
         const translator = await this.translatorApi.create(this.createOptions(s, t));
 
-        this.currentTranslator = translator;
-        this.currentSourceLang = s;
-        this.currentTargetLang = t;
+        this.cacheTranslator(pairKey, translator);
         this.safeSetSignal(this.modelStatus, 'ready');
         this.safeSetSignal(this.downloadProgress, 100);
         this.safeSetSignal(this.lastError, undefined);
-        this.segmentCache.clear();
         this.modelReadySubject.next({ sourceLang: s, targetLang: t });
         return translator;
       } catch (err: any) {
@@ -290,11 +279,48 @@ export class ChromeTranslatorService {
         this.safeSetSignal(this.lastError, msg);
         return null;
       } finally {
-        this.pendingInitPromise = null;
+        if (this.pendingInits.get(pairKey) === entry) {
+          this.pendingInits.delete(pairKey);
+        }
       }
     })();
+    this.pendingInits.set(pairKey, entry);
 
-    return this.pendingInitPromise;
+    return entry.promise;
+  }
+
+  private cachedTranslator(pairKey: string): BrowserTranslator | undefined {
+    const translator = this.translators.get(pairKey);
+    if (translator) {
+      // Re-insert to mark as most recently used
+      this.translators.delete(pairKey);
+      this.translators.set(pairKey, translator);
+    }
+    return translator;
+  }
+
+  private cacheTranslator(pairKey: string, translator: BrowserTranslator): void {
+    const existing = this.translators.get(pairKey);
+    if (existing && existing !== translator) {
+      this.destroyTranslator(existing);
+    }
+    this.translators.delete(pairKey);
+    this.translators.set(pairKey, translator);
+    while (this.translators.size > this.MAX_TRANSLATORS) {
+      const [oldestKey, oldest] = this.translators.entries().next().value as [string, BrowserTranslator];
+      this.translators.delete(oldestKey);
+      this.destroyTranslator(oldest);
+    }
+  }
+
+  private destroyTranslator(translator: BrowserTranslator): void {
+    if (typeof translator.destroy === 'function') {
+      try {
+        translator.destroy();
+      } catch (e) {
+        // ignore cleanup error
+      }
+    }
   }
 
   private createOptions(sourceLanguage: string, targetLanguage: string): TranslatorCreateOptions {
@@ -368,7 +394,7 @@ export class ChromeTranslatorService {
       const translated = await this.translate(segment, s, t);
       // Only cache if translation actually succeeded and produced translated text
       if (translated && (translated !== segment || s === t)) {
-        this.segmentCache.set(cacheKey, translated);
+        this.cacheSegment(cacheKey, translated);
       }
       return translated;
     });
@@ -376,15 +402,25 @@ export class ChromeTranslatorService {
     return await Promise.all(promises);
   }
 
-  public destroy(): void {
-    if (this.currentTranslator && typeof this.currentTranslator.destroy === 'function') {
-      try {
-        this.currentTranslator.destroy();
-      } catch (e) {
-        // ignore
-      }
-      this.currentTranslator = null;
+  private cacheSegment(cacheKey: string, translated: string): void {
+    this.segmentCache.delete(cacheKey);
+    this.segmentCache.set(cacheKey, translated);
+    if (this.segmentCache.size > this.MAX_CACHED_SEGMENTS) {
+      const oldestKey = this.segmentCache.keys().next().value as string;
+      this.segmentCache.delete(oldestKey);
     }
+  }
+
+  /**
+   * Drops translated text from the ending session. Translators (downloaded models) are kept.
+   */
+  public clearSessionCache(): void {
+    this.segmentCache.clear();
+  }
+
+  public destroy(): void {
+    this.translators.forEach((translator) => this.destroyTranslator(translator));
+    this.translators.clear();
     this.segmentCache.clear();
   }
 }

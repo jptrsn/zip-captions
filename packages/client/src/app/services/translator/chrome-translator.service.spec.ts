@@ -170,6 +170,130 @@ describe('ChromeTranslatorService', () => {
     });
   });
 
+  describe('per-pair translator cache', () => {
+    let created: Map<string, { translate: jest.Mock; destroy: jest.Mock }[]>;
+
+    beforeEach(() => {
+      created = new Map();
+      adapter.create.mockImplementation((options) => {
+        const pair = `${options.sourceLanguage}->${options.targetLanguage}`;
+        const instance = {
+          translate: jest.fn((text: string) => Promise.resolve(`${options.targetLanguage}:${text}`)),
+          destroy: jest.fn()
+        };
+        created.set(pair, [...(created.get(pair) ?? []), instance]);
+        return Promise.resolve(instance);
+      });
+      setup();
+    });
+
+    const allCreated = () => [...created.values()].flat();
+
+    it('switches between pairs without destroying or recreating translators', async () => {
+      await expect(service.translate('Hello', 'en', 'fr')).resolves.toBe('fr:Hello');
+      await expect(service.translate('Hello', 'en', 'es')).resolves.toBe('es:Hello');
+      await expect(service.translate('Bye', 'en', 'fr')).resolves.toBe('fr:Bye');
+
+      expect(adapter.create).toHaveBeenCalledTimes(2);
+      allCreated().forEach((instance) => expect(instance.destroy).not.toHaveBeenCalled());
+    });
+
+    it('shares one creation between concurrent requests for the same pair', async () => {
+      await Promise.all([
+        service.getOrCreateTranslator('en', 'fr'),
+        service.getOrCreateTranslator('en-US', 'fr'),
+      ]);
+      expect(adapter.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not let a user-initiated request join a background one that skips the download', async () => {
+      adapter.availability.mockResolvedValue('downloadable');
+      const [background, user] = await Promise.all([
+        service.getOrCreateTranslator('en', 'fr'),
+        service.getOrCreateTranslator('en', 'fr', true),
+      ]);
+      expect(background).toBeNull();
+      expect(user).not.toBeNull();
+      expect(adapter.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('creates translators for different pairs concurrently', async () => {
+      const [fr, es] = await Promise.all([
+        service.getOrCreateTranslator('en', 'fr'),
+        service.getOrCreateTranslator('en', 'es'),
+      ]);
+      expect(adapter.create).toHaveBeenCalledTimes(2);
+      expect(fr).not.toBe(es);
+    });
+
+    it('destroys the least recently used translator beyond four pairs', async () => {
+      for (const target of ['fr', 'es', 'de', 'it']) {
+        await service.getOrCreateTranslator('en', target);
+      }
+      // Touch en->fr so en->es becomes least recently used
+      await service.getOrCreateTranslator('en', 'fr');
+      await service.getOrCreateTranslator('en', 'ja');
+
+      expect(created.get('en->es')![0].destroy).toHaveBeenCalledTimes(1);
+      ['en->fr', 'en->de', 'en->it', 'en->ja'].forEach((pair) => expect(created.get(pair)![0].destroy).not.toHaveBeenCalled());
+
+      await service.getOrCreateTranslator('en', 'fr');
+      expect(created.get('en->fr')!.length).toBe(1);
+    });
+
+    it('caches the translator prepared by downloadModel', async () => {
+      await service.downloadModel('en', 'fr');
+      await expect(service.translate('Hello', 'en', 'fr')).resolves.toBe('fr:Hello');
+      expect(adapter.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('reuses a cached translator when downloading the same pair again', async () => {
+      const ready = jest.fn();
+      service.modelReady$.subscribe(ready);
+      await service.downloadModel('en', 'fr');
+      await service.downloadModel('en', 'fr');
+      expect(adapter.create).toHaveBeenCalledTimes(1);
+      expect(ready).toHaveBeenCalledTimes(2);
+    });
+
+    it('destroy() destroys every cached translator', async () => {
+      await service.getOrCreateTranslator('en', 'fr');
+      await service.getOrCreateTranslator('en', 'es');
+      service.destroy();
+      allCreated().forEach((instance) => expect(instance.destroy).toHaveBeenCalledTimes(1));
+    });
+  });
+
+  describe('segment cache', () => {
+    beforeEach(() => setup());
+
+    it('reuses translations within a session', async () => {
+      await service.translateSegments(['one', 'two'], 'en', 'fr');
+      await expect(service.translateSegments(['one', 'two'], 'en', 'fr')).resolves.toEqual(['fr:one', 'fr:two']);
+      expect(translator.translate).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not retain translations after the session cache is cleared, but keeps the translator', async () => {
+      await service.translateSegments(['one'], 'en', 'fr');
+      service.clearSessionCache();
+      await service.translateSegments(['one'], 'en', 'fr');
+      expect(translator.translate).toHaveBeenCalledTimes(2);
+      expect(adapter.create).toHaveBeenCalledTimes(1);
+      expect(translator.destroy).not.toHaveBeenCalled();
+    });
+
+    it('holds at most 500 translations, evicting the oldest', async () => {
+      const segments = Array.from({ length: 501 }, (_, i) => `line ${i}`);
+      await service.translateSegments(segments, 'en', 'fr');
+      translator.translate.mockClear();
+
+      await service.translateSegments(['line 500', 'line 1'], 'en', 'fr');
+      expect(translator.translate).not.toHaveBeenCalled();
+      await service.translateSegments(['line 0'], 'en', 'fr');
+      expect(translator.translate).toHaveBeenCalledWith('line 0');
+    });
+  });
+
   it('normalizes dialect language codes', () => {
     setup();
     expect(service.normalizeLanguageCode('en-US')).toBe('en');

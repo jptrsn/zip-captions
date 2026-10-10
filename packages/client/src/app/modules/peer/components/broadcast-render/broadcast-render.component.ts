@@ -323,6 +323,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       })
     }
     this.onDestroy$.next();
+    this.translatorService.clearSessionCache();
   }
 
   updateDom(): void {

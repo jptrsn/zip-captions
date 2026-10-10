@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
+import { CaptionSegment } from '../../../models/caption-segment.model';
 import { RecognitionEngineState, RecognitionState } from '../../../models/recognition.model';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
@@ -122,6 +123,14 @@ export class RecognitionService {
 			return this.webRecognition.getLiveOutput();
 		} else {
 			return this.azureRecognition.getLiveOutput();
+		}
+  }
+
+  public getRecognizedSegments(): Signal<CaptionSegment[]> {
+		if (this.provider() === 'web') {
+			return this.webRecognition.getRecognizedSegments();
+		} else {
+			return this.azureRecognition.getRecognizedSegments();
 		}
   }
 

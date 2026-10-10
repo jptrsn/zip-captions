@@ -1,4 +1,4 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
@@ -6,6 +6,7 @@ import { ObsActions } from '../../../actions/obs.actions';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
+import { CaptionSegment, CaptionSegmentHistory } from '../../../models/caption-segment.model';
 import { SpeechRecognition } from '../../../models/recognition.model';
 import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { platformSelector } from '../../../selectors/app.selector';
@@ -23,13 +24,17 @@ declare const webkitSpeechRecognition = SpeechRecognition || webkitSpeechRecogni
 })
 export class WebRecognitionService {
 	private recog: SpeechRecognition;
-	private recognizedText: WritableSignal<string[]> = signal([]);
+	private recognizedSegments: WritableSignal<CaptionSegment[]> = signal([]);
+	private recognizedText: Signal<string[]> = computed(() => this.recognizedSegments().map((segment) => segment.text));
 	private liveOutput: WritableSignal<string> = signal('');
 	private platform: Signal<AppPlatform | undefined>;
   private DEBOUNCE_TIME_MS = 250;
   private SEGMENTATION_DEBOUNCE_MS = 1500;
   private NETWORK_ERROR_DEBOUNCE_MS = 1500;
   private readonly MAX_RECOGNITION_LENGTH = 15;
+  private segmentHistory: CaptionSegmentHistory;
+  // recog.lang only applies on the next start(), so segments use the language captured at start
+  private sessionLang = '';
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
   private transcriptionEnabled: Signal<boolean | undefined>;
@@ -42,6 +47,7 @@ export class WebRecognitionService {
     this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
     this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
+    this.segmentHistory = new CaptionSegmentHistory('w', this.MAX_RECOGNITION_LENGTH);
 
 		this.recog = new webkitSpeechRecognition();
 		this.recog.interimResults = true;
@@ -84,8 +90,16 @@ export class WebRecognitionService {
 		return this.liveOutput;
 	}
 
+	public getRecognizedSegments(): Signal<CaptionSegment[]> {
+		return this.recognizedSegments;
+	}
+
 	public getRecognizedText(): Signal<string[]> {
 		return this.recognizedText;
+	}
+
+	private _segmentLang(): string {
+		return this.sessionLang || this.recog.lang;
 	}
 
 	private _addEventListeners(): void {
@@ -139,13 +153,14 @@ export class WebRecognitionService {
 							if (!segmentStart) {
 								segmentStart = new Date();
 							}
-							this.recognizedText.update((current: string[]) => {
+							const start = segmentStart;
+							this.recognizedSegments.update((current: CaptionSegment[]) => {
 								if (this.transcriptionEnabled()) {
 									// console.log('segmentStart', segmentStart)
 									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
 									segmentStart = undefined;
 								}
-								return [...current, partialTranscript].slice(this.MAX_RECOGNITION_LENGTH * -1);
+								return this.segmentHistory.append(current, partialTranscript, this._segmentLang(), start);
 							});
 							transcript = '';
 							this.liveOutput.set('');
@@ -171,6 +186,10 @@ export class WebRecognitionService {
 						// console.log('recognition stream inactive - stopping')
 						this.recog.stop();
 					}
+				});
+
+				this.recog.addEventListener('start', () => {
+					this.sessionLang = this.recog.lang;
 				});
 
 				this.recog.addEventListener('result', (e: any) => {
@@ -213,10 +232,8 @@ export class WebRecognitionService {
 					const mostRecentOutput = this.liveOutput();
 					transcriptSegments.clear();
 					if (mostRecentOutput !== '') {
-						this.recognizedText.update((current: string[]) => {
-							current.push(mostRecentOutput);
-							// this.historyWorker.postMessage({id: streamId, type: 'put', message: mostRecentOutput})
-							return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
+						this.recognizedSegments.update((current: CaptionSegment[]) => {
+							return this.segmentHistory.append(current, mostRecentOutput, this._segmentLang(), segmentStart);
 						});
 						if (this.transcriptionEnabled()) {
 							this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: segmentStart }))
