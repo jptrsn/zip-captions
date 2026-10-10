@@ -4,7 +4,7 @@ import { Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { Subject, map, takeUntil } from 'rxjs';
+import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
@@ -54,6 +54,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
 
+  private sourceLanguage$: Observable<string>;
   private onDestroy$: Subject<void> = new Subject<void>();
   private idleTimeoutId: any = null;
   private readonly IDLE_TIMEOUT_MS = 3500;
@@ -83,6 +84,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       if (d && d !== 'unspecified') return d;
       return lang() || 'en';
     });
+    this.sourceLanguage$ = toObservable(this.sourceLanguage);
 
     this.availableLanguages = computed(() => {
       const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
@@ -206,7 +208,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     });
 
     // Observe source language changes from host and update translation/avoid collision
-    toObservable(this.sourceLanguage).pipe(
+    this.sourceLanguage$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((src) => {
       const srcCode = this.translatorService.normalizeLanguageCode(src);

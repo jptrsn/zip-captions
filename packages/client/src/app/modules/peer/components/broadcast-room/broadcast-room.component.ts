@@ -25,6 +25,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
 
   private recognitionPaused: Signal<boolean | undefined>;
   private sourceLanguage: Signal<string>;
+  private sourceLanguage$: Observable<string>;
   private liveText: Observable<string>;
   private recognizedText: Observable<string[]>;
   private onDestroy$: Subject<void> = new Subject<void>();
@@ -42,6 +43,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
       if (d && d !== 'unspecified') return d;
       return lang() || 'en';
     });
+    this.sourceLanguage$ = toObservable(this.sourceLanguage);
 
     this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : ''))
     this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText()() : []));
@@ -71,7 +73,7 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
     ).subscribe((recognized) => {
       this.peerService.broadcastData({ recognition: recognized, type: 'segment', lang: this.sourceLanguage() })
     });
-    toObservable(this.sourceLanguage).pipe(
+    this.sourceLanguage$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((lang) => {
       this.peerService.broadcastData({ type: 'hostLanguage', lang });
