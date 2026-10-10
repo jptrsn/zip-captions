@@ -1,0 +1,140 @@
+# Requirements — On-Device Caption Translation
+
+Status: **APPROVED 2026-10-10.** Verification questions are answered (see `requirement-verification-questions.md` and the decisions in §7).
+
+## 1. Intent
+
+Let Zip Captions translate live captions into another language **entirely in the browser**, with no audio or text sent to a translation server. This builds on Chrome's built-in Translator API. Translation supports three ways of using it: two-way conversation, a single translated feed for an audience, and a side-by-side view of the original and translated text.
+
+The feature also delivers **automatic English/French language switching for the Azure engine when `fr-CA` is selected**. This is expected product behavior that the code doesn't implement today (see §3.1).
+
+## 2. Platform capability (researched 2026-10-10)
+
+### 2.1 Browser Translator / Language Detector
+| Fact | Implication |
+|---|---|
+| Stable since **Chrome 138**. Edge 148 also ships it. Firefox and Safari don't support it. | Use feature detection (`'Translator' in self`), not user-agent checks. |
+| **Desktop only.** | The Experimental toggle is **disabled** on mobile and in unsupported browsers, with an explanation. |
+| `availability()` returns `unavailable` / `downloadable` / `downloading` / `available`. Chrome reports a pair's status only after this site has created a translator for it. | Each pair needs an explicit "Prepare" step. |
+| `create()` **requires user activation** and emits `downloadprogress`. | Run pack preparation from a button in Settings → Translation. |
+| **Translations run one at a time.** | Translate finalized segments. Interim text uses a throttled "latest wins" rule that drops stale requests. |
+| Not available in Web Workers. | The service runs on the main thread. |
+| BCP 47 codes. No API lists supported pairs. | Map each `RecognitionDialect` to a translator code (`es-MX`→`es`, `fr-CA`→`fr`, `zh-TW`/`zh-HK`→`zh-Hant`, …). |
+
+Sources: [Translator API](https://developer.chrome.com/docs/ai/translator-api), [Language Detector API](https://developer.chrome.com/docs/ai/language-detection), [Client-side translation](https://developer.chrome.com/docs/ai/translate-on-device).
+
+### 2.2 Azure multi-language options (reference; not used in MVP)
+The MVP relies on Azure's **native bilingual locales** (§3.1). These alternatives were evaluated for future work, such as supporting pairs that aren't bilingual:
+- **Continuous LID:** `AutoDetectSourceLanguageConfig.fromLanguages([...])` with `SpeechServiceConnection_LanguageIdMode = "Continuous"`. Up to 10 candidates. Detects per utterance, not within a sentence. Requires the v2 endpoint through `SpeechConfig.fromEndpoint`, but the app uses `fromAuthorizationToken`. The cost effect is unconfirmed.
+- **Multilingual post-stream refinement (preview):** `fromOpenRange()` + `PostRefinement`. Covers 25 languages and needs Speech SDK ≥ 1.50; the client is on 1.42.0.
+
+Sources: [Language identification](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-identification), [How to recognize speech](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-recognize-speech).
+
+## 3. Current system (reverse-engineered)
+
+```
+SettingsState.lang / .dialect ──► RecognitionService (facade, 'web' | 'azure')
+                                       │  getLiveOutput(): Signal<string>       (interim)
+                                       │  getRecognizedText(): Signal<string[]> (finals)
+                                       ▼
+        ┌──────────────────────────────┼──────────────────────────────┐
+RecognitionRenderComponent      StreamCaptionsComponent         BroadcastRoomComponent
+ ├ app-recognized-text             └ OBS sendCaption(live)         └ peer broadcast
+ └ app-recognized-live-text
+ (hosted by Document PiP / full-screen; textFlow bottom-up | top-down)
+```
+
+Constraints this places on the design:
+- **Segment identity:** finals are a bare `string[]`. Web trims it to 15 items; Azure **never trims** (it grows without bound, which is a latent bug). Translation and split alignment need stable segment IDs and a per-segment `lang`.
+- **Single active language:** Web Speech uses one `lang`, and a change only takes effect on the next `start()`. Azure rebuilds the recognizer when the language changes.
+- **Fan-out:** OBS, broadcast and transcripts all consume original text.
+
+### 3.1 Azure bilingual locales (native, no configuration)
+Azure's **bilingual speech models** handle switching natively. Selecting the locale is all that's needed, and the current code (`speechRecognitionLanguage = 'fr-CA'`, `azure-recognition.service.ts:43`) already gets this behavior.
+
+| Locale | Languages | Source |
+|---|---|---|
+| `fr-CA` | French + English | STT release notes, Nov 2023: "Choose es-US (Spanish and English) or fr-CA (French and English)… speak either language or mix them together." |
+| `es-US` | Spanish + English | same |
+| 16 Arabic locales: `ar-AE`, `ar-BH`, `ar-DZ`, `ar-IL`, `ar-IQ`, `ar-KW`, `ar-LB`, `ar-LY`, `ar-MA`, `ar-OM`, `ar-PS`, `ar-QA`, `ar-SA`, `ar-SY`, `ar-TN`, `ar-YE`. **Not** `ar-EG` or `ar-JO`. | Arabic + English | STT release notes: "Arabic locales (…) are now equipped with bilingual support for English" |
+| `en-IN` | English + Hindi | STT release notes. Hindi is not an interface language, so English is the only translation source. |
+
+Source: `articles/ai-services/speech-service/includes/release-notes/release-notes-stt.md` in [MicrosoftDocs/azure-ai-docs](https://github.com/MicrosoftDocs/azure-ai-docs), indexed in docs-mcp as `azure-speech-to-text`.
+
+**What this means for translation:** a bilingual model produces mixed-language segments, but **single-locale results don't report which language each segment is in**. FR-9 needs that language, so it's found client-side:
+1. **Primary:** `LanguageDetector.detect(segmentText)` restricted to the locale's two languages. It's available wherever translation is (same eligibility gate), and it works well for full sentences in two distinct languages. If confidence is low, the segment keeps its last known language.
+2. **Not used:** continuous LID (§2.2). It would swap the native bilingual model for language-ID routing, add v2-endpoint/token risk, and possibly change cost, all to solve a problem the native model already handles.
+
+A segment that mixes both languages within one sentence goes to the translator under its dominant detected language. The translator passes through words it recognizes as already being in the target language.
+
+## 4. Functional requirements
+
+### Foundation
+- **FR-1:** `TranslationService` with an injectable `BrowserTranslatorAdapter`. It caches one translator per pair, queues requests, and exposes signals for translated segments and the translated live line.
+- **FR-2:** An **Experimental** toggle in Settings → Translation. It is **disabled** (visible, with an explanation) when the API is missing or the platform is mobile, and captioning is never affected.
+- **FR-3:** A "Prepare languages" button downloads packs ahead of time, showing progress, errors and retry.
+- **FR-4:** Translation targets are limited to the **11 interface languages**. Maps each dialect to a translator code.
+- **FR-5:** Finalized segments are always translated. Interim text uses a throttled "latest wins" rule, with a setting to turn it off.
+- **FR-6:** Translated output has the correct `lang` and `dir` attributes (Arabic is RTL).
+- **FR-7:** Settings persist: enabled, target, display mode, split orientation, interim on/off, conversation pair, OBS feed.
+- **FR-8:** Translation is **engine-agnostic**. It consumes segments from the `RecognitionService` facade, so it works with both Web Speech and Azure.
+- **FR-9:** **Per-segment source language.** The source language of a translation is the segment's `lang`, not the global setting. If the segment's language already matches the target, the text passes through untranslated.
+
+### Azure bilingual locales
+- **FR-AZ-1:** A `BilingualDialects` map describes Azure's native bilingual locales (§3.1): `fr-CA`→`[fr, en]`, `es-US`→`[es, en]`, the 16 listed `ar-*` locales→`[ar, en]`, `en-IN`→`[en]`. This is metadata only; recognizer configuration is unchanged.
+- **FR-AZ-2:** The native switching is **preserved**. Azure recognition setup is not changed for these locales.
+- **FR-AZ-3:** When translation is on, each final segment from a bilingual locale is tagged with its language through `LanguageDetector`, restricted to that pair (§3.1). When detection is unavailable or low-confidence, the segment keeps the configured dialect's language.
+- **FR-AZ-4:** Translation uses the per-segment language (FR-9). In a French-to-English feed, English segments pass through, and the reverse holds too.
+- **FR-AZ-5:** The settings UI says that the selected locale also recognizes English (Azure only).
+
+### Conversation (Epic A)
+- **FR-C1:** Choose a language pair A↔B, limited to the interface languages.
+- **FR-C2:** The **default turn control is manual**: a large Switch control plus a keyboard shortcut. A switch finalizes the live line, then restarts recognition in the other language.
+- **FR-C3:** **Automatic turns with bilingual locales:** when Azure is active with a bilingual locale that covers the pair (`fr-CA` + en↔fr, `es-US` + en↔es, `ar-*` + en↔ar), recognition already hears both speakers. Each segment's detected language (FR-AZ-3) sets the translation direction and the turn indicator, and the manual Switch is hidden. In every other case the manual Switch is used.
+- **FR-C4:** Conversation uses the split layout: each pane shows the conversation in one person's language, with a language label on each segment. **No rotation option.**
+
+### Presenter (Epic B)
+- **FR-P1:** Display mode `translated` shows only translated text, using the existing typography and text-flow settings.
+- **FR-P2:** Works in full-screen and Document PiP.
+- **FR-P3:** OBS feed setting: `original` | `translated`.
+
+### Dual display (Epic C)
+- **FR-D1:** Display mode `split` shows original and translated text in two panes.
+- **FR-D2:** Orientation `horizontal` | `vertical`, and the panes can be swapped.
+- **FR-D3:** Segments are aligned by ID. A pending translation shows a placeholder.
+- **FR-D4:** Works in full-screen and PiP.
+
+### Broadcast (Q7 = B)
+- **FR-B1:** The broadcaster sends **both** original and translated segments, with matching IDs and languages.
+- **FR-B2:** Viewers choose original, translated or split locally. Old viewers that don't understand the new payload keep receiving original text.
+
+### Transcripts (Q8 = A)
+- **FR-T1:** Transcripts store the original text only. They store per-segment `lang` once FR-AZ-3 is in place.
+
+## 5. Non-functional requirements & risks
+- **NFR-1 Privacy:** Browser translation stays on the device. When Azure is active, the UI must not claim the session is fully on-device.
+- **NFR-2 Latency:** A finalized segment's translation appears ≤ 1 s p95 after the original. Interim translation never shows stale text in place of newer text.
+- **NFR-3 Resilience:** If translation fails, original captions keep working. If per-segment language detection is unavailable, segments keep the configured dialect's language.
+- **NFR-4 A11y:** Labeled pane regions, keyboard-operable Switch, `lang`/`dir` on all text.
+- **NFR-5 i18n:** New strings go into all 11 locale files.
+- **NFR-6 Testability:** Translator and Azure SDK construction sit behind seams that Jest can mock.
+- **NFR-7 Bounded memory:** Segment history is capped in **both** engines.
+
+Risks: R-1 desktop only. R-2 the sequential queue can back up (mitigated by dropping stale interim requests). R-3 `LanguageDetector` can be inaccurate on very short segments from bilingual locales (mitigated by restricting it to the pair and keeping the last language when confidence is low). R-4 pack downloads are large (mitigated by preparing packs ahead of time).
+
+## 6. Out of scope (MVP)
+Server or cloud translation fallback. Translating transcripts after the session. Conversations with more than two languages. Mobile. Rotated face-to-face layout. Language detection in Web Speech.
+
+## 7. Decisions log (from verification answers)
+| Q | Decision |
+|---|---|
+| Q1 | Manual turn switching. *Amended 2026-10-10:* automatic turns are used when the engine reports per-segment language (Azure bilingual profiles such as `fr-CA`); see FR-C3. |
+| Q2 | Split view for conversation, **without** the rotation option (desktop only). |
+| Q3 | Targets are limited to the 11 interface languages. |
+| Q4 | Interim translation throttled with "latest wins", and it can be turned off. |
+| Q5 | Both engines. |
+| Q6 | OBS feed setting: original or translated. |
+| Q7 | Broadcast both feeds, and the viewer chooses. |
+| Q8 | Transcripts store original text only. |
+| Q9 | Experimental toggle, **disabled on ineligible platforms**. |
+| Q10 | "Prepare languages" button in Settings. |
