@@ -33,6 +33,14 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 
 **Test baseline (2026-10-10):** `develop` has 46 of 96 suites failing (pre-existing missing-provider test setup: `Store`, `HttpClient`, `ActivatedRoute`, `TranslateService`, plus `webkitSpeechRecognition` undefined). The merged branch has 47 of 98 failing. The only new failure is `broadcast-render` (the NG0203 bug above), and the two new translation suites pass.
 
+**Current test baseline (after U2, `260411d`):** 45 of 106 client suites failing, all pre-existing. Compare by **suite name**, not count: strip the ` (12.3 s)` timing suffix Jest adds to slow suites before diffing. The list of failing suites is reproducible by running the suite at the previous commit in a scratch `git worktree` with `node_modules` symlinked. A full run takes 5–10 minutes. Once, a run hung with idle workers at 0% CPU and no output; killing it and rerunning fixed it. Write output to a log rather than piping through `sort`, so progress is visible.
+
+**Test patterns that work around the pre-existing setup gaps:**
+- Engines: stub `globalThis.webkitSpeechRecognition` with a fake `EventTarget` (see `web-recognition.service.spec.ts`).
+- The Azure SDK: `jest.mock('microsoft-cognitiveservices-speech-sdk')` (see `azure-recognition.service.spec.ts`).
+- The `RecognitionService` facade: provide stub engines.
+- Component logic (for example `recognition-render`, which still fails on `webkitSpeechRecognition`): extract it into pure helpers (`segment-translations.ts`) and test those.
+
 ## U0 — Baseline hardening ✅ (done: `2292605`, `3c53761`)
 ~~Fix the NG0203 bug; restore the `saveTranscriptionSettingsFailure` handler~~ (done, `2292605`). Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
 *Stories:* US-0.1, US-0.3.
@@ -73,6 +81,15 @@ Design: `construction/u2-bilingual-language-tagging/functional-design.md` (v3). 
 ## U3 — Split orientation, swap & PiP content
 Horizontal/vertical, pane swap, language labels. A PiP content setting (FR-W1).
 *Stories:* US-C1–C3, US-W1.
+
+**Pane swap ≠ language swap.** U2's swap button exchanges the *spoken and translation languages* (`swapTranslationLanguages`). U3's "pane swap" (FR-D2) only exchanges which *pane* shows original vs translated, and leaves the languages alone. Use distinct names, strings and actions.
+
+**Carried into U3 from U1/U2:**
+- **Placeholders (FR-D3 / US-C3):** `recognition-render` currently *omits* segments still waiting for translation (`alignTranslations`), so the panes can differ in line count. U3 shows a placeholder per pending segment so lines never shift.
+- **Per-line `lang`/`dir` (FR-6 / US-C1):** `dir` is set on the pane container, so in an Arabic pane any English segments render RTL. Segments carry their own `lang` (U1/U2). `app-recognized-text` takes `Signal<string[]>`, so per-line attributes need it to accept segments, or a parallel `lang` array.
+- **PiP content (FR-W1):** `recognition-render.effectiveTranslationMode` forces `translated-only` while PiP is active. It becomes a setting (`original` | `translated` | `split`), defaulting to translated-only.
+- **Language labels:** `originalLanguageLabel` shows the global spoken language. After a swap, older lines can be in another language. Decide whether the label shows the current spoken language only (simplest), or per-line language when it differs.
+- **Viewer side:** `broadcast-render` (broadcast viewer) still aligns translations by index, because the payload has no IDs. Leave it to U4 unless the U3 layout work touches it.
 
 ## U4 — Broadcast both feeds
 Versioned payload carrying `{ id, text, lang }` for both original and translated segments, plus `translations: [targetLang]`. Viewer picker merges the broadcaster's languages with local ones (FR-B4/B5). Old viewers still get `recognition` as before.
