@@ -19,15 +19,31 @@
         </span>
       </label>
 
-      <!-- Target Language Dropdown -->
-      <label class="form-control" *ngIf="formGroup.get('enabled')?.value">
-        <span class="text-accent label" translate>SETTINGS.TRANSLATION.targetLang</span>
-        <select class="select select-lg mt-1 w-full bg-base-100" formControlName="targetLanguage">
-          <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
-            {{ lang.name }}
-          </option>
-        </select>
-      </label>
+      <!-- Spoken language, swap, and translation language -->
+      <ng-container *ngIf="formGroup.get('enabled')?.value">
+        <app-language-selector [group]="formGroup" controlName="spokenLanguage" testId="zc-translation-spoken-lang"></app-language-selector>
+        <app-dialect-selector [group]="formGroup" controlName="dialect" languageControlName="spokenLanguage"></app-dialect-selector>
+
+        <div class="flex justify-center">
+          <button type="button" class="btn btn-sm btn-ghost gap-2" data-testid="zc-translation-swap"
+                  [disabled]="!canSwap()" (click)="swapLanguages()"
+                  [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
+                  [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
+            <ng-icon name="heroArrowsRightLeft"></ng-icon>
+            <span translate>SETTINGS.TRANSLATION.swapLanguages</span>
+          </button>
+        </div>
+
+        <label class="form-control">
+          <span class="text-accent label" translate>SETTINGS.TRANSLATION.targetLang</span>
+          <select class="select select-lg mt-1 w-full bg-base-100" formControlName="targetLanguage" data-testid="zc-translation-target-lang">
+            <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+              {{ lang.name }}
+            </option>
+          </select>
+          <span *ngIf="!canSwap()" class="label-text-alt text-base-content/70 mt-1" translate>SETTINGS.TRANSLATION.swapUnavailable</span>
+        </label>
+      </ng-container>
 
       <!-- Display Mode Selector -->
       <div class="form-control" *ngIf="formGroup.get('enabled')?.value">
@@ -111,6 +127,10 @@
             <div class="flex flex-col gap-1 text-xs">
               <span class="font-semibold text-base-content/90" translate>SETTINGS.TRANSLATION.modelsTitle</span>
               <p class="text-base-content/70" translate>SETTINGS.TRANSLATION.modelsPerPair</p>
+              <p class="text-base-content/70">
+                <span translate>SETTINGS.TRANSLATION.modelsManagedByChrome</span>
+                <a class="link link-primary ms-1" [href]="modelManagementUrl" target="_blank" rel="noopener noreferrer" translate>SETTINGS.TRANSLATION.learnMore</a>
+              </p>
             </div>
           </ng-container>
 

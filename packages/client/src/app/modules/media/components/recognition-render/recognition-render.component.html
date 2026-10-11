@@ -43,6 +43,13 @@
                   {{ lang.code.toUpperCase() }} - {{ lang.name }}
                 </option>
               </select>
+              <button type="button" class="btn btn-xs btn-circle btn-primary shadow" data-testid="zc-caption-swap"
+                      [disabled]="!canSwap()" (click)="swapLanguages()"
+                      (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
+                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
+                <ng-icon name="heroArrowsRightLeft"></ng-icon>
+              </button>
             </div>
 
             <!-- Download Button if model is downloadable -->
@@ -95,6 +102,13 @@
                 {{ lang.code.toUpperCase() }} - {{ lang.name }}
               </option>
             </select>
+            <button type="button" class="btn btn-xs btn-circle btn-primary shadow" data-testid="zc-caption-swap"
+                    [disabled]="!canSwap()" (click)="swapLanguages()"
+                    (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                    [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
+                    [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
+              <ng-icon name="heroArrowsRightLeft"></ng-icon>
+            </button>
           </div>
 
           <!-- Download Button if model is downloadable in translated-only mode -->

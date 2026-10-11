@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { AppState } from "../models/app.model";
 import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { defaultSettingsState } from "../reducers/settings.reducer";
-import { selectTranscriptionSettings, selectTranslationSettings } from "../selectors/settings.selector";
+import { selectAppSettings, selectTranscriptionSettings, selectTranslationSettings, selectUiLanguage } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
 import { RecognitionActions } from "../actions/recogntion.actions";
 
@@ -65,9 +65,33 @@ export class SettingsEffects {
     this.actions$.pipe(
       ofType(SettingsActions.setLanguage),
       tap(({language}) => this.storage.update('settings', 'lang', language)),
-      switchMap(({language}) => this.translate.use(language)),
+      // The spoken language only drives the interface when no separate interface language is set
+      withLatestFrom(this.store.select(selectUiLanguage)),
+      switchMap(([_, uiLanguage]) => this.translate.use(uiLanguage)),
       map(() => SettingsActions.setLanguageComplete())
     )
+  )
+
+  applyUiLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setUiLanguage),
+      tap(({uiLanguage}) => this.storage.update('settings', 'uiLanguage', uiLanguage)),
+      withLatestFrom(this.store.select(selectUiLanguage)),
+      switchMap(([_, uiLanguage]) => this.translate.use(uiLanguage)),
+      map(() => SettingsActions.setUiLanguageComplete())
+    )
+  )
+
+  swapTranslationLanguages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.swapTranslationLanguages),
+      withLatestFrom(this.store.select(selectAppSettings)),
+      tap(([_, settings]) => {
+        this.storage.update('settings', 'lang', settings.lang);
+        this.storage.update('settings', 'dialect', settings.dialect);
+      })
+    ),
+    { dispatch: false }
   )
 
 	applyDialect$ = createEffect(() =>
@@ -154,7 +178,8 @@ export class SettingsEffects {
         SettingsActions.setTranslationTargetLanguage,
         SettingsActions.saveTranslationSettings,
         SettingsActions.setLanguage,
-        SettingsActions.setDialect
+        SettingsActions.setDialect,
+        SettingsActions.swapTranslationLanguages
       ),
       withLatestFrom(this.store.select(selectTranslationSettings)),
       map(([_, translation]) => {

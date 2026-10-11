@@ -11,10 +11,10 @@ import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSe
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { alignTranslations, mergeTranslations } from '../../../../services/translator/segment-translations';
+import { SegmentTranslation, alignTranslations, mergeTranslations, planTranslations } from '../../../../services/translator/segment-translations';
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -60,16 +60,17 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public modelStatus: Signal<TranslationModelStatus>;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
+  public canSwap: Signal<boolean>;
 
   @ViewChild('enable') sidebarCheckbox!: ElementRef<HTMLInputElement>;
   @ViewChild('captionContainer') captionContainer!: ElementRef<HTMLElement>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
   private segments: Signal<CaptionSegment[]>;
-  // Translations keyed by segment ID, for the current language pair
-  private translationsById: WritableSignal<Map<string, string>> = signal(new Map());
-  // Previous pair's translations, shown until re-translation lands so the pane doesn't blank
-  private previousTranslationsById: WritableSignal<Map<string, string>> = signal(new Map());
+  // Translations keyed by segment ID, for the current target language
+  private translationsById: WritableSignal<Map<string, SegmentTranslation>> = signal(new Map());
+  // Previous target's translations, shown until re-translation lands so the pane doesn't blank
+  private previousTranslationsById: WritableSignal<Map<string, SegmentTranslation>> = signal(new Map());
   private requestedIds: Set<string> = new Set();
   // Incremented whenever translations are reset, so stale in-flight results are discarded
   private translationGeneration = 0;
@@ -158,6 +159,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
       return AvailableTranslationLanguages.filter((l) => l.code !== srcCode);
     });
+
+    this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
 
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
@@ -297,9 +300,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   }
 
   /**
-   * Translates segments that have no translation yet and merges results by segment ID,
-   * so a late result can never land on the wrong caption. `reset` re-translates everything
-   * (language pair changed or a model became ready).
+   * Translates segments that have no translation yet (or whose language changed) from their own
+   * language, merging results by segment ID so a late result can never land on the wrong caption.
+   * `reset` re-translates everything (target language changed or a model became ready).
    */
   private translatePendingSegments(reset = false): void {
     if (reset) {
@@ -308,25 +311,25 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       this.previousTranslationsById.set(shown);
     }
     const generation = this.translationGeneration;
-    const known = this.translationsById();
-    const pending = this.segments().filter((segment) => !known.has(segment.id) && !this.requestedIds.has(segment.id));
-    if (pending.length === 0) return;
-    pending.forEach((segment) => this.requestedIds.add(segment.id));
-
-    this.translatorService.translateSegments(pending.map((segment) => segment.text), this.sourceLanguage(), this.targetLanguage()).then((translated) => {
-      if (generation !== this.translationGeneration) return;
-      const ids = pending.map((segment) => segment.id);
-      ids.forEach((segmentId) => this.requestedIds.delete(segmentId));
-      this.ngZone.run(() => {
-        this.translationsById.update((current) => mergeTranslations(current, this.segments(), ids, translated));
-        if (this.requestedIds.size === 0) {
-          this.previousTranslationsById.set(new Map());
-        }
-        this.cd.detectChanges();
+    const target = this.targetLanguage();
+    // Each segment translates from its own language; segments already in the target pass through
+    const groups = planTranslations(this.segments(), this.translationsById(), target, this.requestedIds);
+    groups.forEach(({ sourceLang, segments: pending }) => {
+      pending.forEach((segment) => this.requestedIds.add(segment.id));
+      this.translatorService.translateSegments(pending.map((segment) => segment.text), sourceLang, target).then((translated) => {
+        if (generation !== this.translationGeneration) return;
+        pending.forEach((segment) => this.requestedIds.delete(segment.id));
+        this.ngZone.run(() => {
+          this.translationsById.update((current) => mergeTranslations(current, this.segments(), pending, translated));
+          if (this.requestedIds.size === 0) {
+            this.previousTranslationsById.set(new Map());
+          }
+          this.cd.detectChanges();
+        });
+      }).catch((err) => {
+        pending.forEach((segment) => this.requestedIds.delete(segment.id));
+        console.warn('Segment translation failed:', err);
       });
-    }).catch((err) => {
-      pending.forEach((segment) => this.requestedIds.delete(segment.id));
-      console.warn('Segment translation failed:', err);
     });
   }
 
@@ -343,6 +346,10 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
       this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: true }));
     }
+  }
+
+  public swapLanguages(): void {
+    this.store.dispatch(SettingsActions.swapTranslationLanguages());
   }
 
   public downloadModel(): void {

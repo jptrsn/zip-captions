@@ -56,7 +56,12 @@ export class WebRecognitionService {
   }
 
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
+		const changed = this.recog.lang !== language;
 		this.recog.lang = language;
+		// recog.lang only applies on the next start(); stopping lets the `end` handler restart with it
+		if (changed && this.isStreaming) {
+			this.recog.stop();
+		}
 	}
 
 	public connectToStream(): void {

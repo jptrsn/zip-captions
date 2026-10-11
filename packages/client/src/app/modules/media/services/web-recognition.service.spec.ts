@@ -129,4 +129,37 @@ describe('WebRecognitionService', () => {
     expect(segments.map((segment) => [segment.text, segment.lang])).toEqual([['cheerio', 'en-GB']]);
     expect(service.getLiveOutput()()).toBe('');
   });
+
+  it('applies a language change straight away while streaming', () => {
+    setup();
+    service.setLanguage('fr-CA');
+    service.connectToStream();
+    speakUntilEnd('bonjour');
+
+    service.setLanguage('en-US');
+    expect(recog.stop).toHaveBeenCalledTimes(1);
+    // The browser ends the session; the end handler restarts with the new language
+    recog.dispatchEvent(new Event('end'));
+    speakUntilEnd('hello');
+
+    expect(service.getRecognizedSegments()().map((segment) => [segment.text, segment.lang])).toEqual([
+      ['bonjour', 'fr-CA'],
+      ['hello', 'en-US'],
+    ]);
+  });
+
+  it('does not stop recognition for a language change when not streaming', () => {
+    setup();
+    service.setLanguage('fr-CA');
+    service.setLanguage('en-US');
+    expect(recog.stop).not.toHaveBeenCalled();
+  });
+
+  it('does not restart when the language is unchanged', () => {
+    setup();
+    service.setLanguage('en-US');
+    service.connectToStream();
+    service.setLanguage('en-US');
+    expect(recog.stop).not.toHaveBeenCalled();
+  });
 });

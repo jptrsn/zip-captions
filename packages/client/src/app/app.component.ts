@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, InterfaceLanguage, RecognitionDialect, SupportedDialects } from './modules/settings/models/settings.model';
 import { windowControlsOverlaySelector } from './selectors/app.selector';
-import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
+import { selectTranscriptionEnabled, selectUiLanguage, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
 import { selectUserBalance, selectUserId } from './selectors/user.selector';
 import { RecognitionActions } from './actions/recogntion.actions';
@@ -53,7 +53,7 @@ export class AppComponent {
 
 
     this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
-    const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<InterfaceLanguage>;
+    const languageChanged = toSignal(this.store.pipe(select(selectUiLanguage))) as Signal<InterfaceLanguage>;
     effect(() => this.translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(document.documentElement, 'data-theme', this.theme$()));
 

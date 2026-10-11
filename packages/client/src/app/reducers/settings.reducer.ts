@@ -1,9 +1,10 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
   lang: 'en',
+  uiLanguage: 'spoken',
 	dialect: 'unspecified',
   wakelock: true,
   renderHistory: 15,
@@ -20,6 +21,8 @@ export const defaultSettingsState: SettingsState = {
     targetLanguage: 'es'
   }
 }
+
+const dialectLanguage = (dialect: RecognitionDialect): string => dialect.split('-')[0].toLowerCase();
 
 export const settingsReducers = createReducer(
   defaultSettingsState,
@@ -46,13 +49,31 @@ export const settingsReducers = createReducer(
     if (target === langCode) {
       target = langCode === 'es' ? 'en' : 'es';
     }
+    const dialectByLanguage = action.dialect !== 'unspecified'
+      ? { ...state.translation.dialectByLanguage, [dialectLanguage(action.dialect)]: action.dialect }
+      : state.translation.dialectByLanguage;
     return {
       ...state,
       dialect: action.dialect,
       translation: {
         ...state.translation,
-        targetLanguage: target
+        targetLanguage: target,
+        dialectByLanguage
       }
+    };
+  }),
+  on(SettingsActions.setUiLanguage, (state: SettingsState, action: { uiLanguage: UiLanguagePreference }) => ({...state, uiLanguage: action.uiLanguage })),
+  on(SettingsActions.swapTranslationLanguages, (state: SettingsState) => {
+    const swapped = swapLanguagePair({ ...state.translation, lang: state.lang, dialect: state.dialect });
+    if (!swapped) {
+      return state;
+    }
+    const { lang, dialect, ...translation } = swapped;
+    return {
+      ...state,
+      lang,
+      dialect,
+      translation: { ...state.translation, ...translation }
     };
   }),
 	on(SettingsActions.setDefaultDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => ({...state, dialect: (state.dialect === 'unspecified' ? action.dialect : state.dialect) })),

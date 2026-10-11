@@ -3,7 +3,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
-import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, LineHeight, SettingsActions, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, LineHeight, SettingsActions, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
@@ -46,6 +46,9 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   public translationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
   public availableLanguages: Signal<SupportedTranslationLanguage[]>;
+  // Viewers of a broadcast don't control the spoken language
+  public showSwap: Signal<boolean>;
+  public canSwap: Signal<boolean>;
 
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
@@ -79,6 +82,9 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
       return this.translationSettings()?.targetLanguage ?? (sourceLanguageCode() === 'es' ? 'en' : 'es');
     });
 
+    this.showSwap = computed(() => !hostLang());
+    this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
+
     toObservable(sourceLanguageCode).pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((src) => {
@@ -110,6 +116,10 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   setTranslationMode(mode: TranslationDisplayMode): void {
     this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
     this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: mode !== 'off' }));
+  }
+
+  swapLanguages(): void {
+    this.store.dispatch(SettingsActions.swapTranslationLanguages());
   }
 
   setTargetLanguage(targetLanguage: string): void {

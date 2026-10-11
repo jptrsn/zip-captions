@@ -22,6 +22,17 @@ export const languageSelector = createSelector(
   (state) => state.lang
 )
 
+/** The language the interface is shown in: the spoken language unless set separately */
+export const selectUiLanguage = createSelector(
+  selectAppSettings,
+  (state) => (!state.uiLanguage || state.uiLanguage === 'spoken') ? state.lang : state.uiLanguage
+)
+
+export const selectUiLanguagePreference = createSelector(
+  selectAppSettings,
+  (state) => state.uiLanguage ?? 'spoken'
+)
+
 export const dialectSelector = createSelector(
 	selectAppSettings,
 	(state): RecognitionDialect => state.dialect ?? 'unspecified'

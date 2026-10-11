@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, startWith, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { SettingsActions } from '../../models/settings.model';
+import { InterfaceLanguage, RecognitionDialect, SettingsActions, isSpokenLanguage, swapLanguagePair } from '../../models/settings.model';
 import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { ChromeTranslatorService, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
@@ -25,9 +25,15 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
 
   public currentSettings: Signal<TranslationSettings | undefined>;
   public sourceDialect: Signal<string | undefined>;
+  private storedLanguage: Signal<InterfaceLanguage | undefined>;
   public sourceLanguageCode: Signal<string>;
+  public spokenLanguage: Signal<InterfaceLanguage>;
+  public canSwap: Signal<boolean>;
+  public readonly modelManagementUrl = 'https://developer.chrome.com/docs/ai/understand-built-in-model-management';
 
   private onDestroy$: Subject<void> = new Subject<void>();
+  // Set while a swap patches the form, so the spoken-language change keeps the swapped dialect
+  private swappingTo?: InterfaceLanguage;
 
   constructor(
     private fb: FormBuilder,
@@ -42,11 +48,38 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.currentSettings = toSignal(this.store.select(selectTranslationSettings));
     this.sourceDialect = toSignal(this.store.select(dialectSelector));
     const sourceLang = toSignal(this.store.select(languageSelector));
+    this.storedLanguage = sourceLang as Signal<InterfaceLanguage | undefined>;
+
+    // Initialize form with stored settings, ensuring no collision with current captioning language
+    const settings = this.currentSettings();
+    const storedDialect = this.sourceDialect();
+    const srcCode = this.translatorService.normalizeLanguageCode(storedDialect && storedDialect !== 'unspecified' ? storedDialect : sourceLang());
+    let initialTarget = settings?.targetLanguage || (srcCode === 'es' ? 'en' : 'es');
+    initialTarget = this.ensureDifferentTargetLanguage(srcCode, initialTarget);
+
+    this.formGroup = this.fb.group({
+      enabled: [false],
+      mode: ['split'],
+      spokenLanguage: [sourceLang() as InterfaceLanguage],
+      dialect: [storedDialect ?? 'unspecified'],
+      targetLanguage: [initialTarget]
+    });
+
+    // The spoken language being edited, before it is saved
+    this.spokenLanguage = toSignal(this.formGroup.controls['spokenLanguage'].valueChanges.pipe(
+      startWith(this.formGroup.controls['spokenLanguage'].value)
+    )) as Signal<InterfaceLanguage>;
+    const formDialect = toSignal(this.formGroup.controls['dialect'].valueChanges.pipe(
+      startWith(this.formGroup.controls['dialect'].value)
+    )) as Signal<RecognitionDialect>;
+    const formTarget = toSignal(this.formGroup.controls['targetLanguage'].valueChanges.pipe(
+      startWith(this.formGroup.controls['targetLanguage'].value)
+    )) as Signal<string>;
 
     this.sourceLanguageCode = computed(() => {
-      const d = this.sourceDialect();
+      const d = formDialect();
       if (d && d !== 'unspecified') return this.translatorService.normalizeLanguageCode(d);
-      return this.translatorService.normalizeLanguageCode(sourceLang());
+      return this.translatorService.normalizeLanguageCode(this.spokenLanguage());
     });
 
     this.availableLanguages = computed(() => {
@@ -54,16 +87,15 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
       return AvailableTranslationLanguages.filter((l) => l.code !== src);
     });
 
-    // Initialize form with stored settings, ensuring no collision with current captioning language
-    const settings = this.currentSettings();
-    const srcCode = this.sourceLanguageCode();
-    let initialTarget = settings?.targetLanguage || (srcCode === 'es' ? 'en' : 'es');
-    initialTarget = this.ensureDifferentTargetLanguage(srcCode, initialTarget);
+    this.canSwap = computed(() => isSpokenLanguage(formTarget()));
 
-    this.formGroup = this.fb.group({
-      enabled: [false],
-      mode: ['split'],
-      targetLanguage: [initialTarget]
+    // A different spoken language starts from its default dialect, as in the appearance settings
+    this.formGroup.controls['spokenLanguage'].valueChanges.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((lang) => {
+      if (lang && lang !== this.swappingTo) {
+        this.formGroup.controls['dialect'].setValue('unspecified');
+      }
     });
 
     if (settings) {
@@ -71,7 +103,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
         enabled: settings.enabled,
         mode: settings.mode === 'off' ? 'split' : settings.mode,
         targetLanguage: initialTarget
-      });
+      }, { emitEvent: false });
     }
 
     // Translation can't run on this device, so the stored settings are shown read-only
@@ -83,8 +115,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.formGroup.controls['targetLanguage'].valueChanges.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((tgt) => {
-      const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
-      this.translatorService.checkModelStatus(src, tgt);
+      this.translatorService.checkModelStatus(this.formSource(), tgt);
     });
 
     // Auto-update target language if source captioning language changes to match target
@@ -93,9 +124,10 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     ).subscribe((src) => {
       const currentTgt = this.formGroup.get('targetLanguage')?.value;
       if (currentTgt === src) {
+        // Form only: the spoken language is unsaved here, and saving applies the new target
         const nextTgt = this.ensureDifferentTargetLanguage(src, currentTgt);
         this.formGroup.controls['targetLanguage'].setValue(nextTgt);
-        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: nextTgt }));
+        this.formGroup.markAsDirty();
       }
     });
   }
@@ -119,11 +151,37 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
       this.formGroup.reset({
         enabled: settings.enabled,
         mode: settings.mode === 'off' ? 'split' : settings.mode,
+        spokenLanguage: this.formGroup.get('spokenLanguage')?.value,
+        dialect: this.formGroup.get('dialect')?.value,
         targetLanguage: target
-      });
+      }, { emitEvent: false });
     }
-    const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
-    this.translatorService.checkModelStatus(src, target);
+    this.translatorService.checkModelStatus(this.formSource(), target);
+  }
+
+  /** Swaps the spoken and translation languages in the form; saving applies them */
+  public swapLanguages(): void {
+    const swapped = swapLanguagePair({
+      lang: this.formGroup.get('spokenLanguage')?.value,
+      dialect: this.formGroup.get('dialect')?.value ?? 'unspecified',
+      targetLanguage: this.formGroup.get('targetLanguage')?.value,
+      dialectByLanguage: this.currentSettings()?.dialectByLanguage,
+    });
+    if (!swapped) return;
+    this.swappingTo = swapped.lang;
+    this.formGroup.patchValue({
+      spokenLanguage: swapped.lang,
+      dialect: swapped.dialect,
+      targetLanguage: swapped.targetLanguage,
+    });
+    this.swappingTo = undefined;
+    this.formGroup.markAsDirty();
+  }
+
+  // Source for model checks: the form's dialect, else the spoken language's default
+  private formSource(): string {
+    const dialect = this.formGroup.get('dialect')?.value;
+    return dialect && dialect !== 'unspecified' ? dialect : this.formGroup.get('spokenLanguage')?.value ?? 'en';
   }
 
   ngOnDestroy(): void {
@@ -132,14 +190,20 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
 
   public downloadModel(): void {
     const formVal = this.formGroup.value;
-    const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
-    this.translatorService.downloadModel(src, formVal.targetLanguage);
+    this.translatorService.downloadModel(this.formSource(), formVal.targetLanguage);
   }
 
   saveSettings(): void {
     const formVal = this.formGroup.value;
     const mode: TranslationDisplayMode = formVal.enabled ? formVal.mode : 'off';
 
+    // Spoken language before the target, so the target-collision rule sees the new source
+    if (formVal.spokenLanguage && formVal.spokenLanguage !== this.storedLanguage()) {
+      this.store.dispatch(SettingsActions.setLanguage({ language: formVal.spokenLanguage }));
+    }
+    if (formVal.dialect && formVal.dialect !== this.sourceDialect()) {
+      this.store.dispatch(SettingsActions.setDialect({ dialect: formVal.dialect }));
+    }
     this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: formVal.enabled }));
     this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
     this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: formVal.targetLanguage }));
@@ -148,8 +212,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
 
     // Trigger pre-download / warm-up of the model if enabled
     if (formVal.enabled && this.isSupported) {
-      const src = this.sourceDialect() && this.sourceDialect() !== 'unspecified' ? this.sourceDialect()! : 'en';
-      this.translatorService.downloadModel(src, formVal.targetLanguage).catch((err) => {
+      this.translatorService.downloadModel(this.formSource(), formVal.targetLanguage).catch((err) => {
         console.warn('Could not warm up translator:', err);
       });
     }

@@ -64,8 +64,18 @@ export class AzureRecognitionService {
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
 		if (this.recognizer) {
 			if (this.recognizer.speechRecognitionLanguage !== language) {
-				this.recognizer.close();
-				this.initialize(language).pipe(take(1)).subscribe()
+				const previous = this.recognizer;
+				const wasStreaming = this.isStreaming;
+				if (wasStreaming) {
+					previous.stopContinuousRecognitionAsync();
+				}
+				previous.close();
+				// Same configuration as a fresh connection; only the locale differs
+				if (wasStreaming) {
+					this.connectToStream(language);
+				} else {
+					this.initialize(language).pipe(take(1)).subscribe();
+				}
 			}
 		}
 	}
@@ -76,6 +86,7 @@ export class AzureRecognitionService {
 				this.isStreaming = true;
 				this.recognizer?.startContinuousRecognitionAsync(
 					() => {
+            window.clearInterval(this.tokenRefreshTimerId);
             this.tokenRefreshTimerId = window.setInterval(() => {
               this._refreshToken()
             }, (8 * 60 * 1000));
@@ -167,8 +178,10 @@ export class AzureRecognitionService {
 				const text = event.result.text;
 				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();
 				if (hasSpeech) {
+					// Respect the language Azure reports for the result, when it provides one
+					const lang = event.result.language || this.recognitionLang;
 					this.recognizedSegments.update((current: CaptionSegment[]) => {
-						return this.segmentHistory.append(current, text, this.recognitionLang, segmentStart);
+						return this.segmentHistory.append(current, text, lang, segmentStart);
 					});
 				}
 				this.liveOutput.set('');

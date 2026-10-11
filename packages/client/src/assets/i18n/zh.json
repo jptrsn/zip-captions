@@ -393,7 +393,8 @@
       "setSuccess": "供应商成功改变",
       "balance": "你的平衡",
       "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
-      "requestTokens": "请求免费代币"
+      "requestTokens": "请求免费代币",
+      "bilingualHint": "这个词语也承认英语。"
     },
     "TRANSLATION": {
       "enable": "实时翻译",
@@ -421,7 +422,11 @@
       "privacyNotice": "翻译完全运行在您的设备上使用Chrome的内置语言模型,翻译的文本从未发送到任何服务器。",
       "modelsTitle": "翻译模型",
       "modelsPerPair": "每个语言对都使用自己的翻译模型,Chrome下载一次第一次使用它。",
-      "modelPerPairNotice": "一次下载为此语言对"
+      "modelPerPairNotice": "一次下载为此语言对",
+      "swapLanguages": "交换语和翻译语言",
+      "swapUnavailable": "语言认可不适用于此语言。",
+      "modelsManagedByChrome": "Chrome 管理下载的翻译模型,并可能将其移除到免费空间。",
+      "learnMore": "学习更多"
     }
   },
   "STREAM": {
@@ -583,7 +588,10 @@
     "duration": "长度",
     "provider": "供应商",
     "documentPip": "图片在图片中",
-    "documentPipExit": "外出图片在图片中"
+    "documentPipExit": "外出图片在图片中",
+    "spokenLanguage": "说话的语言",
+    "uiLanguage": "界面语言",
+    "sameAsSpoken": "相同的语言"
   },
   "HINTS": {
     "beginSpeaking": "开始说话......",

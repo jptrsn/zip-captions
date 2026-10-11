@@ -393,7 +393,8 @@
       "setSuccess": "O fornecedor mudou com sucesso",
       "balance": "O seu equilíbrio",
       "acquire": "Nossos patrocinadores Patreon recebem tokens gratuitos automaticamente todos os meses.",
-      "requestTokens": "Solicitar tokens gratuitos"
+      "requestTokens": "Solicitar tokens gratuitos",
+      "bilingualHint": "Este diálogo também reconhece o inglês."
     },
     "TRANSLATION": {
       "enable": "Tradução ao vivo",
@@ -421,7 +422,11 @@
       "privacyNotice": "A tradução funciona inteiramente no seu dispositivo usando os modelos de idiomas integrados do Chrome, e o texto traduzido nunca é enviado a qualquer servidor.",
       "modelsTitle": "Modelo de Tradução",
       "modelsPerPair": "Cada par de idiomas usa o seu próprio modelo de tradução, que o Chrome descarrega uma vez que você o usa pela primeira vez.",
-      "modelPerPairNotice": "Download para este par de idiomas"
+      "modelPerPairNotice": "Download para este par de idiomas",
+      "swapLanguages": "Swap linguagem falada e tradução",
+      "swapUnavailable": "O reconhecimento de fala não está disponível para esta língua.",
+      "modelsManagedByChrome": "O Chrome gerencia modelos de tradução baixados e pode removê-los para espaço livre.",
+      "learnMore": "Aprenda mais"
     }
   },
   "STREAM": {
@@ -583,7 +588,10 @@
     "duration": "Duração",
     "provider": "Fornecedor",
     "documentPip": "Imagem em Imagem",
-    "documentPipExit": "Imagem de saída em imagem"
+    "documentPipExit": "Imagem de saída em imagem",
+    "spokenLanguage": "Língua falada",
+    "uiLanguage": "Língua Interface",
+    "sameAsSpoken": "Assim como a língua falada"
   },
   "HINTS": {
     "beginSpeaking": "Comece a falar ...",

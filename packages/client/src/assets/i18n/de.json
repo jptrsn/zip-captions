@@ -393,7 +393,8 @@
       "setSuccess": "Der Anbieter hat sich erfolgreich geändert",
       "balance": "Dein Gleichgewicht",
       "acquire": "Unsere Patreon-Folder erhalten jeden Monat automatisch Tokens kostenlos.",
-      "requestTokens": "Kostenlose Tokens anfordern"
+      "requestTokens": "Kostenlose Tokens anfordern",
+      "bilingualHint": "Dieser Dialekt erkennt auch Englisch."
     },
     "TRANSLATION": {
       "enable": "Live-Übersetzung",
@@ -421,7 +422,11 @@
       "privacyNotice": "Die Übersetzung funktioniert vollständig auf Ihrem Gerät mit eingebauten Sprachenmodellen von Chrome und der übersetzte Text wird niemals an einen Server gesendet.",
       "modelsTitle": "Übersetzungsmodelle",
       "modelsPerPair": "Jedes Sprachepaar verwendet sein eigenes Übersetzungsmodell, das Chrome herunterladen wird, wenn Sie es zum ersten Mal verwenden.",
-      "modelPerPairNotice": "Einmal herunterladen für dieses Sprachpaar"
+      "modelPerPairNotice": "Einmal herunterladen für dieses Sprachpaar",
+      "swapLanguages": "Swap Sprach- und Übersetzungssprachen",
+      "swapUnavailable": "Spracherkennung ist für diese Sprache nicht verfügbar.",
+      "modelsManagedByChrome": "Chrome verwaltet heruntergeladenen Übersetzungsmodelle und kann sie in freier Raum entfernen.",
+      "learnMore": "Lernen Sie mehr"
     }
   },
   "STREAM": {
@@ -583,7 +588,10 @@
     "description": "Beschreibung",
     "date": "Datum",
     "duration": "Dauer",
-    "provider": "Anbieter"
+    "provider": "Anbieter",
+    "spokenLanguage": "Sprechende Sprache",
+    "uiLanguage": "Interface Sprache",
+    "sameAsSpoken": "Ähnlich wie die gesprochenen Sprache"
   },
   "HINTS": {
     "pipActive": "Untertitel werden im Bild-in-Bild-Fenster angezeigt",

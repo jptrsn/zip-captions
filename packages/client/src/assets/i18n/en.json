@@ -366,7 +366,11 @@
       "modelPerPairNotice": "One-time download for this language pair",
       "unsupportedHint": "The Chrome Translator API is only available in supported desktop Chromium browsers (Chrome 138+ / Edge). You may need to enable chrome://flags/#translation-api.",
       "experimental": "Experimental feature",
-      "unsupportedMobileHint": "On-device translation is only available in desktop browsers (Chrome 138+ or Edge 148+) and is not supported on phones or tablets."
+      "unsupportedMobileHint": "On-device translation is only available in desktop browsers (Chrome 138+ or Edge 148+) and is not supported on phones or tablets.",
+      "swapLanguages": "Swap spoken and translation languages",
+      "swapUnavailable": "Speech recognition isn't available for this language.",
+      "modelsManagedByChrome": "Chrome manages downloaded translation models and may remove them to free space.",
+      "learnMore": "Learn more"
     },
     "UI": {
       "t1": "Preview",
@@ -421,7 +425,8 @@
         "label": "Microsoft Azure Cognitive Services",
         "description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket. This provider requires a specified dialect, please ensure the setting is correct.",
         "cost": "Rate: 60 tokens per minute"
-      }
+      },
+      "bilingualHint": "This dialect also recognizes English."
     }
   },
   "STREAM": {
@@ -583,7 +588,10 @@
     "description": "Description",
     "date": "Date",
     "duration": "Duration",
-    "provider": "Provider"
+    "provider": "Provider",
+    "spokenLanguage": "Spoken language",
+    "uiLanguage": "Interface language",
+    "sameAsSpoken": "Same as spoken language"
   },
   "HINTS": {
     "pipActive": "Captions are displaying in Picture-in-Picture",

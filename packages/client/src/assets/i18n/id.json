@@ -393,7 +393,8 @@
       "setSuccess": "Pembekal Berubah Sukses",
       "balance": "Keseimbangan Anda",
       "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
-      "requestTokens": "Meminta Token Gratis"
+      "requestTokens": "Meminta Token Gratis",
+      "bilingualHint": "Dialektus ini juga mengenali bahasa Inggris."
     },
     "TRANSLATION": {
       "enable": "Terjemahan Langsung",
@@ -421,7 +422,11 @@
       "privacyNotice": "Terjemahan berjalan sepenuhnya pada perangkat Anda menggunakan model bahasa Chrome yang terintegrasi, dan teks terjemahan tidak pernah dikirim ke server apa pun.",
       "modelsTitle": "Model Terjemahan",
       "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan mereka sendiri, yang Chrome download sekali pertama kali Anda menggunakannya.",
-      "modelPerPairNotice": "Satu kali download untuk pasangan bahasa ini"
+      "modelPerPairNotice": "Satu kali download untuk pasangan bahasa ini",
+      "swapLanguages": "Swap berbicara dan terjemahan bahasa",
+      "swapUnavailable": "Pengakuan bahasa tidak tersedia untuk bahasa ini.",
+      "modelsManagedByChrome": "Chrome mengendalikan model terjemahan yang dimuat turun dan dapat menghapusnya ke ruang bebas.",
+      "learnMore": "Belajar Lebih Banyak"
     }
   },
   "STREAM": {
@@ -583,7 +588,10 @@
     "duration": "Lamanya",
     "provider": "Penyedia",
     "documentPip": "Gambar dalam Gambar",
-    "documentPipExit": "Gambar keluar dalam gambar"
+    "documentPipExit": "Gambar keluar dalam gambar",
+    "spokenLanguage": "Bahasa yang berbicara",
+    "uiLanguage": "Interface Bahasa",
+    "sameAsSpoken": "Sama seperti bahasa yang diucapkan"
   },
   "HINTS": {
     "beginSpeaking": "Mulailah berbicara ...",

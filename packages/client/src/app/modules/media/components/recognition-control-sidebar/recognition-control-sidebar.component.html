@@ -93,11 +93,19 @@
             <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
               {{ 'SETTINGS.TRANSLATION.targetLang' | translate }}
             </label>
-            <select class="select select-bordered select-xs w-full text-base-content bg-base-100" [value]="targetLanguage()" (change)="onTargetLanguageSelect($event)">
-              <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
-                {{ lang.name }}
-              </option>
-            </select>
+            <div class="flex items-center gap-1">
+              <select class="select select-bordered select-xs w-full text-base-content bg-base-100" [value]="targetLanguage()" (change)="onTargetLanguageSelect($event)">
+                <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                  {{ lang.name }}
+                </option>
+              </select>
+              <button *ngIf="showSwap()" type="button" class="btn btn-xs btn-square" data-testid="zc-sidebar-swap"
+                      [disabled]="!canSwap()" (click)="swapLanguages()"
+                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
+                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
+                <ng-icon name="heroArrowsRightLeft"></ng-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>

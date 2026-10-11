@@ -141,6 +141,71 @@ export const DefaultDialects: { [key in InterfaceLanguage]: RecognitionDialect }
   'ar': 'ar-EG'
 }
 
+/**
+ * Azure locales whose models natively recognize a second language (requirements §3.1).
+ * Metadata only: recognizer configuration is unchanged for these locales.
+ */
+export const BilingualDialects: Partial<Record<RecognitionDialect, readonly string[]>> = {
+  'fr-CA': ['fr', 'en'],
+  'es-US': ['es', 'en'],
+  'ar-AE': ['ar', 'en'],
+  'ar-BH': ['ar', 'en'],
+  'ar-DZ': ['ar', 'en'],
+  'ar-IL': ['ar', 'en'],
+  'ar-IQ': ['ar', 'en'],
+  'ar-KW': ['ar', 'en'],
+  'ar-LB': ['ar', 'en'],
+  'ar-LY': ['ar', 'en'],
+  'ar-MA': ['ar', 'en'],
+  'ar-OM': ['ar', 'en'],
+  'ar-PS': ['ar', 'en'],
+  'ar-QA': ['ar', 'en'],
+  'ar-SA': ['ar', 'en'],
+  'ar-SY': ['ar', 'en'],
+  'ar-TN': ['ar', 'en'],
+  'ar-YE': ['ar', 'en'],
+  // English + Hindi; Hindi is not a translation source
+  'en-IN': ['en'],
+};
+
+/** True when the dialect's Azure model also recognizes English */
+export function isBilingualDialect(dialect: string | null | undefined): boolean {
+  return !!dialect && (BilingualDialects[dialect as RecognitionDialect]?.length ?? 0) > 1;
+}
+
+/** True when a translation language can also be spoken (has recognition dialects) */
+export function isSpokenLanguage(code: string | null | undefined): code is InterfaceLanguage {
+  return !!code && (AvailableLanguages as string[]).includes(code);
+}
+
+export interface LanguagePair {
+  lang: InterfaceLanguage;
+  dialect: RecognitionDialect;
+  targetLanguage: string;
+  dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
+}
+
+/**
+ * Swaps the spoken and translation languages. The new spoken dialect is the one last used for that
+ * language, so swapping back restores e.g. fr-CA. Returns undefined when the translation language
+ * can't be spoken.
+ */
+export function swapLanguagePair(pair: LanguagePair): LanguagePair | undefined {
+  const target = pair.targetLanguage;
+  if (!isSpokenLanguage(target) || target === pair.lang) {
+    return undefined;
+  }
+  const dialectByLanguage = pair.dialect !== 'unspecified'
+    ? { ...pair.dialectByLanguage, [pair.dialect.split('-')[0].toLowerCase()]: pair.dialect }
+    : pair.dialectByLanguage;
+  return {
+    lang: target,
+    dialect: dialectByLanguage?.[target] ?? 'unspecified',
+    targetLanguage: pair.lang,
+    dialectByLanguage,
+  };
+}
+
 export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';
 
 export const AvailableTextSizes: TextSize[] = [
@@ -213,6 +278,8 @@ export interface TranslationSettings {
   enabled: boolean;
   mode: TranslationDisplayMode;
   targetLanguage: string;
+  // Last dialect used per spoken language, so swapping back restores e.g. fr-CA rather than the default
+  dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
 }
 
 export interface SupportedTranslationLanguage {
@@ -245,9 +312,14 @@ export interface SettingsState extends SyncableSettings {
   translation: TranslationSettings;
 }
 
+/** Interface language preference; 'spoken' follows the spoken (recognition) language */
+export type UiLanguagePreference = InterfaceLanguage | 'spoken';
+
 export interface SyncableSettings {
   theme: AppTheme;
+  /** Spoken (recognition) language; also the interface language when uiLanguage is 'spoken' */
   lang: InterfaceLanguage;
+  uiLanguage: UiLanguagePreference;
 	dialect: RecognitionDialect;
   wakelock: boolean;
   renderHistory: number;

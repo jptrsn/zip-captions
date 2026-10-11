@@ -24,7 +24,12 @@ jest.mock('microsoft-cognitiveservices-speech-sdk', () => ({
   AudioConfig: { fromDefaultMicrophoneInput: jest.fn(() => ({})) },
   SpeechRecognizer: jest.fn().mockImplementation((...args: any[]) => {
     mockRecognizerArgs.push(args);
-    const recognizer = { close: jest.fn(), startContinuousRecognitionAsync: jest.fn(), stopContinuousRecognitionAsync: jest.fn() };
+    const recognizer = {
+      speechRecognitionLanguage: args[0].speechRecognitionLanguage,
+      close: jest.fn(),
+      startContinuousRecognitionAsync: jest.fn(),
+      stopContinuousRecognitionAsync: jest.fn()
+    };
     mockRecognizers.push(recognizer);
     return recognizer;
   })
@@ -57,9 +62,15 @@ describe('AzureRecognitionService', () => {
     return mockRecognizers[mockRecognizers.length - 1];
   };
 
-  const recognize = (recognizer: any, text: string, reason = RECOGNIZED_SPEECH) => {
+  const recognize = (recognizer: any, text: string, reason = RECOGNIZED_SPEECH, language?: string) => {
     recognizer.recognizing({}, { result: { text } });
-    recognizer.recognized({}, { sessionId: 'session', result: { text, reason } });
+    recognizer.recognized({}, { sessionId: 'session', result: { text, reason, language } });
+  };
+
+  const connect = (language: string) => {
+    service.connectToStream(language as any);
+    http.expectOne((req) => req.url.endsWith('/get-token')).flush({ token: 'token', region: 'region' });
+    return mockRecognizers[mockRecognizers.length - 1];
   };
 
   beforeEach(() => {
@@ -134,5 +145,60 @@ describe('AzureRecognitionService', () => {
     expect(mockSpeechConfigs[0].speechRecognitionLanguage).toBe('fr-CA');
     // Recognizer is built from speech + audio config only: no auto-detect / LID config
     expect(mockRecognizerArgs[0].length).toBe(2);
+  });
+
+  it.each(['fr-CA', 'es-US', 'ar-AE', 'ar-SA', 'ar-YE', 'en-IN'])('leaves %s configured by locale only', (locale) => {
+    setup();
+    initialize(locale);
+    expect(mockSpeechConfigs[0].speechRecognitionLanguage).toBe(locale);
+    expect(Object.keys(mockSpeechConfigs[0]).sort()).toEqual(['setProfanity', 'speechRecognitionLanguage']);
+    expect(mockRecognizerArgs[0].length).toBe(2);
+  });
+
+  it('uses the language Azure reports for a result, when it provides one', () => {
+    setup();
+    const recognizer = initialize('fr-CA');
+    recognize(recognizer, 'Hello everyone.', RECOGNIZED_SPEECH, 'en-US');
+    recognize(recognizer, 'Bonjour tout le monde.', RECOGNIZED_SPEECH, '');
+    expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['en-US', 'fr-CA']);
+  });
+
+  describe('changing language mid-session', () => {
+    it('restarts continuous recognition on the rebuilt recognizer', () => {
+      setup();
+      const first = connect('fr-CA');
+      expect(first.startContinuousRecognitionAsync).toHaveBeenCalledTimes(1);
+
+      service.setLanguage('en-US');
+      expect(first.stopContinuousRecognitionAsync).toHaveBeenCalled();
+      expect(first.close).toHaveBeenCalled();
+
+      http.expectOne((req) => req.url.endsWith('/get-token')).flush({ token: 'token', region: 'region' });
+      const second = mockRecognizers[mockRecognizers.length - 1];
+      expect(second).not.toBe(first);
+      expect(second.startContinuousRecognitionAsync).toHaveBeenCalledTimes(1);
+      expect(mockSpeechConfigs[1].speechRecognitionLanguage).toBe('en-US');
+
+      recognize(second, 'hello there');
+      expect(service.getRecognizedSegments()()[0].lang).toBe('en-US');
+    });
+
+    it('rebuilds without starting when not streaming', () => {
+      setup();
+      const first = initialize('fr-CA');
+      service.setLanguage('en-US');
+      http.expectOne((req) => req.url.endsWith('/get-token')).flush({ token: 'token', region: 'region' });
+      expect(first.close).toHaveBeenCalled();
+      expect(first.stopContinuousRecognitionAsync).not.toHaveBeenCalled();
+      expect(mockRecognizers[mockRecognizers.length - 1].startContinuousRecognitionAsync).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the language is unchanged', () => {
+      setup();
+      const first = connect('fr-CA');
+      service.setLanguage('fr-CA');
+      http.expectNone((req) => req.url.endsWith('/get-token'));
+      expect(first.close).not.toHaveBeenCalled();
+    });
   });
 });
