@@ -402,8 +402,6 @@
       "off": "Terjemahan Dinonaktifkan",
       "targetLang": "Terjemahkan Ke",
       "displayMode": "Tata Letak Teks",
-      "modeSplit": "Pemisahan Horizontal (Bilingual)",
-      "modeSplitDesc": "Instruksi asli di atas, terjemahan di bawah",
       "modeTranslatedOnly": "Hanya Terjemahan",
       "modeTranslatedOnlyDesc": "Hanya menampilkan teks terjemahan",
       "statusTitle": "Status AI Di Perangkat Chrome",
@@ -426,7 +424,19 @@
       "swapLanguages": "Swap berbicara dan terjemahan bahasa",
       "swapUnavailable": "Pengakuan bahasa tidak tersedia untuk bahasa ini.",
       "modelsManagedByChrome": "Chrome mengendalikan model terjemahan yang dimuat turun dan dapat menghapusnya ke ruang bebas.",
-      "learnMore": "Belajar Lebih Banyak"
+      "learnMore": "Belajar Lebih Banyak",
+      "modeSplit": "Berbagi (Bilingual)",
+      "modeSplitDesc": "Original dan terjemahan captions dalam dua panel",
+      "splitOrientation": "Orientasi Berbeda",
+      "orientationSideBySide": "Sisi demi sisi",
+      "orientationStacked": "Diperkirakan",
+      "swapPanes": "Menukar Panel asli dan terjemahan",
+      "paneOriginal": "Capsi asli",
+      "paneTranslated": "Terjemahan Captions",
+      "pipContent": "Gambar-gambar dalam gambar",
+      "pipContentOriginal": "Hanya Original",
+      "pipContentTranslated": "Hanya terjemahan",
+      "pipContentSplit": "Original dan Terjemahan"
     }
   },
   "STREAM": {

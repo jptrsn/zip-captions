@@ -274,10 +274,25 @@ export interface TranscriptionSettings {
 
 export type TranslationDisplayMode = 'off' | 'split' | 'translated-only';
 
+/** vertical = stacked panes, horizontal = side by side (FR-D2) */
+export type SplitOrientation = 'vertical' | 'horizontal';
+/** Which pane comes first: the top (stacked) or the start side (side by side) */
+export type PaneOrder = 'original-first' | 'translated-first';
+/** What the Picture-in-Picture window shows while translation is on (FR-W1) */
+export type PipContent = 'original' | 'translated' | 'split';
+
+export const DefaultSplitOrientation: SplitOrientation = 'vertical';
+export const DefaultPaneOrder: PaneOrder = 'original-first';
+export const DefaultPipContent: PipContent = 'translated';
+
 export interface TranslationSettings {
   enabled: boolean;
   mode: TranslationDisplayMode;
   targetLanguage: string;
+  // Optional: settings stored before U3 don't have them; selectors supply the defaults
+  splitOrientation?: SplitOrientation;
+  paneOrder?: PaneOrder;
+  pipContent?: PipContent;
   // Last dialect used per spoken language, so swapping back restores e.g. fr-CA rather than the default
   dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
 }

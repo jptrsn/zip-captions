@@ -179,7 +179,10 @@ export class SettingsEffects {
         SettingsActions.saveTranslationSettings,
         SettingsActions.setLanguage,
         SettingsActions.setDialect,
-        SettingsActions.swapTranslationLanguages
+        SettingsActions.swapTranslationLanguages,
+        SettingsActions.setSplitOrientation,
+        SettingsActions.swapCaptionPanes,
+        SettingsActions.setPipContent
       ),
       withLatestFrom(this.store.select(selectTranslationSettings)),
       map(([_, translation]) => {

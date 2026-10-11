@@ -2,92 +2,71 @@
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
       <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100">
-        <!-- Split Mode (Horizontal Split) -->
-        <ng-container *ngIf="effectiveTranslationMode() === 'split'; else standardRender">
-          <!-- Top Pane: Original language -->
-          <div class="flex flex-1 flex-col overflow-hidden relative border-b border-base-300">
-            <div class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
-                 [ngClass]="controlsVisible() ? 'opacity-70' : 'opacity-0 pointer-events-none'">
-              {{ originalLanguageLabel() }}
-            </div>
-            <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="sourceLanguage()" [attr.dir]="originalTextDir()">
-              <app-recognized-text 
-                *ngIf="renderHistory()"
-                [renderHistory]="renderHistory"
-                [connected]="connected"
-                [hasLiveResults]="hasLiveResults"
-                [textOutput]="textOutput"
-                [error]="error"
-                class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-              ></app-recognized-text>
-              <app-recognized-live-text
-                [text]="liveText" 
-              ></app-recognized-live-text>
-            </div>
-          </div>
 
-          <!-- Bottom Pane: Translated language -->
-          <div class="flex flex-1 flex-col overflow-hidden relative">
-            <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+        <!-- Split view: both panes, in the saved order and orientation -->
+        <ng-container *ngIf="captionView() === 'split'; else singlePane">
+          <div class="flex flex-1 overflow-hidden relative" [ngClass]="splitOrientation() === 'horizontal' ? 'flex-row' : 'flex-col'" data-testid="zc-split">
+            <ng-container *ngFor="let pane of panes(); let first = first">
+              <div class="flex flex-1 flex-col overflow-hidden relative min-w-0 min-h-0" role="region"
+                   [attr.aria-label]="(pane === 'original' ? 'SETTINGS.TRANSLATION.paneOriginal' : 'SETTINGS.TRANSLATION.paneTranslated') | translate"
+                   [ngClass]="first ? (splitOrientation() === 'horizontal' ? 'border-e border-base-300' : 'border-b border-base-300') : ''">
+                <ng-container *ngTemplateOutlet="pane === 'original' ? originalPane : translatedPane"></ng-container>
+              </div>
+            </ng-container>
+
+            <!-- Layout controls on the divider; inside the caption container so they also work in Picture-in-Picture -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1 transition-opacity duration-500"
                  [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
                  (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
-              <select
-                class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
-                [value]="targetLanguage()"
-                (change)="setTargetLanguage($any($event.target).value)"
-                (focus)="onControlsFocus()"
-                (blur)="onUserActivity()"
-                [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
-              >
-                <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
-                  {{ lang.code.toUpperCase() }} - {{ lang.name }}
-                </option>
-              </select>
-              <button type="button" class="btn btn-xs btn-circle btn-primary shadow" data-testid="zc-caption-swap"
-                      [disabled]="!canSwap()" (click)="swapLanguages()"
-                      (focus)="onControlsFocus()" (blur)="onUserActivity()"
-                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
-                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
-                <ng-icon name="heroArrowsRightLeft"></ng-icon>
+              <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-orientation"
+                      (click)="toggleOrientation()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                      [attr.aria-label]="'SETTINGS.TRANSLATION.splitOrientation' | translate"
+                      [title]="(splitOrientation() === 'vertical' ? 'SETTINGS.TRANSLATION.orientationSideBySide' : 'SETTINGS.TRANSLATION.orientationStacked') | translate">
+                <ng-icon [name]="splitOrientation() === 'vertical' ? 'heroViewColumns' : 'heroQueueList'"></ng-icon>
               </button>
-            </div>
-
-            <!-- Download Button if model is downloadable -->
-            <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
-              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
-                <ng-icon name="heroArrowDownTray"></ng-icon>
-                <span>Download {{ targetLanguageLabel() }} model</span>
+              <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-swap-panes"
+                      (click)="swapPanes()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                      [attr.aria-label]="'SETTINGS.TRANSLATION.swapPanes' | translate"
+                      [title]="'SETTINGS.TRANSLATION.swapPanes' | translate">
+                <ng-icon name="heroArrowsUpDown"></ng-icon>
               </button>
-              <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
-            </div>
-
-            <!-- Download Progress if downloading -->
-            <div *ngIf="modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
-              <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
-              <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
-            </div>
-
-            <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="targetLanguage()" [attr.dir]="translatedTextDir()">
-              <app-recognized-text 
-                *ngIf="renderHistory()"
-                [renderHistory]="renderHistory"
-                [connected]="connected" 
-                [hasLiveResults]="hasLiveResults"
-                [textOutput]="translatedTextOutput"
-                [error]="error"
-                class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-              ></app-recognized-text>
-              <app-recognized-live-text
-                [text]="translatedLiveText" 
-              ></app-recognized-live-text>
             </div>
           </div>
         </ng-container>
 
-        <!-- Standard or Translated-Only Mode -->
-        <ng-template #standardRender>
-          <!-- Target Language Selector in translated-only mode -->
-          <div *ngIf="effectiveTranslationMode() === 'translated-only'" class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+        <!-- Original-only or translated-only view -->
+        <ng-template #singlePane>
+          <div class="flex flex-1 flex-col overflow-hidden relative min-h-0" role="region"
+               [attr.aria-label]="(captionView() === 'translated' ? 'SETTINGS.TRANSLATION.paneTranslated' : 'SETTINGS.TRANSLATION.paneOriginal') | translate">
+            <ng-container *ngTemplateOutlet="captionView() === 'translated' ? translatedPane : originalPane"></ng-container>
+          </div>
+        </ng-template>
+
+        <!-- Original pane -->
+        <ng-template #originalPane>
+          <div *ngIf="captionView() === 'split'" class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
+               [ngClass]="controlsVisible() ? 'opacity-70' : 'opacity-0 pointer-events-none'">
+            {{ originalLanguageLabel() }}
+          </div>
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="sourceLanguage()" [attr.dir]="originalTextDir()">
+            <app-recognized-text
+              *ngIf="renderHistory()"
+              [renderHistory]="renderHistory"
+              [connected]="connected"
+              [hasLiveResults]="hasLiveResults"
+              [lines]="originalLines"
+              [error]="error"
+              class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+            ></app-recognized-text>
+            <app-recognized-live-text
+              [text]="liveText"
+            ></app-recognized-live-text>
+          </div>
+        </ng-template>
+
+        <!-- Translated pane: target language, language swap and model download controls -->
+        <ng-template #translatedPane>
+          <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
                [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
                (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
             <select
@@ -111,8 +90,8 @@
             </button>
           </div>
 
-          <!-- Download Button if model is downloadable in translated-only mode -->
-          <div *ngIf="effectiveTranslationMode() === 'translated-only' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+          <!-- Download Button if model is downloadable -->
+          <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
             <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
               <ng-icon name="heroArrowDownTray"></ng-icon>
               <span>Download {{ targetLanguageLabel() }} model</span>
@@ -120,24 +99,24 @@
             <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
           </div>
 
-          <!-- Download Progress if downloading in translated-only mode -->
-          <div *ngIf="effectiveTranslationMode() === 'translated-only' && modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+          <!-- Download Progress if downloading -->
+          <div *ngIf="modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
             <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
             <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
           </div>
 
-          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="effectiveTranslationMode() === 'translated-only' ? targetLanguage() : sourceLanguage()" [attr.dir]="effectiveTranslationMode() === 'translated-only' ? translatedTextDir() : originalTextDir()">
-            <app-recognized-text 
+          <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}" [attr.lang]="targetLanguage()" [attr.dir]="translatedTextDir()">
+            <app-recognized-text
               *ngIf="renderHistory()"
               [renderHistory]="renderHistory"
-              [connected]="connected" 
-              [hasLiveResults]="effectiveTranslationMode() === 'translated-only' ? hasTranslatedResults : hasLiveResults"
-              [textOutput]="effectiveTranslationMode() === 'translated-only' ? translatedTextOutput : textOutput"
+              [connected]="connected"
+              [hasLiveResults]="captionView() === 'translated' ? hasTranslatedResults : hasLiveResults"
+              [lines]="translatedLines"
               [error]="error"
               class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
             ></app-recognized-text>
             <app-recognized-live-text
-              [text]="effectiveTranslationMode() === 'translated-only' ? translatedLiveText : liveText" 
+              [text]="translatedLiveText"
             ></app-recognized-live-text>
           </div>
         </ng-template>

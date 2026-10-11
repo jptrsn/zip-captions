@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Subject, startWith, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
-import { InterfaceLanguage, RecognitionDialect, SettingsActions, isSpokenLanguage, swapLanguagePair } from '../../models/settings.model';
+import { DefaultPipContent, DefaultSplitOrientation, InterfaceLanguage, RecognitionDialect, SettingsActions, isSpokenLanguage, swapLanguagePair } from '../../models/settings.model';
 import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { ChromeTranslatorService, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
@@ -29,6 +29,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
   public sourceLanguageCode: Signal<string>;
   public spokenLanguage: Signal<InterfaceLanguage>;
   public canSwap: Signal<boolean>;
+  public readonly pipSupported: boolean = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
   public readonly modelManagementUrl = 'https://developer.chrome.com/docs/ai/understand-built-in-model-management';
 
   private onDestroy$: Subject<void> = new Subject<void>();
@@ -62,7 +63,9 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
       mode: ['split'],
       spokenLanguage: [sourceLang() as InterfaceLanguage],
       dialect: [storedDialect ?? 'unspecified'],
-      targetLanguage: [initialTarget]
+      targetLanguage: [initialTarget],
+      splitOrientation: [settings?.splitOrientation ?? DefaultSplitOrientation],
+      pipContent: [settings?.pipContent ?? DefaultPipContent]
     });
 
     // The spoken language being edited, before it is saved
@@ -102,7 +105,9 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
       this.formGroup.patchValue({
         enabled: settings.enabled,
         mode: settings.mode === 'off' ? 'split' : settings.mode,
-        targetLanguage: initialTarget
+        targetLanguage: initialTarget,
+        splitOrientation: settings.splitOrientation ?? DefaultSplitOrientation,
+        pipContent: settings.pipContent ?? DefaultPipContent
       }, { emitEvent: false });
     }
 
@@ -153,7 +158,9 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
         mode: settings.mode === 'off' ? 'split' : settings.mode,
         spokenLanguage: this.formGroup.get('spokenLanguage')?.value,
         dialect: this.formGroup.get('dialect')?.value,
-        targetLanguage: target
+        targetLanguage: target,
+        splitOrientation: settings.splitOrientation ?? DefaultSplitOrientation,
+        pipContent: settings.pipContent ?? DefaultPipContent
       }, { emitEvent: false });
     }
     this.translatorService.checkModelStatus(this.formSource(), target);
@@ -207,6 +214,9 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: formVal.enabled }));
     this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
     this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: formVal.targetLanguage }));
+    this.store.dispatch(SettingsActions.saveTranslationSettings({
+      translation: { splitOrientation: formVal.splitOrientation, pipContent: formVal.pipContent }
+    }));
 
     this.formGroup.markAsPristine();
 

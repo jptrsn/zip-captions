@@ -402,8 +402,6 @@
       "off": "Traduzione disabilitata",
       "targetLang": "Traduci in",
       "displayMode": "Layout dei sottotitoli",
-      "modeSplit": "Divisione orizzontale (bilingue)",
-      "modeSplitDesc": "Istruzione originale in alto, sottotitoli tradotti in basso",
       "modeTranslatedOnly": "Solo traduzione",
       "modeTranslatedOnlyDesc": "Mostra solo i sottotitoli tradotti",
       "statusTitle": "Stato dell'IA sul dispositivo di Chrome",
@@ -426,7 +424,19 @@
       "swapLanguages": "Swap lingua parlata e traduzione",
       "swapUnavailable": "Il riconoscimento del linguaggio non è disponibile per questa lingua.",
       "modelsManagedByChrome": "Chrome gestisce i modelli di traduzione scaricati e può rimuoverli in spazio libero.",
-      "learnMore": "Scopri di più"
+      "learnMore": "Scopri di più",
+      "modeSplit": "Divisione ( bilingue )",
+      "modeSplitDesc": "Cappuccetto originale e tradotto in due pannelli",
+      "splitOrientation": "L’orientamento diviso",
+      "orientationSideBySide": "da parte a parte",
+      "orientationStacked": "Staccato",
+      "swapPanes": "Scambiare i pannelli originali e tradotti",
+      "paneOriginal": "Le capture originali",
+      "paneTranslated": "Cappuccetto tradotto",
+      "pipContent": "Sceneggiatura in-Picture",
+      "pipContentOriginal": "Originale solo",
+      "pipContentTranslated": "Tradotto solo",
+      "pipContentSplit": "Originale e tradotto"
     }
   },
   "STREAM": {

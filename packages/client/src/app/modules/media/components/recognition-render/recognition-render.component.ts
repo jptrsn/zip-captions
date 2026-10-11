@@ -14,7 +14,9 @@ import { DocumentPipService } from '../../../../services/document-pip/document-p
 import { SegmentTranslation, alignTranslations, mergeTranslations, planTranslations } from '../../../../services/translator/segment-translations';
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { AvailableTranslationLanguages, SettingsActions, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
+import { CaptionView, resolveCaptionView, splitPaneOrder } from '../../../../services/translator/caption-view';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -46,7 +48,12 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   // Translation signals
   public translationSettings: Signal<TranslationSettings | undefined>;
   public translationMode: Signal<TranslationDisplayMode>;
-  public effectiveTranslationMode: Signal<TranslationDisplayMode>;
+  public captionView: Signal<CaptionView>;
+  public splitOrientation: Signal<SplitOrientation>;
+  public paneOrder: Signal<PaneOrder>;
+  public panes: Signal<('original' | 'translated')[]>;
+  public originalLines: Signal<CaptionLine[]>;
+  public translatedLines: Signal<CaptionLine[]>;
   public targetLanguage: Signal<string>;
   public sourceLanguage: Signal<string>;
   public originalTextDir: Signal<'ltr' | 'rtl'>;
@@ -117,14 +124,13 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
     const translatorSupported = this.translatorService.isSupported();
     this.translationMode = computed(() => translatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
-    this.effectiveTranslationMode = computed(() => {
-      const mode = this.translationMode();
-      // When in Picture-in-Picture and translation is active (split or translated-only), show only translated captions
-      if (this.isPipActive() && mode !== 'off') {
-        return 'translated-only';
-      }
-      return mode;
-    });
+    this.captionView = computed(() => resolveCaptionView(
+      this.translationMode(),
+      this.isPipActive(),
+      this.translationSettings()?.pipContent ?? DefaultPipContent));
+    this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
+    this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
+    this.panes = computed(() => splitPaneOrder(this.paneOrder()));
     this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
 
     const dialect = toSignal(this.store.select(dialectSelector));
@@ -135,11 +141,19 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       return lang() || 'en';
     });
 
+    // Pending segments have placeholder lines, so any segment counts as a result
     this.hasTranslatedResults = computed(() => {
       if (this.connected()) {
-        return this.translatedLiveText() !== '' || this.translatedTextOutput().length > 0;
+        return this.translatedLiveText() !== '' || this.segments().length > 0;
       }
       return false;
+    });
+
+    this.originalLines = computed(() => buildOriginalLines(this.segments(), this.sourceLanguage()));
+    this.translatedLines = computed(() => {
+      const current = this.translationsById();
+      const previous = this.previousTranslationsById();
+      return buildTranslatedLines(this.segments(), previous.size ? new Map([...previous, ...current]) : current, this.targetLanguage());
     });
 
     this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
@@ -314,9 +328,13 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     const target = this.targetLanguage();
     // Each segment translates from its own language; segments already in the target pass through
     const groups = planTranslations(this.segments(), this.translationsById(), target, this.requestedIds);
-    groups.forEach(({ sourceLang, segments: pending }) => {
+    groups.forEach(({ sourceLang, segments: pending, passThrough }) => {
       pending.forEach((segment) => this.requestedIds.add(segment.id));
-      this.translatorService.translateSegments(pending.map((segment) => segment.text), sourceLang, target).then((translated) => {
+      // Already in the target language: resolves at once without the translator, so no placeholder lingers.
+      // It goes through the same async merge, because this runs inside a signal effect and must not write signals.
+      const texts = pending.map((segment) => segment.text);
+      const result = passThrough ? Promise.resolve(texts) : this.translatorService.translateSegments(texts, sourceLang, target);
+      result.then((translated) => {
         if (generation !== this.translationGeneration) return;
         pending.forEach((segment) => this.requestedIds.delete(segment.id));
         this.ngZone.run(() => {
@@ -350,6 +368,16 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
   public swapLanguages(): void {
     this.store.dispatch(SettingsActions.swapTranslationLanguages());
+  }
+
+  /** Switches between stacked and side-by-side panes */
+  public toggleOrientation(): void {
+    this.store.dispatch(SettingsActions.setSplitOrientation({ orientation: this.splitOrientation() === 'vertical' ? 'horizontal' : 'vertical' }));
+  }
+
+  /** Exchanges which pane comes first; leaves the languages alone (unlike swapLanguages) */
+  public swapPanes(): void {
+    this.store.dispatch(SettingsActions.swapCaptionPanes());
   }
 
   public downloadModel(): void {

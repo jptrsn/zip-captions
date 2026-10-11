@@ -59,6 +59,62 @@ describe('Settings Reducer', () => {
     });
   });
 
+  describe('split layout', () => {
+    it('defaults to stacked panes, original first, and translated-only Picture-in-Picture', () => {
+      expect(defaultSettingsState.translation.splitOrientation).toBe('vertical');
+      expect(defaultSettingsState.translation.paneOrder).toBe('original-first');
+      expect(defaultSettingsState.translation.pipContent).toBe('translated');
+    });
+
+    it('sets the split orientation', () => {
+      const state = settingsReducers(defaultSettingsState, SettingsActions.setSplitOrientation({ orientation: 'horizontal' }));
+      expect(state.translation.splitOrientation).toBe('horizontal');
+      expect(settingsReducers(state, SettingsActions.setSplitOrientation({ orientation: 'vertical' })).translation.splitOrientation).toBe('vertical');
+    });
+
+    it('swaps the panes back and forth without touching any language', () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      state = settingsReducers(state, SettingsActions.setDialect({ dialect: 'fr-CA' }));
+      state = settingsReducers(state, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'en' }));
+
+      const swapped = settingsReducers(state, SettingsActions.swapCaptionPanes());
+      expect(swapped.translation.paneOrder).toBe('translated-first');
+      expect(swapped.lang).toBe(state.lang);
+      expect(swapped.dialect).toBe(state.dialect);
+      expect(swapped.translation.targetLanguage).toBe(state.translation.targetLanguage);
+      expect(swapped.translation.dialectByLanguage).toEqual(state.translation.dialectByLanguage);
+
+      expect(settingsReducers(swapped, SettingsActions.swapCaptionPanes()).translation.paneOrder).toBe('original-first');
+    });
+
+    it('treats settings stored before the pane order existed as original first', () => {
+      const legacy = { ...defaultSettingsState, translation: { enabled: true, mode: 'split' as const, targetLanguage: 'es' } };
+      expect(settingsReducers(legacy, SettingsActions.swapCaptionPanes()).translation.paneOrder).toBe('translated-first');
+    });
+
+    it('keeps the pane order when the languages are swapped', () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'fr' }));
+      state = settingsReducers(state, SettingsActions.swapCaptionPanes());
+      state = settingsReducers(state, SettingsActions.swapTranslationLanguages());
+      expect(state.translation.paneOrder).toBe('translated-first');
+    });
+
+    it('sets the Picture-in-Picture content', () => {
+      (['original', 'split', 'translated'] as const).forEach((content) => {
+        expect(settingsReducers(defaultSettingsState, SettingsActions.setPipContent({ content })).translation.pipContent).toBe(content);
+      });
+    });
+
+    it('saves the layout fields through saveTranslationSettings', () => {
+      const state = settingsReducers(defaultSettingsState, SettingsActions.saveTranslationSettings({
+        translation: { splitOrientation: 'horizontal', pipContent: 'split' }
+      }));
+      expect(state.translation.splitOrientation).toBe('horizontal');
+      expect(state.translation.pipContent).toBe('split');
+      expect(state.translation.targetLanguage).toBe('es');
+    });
+  });
+
   describe('setDialect', () => {
     it('remembers the dialect for its own language', () => {
       const state = settingsReducers(defaultSettingsState, SettingsActions.setDialect({ dialect: 'es-US' }));

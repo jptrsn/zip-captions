@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, PipContent, RecognitionDialect, SettingsState, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -51,4 +51,10 @@ export const saveEngineSuccess = createAction('[Settings] Save Engine Success');
 export const setTranslationEnabled = createAction('[Settings] Set Translation Enabled', props<{ enabled: boolean }>());
 export const setTranslationMode = createAction('[Settings] Set Translation Mode', props<{ mode: TranslationDisplayMode }>());
 export const setTranslationTargetLanguage = createAction('[Settings] Set Translation Target Language', props<{ targetLanguage: string }>());
-export const saveTranslationSettings = createAction('[Settings] Save Translation Settings', props<{ translation: Partial<TranslationSettings> }>());export const swapTranslationLanguages = createAction('[Settings] Swap Translation Languages');
+export const saveTranslationSettings = createAction('[Settings] Save Translation Settings', props<{ translation: Partial<TranslationSettings> }>());
+export const swapTranslationLanguages = createAction('[Settings] Swap Translation Languages');
+
+export const setSplitOrientation = createAction('[Settings] Set Split Orientation', props<{ orientation: SplitOrientation }>());
+/** Swaps which pane is first. Unlike swapTranslationLanguages, it changes no language. */
+export const swapCaptionPanes = createAction('[Settings] Swap Caption Panes');
+export const setPipContent = createAction('[Settings] Set PiP Content', props<{ content: PipContent }>());

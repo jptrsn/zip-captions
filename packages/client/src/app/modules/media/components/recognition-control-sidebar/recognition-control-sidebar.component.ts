@@ -3,7 +3,8 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
-import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, LineHeight, SettingsActions, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
@@ -49,6 +50,9 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   // Viewers of a broadcast don't control the spoken language
   public showSwap: Signal<boolean>;
   public canSwap: Signal<boolean>;
+  public splitOrientation: Signal<SplitOrientation>;
+  public pipContent: Signal<PipContent>;
+  public pipSupported: boolean;
 
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
@@ -57,7 +61,8 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private translatorService: ChromeTranslatorService,
-              private peerService: PeerService) {
+              private peerService: PeerService,
+              private documentPip: DocumentPipService) {
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
     this.translationMode = computed(() => this.isTranslatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
@@ -81,6 +86,10 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     this.targetLanguage = computed(() => {
       return this.translationSettings()?.targetLanguage ?? (sourceLanguageCode() === 'es' ? 'en' : 'es');
     });
+
+    this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
+    this.pipContent = computed(() => this.translationSettings()?.pipContent ?? DefaultPipContent);
+    this.pipSupported = this.documentPip.isSupported;
 
     this.showSwap = computed(() => !hostLang());
     this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
@@ -120,6 +129,19 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
 
   swapLanguages(): void {
     this.store.dispatch(SettingsActions.swapTranslationLanguages());
+  }
+
+  toggleOrientation(): void {
+    this.store.dispatch(SettingsActions.setSplitOrientation({ orientation: this.splitOrientation() === 'vertical' ? 'horizontal' : 'vertical' }));
+  }
+
+  /** Exchanges which pane is first; unlike swapLanguages it changes no language */
+  swapPanes(): void {
+    this.store.dispatch(SettingsActions.swapCaptionPanes());
+  }
+
+  setPipContent(content: PipContent): void {
+    this.store.dispatch(SettingsActions.setPipContent({ content }));
   }
 
   setTargetLanguage(targetLanguage: string): void {

@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, SplitOrientation, PipContent } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -18,7 +18,10 @@ export const defaultSettingsState: SettingsState = {
   translation: {
     enabled: false,
     mode: 'off',
-    targetLanguage: 'es'
+    targetLanguage: 'es',
+    splitOrientation: DefaultSplitOrientation,
+    paneOrder: DefaultPaneOrder,
+    pipContent: DefaultPipContent
   }
 }
 
@@ -92,5 +95,8 @@ export const settingsReducers = createReducer(
 
   on(SettingsActions.setTranslationTargetLanguage, (state: SettingsState, action: { targetLanguage: string }) => ({...state, translation: { ...state.translation, targetLanguage: action.targetLanguage }})),
   on(SettingsActions.saveTranslationSettings, (state: SettingsState, action: { translation: Partial<TranslationSettings> }) => ({...state, translation: { ...state.translation, ...action.translation }})),
+  on(SettingsActions.setSplitOrientation, (state: SettingsState, action: { orientation: SplitOrientation }) => ({...state, translation: { ...state.translation, splitOrientation: action.orientation }})),
+  on(SettingsActions.swapCaptionPanes, (state: SettingsState) => ({...state, translation: { ...state.translation, paneOrder: (state.translation.paneOrder ?? DefaultPaneOrder) === 'original-first' ? 'translated-first' : 'original-first' } as TranslationSettings})),
+  on(SettingsActions.setPipContent, (state: SettingsState, action: { content: PipContent }) => ({...state, translation: { ...state.translation, pipContent: action.content }})),
 )
 

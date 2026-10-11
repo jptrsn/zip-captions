@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
+import { DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
 
@@ -101,6 +101,21 @@ export const selectTranslationEnabled = createSelector(
 export const selectTranslationMode = createSelector(
   selectTranslationSettings,
   (translation) => translation?.mode ?? 'off'
+)
+
+export const selectSplitOrientation = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.splitOrientation ?? DefaultSplitOrientation
+)
+
+export const selectPaneOrder = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.paneOrder ?? DefaultPaneOrder
+)
+
+export const selectPipContent = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.pipContent ?? DefaultPipContent
 )
 
 export const selectTranslationTargetLanguage = createSelector(

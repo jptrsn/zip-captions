@@ -402,8 +402,6 @@
       "off": "翻译已禁用",
       "targetLang": "翻译为",
       "displayMode": "字幕布局",
-      "modeSplit": "水平拆分（双语）",
-      "modeSplitDesc": "上方显示原文，下方显示翻译字幕",
       "modeTranslatedOnly": "仅显示翻译",
       "modeTranslatedOnlyDesc": "仅显示翻译后的字幕",
       "statusTitle": "Chrome 端侧 AI 状态",
@@ -426,7 +424,19 @@
       "swapLanguages": "交换语和翻译语言",
       "swapUnavailable": "语言认可不适用于此语言。",
       "modelsManagedByChrome": "Chrome 管理下载的翻译模型,并可能将其移除到免费空间。",
-      "learnMore": "学习更多"
+      "learnMore": "学习更多",
+      "modeSplit": "双语(Bilingual)",
+      "modeSplitDesc": "原创和翻译两张字符串",
+      "splitOrientation": "分散方向",
+      "orientationSideBySide": "一边一边",
+      "orientationStacked": "沉没",
+      "swapPanes": "交换原创和翻译板",
+      "paneOriginal": "原始捕捉",
+      "paneTranslated": "翻译 Captions",
+      "pipContent": "Picture-in-Picture 表演",
+      "pipContentOriginal": "原创仅",
+      "pipContentTranslated": "仅翻译",
+      "pipContentSplit": "原创和翻译"
     }
   },
   "STREAM": {

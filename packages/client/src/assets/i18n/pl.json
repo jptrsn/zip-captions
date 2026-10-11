@@ -402,8 +402,6 @@
       "off": "Tłumaczenie wyłączone",
       "targetLang": "Przetłumacz na",
       "displayMode": "Układ napisów",
-      "modeSplit": "Podział poziomy (dwujęzyczny)",
-      "modeSplitDesc": "Oryginał na górze, przetłumaczone napisy na dole",
       "modeTranslatedOnly": "Tylko przetłumaczone",
       "modeTranslatedOnlyDesc": "Wyświetlaj tylko przetłumaczone napisy",
       "statusTitle": "Stan wbudowanej AI Chrome",
@@ -426,7 +424,19 @@
       "swapLanguages": "Swap języków mówionych i tłumaczeń",
       "swapUnavailable": "Rozpoznawanie mowy nie jest dostępne w tym języku.",
       "modelsManagedByChrome": "Chrome obsługuje pobrane modele tłumaczeń i może je usunąć do wolnego miejsca.",
-      "learnMore": "dowiedzieć się więcej"
+      "learnMore": "dowiedzieć się więcej",
+      "modeSplit": "rozdzielczość ( bilingualna )",
+      "modeSplitDesc": "Oryginalne i przetłumaczone w dwóch panelach",
+      "splitOrientation": "Podzielona orientacja",
+      "orientationSideBySide": "Strona po stronie",
+      "orientationStacked": "wstrząśnięty",
+      "swapPanes": "Zmień oryginalne i przetłumaczone panele",
+      "paneOriginal": "oryginalne captions",
+      "paneTranslated": "Tłumaczone kaptuły",
+      "pipContent": "Picture-in-Picture pokazy",
+      "pipContentOriginal": "Oryginalny tylko",
+      "pipContentTranslated": "Tłumaczone tylko",
+      "pipContentSplit": "Oryginalne i tłumaczone"
     }
   },
   "STREAM": {

@@ -402,8 +402,6 @@
       "off": "Переклад вимкнено",
       "targetLang": "Перекласти на",
       "displayMode": "Макет субтитрів",
-      "modeSplit": "Горизонтальний поділ (двомовний)",
-      "modeSplitDesc": "Оригінал зверху, перекладені субтитри знизу",
       "modeTranslatedOnly": "Тільки переклад",
       "modeTranslatedOnlyDesc": "Показувати лише перекладені субтитри",
       "statusTitle": "Стан локального ШІ Chrome",
@@ -426,7 +424,19 @@
       "swapLanguages": "Переклади і переклади мов",
       "swapUnavailable": "Визнання мови не доступно для цього мови.",
       "modelsManagedByChrome": "Chrome керує завантаженими моделями перекладу і може видалити їх у вільний простір.",
-      "learnMore": "Дізнайтеся більше"
+      "learnMore": "Дізнайтеся більше",
+      "modeSplit": "Роздільна мова (Bilingual)",
+      "modeSplitDesc": "Оригінальні та перекладені капсули в двох панелях",
+      "splitOrientation": "Роздрібна орієнтація",
+      "orientationSideBySide": "Сторінка по стороні",
+      "orientationStacked": "Застосований",
+      "swapPanes": "Змінити оригінальні та перекладені панелі",
+      "paneOriginal": "Оригінальна капсула",
+      "paneTranslated": "Перекладені капсули",
+      "pipContent": "Створення Picture-in-Picture",
+      "pipContentOriginal": "Оригінальна тільки",
+      "pipContentTranslated": "Перекладено тільки",
+      "pipContentSplit": "Оригінальна і перекладена"
     }
   },
   "STREAM": {

@@ -89,6 +89,46 @@
             </button>
           </div>
 
+          <div *ngIf="translationMode() === 'split' || (showPip && pipSupported && translationMode() !== 'off')" class="flex flex-col gap-1 mt-1">
+            <ng-container *ngIf="translationMode() === 'split'">
+              <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
+                {{ 'SETTINGS.TRANSLATION.splitOrientation' | translate }}
+              </label>
+              <div class="flex items-center gap-1">
+                <div class="grid grid-cols-2 gap-1 flex-grow">
+                  <button class="btn btn-xs" data-testid="zc-sidebar-orientation-vertical" [ngClass]="{'btn-primary': splitOrientation() === 'vertical', 'btn-ghost text-base-100': splitOrientation() !== 'vertical'}" (click)="splitOrientation() !== 'vertical' && toggleOrientation()">
+                    {{ 'SETTINGS.TRANSLATION.orientationStacked' | translate }}
+                  </button>
+                  <button class="btn btn-xs" data-testid="zc-sidebar-orientation-horizontal" [ngClass]="{'btn-primary': splitOrientation() === 'horizontal', 'btn-ghost text-base-100': splitOrientation() !== 'horizontal'}" (click)="splitOrientation() !== 'horizontal' && toggleOrientation()">
+                    {{ 'SETTINGS.TRANSLATION.orientationSideBySide' | translate }}
+                  </button>
+                </div>
+                <button type="button" class="btn btn-xs btn-square" data-testid="zc-sidebar-swap-panes"
+                        (click)="swapPanes()"
+                        [attr.aria-label]="'SETTINGS.TRANSLATION.swapPanes' | translate"
+                        [title]="'SETTINGS.TRANSLATION.swapPanes' | translate">
+                  <ng-icon name="heroArrowsUpDown"></ng-icon>
+                </button>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="showPip && pipSupported && translationMode() !== 'off'">
+              <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider mt-1">
+                {{ 'SETTINGS.TRANSLATION.pipContent' | translate }}
+              </label>
+              <div class="grid grid-cols-3 gap-1">
+                <button class="btn btn-xs" data-testid="zc-sidebar-pip-original" [ngClass]="{'btn-primary': pipContent() === 'original', 'btn-ghost text-base-100': pipContent() !== 'original'}" (click)="setPipContent('original')">
+                  {{ 'SETTINGS.TRANSLATION.pipContentOriginal' | translate }}
+                </button>
+                <button class="btn btn-xs" data-testid="zc-sidebar-pip-translated" [ngClass]="{'btn-primary': pipContent() === 'translated', 'btn-ghost text-base-100': pipContent() !== 'translated'}" (click)="setPipContent('translated')">
+                  {{ 'SETTINGS.TRANSLATION.pipContentTranslated' | translate }}
+                </button>
+                <button class="btn btn-xs" data-testid="zc-sidebar-pip-split" [ngClass]="{'btn-primary': pipContent() === 'split', 'btn-ghost text-base-100': pipContent() !== 'split'}" (click)="setPipContent('split')">
+                  {{ 'SETTINGS.TRANSLATION.pipContentSplit' | translate }}
+                </button>
+              </div>
+            </ng-container>
+          </div>
+
           <div class="flex flex-col gap-1 mt-1">
             <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
               {{ 'SETTINGS.TRANSLATION.targetLang' | translate }}

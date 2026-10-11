@@ -402,8 +402,6 @@
       "off": "تم تعطيل الترجمة",
       "targetLang": "الترجمة إلى",
       "displayMode": "تنسيق عرض التسميات التوضيحية",
-      "modeSplit": "تقسيم أفقي (ثنائي اللغة)",
-      "modeSplitDesc": "الكلام الأصلي في الأعلى والترجمة في الأسفل",
       "modeTranslatedOnly": "الترجمة فقط",
       "modeTranslatedOnlyDesc": "عرض التسميات التوضيحية المترجمة فقط",
       "statusTitle": "حالة الذكاء الاصطناعي في متصفح Chrome",
@@ -426,7 +424,19 @@
       "swapLanguages": "تبادل اللغات المتحدثة والترجمة",
       "swapUnavailable": "التعرف على الكلام غير متوفر لهذه اللغة.",
       "modelsManagedByChrome": "يقوم Chrome بإدارة نماذج الترجمة التي تم تنزيلها ويمكن إزالتها إلى مساحة مجانية.",
-      "learnMore": "تعلم المزيد"
+      "learnMore": "تعلم المزيد",
+      "modeSplit": "تقسيم اللغة (Bilingual)",
+      "modeSplitDesc": "الأصلي والترجمة في اثنين من الألواح",
+      "splitOrientation": "توزيع التوجه",
+      "orientationSideBySide": "الجانب إلى الجانب",
+      "orientationStacked": "متعطش",
+      "swapPanes": "استبدال اللوحات الأصلية والترجمة",
+      "paneOriginal": "القبائل الأصلية",
+      "paneTranslated": "ترجمة Captions",
+      "pipContent": "عرض صور في صور",
+      "pipContentOriginal": "الأصلي فقط",
+      "pipContentTranslated": "الترجمة فقط",
+      "pipContentSplit": "الأصلي والترجمة"
     }
   },
   "STREAM": {
