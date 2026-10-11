@@ -23,10 +23,10 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-P1/P2 | Done |
 | FR-P3 OBS feed | **Gap** |
 | FR-D1, FR-D4 | Done (stacked) |
-| FR-D2 orientation/swap | **Gap** |
-| FR-D3 alignment | Partial: segments have IDs (U1) and the broadcaster's render is ID-aligned. Viewer alignment is U4 and placeholders are U3. |
+| FR-D2 orientation/swap | Done in U3 (broadcaster side; the viewer keeps stacked until U4) |
+| FR-D3 alignment | Broadcaster done (IDs in U1, placeholders in U3). Viewer alignment is U4. |
 | FR-B1, FR-B2, FR-B4, FR-B5 | **Gap** (FR-B3 done) |
-| FR-W* | Partial: PiP is forced translated-only |
+| FR-W1 | Done in U3 (PiP content setting). FR-W2–W5 are U5. |
 | NFR-7 | Done |
 | Regression | `saveTranscriptionSettingsFailure` reducer handler removed. **Fixed in `2292605`**, with a reducer test. |
 | **Bug** | `toObservable()` in `ngOnInit` threw NG0203 in `broadcast-render` (viewer) **and** `broadcast-room` (broadcaster; masked by a pre-existing test-setup failure). **Fixed in `2292605`**: created in the constructor. |
@@ -34,6 +34,8 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 **Test baseline (2026-10-10):** `develop` has 46 of 96 suites failing (pre-existing missing-provider test setup: `Store`, `HttpClient`, `ActivatedRoute`, `TranslateService`, plus `webkitSpeechRecognition` undefined). The merged branch has 47 of 98 failing. The only new failure is `broadcast-render` (the NG0203 bug above), and the two new translation suites pass.
 
 **Current test baseline (after U2, `260411d`):** 45 of 106 client suites failing, all pre-existing. Compare by **suite name**, not count: strip the ` (12.3 s)` timing suffix Jest adds to slow suites before diffing. The list of failing suites is reproducible by running the suite at the previous commit in a scratch `git worktree` with `node_modules` symlinked. A full run takes 5–10 minutes. Once, a run hung with idle workers at 0% CPU and no output; killing it and rerunning fixed it. Write output to a log rather than piping through `sort`, so progress is visible.
+
+**Current test baseline (after U3):** 44 of 109 client suites failing. Compared by name against a `HEAD` (`2c6eda7`) worktree run: **no newly failing suite**. (The baseline run hung on its last suite and was killed, so one suite, `leave-session`, has no baseline result; it passes now. `recognized-text.component.spec` and `wake-lock-enabled.component.spec` failed in that baseline run and pass now; the first was rewritten, the second is unrelated and probably order-dependent.) Hangs with idle workers happened twice this unit; kill and rerun.
 
 **Test patterns that work around the pre-existing setup gaps:**
 - Engines: stub `globalThis.webkitSpeechRecognition` with a fake `EventTarget` (see `web-recognition.service.spec.ts`).
@@ -78,18 +80,21 @@ Design: `construction/u2-bilingual-language-tagging/functional-design.md` (v3). 
 - Azure `result.language` is honoured when present.
 - Bilingual hint added, plus a "Chrome manages models" note with a link to Chrome's model-management page.
 
-## U3 — Split orientation, swap & PiP content
+## U3 — Split orientation, swap & PiP content ✅
 Horizontal/vertical, pane swap, language labels. A PiP content setting (FR-W1).
 *Stories:* US-C1–C3, US-W1.
 
-**Pane swap ≠ language swap.** U2's swap button exchanges the *spoken and translation languages* (`swapTranslationLanguages`). U3's "pane swap" (FR-D2) only exchanges which *pane* shows original vs translated, and leaves the languages alone. Use distinct names, strings and actions.
+Design: `construction/u3-split-orientation-pip/functional-design.md` (ten decisions approved as recommended; deviations in §14). Done:
+- **Settings** (persisted in `translation`): `splitOrientation` (`vertical` stacked by default, or `horizontal` side by side), `paneOrder` (`original-first` | `translated-first`) and `pipContent` (`original` | `translated` | `split`, default `translated`). All optional, with selector defaults, so settings stored before U3 keep working.
+- **Pane swap ≠ language swap.** New `swapCaptionPanes` toggles `paneOrder` only and never touches a language. U2's `swapTranslationLanguages` is unchanged and leaves the pane order alone. Controls: a cluster on the divider (inside the caption container, so it works in PiP), the sidebar, and the settings form (orientation and PiP content).
+- **Layout:** one `captionView` (`original` | `translated` | `split`) from `resolveCaptionView`, replacing `effectiveTranslationMode`. Split panes render in `paneOrder` (DOM order follows visual order), stacked or side by side, in full-screen and PiP. Panes are `role="region"` with labels.
+- **Placeholders (FR-D3):** the translated pane has exactly one line per segment, so line N is the same segment in both panes. A pending translation is a placeholder (pulsing "…", static under reduced motion, `aria-hidden`) that the translation later fills in place, because lines are tracked by segment ID. Segments already in the target language resolve without a translator call. Both panes now have equal length, which fixes the `renderHistory` slice picking different segments in each pane.
+- **Per-line `lang`/`dir` (FR-6):** `app-recognized-text` takes a new `lines` input (`CaptionLine`), with `textOutput` still accepted for the viewer. An English line in an Arabic pane renders left to right.
+- **Labels:** each pane label shows the current language. After a language swap, the original pane marks older lines in another language with a small chip. The translated pane needs none, because the whole history is re-translated to the new target.
+- **i18n:** 10 new keys, plus `modeSplit` / `modeSplitDesc` relabelled ("Horizontal Split" described the stacked layout). All locales regenerated with `scripts/translate.py`.
+- **Server:** the server `UiSettings` schema has no `translation` field, so translation settings don't sync. Nothing to add.
 
-**Carried into U3 from U1/U2:**
-- **Placeholders (FR-D3 / US-C3):** `recognition-render` currently *omits* segments still waiting for translation (`alignTranslations`), so the panes can differ in line count. U3 shows a placeholder per pending segment so lines never shift.
-- **Per-line `lang`/`dir` (FR-6 / US-C1):** `dir` is set on the pane container, so in an Arabic pane any English segments render RTL. Segments carry their own `lang` (U1/U2). `app-recognized-text` takes `Signal<string[]>`, so per-line attributes need it to accept segments, or a parallel `lang` array.
-- **PiP content (FR-W1):** `recognition-render.effectiveTranslationMode` forces `translated-only` while PiP is active. It becomes a setting (`original` | `translated` | `split`), defaulting to translated-only.
-- **Language labels:** `originalLanguageLabel` shows the global spoken language. After a swap, older lines can be in another language. Decide whether the label shows the current spoken language only (simplest), or per-line language when it differs.
-- **Viewer side:** `broadcast-render` (broadcast viewer) still aligns translations by index, because the payload has no IDs. Leave it to U4 unless the U3 layout work touches it.
+*Left for U4:* `broadcast-render` (viewer) keeps its own stacked split, ignores orientation and pane order, and is still index-aligned (no payload IDs). When it gets IDs, lift the pane markup into a shared component.
 
 ## U4 — Broadcast both feeds
 Versioned payload carrying `{ id, text, lang }` for both original and translated segments, plus `translations: [targetLang]`. Viewer picker merges the broadcaster's languages with local ones (FR-B4/B5). Old viewers still get `recognition` as before.
