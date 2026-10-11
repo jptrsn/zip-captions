@@ -18,7 +18,7 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-2 / Q9 eligibility | Done in U0 (`3c53761`) |
 | FR-4 targets | Done: 17 targets kept for Release 1 (Q3 amended) |
 | FR-6 `lang`/`dir` | Done in U0 (`3c53761`) |
-| FR-9, FR-AZ-* | **Gap:** the source language is always the global dialect. U1 added per-segment `lang`; U2 tags it. |
+| FR-9, FR-AZ-* | Done for user-set languages (U2): segments translate from their own `lang`. Detection-based tagging (FR-AZ-3/4) is parked to R2-U1. FR-AZ-1/2/5 are done. |
 | FR-C* conversation | Deferred to Release 2 |
 | FR-P1/P2 | Done |
 | FR-P3 OBS feed | **Gap** |
@@ -57,9 +57,18 @@ Design: `construction/u1-caption-segment-model/functional-design.md`. Done:
 
 *Noted for U4:* `broadcast-render` (viewer) still aligns by index, because the payload has no IDs.
 
-## U2 — Bilingual-locale language tagging
-`BilingualDialects` metadata. `LanguageDetector`, restricted to the pair, tags final segments. Per-segment translation source, with pass-through when source = target. Azure config is unchanged, with a regression test proving it.
-*Stories:* US-AZ1–AZ3.
+## U2 — Language pair controls ✅ *(rescoped 2026-10-10)*
+The user sets the spoken language (any supported dialect, independent of the UI language) and the translation language, and can swap the two. A swap takes effect mid-session on both engines; this fixes Azure `setLanguage` silently stopping. Per-segment translation source, with pass-through when source = target. The language Azure reports is honoured when present, and Azure config is unchanged. Model deletion is not possible: the Chrome API has no delete method.
+*Stories:* US-AZ1 (regression guard); swap is new.
+*Parked to R2-U1:* `LanguageDetector`-based tagging (US-AZ2 detection, FR-AZ-3/4).
+
+Design: `construction/u2-bilingual-language-tagging/functional-design.md` (v3). Done:
+- "Language" is renamed **Spoken language** and stays bound to recognition. A new optional **Interface language** setting defaults to "Same as spoken language"; it's synced through the server schema field `uiLanguage`.
+- Swap in the translation settings, caption view and sidebar (hidden for broadcast viewers). The dialect last used for each language is remembered.
+- Mid-session language changes now take effect on Web Speech (restart) and Azure (fixes the silent stop).
+- Segments translate from their own `lang`, and segments already in the target language pass through.
+- Azure `result.language` is honoured when present.
+- Bilingual hint added, plus a "Chrome manages models" note with a link to Chrome's model-management page.
 
 ## U3 — Split orientation, swap & PiP content
 Horizontal/vertical, pane swap, language labels. A PiP content setting (FR-W1).
@@ -78,7 +87,7 @@ OBS caption source setting: original or translated.
 *Stories:* US-B4.
 
 ## Release 2
-**R2-U1 — Conversation mode:** language pair (interface languages only), manual Switch (finalize, then restart), automatic turns on bilingual locales, two-pane conversation view. *Stories:* US-A1–A4.
+**R2-U1 — Conversation mode:** language pair (interface languages only), manual Switch (finalize, then restart), automatic turns on bilingual locales, two-pane conversation view. **Includes automatic language detection** (`LanguageDetector` tagging for bilingual locales, FR-AZ-3/4), parked from U2 on 2026-10-10. *Stories:* US-A1–A4.
 
 ## Follow-ups
 US-C4 draggable divider. More bilingual profiles.

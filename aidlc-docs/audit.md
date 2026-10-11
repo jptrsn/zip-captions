@@ -86,3 +86,35 @@
 - Corrected requirements §3: Azure history was already capped at 15 in the baseline.
 - Tests: 6 new or extended suites (segment history, alignment helpers, Web and Azure engines, facade compatibility, translator cache). Full client suite: 45 of 103 failing vs 46 of 99 at `97216ea`. Compared by name: **no new failures**, and `recognition.service.spec` is fixed (stub engines). Typecheck is clean.
 - Note: a full run once hung with idle workers. A rerun completed normally.
+
+## 2026-10-10 — U2 rescoped to language pair controls
+
+**Human:** the UI should let users delete downloaded models, if the Chrome API permits it. Detection is only relevant to conversation mode; otherwise the user sets the spoken and translation languages and can swap them. Park conversation mode and automatic detection. Respect a model's own language information (the Azure special case), but add no detection outside that.
+
+**AI actions:**
+- Rewrote the U2 design (`construction/u2-bilingual-language-tagging/functional-design.md`, v2). `LanguageDetector` tagging moved to R2-U1.
+- docs-mcp findings:
+  - The Translator API has no deletion method (`destroy()` frees memory only).
+  - Chrome manages model storage itself and hides per-pair download status for privacy.
+  - Azure SDK `RecognitionResult.language` is filled only "if provided", which the docs describe only for language-ID configs.
+- Found an existing bug: Azure `setLanguage()` rebuilds the recognizer but never restarts continuous recognition, so a mid-session dialect change silently stops captions. The design fixes it (a swap would hit it every time).
+
+**Awaiting:** approval of U2 v2 and decisions §8.1–8.4.
+
+## 2026-10-10 — U2 language pair controls complete
+
+**Human decisions on v2:**
+1. Add the model-management note with a link to the relevant help page.
+2. The dialect is bound to recognition, not the UI. Rename "Language" to "Spoken language" and add an optional "Interface language" defaulting to "Same as spoken language".
+3. Fix the Azure mid-session restart.
+4. Keep the bilingual hint.
+
+**AI actions:**
+- Design v3 (`construction/u2-bilingual-language-tagging/functional-design.md`). Requirements FR-L1–L4 added. FR-AZ-3/4 detection is marked parked.
+- **Settings:** new `uiLanguage` (`'spoken'` default) and `selectUiLanguage`. All `translate.use` sites now use the effective interface language, so `setLanguage` no longer switches a fixed interface language. Server schema `uiLanguage` prop added. `translation.dialectByLanguage` remembers dialects.
+- **Swap:** `swapLanguagePair` (pure, shared by the reducer and the settings form) and the `swapTranslationLanguages` action. Buttons are in translation settings (form; Save applies), the caption view (split and translated-only) and the sidebar (hidden for broadcast viewers). It's disabled with an explanation for ja/ko/hi/vi/ru/nl/tr.
+- **Engines:** Web `setLanguage` stops while streaming so `end` restarts with the new language. Azure `setLanguage` stops and closes the old recognizer, then reconnects with the same config (fixes the silent stop). Azure honours `result.language` when present.
+- **Translation:** `planTranslations` groups segments by their own language. Target-language groups pass through. Segments are retranslated when `lang` changes.
+- **UI copy:** "This dialect also recognizes English" hint. "Chrome manages downloaded translation models…" note with "Learn more" linking to developer.chrome.com/docs/ai/understand-built-in-model-management (no user-facing Chrome Help article found in the indexed docs).
+- **i18n:** 8 new English keys; the other locales were generated with `scripts/translate.py`.
+- **Tests:** client suite 45 of 106 failing vs 45 of 103 after U1. Compared by name: **no new failures**, and the touched UI suites fail with the same pre-existing reasons. New or extended specs: reducer (swap, dialect memory, uiLanguage), selectors, settings model (bilingual map, swap rule), effects (UI language decoupling), Web/Azure engines (mid-session restart, config regression for bilingual locales, `result.language`), segment-translation planning, server schema. Client and server typechecks are clean. The server `ui-settings.service.spec` fails identically on the baseline (no model provider).

@@ -98,11 +98,17 @@ A segment that mixes both languages within one sentence goes to the translator u
 - **FR-8:** Translation is **engine-agnostic**. It consumes segments from the `RecognitionService` facade, so it works with both Web Speech and Azure.
 - **FR-9:** **Per-segment source language.** The source language of a translation is the segment's `lang`, not the global setting. If the segment's language already matches the target, the text passes through untranslated.
 
+### Language pair (added 2026-10-10, U2)
+- **FR-L1:** The **spoken language** (language + dialect) drives recognition only. A separate, optional **interface language** defaults to "Same as spoken language".
+- **FR-L2:** The user can **swap** the spoken and translation languages from settings, the caption view and the sidebar. Swapping back restores the last dialect used for each language. Swap is unavailable when the translation language has no recognition dialect.
+- **FR-L3:** A spoken-language change takes effect immediately during a session, on both engines.
+- **FR-L4:** Downloaded models can't be deleted through the Chrome API. The UI says that Chrome manages them and links to Chrome's documentation.
+
 ### Azure bilingual locales
 - **FR-AZ-1:** A `BilingualDialects` map describes Azure's native bilingual locales (§3.1): `fr-CA`→`[fr, en]`, `es-US`→`[es, en]`, the 16 listed `ar-*` locales→`[ar, en]`, `en-IN`→`[en]`. This is metadata only; recognizer configuration is unchanged.
 - **FR-AZ-2:** The native switching is **preserved**. Azure recognition setup is not changed for these locales.
-- **FR-AZ-3:** When translation is on, each final segment from a bilingual locale is tagged with its language through `LanguageDetector`, restricted to that pair (§3.1). When detection is unavailable or low-confidence, the segment keeps the configured dialect's language.
-- **FR-AZ-4:** Translation uses the per-segment language (FR-9). In a French-to-English feed, English segments pass through, and the reverse holds too.
+- **FR-AZ-3:** *(Parked to Release 2 with conversation mode, 2026-10-10.)* When translation is on, each final segment from a bilingual locale is tagged with its language through `LanguageDetector`, restricted to that pair (§3.1). When detection is unavailable or low-confidence, the segment keeps the configured dialect's language.
+- **FR-AZ-4:** *(Detection part parked to Release 2, 2026-10-10. Per-segment language from user settings or Azure is done in U2.)* Translation uses the per-segment language (FR-9). In a French-to-English feed, English segments pass through, and the reverse holds too.
 - **FR-AZ-5:** The settings UI says that the selected locale also recognizes English (Azure only).
 
 ### Conversation (Epic A) — **deferred to Release 2**
