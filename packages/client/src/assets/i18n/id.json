@@ -143,7 +143,8 @@
       "title": "Situs web ini menggunakan cookie",
       "p1": "Kami menggunakan cookie untuk memberikan fungsionalitas situs web. Kami hanya menyimpan cookie yang sangat diperlukan, diperlukan untuk mengizinkan fungsionalitas aplikasi ini (mis. Pengaturan yang disesuaikan, dll).",
       "p2": "Kami tidak melacak atau menyimpan cookie non-fungsional di perangkat Anda.",
-      "p3": "Lihat kebijakan cookie kami untuk lebih detail"
+      "p3": "Lihat kebijakan cookie kami untuk lebih detail",
+      "close": "Tutup pemberitahuan cookie"
     },
     "POLICY": {
       "title": "Kebijakan Cookie",
@@ -394,7 +395,7 @@
       "balance": "Keseimbangan Anda",
       "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
       "requestTokens": "Meminta Token Gratis",
-      "bilingualHint": "Dialektus ini juga mengenali bahasa Inggris."
+      "bilingualHint": "Dialek ini juga mengenali bahasa Inggris."
     },
     "TRANSLATION": {
       "enable": "Terjemahan Langsung",
@@ -414,29 +415,29 @@
       "statusDownloadable": "Perlu Diunduh",
       "downloadButton": "Unduh Model Terjemahan",
       "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",
-      "privacyNoticeSpeech": "Pengenalan bicara terpisah, dan tergantung pada mesin bicara yang Anda pilih, audio dapat diproses di awan.",
-      "experimental": "Fitur Eksperimen",
-      "unsupportedMobileHint": "Terjemahan pada perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung pada ponsel atau tablet.",
-      "privacyNotice": "Terjemahan berjalan sepenuhnya pada perangkat Anda menggunakan model bahasa Chrome yang terintegrasi, dan teks terjemahan tidak pernah dikirim ke server apa pun.",
-      "modelsTitle": "Model Terjemahan",
-      "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan mereka sendiri, yang Chrome download sekali pertama kali Anda menggunakannya.",
-      "modelPerPairNotice": "Satu kali download untuk pasangan bahasa ini",
-      "swapLanguages": "Swap berbicara dan terjemahan bahasa",
-      "swapUnavailable": "Pengakuan bahasa tidak tersedia untuk bahasa ini.",
-      "modelsManagedByChrome": "Chrome mengendalikan model terjemahan yang dimuat turun dan dapat menghapusnya ke ruang bebas.",
-      "learnMore": "Belajar Lebih Banyak",
-      "modeSplit": "Berbagi (Bilingual)",
-      "modeSplitDesc": "Original dan terjemahan captions dalam dua panel",
-      "splitOrientation": "Orientasi Berbeda",
-      "orientationSideBySide": "Sisi demi sisi",
-      "orientationStacked": "Diperkirakan",
-      "swapPanes": "Menukar Panel asli dan terjemahan",
-      "paneOriginal": "Capsi asli",
-      "paneTranslated": "Terjemahan Captions",
-      "pipContent": "Gambar-gambar dalam gambar",
-      "pipContentOriginal": "Hanya Original",
-      "pipContentTranslated": "Hanya terjemahan",
-      "pipContentSplit": "Original dan Terjemahan"
+      "privacyNoticeSpeech": "Pengenalan ucapan bersifat terpisah, dan tergantung pada mesin ucapan yang Anda pilih, audio mungkin diproses di cloud.",
+      "experimental": "Fitur eksperimental",
+      "unsupportedMobileHint": "Terjemahan di perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung di ponsel atau tablet.",
+      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, dan teks terjemahan tidak pernah dikirim ke server mana pun.",
+      "modelsTitle": "Model penerjemahan",
+      "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan sendiri, yang diunduh oleh Chrome saat pertama kali Anda menggunakannya.",
+      "modelPerPairNotice": "Unduhan sekali untuk pasangan bahasa ini",
+      "swapLanguages": "Tukar bahasa yang diucapkan dan bahasa terjemahan",
+      "swapUnavailable": "Pengenalan ucapan tidak tersedia untuk bahasa ini.",
+      "modelsManagedByChrome": "Chrome mengelola model terjemahan yang diunduh dan mungkin menghapusnya untuk mengosongkan ruang.",
+      "learnMore": "Pelajari lebih lanjut",
+      "modeSplit": "Terpisah (Bilingual)",
+      "modeSplitDesc": "Teks asli dan terjemahan dalam dua panel",
+      "splitOrientation": "Orientasi terbagi",
+      "orientationSideBySide": "Sampingan",
+      "orientationStacked": "Tumpang",
+      "swapPanes": "Tukar panel asli dan terjemahan",
+      "paneOriginal": "Teks asli",
+      "paneTranslated": "Teks terjemahan",
+      "pipContent": "Picture-in-Picture menampilkan",
+      "pipContentOriginal": "Hanya asli",
+      "pipContentTranslated": "Hanya diterjemahkan",
+      "pipContentSplit": "Asli dan terjemahan"
     }
   },
   "STREAM": {
@@ -492,8 +493,8 @@
       "create": "Buat yang baru",
       "changeWarning": "ID siaran tidak dapat diubah setelah disimpan."
     },
-    "fromBroadcaster": "Terjemahan oleh broadcaster",
-    "translatedOnDevice": "Terjemahan pada perangkat ini"
+    "fromBroadcaster": "Diterjemahkan oleh penyiar",
+    "translatedOnDevice": "Diterjemahkan di perangkat ini"
   },
   "MODAL": {
     "confirmEndBroadcast": "Ini akan mengakhiri siaran saat ini dan memutuskan semua rekan.",
@@ -601,9 +602,9 @@
     "provider": "Penyedia",
     "documentPip": "Gambar dalam Gambar",
     "documentPipExit": "Gambar keluar dalam gambar",
-    "spokenLanguage": "Bahasa yang berbicara",
-    "uiLanguage": "Interface Bahasa",
-    "sameAsSpoken": "Sama seperti bahasa yang diucapkan"
+    "spokenLanguage": "Bahasa yang diucapkan",
+    "uiLanguage": "Bahasa antarmuka",
+    "sameAsSpoken": "Sama dengan bahasa yang diucapkan"
   },
   "HINTS": {
     "beginSpeaking": "Mulailah berbicara ...",
@@ -677,9 +678,12 @@
     "obsStreamInactive": "Menunggu aliran obs untuk memulai",
     "connectionEstablished": "Terhubung - Anda dapat memulai sesi teks",
     "disconnected": "Terputus",
-    "obsCaptionSource": "Apa yang diperoleh OBS",
-    "obsCaptionTranslatedFallback": "OBS menerima teks asli saat terjemahan tidak tersedia atau tidak tersedia.",
-    "obsCaptionUnsupportedLanguage": "OBS tidak dapat menunjukkan bahasa ini, karena menggunakan format CEA-608."
+    "obsCaptionSource": "Apa yang diterima OBS",
+    "obsCaptionTranslatedFallback": "OBS menerima teks asli saat terjemahan dimatikan atau tidak tersedia.",
+    "obsCaptionUnsupportedLanguage": "OBS tidak dapat menampilkan bahasa ini karena menggunakan format CEA-608.",
+    "notConnected": "Tidak terhubung ke OBS",
+    "connecting": "Menghubungkan ke OBS",
+    "connectionError": "Kesalahan koneksi OBS"
   },
   "AUTH": {
     "title": "Masuk ke Zip Captions",

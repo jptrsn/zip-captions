@@ -1,16 +1,16 @@
 {
   "LANGUAGES": {
-    "en": "English",
-    "fr": "French (Français)",
-    "es": "Spanish (Espagnol)",
-    "de": "German (Deutsch)",
-    "it": "Italian (Italiano)",
-    "pt": "Portuguese (Português)",
     "id": "Bahasa Indonesia",
     "pl": "Polaco (Polski)",
     "uk": "Ucraniano (Український)",
     "ar": "Língua Árabe (عربي)",
-    "zh": "Mandarim Simplificado"
+    "zh": "Mandarim Simplificado",
+    "en": "Inglês",
+    "fr": "French (Français)",
+    "es": "Spanish (Espagnol)",
+    "de": "German (Deutsch)",
+    "it": "Italian (Italiano)",
+    "pt": "Portuguese (Português)"
   },
   "DIALECTS": {
     "unspecified": "Genérico",
@@ -143,7 +143,8 @@
       "title": "Esse website utiliza cookies",
       "p1": "Usamos cookies para fornecer funcionalidade do site. Somente armazenamos cookies estritamente necessários, necessários para permitir a funcionalidade desses aplicativos (por exemplo, configurações personalizadas, etc).",
       "p2": "Não rastreamos ou armazenamos biscoitos não funcionais no seu dispositivo.",
-      "p3": "Veja nossa política de biscoitos para mais detalhes"
+      "p3": "Veja nossa política de biscoitos para mais detalhes",
+      "close": "Fechar o aviso de cookies"
     },
     "POLICY": {
       "title": "Política de cookies",
@@ -394,7 +395,7 @@
       "balance": "O seu equilíbrio",
       "acquire": "Nossos patrocinadores Patreon recebem tokens gratuitos automaticamente todos os meses.",
       "requestTokens": "Solicitar tokens gratuitos",
-      "bilingualHint": "Este diálogo também reconhece o inglês."
+      "bilingualHint": "Este dialeto também reconhece o inglês."
     },
     "TRANSLATION": {
       "enable": "Tradução ao vivo",
@@ -414,28 +415,28 @@
       "statusDownloadable": "Download necessário",
       "downloadButton": "Baixar modelo de tradução",
       "downloadPrompt": "Baixe o modelo de idioma no dispositivo para habilitar a tradução",
-      "privacyNoticeSpeech": "O reconhecimento de fala é separado e, dependendo do motor de fala que você escolher, o áudio pode ser processado na nuvem.",
-      "experimental": "Caracterização Experimental",
-      "unsupportedMobileHint": "A tradução on-device só está disponível em navegadores de desktop (Chrome 138+ ou Edge 148+) e não é suportada em telefones ou tablets.",
-      "privacyNotice": "A tradução funciona inteiramente no seu dispositivo usando os modelos de idiomas integrados do Chrome, e o texto traduzido nunca é enviado a qualquer servidor.",
-      "modelsTitle": "Modelo de Tradução",
-      "modelsPerPair": "Cada par de idiomas usa o seu próprio modelo de tradução, que o Chrome descarrega uma vez que você o usa pela primeira vez.",
-      "modelPerPairNotice": "Download para este par de idiomas",
-      "swapLanguages": "Swap linguagem falada e tradução",
-      "swapUnavailable": "O reconhecimento de fala não está disponível para esta língua.",
-      "modelsManagedByChrome": "O Chrome gerencia modelos de tradução baixados e pode removê-los para espaço livre.",
-      "learnMore": "Aprenda mais",
-      "modeSplit": "Divulgação ( bilingüe )",
-      "modeSplitDesc": "Capções originais e traduzidas em dois painéis",
-      "splitOrientation": "Orientação dividida",
-      "orientationSideBySide": "lado a lado",
-      "orientationStacked": "Estancado",
-      "swapPanes": "Troque os painéis originais e traduzidos",
-      "paneOriginal": "Capturas originais",
-      "paneTranslated": "Captura Traduzida",
-      "pipContent": "Exposição Picture-in-Picture",
-      "pipContentOriginal": "Original apenas",
-      "pipContentTranslated": "Traduzido apenas",
+      "privacyNoticeSpeech": "O reconhecimento de fala é separado e, dependendo do mecanismo de fala escolhido, o áudio pode ser processado na nuvem.",
+      "experimental": "Recurso experimental",
+      "unsupportedMobileHint": "A tradução no dispositivo está disponível apenas em navegadores de desktop (Chrome 138+ ou Edge 148+) e não é suportada em celulares ou tablets.",
+      "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem integrados do Chrome, e o texto traduzido nunca é enviado a nenhum servidor.",
+      "modelsTitle": "Modelos de tradução",
+      "modelsPerPair": "Cada par de idiomas usa seu próprio modelo de tradução, que o Chrome baixa na primeira vez que você o usa.",
+      "modelPerPairNotice": "Download único para este par de idiomas",
+      "swapLanguages": "Trocar idiomas falado e de tradução",
+      "swapUnavailable": "O reconhecimento de fala não está disponível para este idioma.",
+      "modelsManagedByChrome": "O Chrome gerencia os modelos de tradução baixados e pode removê-los para liberar espaço.",
+      "learnMore": "Saiba mais",
+      "modeSplit": "Dividido (Bilíngue)",
+      "modeSplitDesc": "Legendas originais e traduzidas em dois painéis",
+      "splitOrientation": "Orientação da divisão",
+      "orientationSideBySide": "Lado a lado",
+      "orientationStacked": "Empilhado",
+      "swapPanes": "Trocar os painéis original e traduzido",
+      "paneOriginal": "Legendas originais",
+      "paneTranslated": "Legendas traduzidas",
+      "pipContent": "Picture-in-Picture exibe",
+      "pipContentOriginal": "Somente o original",
+      "pipContentTranslated": "Somente traduzido",
       "pipContentSplit": "Original e traduzido"
     }
   },
@@ -492,7 +493,7 @@
       "create": "Crie um novo",
       "changeWarning": "O ID de transmissão não pode ser alterado após salvar."
     },
-    "fromBroadcaster": "Traduzido pela emissora",
+    "fromBroadcaster": "Traduzido pelo transmissor",
     "translatedOnDevice": "Traduzido neste dispositivo"
   },
   "MODAL": {
@@ -572,7 +573,6 @@
     "lang": "Linguagem",
     "theme": "Tema",
     "dialect": "Dialeto",
-    "wakelock": "Screen Wake",
     "wakelockOn": "Impedem a tela de dormir enquanto as legendas estão ativas",
     "wakelockOff": "As legendas do ZIP respeitarão as configurações do seu sistema para dormir.",
     "rememberSetting": "Lembre -se da minha resposta neste dispositivo.",
@@ -601,9 +601,10 @@
     "provider": "Fornecedor",
     "documentPip": "Imagem em Imagem",
     "documentPipExit": "Imagem de saída em imagem",
-    "spokenLanguage": "Língua falada",
-    "uiLanguage": "Língua Interface",
-    "sameAsSpoken": "Assim como a língua falada"
+    "spokenLanguage": "Idioma falado",
+    "uiLanguage": "Idioma da interface",
+    "sameAsSpoken": "Igual ao idioma falado",
+    "wakelock": "Screen Wake"
   },
   "HINTS": {
     "beginSpeaking": "Comece a falar ...",
@@ -677,9 +678,12 @@
     "obsStreamInactive": "Esperando o fluxo do OBS começar",
     "connectionEstablished": "Conectado - você pode começar a sessão de legenda",
     "disconnected": "Desconectado",
-    "obsCaptionSource": "O que OBS recebe",
-    "obsCaptionTranslatedFallback": "OBS recebe o texto original enquanto a tradução está desligada ou não disponível.",
-    "obsCaptionUnsupportedLanguage": "OBS não pode exibir este idioma, porque usa o formato CEA-608."
+    "obsCaptionSource": "O que o OBS recebe",
+    "obsCaptionTranslatedFallback": "O OBS recebe o texto original quando a tradução está desativada ou indisponível.",
+    "obsCaptionUnsupportedLanguage": "O OBS não pode exibir este idioma, pois utiliza o formato CEA-608.",
+    "notConnected": "Não conectado ao OBS",
+    "connecting": "Conectando ao OBS",
+    "connectionError": "Erro de conexão com o OBS"
   },
   "AUTH": {
     "title": "Faça login em legendas",

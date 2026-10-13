@@ -143,7 +143,8 @@
       "title": "Ta strona internetowa używa plików cookie",
       "p1": "Używamy plików cookie, aby zapewnić funkcjonalność strony internetowej. Przechowujemy tylko ściśle niezbędne pliki cookie, wymagane, aby umożliwić funkcjonalność tych aplikacji (np. Ustawienia niestandardowe itp.).",
       "p2": "Nie śledzimy ani nie przechowujemy żadnych niefunkcjonalnych plików cookie na twoim urządzeniu.",
-      "p3": "Zobacz nasze zasady cookie, aby uzyskać więcej szczegółów"
+      "p3": "Zobacz nasze zasady cookie, aby uzyskać więcej szczegółów",
+      "close": "Zamknij powiadomienie o plikach cookie"
     },
     "POLICY": {
       "title": "Polityka Cookie",
@@ -414,29 +415,29 @@
       "statusDownloadable": "Wymagane pobranie",
       "downloadButton": "Pobierz model tłumaczenia",
       "downloadPrompt": "Pobierz model językowy na urządzenie, aby włączyć tłumaczenie",
-      "privacyNoticeSpeech": "Rozpoznawanie mowy jest oddzielone, a w zależności od wybranego silnika mowy, audio może być przetwarzane w chmurze.",
+      "privacyNoticeSpeech": "Rozpoznawanie mowy jest osobnym procesem, a w zależności od wybranego silnika mowy, audio może być przetwarzane w chmurze.",
       "experimental": "Funkcja eksperymentalna",
-      "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne tylko w przeglądarkach stacjonarnych (Chrome 138+ lub Edge 148+) i nie jest obsługiwane na telefonach lub tabletach.",
-      "privacyNotice": "Tłumaczenie działa w całości na urządzeniu za pomocą wbudowanych modeli językowych Chrome, a tłumaczone teksty nigdy nie są wysyłane do żadnego serwera.",
-      "modelsTitle": "Modele tłumaczeń",
-      "modelsPerPair": "Każda para językowa używa własnego modelu tłumaczenia, który Chrome pobiera po raz pierwszy, gdy go używasz.",
-      "modelPerPairNotice": "Jednorazowe pobieranie dla tej pary językowych",
-      "swapLanguages": "Swap języków mówionych i tłumaczeń",
-      "swapUnavailable": "Rozpoznawanie mowy nie jest dostępne w tym języku.",
-      "modelsManagedByChrome": "Chrome obsługuje pobrane modele tłumaczeń i może je usunąć do wolnego miejsca.",
-      "learnMore": "dowiedzieć się więcej",
-      "modeSplit": "rozdzielczość ( bilingualna )",
-      "modeSplitDesc": "Oryginalne i przetłumaczone w dwóch panelach",
-      "splitOrientation": "Podzielona orientacja",
-      "orientationSideBySide": "Strona po stronie",
-      "orientationStacked": "wstrząśnięty",
-      "swapPanes": "Zmień oryginalne i przetłumaczone panele",
-      "paneOriginal": "oryginalne captions",
-      "paneTranslated": "Tłumaczone kaptuły",
-      "pipContent": "Picture-in-Picture pokazy",
-      "pipContentOriginal": "Oryginalny tylko",
-      "pipContentTranslated": "Tłumaczone tylko",
-      "pipContentSplit": "Oryginalne i tłumaczone"
+      "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne wyłącznie w przeglądarkach desktopowych (Chrome 138+ lub Edge 148+) i nie jest obsługiwane na telefonach ani tabletach.",
+      "privacyNotice": "Tłumaczenie odbywa się w całości na Twoim urządzeniu, korzystając z wbudowanych modeli językowych Chrome, a przetłumaczony tekst nigdy nie jest wysyłany na żaden serwer.",
+      "modelsTitle": "Modele tłumaczeniowe",
+      "modelsPerPair": "Każda para języków używa własnego modelu tłumaczenia, który Chrome pobiera po raz pierwszy przy pierwszym użyciu.",
+      "modelPerPairNotice": "Jednorazowe pobranie dla tej pary językowej",
+      "swapLanguages": "Zamień język mówiony na język tłumaczenia",
+      "swapUnavailable": "Rozpoznawanie mowy nie jest dostępne dla tego języka.",
+      "modelsManagedByChrome": "Chrome zarządza pobranymi modelami tłumaczeń i może je usuwać, aby zwolnić miejsce.",
+      "learnMore": "Dowiedz się więcej",
+      "modeSplit": "Podział (dwujęzyczny)",
+      "modeSplitDesc": "Oryginalne i przetłumaczone napisy w dwóch panelach",
+      "splitOrientation": "Układ podziału",
+      "orientationSideBySide": "Obok siebie",
+      "orientationStacked": "Ułożone pionowo",
+      "swapPanes": "Zamień panele z oryginałem i tłumaczeniem",
+      "paneOriginal": "Oryginalne napisy",
+      "paneTranslated": "Przetłumaczone napisy",
+      "pipContent": "Picture-in-Picture wyświetla",
+      "pipContentOriginal": "Tylko oryginał",
+      "pipContentTranslated": "Tylko przetłumaczone",
+      "pipContentSplit": "Oryginał i tłumaczenie"
     }
   },
   "STREAM": {
@@ -493,7 +494,7 @@
       "changeWarning": "Po zapisaniu nie można zmienić identyfikatora transmisji."
     },
     "fromBroadcaster": "Tłumaczenie przez nadawcę",
-    "translatedOnDevice": "Tłumaczenie na tym urządzeniu"
+    "translatedOnDevice": "Tłumaczone na tym urządzeniu"
   },
   "MODAL": {
     "confirmEndBroadcast": "To zakończy aktualną transmisję i odłączy wszystkich rówieśników.",
@@ -601,9 +602,9 @@
     "provider": "dostawca",
     "documentPip": "Zdjęcie w obrazie",
     "documentPipExit": "Zdjęcie wyjścia w obrazie",
-    "spokenLanguage": "mówiony język",
+    "spokenLanguage": "Język mówiony",
     "uiLanguage": "Język interfejsu",
-    "sameAsSpoken": "Podobnie jak mówiony język"
+    "sameAsSpoken": "Taki sam jak język mówiony"
   },
   "HINTS": {
     "beginSpeaking": "Zacznij mówić ...",
@@ -678,8 +679,11 @@
     "connectionEstablished": "Connected - możesz rozpocząć sesję podpisów",
     "disconnected": "Bezładny",
     "obsCaptionSource": "Co OBS otrzymuje",
-    "obsCaptionTranslatedFallback": "OBS otrzymuje oryginalny tekst, podczas gdy tłumaczenie jest wyłączone lub niedostępne.",
-    "obsCaptionUnsupportedLanguage": "OBS nie może wyświetlać tego języka, ponieważ używa formatu CEA-608."
+    "obsCaptionTranslatedFallback": "OBS otrzymuje oryginalny tekst, gdy tłumaczenie jest wyłączone lub niedostępne.",
+    "obsCaptionUnsupportedLanguage": "OBS nie może wyświetlić tego języka, ponieważ używa formatu CEA-608.",
+    "notConnected": "Brak połączenia z OBS",
+    "connecting": "Łączenie z OBS",
+    "connectionError": "Błąd połączenia z OBS"
   },
   "AUTH": {
     "title": "Zaloguj się do podpisów zip",

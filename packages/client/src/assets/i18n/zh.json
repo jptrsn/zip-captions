@@ -143,7 +143,8 @@
       "title": "本网站使用Cookies",
       "p1": "我们只存储严格必要的cookies,需要允许这些应用程序的功能(例如自定义设置等)。",
       "p2": "我们不会在您的设备上跟踪或存储任何非功能的 Cookie。",
-      "p3": "查看我们的 Cookie 政策 更多详细信息"
+      "p3": "查看我们的 Cookie 政策 更多详细信息",
+      "close": "关闭 Cookie 通知"
     },
     "POLICY": {
       "title": "Cookie 政策",
@@ -394,7 +395,7 @@
       "balance": "你的平衡",
       "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
       "requestTokens": "请求免费代币",
-      "bilingualHint": "这个词语也承认英语。"
+      "bilingualHint": "该方言也能识别英语。"
     },
     "TRANSLATION": {
       "enable": "实时翻译",
@@ -414,29 +415,29 @@
       "statusDownloadable": "需要下载",
       "downloadButton": "下载翻译模型",
       "downloadPrompt": "在设备上下载语言模型以启用翻译",
-      "privacyNoticeSpeech": "语音识别是单独的,根据您选择的语音引擎,音频可以在云中处理。",
-      "experimental": "实验特性",
-      "unsupportedMobileHint": "在设备上的翻译仅在桌面浏览器(Chrome 138+或Edge 148+)上可用,并且在手机或平板电脑上不支持。",
-      "privacyNotice": "翻译完全运行在您的设备上使用Chrome的内置语言模型,翻译的文本从未发送到任何服务器。",
+      "privacyNoticeSpeech": "语音识别是独立的，根据您选择的语音引擎，音频可能会在云端进行处理。",
+      "experimental": "实验性功能",
+      "unsupportedMobileHint": "设备端翻译仅在桌面浏览器（Chrome 138+ 或 Edge 148+）中可用，不支持手机或平板电脑。",
+      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，翻译后的文本绝不会发送到任何服务器。",
       "modelsTitle": "翻译模型",
-      "modelsPerPair": "每个语言对都使用自己的翻译模型,Chrome下载一次第一次使用它。",
-      "modelPerPairNotice": "一次下载为此语言对",
-      "swapLanguages": "交换语和翻译语言",
-      "swapUnavailable": "语言认可不适用于此语言。",
-      "modelsManagedByChrome": "Chrome 管理下载的翻译模型,并可能将其移除到免费空间。",
-      "learnMore": "学习更多",
-      "modeSplit": "双语(Bilingual)",
-      "modeSplitDesc": "原创和翻译两张字符串",
-      "splitOrientation": "分散方向",
-      "orientationSideBySide": "一边一边",
-      "orientationStacked": "沉没",
-      "swapPanes": "交换原创和翻译板",
-      "paneOriginal": "原始捕捉",
-      "paneTranslated": "翻译 Captions",
-      "pipContent": "Picture-in-Picture 表演",
-      "pipContentOriginal": "原创仅",
+      "modelsPerPair": "每种语言对使用各自的翻译模型，Chrome 会在您首次使用时下载该模型。",
+      "modelPerPairNotice": "此语言对的一次性下载",
+      "swapLanguages": "交换源语言和目标语言",
+      "swapUnavailable": "该语言不支持语音识别。",
+      "modelsManagedByChrome": "Chrome 管理已下载的翻译模型，并可能删除它们以释放空间。",
+      "learnMore": "了解更多",
+      "modeSplit": "分屏（双语）",
+      "modeSplitDesc": "在两个窗格中显示原始字幕和翻译后的字幕",
+      "splitOrientation": "分栏方向",
+      "orientationSideBySide": "并排",
+      "orientationStacked": "堆叠",
+      "swapPanes": "交换原始和翻译面板",
+      "paneOriginal": "原始字幕",
+      "paneTranslated": "已翻译的字幕",
+      "pipContent": "画中画显示",
+      "pipContentOriginal": "仅原始",
       "pipContentTranslated": "仅翻译",
-      "pipContentSplit": "原创和翻译"
+      "pipContentSplit": "原文和译文"
     }
   },
   "STREAM": {
@@ -492,7 +493,7 @@
       "create": "创建一个新",
       "changeWarning": "播放 ID 不能在存储后更改。"
     },
-    "fromBroadcaster": "由广播公司翻译",
+    "fromBroadcaster": "由主播翻译",
     "translatedOnDevice": "在此设备上翻译"
   },
   "MODAL": {
@@ -601,9 +602,9 @@
     "provider": "供应商",
     "documentPip": "图片在图片中",
     "documentPipExit": "外出图片在图片中",
-    "spokenLanguage": "说话的语言",
+    "spokenLanguage": "口语",
     "uiLanguage": "界面语言",
-    "sameAsSpoken": "相同的语言"
+    "sameAsSpoken": "与语音语言相同"
   },
   "HINTS": {
     "beginSpeaking": "开始说话......",
@@ -677,9 +678,12 @@
     "obsStreamInactive": "等待OBS流开始",
     "connectionEstablished": "连接 - 您可以开始 caption 会议",
     "disconnected": "连接",
-    "obsCaptionSource": "OBS 收到的",
-    "obsCaptionTranslatedFallback": "OBS 接收原文,翻译关闭或不可用。",
-    "obsCaptionUnsupportedLanguage": "OBS 无法显示此语言,因为它使用 CEA-608 格式。"
+    "obsCaptionSource": "OBS 接收的内容",
+    "obsCaptionTranslatedFallback": "当翻译关闭或不可用时，OBS 将接收原始文本。",
+    "obsCaptionUnsupportedLanguage": "OBS 无法显示此语言，因为它使用 CEA-608 格式。",
+    "notConnected": "未连接到 OBS",
+    "connecting": "正在连接到 OBS",
+    "connectionError": "OBS 连接错误"
   },
   "AUTH": {
     "title": "登录到 Zip Captions",

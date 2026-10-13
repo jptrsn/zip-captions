@@ -8,6 +8,7 @@ import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 import { selectSyncSettings } from '../../../../selectors/settings.selector';
 import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
 import { SettingsActions, SettingsState } from '../../models/settings.model';
+import { isSimpleSettingValue } from './sync-settings-rows';
 
 @Component({
   selector: 'app-user-saved-settings',
@@ -70,6 +71,8 @@ export class UserSavedSettingsComponent {
     })
     
   }
+
+  public isSimpleSettingValue = isSimpleSettingValue;
 
   applySaved(): void {
     const settings = this.savedUiSettings();

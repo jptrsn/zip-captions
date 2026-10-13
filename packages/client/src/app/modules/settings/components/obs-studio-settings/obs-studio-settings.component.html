@@ -1,7 +1,7 @@
 <form class="flex flex-col items-center align-start max-w-xl w-full gap-3 p-3" [formGroup]="formGroup" (submit)="saveObsWebsocket()">
 
   <div class="flex flex-col items-center gap-3">
-    <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
+    <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{ obsConnectionStateKey(connectionState()) | translate }}</div>
     <div class="badge h-auto badge-error" *ngIf="error() as err">{{err}}</div>
     <div class="flex" *ngIf="isConnected()">
       <div class="badge h-auto badge-secondary" translate>CONNECTIONS.connectionEstablished</div>

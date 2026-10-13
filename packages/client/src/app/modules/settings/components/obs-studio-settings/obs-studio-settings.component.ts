@@ -9,6 +9,7 @@ import { selectObsConnected, selectObsError, selectObsStreamActive } from '../..
 import { selectObsFeed } from '../../../../selectors/settings.selector';
 import { CaptionTranslationService } from '../../../../services/translator/caption-translation.service';
 import { obsCannotShowLanguage, obsEffectiveLanguage } from '../../../../services/obs-connection/obs-caption';
+import { obsConnectionStateKey } from '../../../../services/obs-connection/obs-connection-state';
 import { ObsFeed, SettingsActions } from '../../models/settings.model';
 
 @Component({
@@ -19,6 +20,7 @@ import { ObsFeed, SettingsActions } from '../../models/settings.model';
 export class ObsStudioSettingsComponent {
 
   public connectionState: Signal<ObsConnectionState | undefined>;
+  public obsConnectionStateKey = obsConnectionStateKey;
   public isConnecting: Signal<boolean>;
   public isConnected: Signal<boolean>;
   public obsIsStreaming: Signal<boolean | undefined>;

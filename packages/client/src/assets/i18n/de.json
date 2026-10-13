@@ -143,7 +143,8 @@
       "title": "Diese Website verwendet Cookies",
       "p1": "Wir verwenden Cookies, um die Funktionalität der Website zu gewährleisten. Wir speichern nur unbedingt notwendige Cookies, die für die Funktionalität dieser Anwendungen erforderlich sind (z. B. angepasste Einstellungen usw.).",
       "p2": "Wir verfolgen oder speichern keine nicht-funktionalen Cookies auf Ihrem Gerät.",
-      "p3": "Weitere Einzelheiten finden Sie in unserer Cookie-Richtlinie"
+      "p3": "Weitere Einzelheiten finden Sie in unserer Cookie-Richtlinie",
+      "close": "Cookie-Hinweis schließen"
     },
     "POLICY": {
       "title": "Cookie-Richtlinie",
@@ -414,28 +415,28 @@
       "statusDownloadable": "Download erforderlich",
       "downloadButton": "Übersetzungsmodell herunterladen",
       "downloadPrompt": "Laden Sie das Sprachmodell auf Ihr Gerät herunter, um die Übersetzung zu aktivieren",
-      "privacyNoticeSpeech": "Spracherkennung ist getrennt, und je nach dem Sprachmotor, den Sie wählen, kann Audio in der Cloud verarbeitet werden.",
+      "privacyNoticeSpeech": "Die Spracherkennung ist separat und je nach gewähltem Spracherkennungssystem kann die Audioverarbeitung in der Cloud erfolgen.",
       "experimental": "Experimentelle Funktion",
-      "unsupportedMobileHint": "On-device-Übersetzung ist nur in Desktop-Browsern (Chrome 138+ oder Edge 148+) verfügbar und wird nicht auf Telefonen oder Tablets unterstützt.",
-      "privacyNotice": "Die Übersetzung funktioniert vollständig auf Ihrem Gerät mit eingebauten Sprachenmodellen von Chrome und der übersetzte Text wird niemals an einen Server gesendet.",
+      "unsupportedMobileHint": "Die Übersetzung auf dem Gerät ist nur in Desktop-Browsern (Chrome 138+ oder Edge 148+) verfügbar und wird auf Smartphones oder Tablets nicht unterstützt.",
+      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, und übersetzter Text wird niemals an einen Server gesendet.",
       "modelsTitle": "Übersetzungsmodelle",
-      "modelsPerPair": "Jedes Sprachepaar verwendet sein eigenes Übersetzungsmodell, das Chrome herunterladen wird, wenn Sie es zum ersten Mal verwenden.",
-      "modelPerPairNotice": "Einmal herunterladen für dieses Sprachpaar",
-      "swapLanguages": "Swap Sprach- und Übersetzungssprachen",
+      "modelsPerPair": "Jedes Sprachpaar verwendet sein eigenes Übersetzungsmodell, das Chrome beim ersten Gebrauch herunterlädt.",
+      "modelPerPairNotice": "Einmaliger Download für dieses Sprachpaar",
+      "swapLanguages": "Gesprochene und Zielsprache tauschen",
       "swapUnavailable": "Spracherkennung ist für diese Sprache nicht verfügbar.",
-      "modelsManagedByChrome": "Chrome verwaltet heruntergeladenen Übersetzungsmodelle und kann sie in freier Raum entfernen.",
-      "learnMore": "Lernen Sie mehr",
-      "modeSplit": "Spaltung (Bilingualisch)",
-      "modeSplitDesc": "Original und übersetzte Kaptionen in zwei Panels",
-      "splitOrientation": "Split Orientierung",
-      "orientationSideBySide": "Seite für Seite",
-      "orientationStacked": "Stack",
-      "swapPanes": "Wechseln Sie die ursprünglichen und übersetzten Panels",
-      "paneOriginal": "Original Captions",
-      "paneTranslated": "Übersetzte Captions",
-      "pipContent": "Bild-in-Picture Show",
-      "pipContentOriginal": "Original nur",
-      "pipContentTranslated": "Übersetzt nur",
+      "modelsManagedByChrome": "Chrome verwaltet heruntergeladene Übersetzungsmodelle und kann sie entfernen, um Speicherplatz freizugeben.",
+      "learnMore": "Mehr erfahren",
+      "modeSplit": "Geteilt (Zweisprachig)",
+      "modeSplitDesc": "Original- und übersetzte Untertitel in zwei Paneelen",
+      "splitOrientation": "Anordnung",
+      "orientationSideBySide": "Nebeneinander",
+      "orientationStacked": "Gestapelt",
+      "swapPanes": "Original- und Übersetzungsfenster tauschen",
+      "paneOriginal": "Original-Untertitel",
+      "paneTranslated": "Übersetzte Untertitel",
+      "pipContent": "Picture-in-Picture zeigt",
+      "pipContentOriginal": "Nur Original",
+      "pipContentTranslated": "Nur übersetzt",
       "pipContentSplit": "Original und übersetzt"
     }
   },
@@ -492,8 +493,8 @@
       "create": "Erstelle eine neue",
       "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden."
     },
-    "fromBroadcaster": "Übersetzt durch den Broadcaster",
-    "translatedOnDevice": "Übersetzt auf diesem Gerät"
+    "fromBroadcaster": "Übersetzt von der Sendenden Person",
+    "translatedOnDevice": "Auf diesem Gerät übersetzt"
   },
   "MODAL": {
     "confirmEndBroadcast": "Dadurch wird die aktuelle Übertragung beendet und die Verbindung zu allen Teilnehmern getrennt.",
@@ -601,9 +602,9 @@
     "date": "Datum",
     "duration": "Dauer",
     "provider": "Anbieter",
-    "spokenLanguage": "Sprechende Sprache",
-    "uiLanguage": "Interface Sprache",
-    "sameAsSpoken": "Ähnlich wie die gesprochenen Sprache"
+    "spokenLanguage": "Gesprochene Sprache",
+    "uiLanguage": "Sprache der Benutzeroberfläche",
+    "sameAsSpoken": "Wie in der gesprochenen Sprache"
   },
   "HINTS": {
     "pipActive": "Untertitel werden im Bild-in-Bild-Fenster angezeigt",
@@ -678,8 +679,11 @@
     "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
     "disconnected": "Getrennt",
     "obsCaptionSource": "Was OBS empfängt",
-    "obsCaptionTranslatedFallback": "OBS erhält den ursprünglichen Text, während die Übersetzung off oder nicht verfügbar ist.",
-    "obsCaptionUnsupportedLanguage": "OBS kann diese Sprache nicht anzeigen, da sie das CEA-608 Format verwendet."
+    "obsCaptionTranslatedFallback": "OBS erhält den Originaltext, wenn die Übersetzung deaktiviert ist oder nicht verfügbar ist.",
+    "obsCaptionUnsupportedLanguage": "OBS kann diese Sprache nicht anzeigen, da sie das CEA-608-Format verwendet.",
+    "notConnected": "Nicht mit OBS verbunden",
+    "connecting": "Verbinde mit OBS",
+    "connectionError": "OBS-Verbindungsfehler"
   },
   "AUTH": {
     "title": "Anmelden Sie sich für Zip -Bildunterschriften an",

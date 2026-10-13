@@ -143,7 +143,8 @@
       "title": "This website uses cookies",
       "p1": "We use cookies to provide website functionality. We only store strictly necessary cookies, required to allow the functionality of this applications (e.g. customized settings, etc).",
       "p2": "We do not track or store any non-functional cookies on your device.",
-      "p3": "View our cookie policy for more detail"
+      "p3": "View our cookie policy for more detail",
+    "close": "Close the cookie notice"
     },
     "POLICY": {
       "title": "Cookie Policy",
@@ -679,7 +680,10 @@
     "obsCaptionTranslatedFallback": "OBS receives the original text while translation is off or unavailable.",
     "obsCaptionUnsupportedLanguage": "OBS cannot show this language, because it uses the CEA-608 format.",
     "connectionEstablished": "Connected - you may begin caption session",
-    "disconnected": "Disconnected"
+    "disconnected": "Disconnected",
+    "notConnected": "Not connected to OBS",
+    "connecting": "Connecting to OBS",
+    "connectionError": "OBS connection error"
   },
   "AUTH": {
     "title": "Login to Zip Captions",
