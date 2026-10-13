@@ -7,7 +7,7 @@
     <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
 
-  <div *ngFor="let line of renderedResults(); trackBy: trackLine" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()"
+  <div *ngFor="let line of renderedResults(); trackBy: trackLine" data-testid="zc-caption-line" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()"
        [attr.lang]="line.lang" [attr.dir]="line.dir">
     <ng-container *ngIf="!line.pending; else pendingLine">
       <span *ngIf="line.foreignLang" class="badge badge-neutral badge-sm me-2 align-middle uppercase opacity-70" aria-hidden="true" data-testid="zc-line-lang">{{line.foreignLang}}</span>{{line.text}}

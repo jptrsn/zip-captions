@@ -89,7 +89,7 @@
             </button>
           </div>
 
-          <div *ngIf="translationMode() === 'split' || (showPip && pipSupported && translationMode() !== 'off')" class="flex flex-col gap-1 mt-1">
+          <div *ngIf="translationMode() === 'split' || (showPip && pipSupported && translationMode() !== 'off')" data-testid="zc-sidebar-layout" class="flex flex-col gap-1 mt-1">
             <ng-container *ngIf="translationMode() === 'split'">
               <label class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
                 {{ 'SETTINGS.TRANSLATION.splitOrientation' | translate }}
@@ -134,7 +134,7 @@
               {{ 'SETTINGS.TRANSLATION.targetLang' | translate }}
             </label>
             <div class="flex items-center gap-1">
-              <select class="select select-bordered select-xs w-full text-base-content bg-base-100" [value]="targetLanguage()" (change)="onTargetLanguageSelect($event)">
+              <select data-testid="zc-sidebar-target-lang" class="select select-bordered select-xs w-full text-base-content bg-base-100" [value]="targetLanguage()" (change)="onTargetLanguageSelect($event)">
                 <ng-container *ngIf="languageOptions().fromBroadcaster.length; else localOnly">
                   <optgroup [label]="'STREAM.fromBroadcaster' | translate">
                     <option *ngFor="let lang of languageOptions().fromBroadcaster" [value]="lang.code" [selected]="lang.code === targetLanguage()">

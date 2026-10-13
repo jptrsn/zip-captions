@@ -3,6 +3,7 @@
   <div class="flex flex-1 overflow-hidden relative min-h-0" [ngClass]="orientation === 'horizontal' ? 'flex-row' : 'flex-col'" data-testid="zc-split">
     <ng-container *ngFor="let pane of panes; let first = first">
       <div class="flex flex-1 flex-col overflow-hidden relative min-w-0 min-h-0" role="region"
+           [attr.data-testid]="'zc-caption-pane-' + pane"
            [attr.aria-label]="(pane === 'original' ? 'SETTINGS.TRANSLATION.paneOriginal' : 'SETTINGS.TRANSLATION.paneTranslated') | translate"
            [ngClass]="first ? (orientation === 'horizontal' ? 'border-e border-base-300' : 'border-b border-base-300') : ''">
         <ng-container *ngTemplateOutlet="pane === 'original' ? originalPane : translatedPane"></ng-container>
@@ -17,6 +18,7 @@
 <!-- Original-only or translated-only view -->
 <ng-template #singlePane>
   <div class="flex flex-1 flex-col overflow-hidden relative min-h-0" role="region"
+       [attr.data-testid]="'zc-caption-pane-' + (view === 'translated' ? 'translated' : 'original')"
        [attr.aria-label]="(view === 'translated' ? 'SETTINGS.TRANSLATION.paneTranslated' : 'SETTINGS.TRANSLATION.paneOriginal') | translate">
     <ng-container *ngTemplateOutlet="view === 'translated' ? translatedPane : originalPane"></ng-container>
   </div>
@@ -24,7 +26,7 @@
 
 <!-- Original pane -->
 <ng-template #originalPane>
-  <div *ngIf="view === 'split'" class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
+  <div *ngIf="view === 'split'" data-testid="zc-caption-pane-label-original" class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
        [ngClass]="controlsVisible ? 'opacity-70' : 'opacity-0 pointer-events-none'">
     {{ originalLabel }}
   </div>

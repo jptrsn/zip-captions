@@ -41,7 +41,7 @@
               {{ lang.name }}
             </option>
           </select>
-          <span *ngIf="!canSwap()" class="label-text-alt text-base-content/70 mt-1" translate>SETTINGS.TRANSLATION.swapUnavailable</span>
+          <span *ngIf="!canSwap()" data-testid="zc-translation-swap-unavailable" class="label-text-alt text-base-content/70 mt-1" translate>SETTINGS.TRANSLATION.swapUnavailable</span>
         </label>
       </ng-container>
 
@@ -70,7 +70,7 @@
       </div>
 
       <!-- Split orientation -->
-      <div class="form-control" *ngIf="formGroup.get('enabled')?.value && formGroup.get('mode')?.value === 'split'">
+      <div class="form-control" data-testid="zc-translation-orientation" *ngIf="formGroup.get('enabled')?.value && formGroup.get('mode')?.value === 'split'">
         <span class="text-accent label" translate>SETTINGS.TRANSLATION.splitOrientation</span>
         <div class="flex flex-col gap-2">
           <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between">
@@ -85,7 +85,7 @@
       </div>
 
       <!-- Picture-in-Picture content -->
-      <div class="form-control" *ngIf="formGroup.get('enabled')?.value && pipSupported">
+      <div class="form-control" data-testid="zc-translation-pip-content" *ngIf="formGroup.get('enabled')?.value && pipSupported">
         <span class="text-accent label" translate>SETTINGS.TRANSLATION.pipContent</span>
         <div class="flex flex-col gap-2">
           <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between">
@@ -163,7 +163,7 @@
               <p class="text-base-content/70" translate>SETTINGS.TRANSLATION.modelsPerPair</p>
               <p class="text-base-content/70">
                 <span translate>SETTINGS.TRANSLATION.modelsManagedByChrome</span>
-                <a class="link link-primary ms-1" [href]="modelManagementUrl" target="_blank" rel="noopener noreferrer" translate>SETTINGS.TRANSLATION.learnMore</a>
+                <a class="link link-primary ms-1" data-testid="zc-translation-models-link" [href]="modelManagementUrl" target="_blank" rel="noopener noreferrer" translate>SETTINGS.TRANSLATION.learnMore</a>
               </p>
             </div>
           </ng-container>

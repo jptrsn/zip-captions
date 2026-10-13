@@ -28,10 +28,11 @@
         >
           <!-- Translated pane: target language, language swap and model download controls -->
           <div translatedControls class="contents">
-            <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500"
+            <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500" data-testid="zc-caption-translated-controls"
                  [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
                  (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
               <select
+                data-testid="zc-caption-target-lang"
                 class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
                 [value]="targetLanguage()"
                 (change)="setTargetLanguage($any($event.target).value)"
@@ -54,7 +55,7 @@
 
             <!-- Download Button if model is downloadable -->
             <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
-              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" (click)="downloadModel()">
+              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-caption-download-model" (click)="downloadModel()">
                 <ng-icon name="heroArrowDownTray"></ng-icon>
                 <span>Download {{ targetLanguageLabel() }} model</span>
               </button>
@@ -62,14 +63,14 @@
             </div>
 
             <!-- Download Progress if downloading -->
-            <div *ngIf="modelStatus() === 'downloading'" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+            <div *ngIf="modelStatus() === 'downloading'" data-testid="zc-caption-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
               <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
               <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
             </div>
           </div>
 
           <!-- Layout controls on the divider; inside the caption area so they also work in Picture-in-Picture -->
-          <div dividerControls class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1 transition-opacity duration-500"
+          <div dividerControls data-testid="zc-caption-divider-controls" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1 transition-opacity duration-500"
                [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
                (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
             <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-orientation"
