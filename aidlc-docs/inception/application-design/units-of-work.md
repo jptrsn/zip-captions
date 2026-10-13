@@ -148,3 +148,4 @@ Design: `construction/u6-obs-feed/functional-design.md` (eight decisions approve
 
 ## Follow-ups
 US-C4 draggable divider. More bilingual profiles.
+**Test debt (proposed 2026-10-13):** fix the 44 failing client suites, grouped by cause, so regressions in those components are visible. See `construction/backlog-test-debt.md`.
