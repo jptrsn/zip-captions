@@ -1,4 +1,21 @@
-import { resolveCaptionView, splitPaneOrder } from './caption-view';
+import { resolveCaptionView, showPipFeedSwitch, splitPaneOrder } from './caption-view';
+
+describe('showPipFeedSwitch', () => {
+  it('shows only while Picture-in-Picture is open and translation is on', () => {
+    expect(showPipFeedSwitch('split', true)).toBe(true);
+    expect(showPipFeedSwitch('translated-only', true)).toBe(true);
+  });
+
+  it('is hidden when Picture-in-Picture is closed', () => {
+    expect(showPipFeedSwitch('split', false)).toBe(false);
+    expect(showPipFeedSwitch('translated-only', false)).toBe(false);
+  });
+
+  it('is hidden when translation is off, since there is nothing to switch', () => {
+    expect(showPipFeedSwitch('off', true)).toBe(false);
+    expect(showPipFeedSwitch('off', false)).toBe(false);
+  });
+});
 
 describe('resolveCaptionView', () => {
   it('shows the original whenever translation is off, even in Picture-in-Picture', () => {

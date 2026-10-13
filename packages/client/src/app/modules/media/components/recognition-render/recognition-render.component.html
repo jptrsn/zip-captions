@@ -83,6 +83,32 @@
             </button>
           </div>
         </app-caption-panes>
+
+        <!-- Feed switch for the Picture-in-Picture window, where the sidebar can't be reached -->
+        <div *ngIf="showPipSwitch()" role="group" data-testid="zc-pip-feed-switch"
+             class="absolute top-2 left-1/2 -translate-x-1/2 z-30 join transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+             [attr.aria-label]="'SETTINGS.TRANSLATION.pipContent' | translate"
+             (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-original"
+                  [ngClass]="pipContent() === 'original' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'original'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentOriginal' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentOriginal' | translate"
+                  (click)="setPipContent('original')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ originalLanguageLabel() }}</button>
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-translated"
+                  [ngClass]="pipContent() === 'translated' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'translated'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentTranslated' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentTranslated' | translate"
+                  (click)="setPipContent('translated')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ targetLanguageLabel() }}</button>
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-split"
+                  [ngClass]="pipContent() === 'split' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'split'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentSplit' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentSplit' | translate"
+                  (click)="setPipContent('split')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ originalLanguageLabel() }}+{{ targetLanguageLabel() }}</button>
+        </div>
       </div>
       <div *ngIf="isPipActive()" class="flex flex-col items-center justify-center absolute top-0 bottom-0 left-0 right-0 gap-4 p-6 text-center bg-base-100" @fadeInOnEnter>
         <div class="text-xl font-semibold opacity-90" translate>HINTS.pipActive</div>

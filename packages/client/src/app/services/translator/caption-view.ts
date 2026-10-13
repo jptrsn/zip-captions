@@ -14,6 +14,14 @@ export function resolveCaptionView(mode: TranslationDisplayMode, pipActive: bool
   return mode === 'split' ? 'split' : 'translated';
 }
 
+/**
+ * Whether the feed switch is shown inside the Picture-in-Picture window. The sidebar stays behind in
+ * the main window, so the PiP needs its own control, but only when there is a translation to choose.
+ */
+export function showPipFeedSwitch(mode: TranslationDisplayMode, pipActive: boolean): boolean {
+  return pipActive && mode !== 'off';
+}
+
 /** The panes of a split view, in rendering order */
 export function splitPaneOrder(order: PaneOrder): ('original' | 'translated')[] {
   return order === 'translated-first' ? ['translated', 'original'] : ['original', 'translated'];

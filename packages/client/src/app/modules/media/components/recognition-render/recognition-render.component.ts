@@ -16,8 +16,8 @@ import { CaptionTranslationService } from '../../../../services/translator/capti
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
-import { CaptionView, resolveCaptionView, splitPaneOrder } from '../../../../services/translator/caption-view';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { CaptionView, resolveCaptionView, showPipFeedSwitch, splitPaneOrder } from '../../../../services/translator/caption-view';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -52,6 +52,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public captionView: Signal<CaptionView>;
   public splitOrientation: Signal<SplitOrientation>;
   public paneOrder: Signal<PaneOrder>;
+  public pipContent: Signal<PipContent>;
+  public showPipSwitch: Signal<boolean>;
   public panes: Signal<('original' | 'translated')[]>;
   public originalLines: Signal<CaptionLine[]>;
   public translatedLines: Signal<CaptionLine[]>;
@@ -120,6 +122,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       this.translationMode(),
       this.isPipActive(),
       this.translationSettings()?.pipContent ?? DefaultPipContent));
+    this.pipContent = computed(() => this.translationSettings()?.pipContent ?? DefaultPipContent);
+    this.showPipSwitch = computed(() => showPipFeedSwitch(this.translationMode(), this.isPipActive()));
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
     this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
     this.panes = computed(() => splitPaneOrder(this.paneOrder()));
@@ -251,6 +255,11 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   /** Exchanges which pane comes first; leaves the languages alone (unlike swapLanguages) */
   public swapPanes(): void {
     this.store.dispatch(SettingsActions.swapCaptionPanes());
+  }
+
+  /** Chooses what the Picture-in-Picture window shows; the sidebar isn't reachable from inside it */
+  public setPipContent(content: PipContent): void {
+    this.store.dispatch(SettingsActions.setPipContent({ content }));
   }
 
   public downloadModel(): void {
