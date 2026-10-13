@@ -1,25 +1,126 @@
-<div class="drawer drawer-end overflow-y-hidden relative">
+<div class="drawer drawer-end overflow-y-hidden relative" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
-      <div #captionContainer class="flex absolute top-0 bottom-0 left-0 right-0 bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
-        <app-recognized-text 
-          *ngIf="renderHistory()"
-          [renderHistory]="renderHistory"
+      <!-- The container moves into the Picture-in-Picture window, leaving the drawer behind, so pointer activity
+           is listened for here as well; otherwise the controls could not come back in the PiP window -->
+      <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100"
+           (mouseenter)="onUserActivity()" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
+        <app-caption-panes
+          [view]="captionView()"
+          [orientation]="splitOrientation()"
+          [paneOrder]="paneOrder()"
+          [controlsVisible]="controlsVisible()"
+          [textFlowDown]="textFlowDown()"
+          [originalLabel]="originalLanguageLabel()"
+          [originalLang]="sourceLanguage()"
+          [originalDir]="originalTextDir()"
+          [translatedLang]="targetLanguage()"
+          [translatedDir]="translatedTextDir()"
           [connected]="connected"
-          [hasLiveResults]="hasLiveResults"
-          [textOutput]="textOutput"
           [error]="error"
-          class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-        ></app-recognized-text>
-        <app-recognized-live-text
-          [text]="liveText" 
-        ></app-recognized-live-text>
+          [renderHistory]="renderHistory"
+          [hasLiveResults]="hasLiveResults"
+          [hasTranslatedResults]="hasTranslatedResults"
+          [originalLines]="originalLines"
+          [translatedLines]="translatedLines"
+          [liveText]="liveText"
+          [translatedLiveText]="translatedLiveText"
+        >
+          <!-- Translated pane: target language, language swap and model download controls -->
+          <div translatedControls class="contents">
+            <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500" data-testid="zc-caption-translated-controls"
+                 [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+                 (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+              <select
+                data-testid="zc-caption-target-lang"
+                class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
+                [value]="targetLanguage()"
+                (change)="setTargetLanguage($any($event.target).value)"
+                (focus)="onControlsFocus()"
+                (blur)="onUserActivity()"
+                [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+              >
+                <option *ngFor="let lang of availableLanguages()" [value]="lang.code" [selected]="lang.code === targetLanguage()">
+                  {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                </option>
+              </select>
+              <button type="button" class="btn btn-xs btn-circle btn-primary shadow" data-testid="zc-caption-swap"
+                      [disabled]="!canSwap()" (click)="swapLanguages()"
+                      (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
+                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
+                <ng-icon name="heroArrowsRightLeft"></ng-icon>
+              </button>
+            </div>
+
+            <!-- Download Button if model is downloadable -->
+            <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-caption-download-model" (click)="downloadModel()">
+                <ng-icon name="heroArrowDownTray"></ng-icon>
+                <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
+              </button>
+              <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+            </div>
+
+            <!-- Download Progress if downloading -->
+            <div *ngIf="modelStatus() === 'downloading'" data-testid="zc-caption-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+              <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
+              <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+            </div>
+          </div>
+
+          <!-- Layout controls on the divider; inside the caption area so they also work in Picture-in-Picture -->
+          <div dividerControls data-testid="zc-caption-divider-controls" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1 transition-opacity duration-500"
+               [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+               (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+            <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-orientation"
+                    (click)="toggleOrientation()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                    [attr.aria-label]="'SETTINGS.TRANSLATION.splitOrientation' | translate"
+                    [title]="(splitOrientation() === 'vertical' ? 'SETTINGS.TRANSLATION.orientationSideBySide' : 'SETTINGS.TRANSLATION.orientationStacked') | translate">
+              <ng-icon [name]="splitOrientation() === 'vertical' ? 'heroViewColumns' : 'heroQueueList'"></ng-icon>
+            </button>
+            <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-swap-panes"
+                    (click)="swapPanes()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                    [attr.aria-label]="'SETTINGS.TRANSLATION.swapPanes' | translate"
+                    [title]="'SETTINGS.TRANSLATION.swapPanes' | translate">
+              <ng-icon name="heroArrowsUpDown"></ng-icon>
+            </button>
+          </div>
+        </app-caption-panes>
+
+        <!-- Feed switch for the Picture-in-Picture window, where the sidebar can't be reached -->
+        <div *ngIf="showPipSwitch()" role="group" data-testid="zc-pip-feed-switch"
+             class="absolute top-2 left-1/2 -translate-x-1/2 z-30 join transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+             [attr.aria-label]="'SETTINGS.TRANSLATION.pipContent' | translate"
+             (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-original"
+                  [ngClass]="pipContent() === 'original' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'original'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentOriginal' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentOriginal' | translate"
+                  (click)="setPipContent('original')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ originalLanguageLabel() }}</button>
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-translated"
+                  [ngClass]="pipContent() === 'translated' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'translated'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentTranslated' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentTranslated' | translate"
+                  (click)="setPipContent('translated')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ targetLanguageLabel() }}</button>
+          <button type="button" class="btn btn-xs join-item" data-testid="zc-pip-feed-split"
+                  [ngClass]="pipContent() === 'split' ? 'btn-primary' : 'btn-neutral'"
+                  [attr.aria-pressed]="pipContent() === 'split'"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.pipContentSplit' | translate"
+                  [title]="'SETTINGS.TRANSLATION.pipContentSplit' | translate"
+                  (click)="setPipContent('split')" (focus)="onControlsFocus()" (blur)="onUserActivity()">{{ originalLanguageLabel() }}+{{ targetLanguageLabel() }}</button>
+        </div>
       </div>
       <div *ngIf="isPipActive()" class="flex flex-col items-center justify-center absolute top-0 bottom-0 left-0 right-0 gap-4 p-6 text-center bg-base-100" @fadeInOnEnter>
         <div class="text-xl font-semibold opacity-90" translate>HINTS.pipActive</div>
         <button data-testid="zc-pip-return" class="btn btn-outline btn-primary" (click)="exitPip()" translate>HINTS.pipReturn</button>
       </div>
-    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once transition-opacity duration-500"
+           [ngClass]="controlsVisible() ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+           *ngIf="connected() || paused()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
     </label>
   </div>

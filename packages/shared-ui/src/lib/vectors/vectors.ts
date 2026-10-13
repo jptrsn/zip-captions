@@ -37,7 +37,12 @@ export {
   heroDocumentText,
 	heroUser,
 	heroWrenchScrewdriver,
-	heroSparkles
+	heroSparkles,
+  heroGlobeAlt,
+  heroArrowDownTray,
+  heroViewColumns,
+  heroQueueList,
+  heroArrowsUpDown
 } from '@ng-icons/heroicons/outline';
 
 export {

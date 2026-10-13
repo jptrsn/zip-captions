@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
+import { DefaultObsFeed, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
 
@@ -20,6 +20,17 @@ export const themeSelector = createSelector(
 export const languageSelector = createSelector(
   selectAppSettings,
   (state) => state.lang
+)
+
+/** The language the interface is shown in: the spoken language unless set separately */
+export const selectUiLanguage = createSelector(
+  selectAppSettings,
+  (state) => (!state.uiLanguage || state.uiLanguage === 'spoken') ? state.lang : state.uiLanguage
+)
+
+export const selectUiLanguagePreference = createSelector(
+  selectAppSettings,
+  (state) => state.uiLanguage ?? 'spoken'
 )
 
 export const dialectSelector = createSelector(
@@ -75,4 +86,44 @@ export const selectTranscriptTitlePattern = createSelector(
 export const selectTranscriptSettingsLoading = createSelector(
   selectAppSettings,
   (state) => state.transcription.loading
+)
+
+export const selectTranslationSettings = createSelector(
+  selectAppSettings,
+  (state) => state.translation
+)
+
+export const selectTranslationEnabled = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.enabled ?? false
+)
+
+export const selectTranslationMode = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.mode ?? 'off'
+)
+
+export const selectSplitOrientation = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.splitOrientation ?? DefaultSplitOrientation
+)
+
+export const selectPaneOrder = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.paneOrder ?? DefaultPaneOrder
+)
+
+export const selectPipContent = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.pipContent ?? DefaultPipContent
+)
+
+export const selectObsFeed = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.obsFeed ?? DefaultObsFeed
+)
+
+export const selectTranslationTargetLanguage = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.targetLanguage ?? 'es'
 )

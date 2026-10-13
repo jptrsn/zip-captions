@@ -1,4 +1,4 @@
-import { Injectable, Signal, effect } from '@angular/core';
+import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
@@ -10,6 +10,8 @@ import { RecognitionStatus } from '../../../models/recognition.model';
 import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected, selectRoomId } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
 import { selectUserId } from '../../../selectors/user.selector';
+import { dialectSelector, languageSelector } from '../../../selectors/settings.selector';
+import { WireSegment, parseLivePayload, parseSegmentPayload } from '../models/broadcast-payload';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,14 @@ export class PeerService {
 
   public liveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public textOutput$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public hostLanguage$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  // Segments with IDs and languages. For a broadcaster that predates them, synthesised from textOutput$.
+  public segments$: BehaviorSubject<WireSegment[]> = new BehaviorSubject<WireSegment[]>([]);
+  // Languages the broadcaster translates into, and the translations that exist so far (matching segments$ by ID)
+  public offeredLanguages$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public broadcasterTranslations$: BehaviorSubject<WireSegment[]> = new BehaviorSubject<WireSegment[]>([]);
+  public translatedLiveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private hostLanguage: Signal<string>;
 
   private readonly CACHE_PERSIST_MINS = 60;
 
@@ -74,7 +84,15 @@ export class PeerService {
     this.roomIdSignal = toSignal(this.store.select(selectRoomId));
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
     this.allowAnonymous = toSignal(this.store.select(selectAllowAnonymous));
-    this.userId = toSignal(this.store.select(selectUserId))
+    this.userId = toSignal(this.store.select(selectUserId));
+
+    const dialect = toSignal(this.store.select(dialectSelector));
+    const lang = toSignal(this.store.select(languageSelector));
+    this.hostLanguage = computed(() => {
+      const d = dialect();
+      if (d && d !== 'unspecified') return d;
+      return lang() || 'en';
+    });
 
     effect(() => {
       if (this.userId()) {
@@ -347,7 +365,19 @@ export class PeerService {
     });
     this.textOutput$.next([]);
     this.liveText$.next('')
+    this.segments$.next([]);
+    this.broadcasterTranslations$.next([]);
+    this.translatedLiveText$.next('');
+    this.offeredLanguages$.next([]);
+    this.hostLanguage$.next('');
     this.peerMap.clear();
+  }
+
+  private _setOffered(offered: string[]): void {
+    const current = this.offeredLanguages$.value;
+    if (current.length !== offered.length || current.some((lang, index) => lang !== offered[index])) {
+      this.offeredLanguages$.next(offered);
+    }
   }
 
   private _reconnectPeerServer(tryNumber?: number): void {
@@ -441,7 +471,7 @@ export class PeerService {
           case 'validateJoinCode':
             if (this._verifyJoinCode(data.joinCode)) {
               // console.log('join code verified')
-              connection.send({response: 'valid'})
+              connection.send({response: 'valid', lang: this.hostLanguage()})
             } else {
               // console.log('closing connection');
               connection.send({response: 'invalid'});
@@ -449,7 +479,7 @@ export class PeerService {
             break;
           case 'validateAnonJoinCode':
             if (this.allowAnonymous()) {
-              connection.send({response: 'valid'});
+              connection.send({response: 'valid', lang: this.hostLanguage()});
             } else {
               connection.send({response: 'invalid'});
             }
@@ -468,6 +498,9 @@ export class PeerService {
         switch (data.response) {
           case 'valid':
             // console.log('join code valid!');
+            if (data.lang) {
+              this.hostLanguage$.next(data.lang);
+            }
             this.store.dispatch(PeerActions.setHostStatus({hostOnline: true}));
             break;
           case 'invalid':
@@ -476,14 +509,28 @@ export class PeerService {
             break;
         }
       } else if ('recognition' in data && 'type' in data) {
-        switch (data.type) {
-          case 'live': 
-            this.liveText$.next(data.recognition);
-            break;
-          case 'segment':
-            this.textOutput$.next(data.recognition);
-            break;
+        if (data.lang) {
+          this.hostLanguage$.next(data.lang);
         }
+        switch (data.type) {
+          case 'live': {
+            const live = parseLivePayload(data);
+            this.liveText$.next(data.recognition);
+            this.translatedLiveText$.next(live.translatedLive);
+            this._setOffered(live.offered);
+            break;
+          }
+          case 'segment': {
+            const parsed = parseSegmentPayload(data, this.hostLanguage$.value);
+            this.textOutput$.next(data.recognition);
+            this.segments$.next(parsed.segments);
+            this.broadcasterTranslations$.next(parsed.translated);
+            this._setOffered(parsed.offered);
+            break;
+          }
+        }
+      } else if (data?.type === 'hostLanguage' && data?.lang) {
+        this.hostLanguage$.next(data.lang);
       } else if (data?.type === 'status' && 'status' in data) {
         this.store.dispatch(PeerActions.setBroadcastPausedState({paused: data.status === RecognitionStatus.paused}))
       } else {

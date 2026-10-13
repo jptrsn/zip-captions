@@ -6,6 +6,7 @@ import { AppActions } from "../models/app.model";
 import { RecognitionService } from "../modules/media/services/recognition.service";
 import { TranscriptionService } from "../modules/media/services/transcription.service";
 import { StorageService } from "../services/storage.service";
+import { ChromeTranslatorService } from "../services/translator/chrome-translator.service";
 import { SettingsState } from "../modules/settings/models/settings.model";
 import { RecognitionState } from "../models/recognition.model";
 
@@ -14,7 +15,8 @@ export class RecognitionEffects {
   constructor(private actions$: Actions,
               private storage: StorageService,
               @Inject(RecognitionService) private recognitionService: RecognitionService,
-              @Inject(TranscriptionService) private transcription: TranscriptionService) {}
+              @Inject(TranscriptionService) private transcription: TranscriptionService,
+              private translator: ChromeTranslatorService) {}
 
   connectRecognition$ = createEffect(() =>
     this.actions$.pipe(
@@ -32,6 +34,15 @@ export class RecognitionEffects {
       switchMap(() => [RecognitionActions.disconnectSuccess(), AppActions.showFooter(), AppActions.releaseWakeLock(), RecognitionActions.finalizeTranscript()]),
       catchError((err: any) => of(RecognitionActions.disconnectFailure({error: err.message})))
     )
+  )
+
+  // Translations are held in memory for the current session only
+  clearTranslationCache$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.disconnect),
+      tap(() => this.translator.clearSessionCache())
+    ),
+    { dispatch: false }
   )
 
   pauseRecognition$ = createEffect(() =>

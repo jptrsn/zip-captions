@@ -1,11 +1,12 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, Signal, signal, WritableSignal } from "@angular/core";
+import { computed, Injectable, Signal, signal, WritableSignal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Store } from "@ngrx/store";
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { map, Observable, take } from "rxjs";
 import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
+import { CaptionSegment, CaptionSegmentHistory } from "../../../models/caption-segment.model";
 import { selectProfanityFilterEnabled } from "../../../selectors/recognition.selector";
 import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
 import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
@@ -15,12 +16,15 @@ import { UserActions } from "../../../actions/user.actions";
 	providedIn: 'root'
 })
 export class AzureRecognitionService {
-	private recognizedText: WritableSignal<string[]> = signal([]);
+	private recognizedSegments: WritableSignal<CaptionSegment[]> = signal([]);
+	private recognizedText: Signal<string[]> = computed(() => this.recognizedSegments().map((segment) => segment.text));
 	private liveOutput: WritableSignal<string> = signal('');
 	private isStreaming = false;
 	private recognizer?: sdk.SpeechRecognizer;
 	private azureSttEndpoint: string;
 	private readonly MAX_RECOGNITION_LENGTH = 15;
+	private segmentHistory: CaptionSegmentHistory;
+	private recognitionLang = '';
 	private transcriptionEnabled: Signal<boolean | undefined>;
 	private profanityFilterEnabled: Signal<boolean | undefined>;
 	private readonly STT_CREDITS_PER_MINUTE = 60;
@@ -34,6 +38,7 @@ export class AzureRecognitionService {
 		this.azureSttEndpoint = `${baseUrl}/${apiVersion}/azure-stt`;
 		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
 		this.profanityFilterEnabled = toSignal(this.store.select(selectProfanityFilterEnabled));
+		this.segmentHistory = new CaptionSegmentHistory('a', this.MAX_RECOGNITION_LENGTH);
 	}
 
 	public initialize(language: InterfaceLanguage | RecognitionDialect): Observable<{token: string; region: string}> {
@@ -41,6 +46,7 @@ export class AzureRecognitionService {
 			if (!auth) throw new Error('Azure Recognition Service missing token');
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
 			speechConfig.speechRecognitionLanguage = language;
+			this.recognitionLang = language;
 
 			if (this.profanityFilterEnabled() === false) {
 				speechConfig.setProfanity(sdk.ProfanityOption.Raw);
@@ -58,8 +64,18 @@ export class AzureRecognitionService {
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
 		if (this.recognizer) {
 			if (this.recognizer.speechRecognitionLanguage !== language) {
-				this.recognizer.close();
-				this.initialize(language).pipe(take(1)).subscribe()
+				const previous = this.recognizer;
+				const wasStreaming = this.isStreaming;
+				if (wasStreaming) {
+					previous.stopContinuousRecognitionAsync();
+				}
+				previous.close();
+				// Same configuration as a fresh connection; only the locale differs
+				if (wasStreaming) {
+					this.connectToStream(language);
+				} else {
+					this.initialize(language).pipe(take(1)).subscribe();
+				}
 			}
 		}
 	}
@@ -70,6 +86,7 @@ export class AzureRecognitionService {
 				this.isStreaming = true;
 				this.recognizer?.startContinuousRecognitionAsync(
 					() => {
+            window.clearInterval(this.tokenRefreshTimerId);
             this.tokenRefreshTimerId = window.setInterval(() => {
               this._refreshToken()
             }, (8 * 60 * 1000));
@@ -123,6 +140,10 @@ export class AzureRecognitionService {
 		return this.liveOutput;
 	}
 
+	public getRecognizedSegments(): Signal<CaptionSegment[]> {
+		return this.recognizedSegments;
+	}
+
 	public getRecognizedText(): Signal<string[]> {
 		return this.recognizedText;
 	}
@@ -153,13 +174,19 @@ export class AzureRecognitionService {
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
-				this.recognizedText.update((current: string[]) => {
-					current.push(event.result.text);
-					return current;
-				});
+				// NoMatch results arrive with empty text; they are not captions
+				const text = event.result.text;
+				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();
+				if (hasSpeech) {
+					// Respect the language Azure reports for the result, when it provides one
+					const lang = event.result.language || this.recognitionLang;
+					this.recognizedSegments.update((current: CaptionSegment[]) => {
+						return this.segmentHistory.append(current, text, lang, segmentStart);
+					});
+				}
 				this.liveOutput.set('');
-				if (this.transcriptionEnabled()) {
-					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: event.result.text, start: segmentStart }))
+				if (hasSpeech && this.transcriptionEnabled()) {
+					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text, start: segmentStart }))
 				}
 				segmentStart = undefined;
 			}

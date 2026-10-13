@@ -1,27 +1,106 @@
-<div class="drawer drawer-end overflow-y-hidden py-6">
+<div class="drawer drawer-end overflow-y-hidden py-6" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
-    <div class="flex flex-grow-0 h-full overflow-hidden bg-base-100" [ngClass]="{'flex-col-reverse justify-start': textFlowDown(), 'flex-col justify-end': !textFlowDown()}">
-      <app-recognized-text 
-        *ngIf="renderHistory()"
-        [renderHistory]="renderHistory"
-        [connected]="connected" 
-        [hasLiveResults]="hasLiveResults"
-        [textOutput]="textOutput"
-        [error]="error"
+    <div class="flex flex-col flex-grow-0 h-full overflow-hidden bg-base-100 relative">
+      <app-caption-panes
+        [view]="captionView()"
+        [orientation]="splitOrientation()"
+        [paneOrder]="paneOrder()"
+        [controlsVisible]="controlsVisible()"
+        [textFlowDown]="textFlowDown()"
         hintText="HINTS.streamConnected"
-        class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
-      ></app-recognized-text>
-      <app-recognized-live-text 
-        [text]="liveText" 
-      ></app-recognized-live-text>
+        [originalLabel]="originalLanguageLabel()"
+        [originalLang]="sourceLanguage()"
+        [originalDir]="originalTextDir()"
+        [translatedLang]="targetLanguage()"
+        [translatedDir]="translatedTextDir()"
+        [connected]="connected"
+        [error]="error"
+        [renderHistory]="renderHistory"
+        [hasLiveResults]="hasLiveResults"
+        [hasTranslatedResults]="hasTranslatedResults"
+        [originalLines]="originalLines"
+        [translatedLines]="translatedLines"
+        [liveText]="liveText"
+        [translatedLiveText]="translatedLiveText"
+      >
+        <!-- Translated pane: the language picker, and the model download when this device translates -->
+        <div translatedControls class="contents">
+          <div class="absolute top-2 left-2 z-10 flex items-center gap-1 transition-opacity duration-500" data-testid="zc-viewer-translated-controls"
+               [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+               (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+            <select
+              data-testid="zc-viewer-target-lang"
+              class="select select-bordered select-xs badge badge-primary font-bold pr-6 cursor-pointer shadow hover:opacity-100"
+              [value]="targetLanguage()"
+              (change)="setTargetLanguage($any($event.target).value)"
+              (focus)="onControlsFocus()"
+              (blur)="onUserActivity()"
+              [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
+            >
+              <ng-container *ngIf="languageOptions().fromBroadcaster.length; else localOnly">
+                <optgroup [label]="'STREAM.fromBroadcaster' | translate">
+                  <option *ngFor="let lang of languageOptions().fromBroadcaster" [value]="lang.code" [selected]="lang.code === targetLanguage()">
+                    {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                  </option>
+                </optgroup>
+                <optgroup *ngIf="languageOptions().local.length" [label]="'STREAM.translatedOnDevice' | translate">
+                  <option *ngFor="let lang of languageOptions().local" [value]="lang.code" [selected]="lang.code === targetLanguage()">
+                    {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                  </option>
+                </optgroup>
+              </ng-container>
+              <ng-template #localOnly>
+                <option *ngFor="let lang of languageOptions().local" [value]="lang.code" [selected]="lang.code === targetLanguage()">
+                  {{ lang.code.toUpperCase() }} - {{ lang.name }}
+                </option>
+              </ng-template>
+            </select>
+          </div>
+
+          <!-- Download Button if this device translates and the model is downloadable -->
+          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+            <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-viewer-download-model" (click)="downloadModel()">
+              <ng-icon name="heroArrowDownTray"></ng-icon>
+              <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
+            </button>
+            <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+          </div>
+
+          <!-- Download Progress if downloading -->
+          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloading'" data-testid="zc-viewer-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+            <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
+            <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+          </div>
+        </div>
+
+        <!-- Layout controls on the divider -->
+        <div dividerControls data-testid="zc-viewer-divider-controls" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1 transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0 pointer-events-none'"
+             (mouseenter)="onControlsFocus()" (mouseleave)="onUserActivity()">
+          <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-orientation"
+                  (click)="toggleOrientation()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.splitOrientation' | translate"
+                  [title]="(splitOrientation() === 'vertical' ? 'SETTINGS.TRANSLATION.orientationSideBySide' : 'SETTINGS.TRANSLATION.orientationStacked') | translate">
+            <ng-icon [name]="splitOrientation() === 'vertical' ? 'heroViewColumns' : 'heroQueueList'"></ng-icon>
+          </button>
+          <button type="button" class="btn btn-xs btn-circle btn-secondary shadow" data-testid="zc-caption-swap-panes"
+                  (click)="swapPanes()" (focus)="onControlsFocus()" (blur)="onUserActivity()"
+                  [attr.aria-label]="'SETTINGS.TRANSLATION.swapPanes' | translate"
+                  [title]="'SETTINGS.TRANSLATION.swapPanes' | translate">
+            <ng-icon name="heroArrowsUpDown"></ng-icon>
+          </button>
+        </div>
+      </app-caption-panes>
     </div>
-    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once" *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
+    <label for="drawer-enable" class="drawer-button btn btn-ghost btn-half-circle-left btn-info fixed top-1/2 right-0 pulse-once transition-opacity duration-500"
+           [ngClass]="controlsVisible() ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+           *ngIf="connected()" @slideInRightOnEnter @slideOutRightOnLeave>
       <ng-icon class="text-2xl" name="heroChevronLeft"></ng-icon>
     </label>
   </div>
   <div class="drawer-side">
     <label for="drawer-enable" class="drawer-overlay opacity-0"></label>
-    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter [showPip]="false"></app-recognition-control-sidebar>
+    <app-recognition-control-sidebar *ngIf="enable.checked" @slideInRightOnEnter [showPip]="false" [showRecognitionToggle]="false"></app-recognition-control-sidebar>
   </div>
 </div>

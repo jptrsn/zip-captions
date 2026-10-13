@@ -23,6 +23,11 @@ export class UiSettings {
   })
   lang?: string;
 
+  @Prop({
+    type: String
+  })
+  uiLanguage?: string;
+
 	@Prop({
 		type: String
 	})

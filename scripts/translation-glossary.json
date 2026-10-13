@@ -1,0 +1,15 @@
+{
+  "_comment": "Terms the translation script must use verbatim, per language. Seeded from strings already in the locale files before the script used a language model. Add a language here when a term comes out wrong.",
+  "captions": {
+    "fr": "sous-titres",
+    "es": "subtítulos",
+    "de": "Untertitel",
+    "it": "sottotitoli",
+    "pt": "legendas",
+    "id": "teks",
+    "pl": "napisy",
+    "uk": "субтитри",
+    "ar": "التسميات التوضيحية",
+    "zh": "字幕"
+  }
+}
