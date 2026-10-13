@@ -1,7 +1,10 @@
 <div class="drawer drawer-end overflow-y-hidden relative" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content absolute bottom-0 left-0 right-0 top-0">
-      <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100">
+      <!-- The container moves into the Picture-in-Picture window, leaving the drawer behind, so pointer activity
+           is listened for here as well; otherwise the controls could not come back in the PiP window -->
+      <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100"
+           (mouseenter)="onUserActivity()" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
         <app-caption-panes
           [view]="captionView()"
           [orientation]="splitOrientation()"
