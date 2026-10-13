@@ -1,16 +1,13 @@
 import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Subject, auditTime, debounceTime, delay, map, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
-import { ObsActions } from '../../../actions/obs.actions';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, Subject, auditTime, debounceTime, delay, takeUntil, throttleTime, withLatestFrom } from 'rxjs';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppPlatform, AppState } from '../../../models/app.model';
 import { AudioStreamActions } from '../../../models/audio-stream.model';
 import { CaptionSegment, CaptionSegmentHistory } from '../../../models/caption-segment.model';
 import { SpeechRecognition } from '../../../models/recognition.model';
-import { ObsConnectionState } from '../../../reducers/obs.reducer';
 import { platformSelector } from '../../../selectors/app.selector';
-import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { selectRenderHistoryLength, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
 
@@ -35,7 +32,6 @@ export class WebRecognitionService {
   private segmentHistory: CaptionSegmentHistory;
   // recog.lang only applies on the next start(), so segments use the language captured at start
   private sessionLang = '';
-  private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
   private transcriptionEnabled: Signal<boolean | undefined>;
 
@@ -44,7 +40,6 @@ export class WebRecognitionService {
   constructor(private store: Store<AppState>) {
 
     this.platform = toSignal(this.store.select(platformSelector));
-    this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
     this.resultCount = toSignal(this.store.select(selectRenderHistoryLength));
     this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
     this.segmentHistory = new CaptionSegmentHistory('w', this.MAX_RECOGNITION_LENGTH);
@@ -226,9 +221,6 @@ export class WebRecognitionService {
 						segmentStart = new Date();
 					}
 					this.liveOutput.set(transcript);
-					if (this.obsConnected()) {
-						this.store.dispatch(ObsActions.sendCaption({text: transcript}));
-					}
 				});
 
 				this.recog.addEventListener('end', (e) => {

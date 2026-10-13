@@ -676,7 +676,12 @@
     "obsPassword": "Server-Kennwort",
     "obsStreamInactive": "Warten auf den Beginn des OBS-Streams",
     "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
-    "disconnected": "Getrennt"
+    "disconnected": "Getrennt",
+    "obsCaptionSource": "Aufträge an OBS",
+    "obsCaptionOriginal": "Original Captions",
+    "obsCaptionTranslated": "Übersetzte Captions",
+    "obsCaptionTranslatedFallback": "Während die Übersetzung off oder nicht verfügbar ist, erhält OBS die ursprünglichen Kaptionen.",
+    "obsCaptionUnsupportedLanguage": "OBS Stream Captions verwenden das CEA-608 Format, das diese Sprache nicht anzeigen kann."
   },
   "AUTH": {
     "title": "Anmelden Sie sich für Zip -Bildunterschriften an",

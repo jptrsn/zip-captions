@@ -676,7 +676,12 @@
     "obsPassword": "Hasło serwera",
     "obsStreamInactive": "Czekam na rozpoczęcie strumienia OB",
     "connectionEstablished": "Connected - możesz rozpocząć sesję podpisów",
-    "disconnected": "Bezładny"
+    "disconnected": "Bezładny",
+    "obsCaptionSource": "Zapisy wysłane do OBS",
+    "obsCaptionOriginal": "oryginalne captions",
+    "obsCaptionTranslated": "Tłumaczone kaptuły",
+    "obsCaptionTranslatedFallback": "Podczas gdy tłumaczenie jest wyłączone lub nie jest dostępne, OBS otrzymuje oryginalne wpisy.",
+    "obsCaptionUnsupportedLanguage": "Zdjęcia strumieniowe OBS używają formatu CEA-608, który nie może wyświetlać tego języka."
   },
   "AUTH": {
     "title": "Zaloguj się do podpisów zip",

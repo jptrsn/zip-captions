@@ -675,6 +675,11 @@
     "obsStudioPort": "Server Port",
     "obsPassword": "Server Password",
     "obsStreamInactive": "Waiting for OBS stream to begin",
+    "obsCaptionSource": "Captions sent to OBS",
+    "obsCaptionOriginal": "Original captions",
+    "obsCaptionTranslated": "Translated captions",
+    "obsCaptionTranslatedFallback": "While translation is off or unavailable, OBS receives the original captions.",
+    "obsCaptionUnsupportedLanguage": "OBS stream captions use the CEA-608 format, which cannot show this language.",
     "connectionEstablished": "Connected - you may begin caption session",
     "disconnected": "Disconnected"
   },

@@ -182,7 +182,8 @@ export class SettingsEffects {
         SettingsActions.swapTranslationLanguages,
         SettingsActions.setSplitOrientation,
         SettingsActions.swapCaptionPanes,
-        SettingsActions.setPipContent
+        SettingsActions.setPipContent,
+        SettingsActions.setObsFeed
       ),
       withLatestFrom(this.store.select(selectTranslationSettings)),
       map(([_, translation]) => {

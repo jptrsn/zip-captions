@@ -105,6 +105,12 @@ describe('Settings Reducer', () => {
       });
     });
 
+    it('sets the OBS feed', () => {
+      (['translated', 'original'] as const).forEach((feed) => {
+        expect(settingsReducers(defaultSettingsState, SettingsActions.setObsFeed({ feed })).translation.obsFeed).toBe(feed);
+      });
+    });
+
     it('saves the layout fields through saveTranslationSettings', () => {
       const state = settingsReducers(defaultSettingsState, SettingsActions.saveTranslationSettings({
         translation: { splitOrientation: 'horizontal', pipContent: 'split' }

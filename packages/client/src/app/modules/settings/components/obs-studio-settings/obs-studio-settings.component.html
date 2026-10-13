@@ -47,3 +47,17 @@
   </div>
 
 </form>
+
+<fieldset class="form-control flex flex-col items-start max-w-xl w-full gap-2 px-3 pb-6" data-testid="zc-obs-caption-source">
+  <legend class="text-accent label" translate>CONNECTIONS.obsCaptionSource</legend>
+  <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between self-stretch">
+    <span class="font-semibold text-sm" translate>CONNECTIONS.obsCaptionOriginal</span>
+    <input type="radio" name="obsCaptionSource" value="original" class="radio radio-primary" [checked]="obsFeed() === 'original'" (change)="setObsFeed('original')" data-testid="zc-obs-feed-original" />
+  </label>
+  <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between self-stretch">
+    <span class="font-semibold text-sm" translate>CONNECTIONS.obsCaptionTranslated</span>
+    <input type="radio" name="obsCaptionSource" value="translated" class="radio radio-primary" [checked]="obsFeed() === 'translated'" (change)="setObsFeed('translated')" data-testid="zc-obs-feed-translated" />
+  </label>
+  <p class="text-xs text-warning" *ngIf="showFeedFallbackHint()" translate>CONNECTIONS.obsCaptionTranslatedFallback</p>
+  <p class="text-xs text-warning" *ngIf="showUnsupportedLanguageHint()" translate>CONNECTIONS.obsCaptionUnsupportedLanguage</p>
+</fieldset>

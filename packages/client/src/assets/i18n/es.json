@@ -678,7 +678,12 @@
     "obsPassword": "Contraseña del servidor",
     "obsStreamInactive": "Esperando a que comience el flujo de OBS",
     "connectionEstablished": "Conectado - puede iniciar la sesión de redacción",
-    "disconnected": "Desconectado"
+    "disconnected": "Desconectado",
+    "obsCaptionSource": "Capturas enviadas a OBS",
+    "obsCaptionOriginal": "Capturas originales",
+    "obsCaptionTranslated": "Capturas traducidas",
+    "obsCaptionTranslatedFallback": "Mientras la traducción está abierta o no está disponible, OBS recibe las capciones originales.",
+    "obsCaptionUnsupportedLanguage": "Las capciones de flujo de OBS utilizan el formato CEA-608, que no puede mostrar este idioma."
   },
   "AUTH": {
     "title": "Iniciar sesión en los subtítulos",

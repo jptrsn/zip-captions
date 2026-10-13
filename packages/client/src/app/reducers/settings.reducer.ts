@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, SplitOrientation, PipContent } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, SplitOrientation, PipContent, ObsFeed } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -98,5 +98,6 @@ export const settingsReducers = createReducer(
   on(SettingsActions.setSplitOrientation, (state: SettingsState, action: { orientation: SplitOrientation }) => ({...state, translation: { ...state.translation, splitOrientation: action.orientation }})),
   on(SettingsActions.swapCaptionPanes, (state: SettingsState) => ({...state, translation: { ...state.translation, paneOrder: (state.translation.paneOrder ?? DefaultPaneOrder) === 'original-first' ? 'translated-first' : 'original-first' } as TranslationSettings})),
   on(SettingsActions.setPipContent, (state: SettingsState, action: { content: PipContent }) => ({...state, translation: { ...state.translation, pipContent: action.content }})),
+  on(SettingsActions.setObsFeed, (state: SettingsState, action: { feed: ObsFeed }) => ({...state, translation: { ...state.translation, obsFeed: action.feed }})),
 )
 

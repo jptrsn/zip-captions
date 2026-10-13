@@ -676,7 +676,12 @@
     "obsPassword": "Mot de passe du serveur",
     "obsStreamInactive": "Attente du début du flux OBSAttente du début du flux OBS",
     "connectionEstablished": "Connecté - vous pouvez commencer la session de légende",
-    "disconnected": "Déconnecté"
+    "disconnected": "Déconnecté",
+    "obsCaptionSource": "Résultats envoyés à OBS",
+    "obsCaptionOriginal": "Captions originales",
+    "obsCaptionTranslated": "Les captions traduites",
+    "obsCaptionTranslatedFallback": "Même si la traduction est ouverte ou non disponible, OBS reçoit les captions originales.",
+    "obsCaptionUnsupportedLanguage": "Les captions de flux OBS utilisent le format CEA-608, qui ne peut pas afficher cette langue."
   },
   "AUTH": {
     "title": "Connectez-vous aux légendes de zip",

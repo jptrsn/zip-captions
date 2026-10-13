@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, PipContent, RecognitionDialect, SettingsState, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, ObsFeed, PipContent, RecognitionDialect, SettingsState, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -58,3 +58,4 @@ export const setSplitOrientation = createAction('[Settings] Set Split Orientatio
 /** Swaps which pane is first. Unlike swapTranslationLanguages, it changes no language. */
 export const swapCaptionPanes = createAction('[Settings] Swap Caption Panes');
 export const setPipContent = createAction('[Settings] Set PiP Content', props<{ content: PipContent }>());
+export const setObsFeed = createAction('[Settings] Set OBS Feed', props<{ feed: ObsFeed }>());

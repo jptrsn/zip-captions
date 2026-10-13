@@ -33,6 +33,7 @@ describe('SettingsEffects translation layout persistence', () => {
     ['setSplitOrientation', SettingsActions.setSplitOrientation({ orientation: 'horizontal' })],
     ['swapCaptionPanes', SettingsActions.swapCaptionPanes()],
     ['setPipContent', SettingsActions.setPipContent({ content: 'split' })],
+    ['setObsFeed', SettingsActions.setObsFeed({ feed: 'translated' })],
   ])('persists the whole translation object after %s', async (_name, action) => {
     setup();
     actions$ = of(action);

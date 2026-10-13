@@ -676,7 +676,12 @@
     "obsPassword": "Пароль сервера",
     "obsStreamInactive": "Очікування початку стріму OBS Studio",
     "connectionEstablished": "Підключено – ви можете почати сеанс створення субтитрів",
-    "disconnected": "Відключено"
+    "disconnected": "Відключено",
+    "obsCaptionSource": "Повідомлення від OBS",
+    "obsCaptionOriginal": "Оригінальна капсула",
+    "obsCaptionTranslated": "Перекладені капсули",
+    "obsCaptionTranslatedFallback": "У той час як переклад вимкнений або недоступний, OBS отримує оригінальні записи.",
+    "obsCaptionUnsupportedLanguage": "ОБС стрічки використовують формат CEA-608, який не може відображати цей мову."
   },
   "AUTH": {
     "title": "Увійти до поштового підписи",

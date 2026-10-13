@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
+import { DefaultObsFeed, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
 
@@ -116,6 +116,11 @@ export const selectPaneOrder = createSelector(
 export const selectPipContent = createSelector(
   selectTranslationSettings,
   (translation) => translation?.pipContent ?? DefaultPipContent
+)
+
+export const selectObsFeed = createSelector(
+  selectTranslationSettings,
+  (translation) => translation?.obsFeed ?? DefaultObsFeed
 )
 
 export const selectTranslationTargetLanguage = createSelector(

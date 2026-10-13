@@ -6,6 +6,10 @@ import { ObsActions } from '../../../../actions/obs.actions';
 import { AppState } from '../../../../models/app.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { selectObsConnected, selectObsError, selectObsStreamActive } from '../../../../selectors/obs.selectors';
+import { selectObsFeed } from '../../../../selectors/settings.selector';
+import { CaptionTranslationService } from '../../../../services/translator/caption-translation.service';
+import { obsCannotShowLanguage, obsEffectiveLanguage } from '../../../../services/obs-connection/obs-caption';
+import { ObsFeed, SettingsActions } from '../../models/settings.model';
 
 @Component({
   selector: 'app-obs-studio-settings',
@@ -20,14 +24,29 @@ export class ObsStudioSettingsComponent {
   public obsIsStreaming: Signal<boolean | undefined>;
   public formGroup: FormGroup;
   public error: Signal<string | undefined>;
-  
+  public obsFeed: Signal<ObsFeed>;
+  /** Translated captions are chosen but nothing is being translated, so OBS gets the original */
+  public showFeedFallbackHint: Signal<boolean>;
+  /** OBS stream captions (CEA-608) have no characters for the language OBS would be sent */
+  public showUnsupportedLanguageHint: Signal<boolean>;
+
   constructor(private fb: FormBuilder,
-              private store: Store<AppState>) {
+              private store: Store<AppState>,
+              private captionTranslation: CaptionTranslationService) {
 
     this.connectionState = toSignal(this.store.select(selectObsConnected));
     this.error = toSignal(this.store.select(selectObsError));
     this.obsIsStreaming = toSignal(this.store.select(selectObsStreamActive));
     
+    this.obsFeed = toSignal(this.store.select(selectObsFeed), { initialValue: 'original' });
+    this.showFeedFallbackHint = computed(() => this.obsFeed() === 'translated' && !this.captionTranslation.active());
+    this.showUnsupportedLanguageHint = computed(() => obsCannotShowLanguage(obsEffectiveLanguage({
+      feed: this.obsFeed(),
+      translating: this.captionTranslation.active(),
+      sourceLanguage: this.captionTranslation.sourceLanguage(),
+      targetLanguage: this.captionTranslation.target()
+    })));
+
     this.isConnected = computed(() => this.connectionState() === ObsConnectionState.connected);
     this.isConnecting = computed(() => this.connectionState() === ObsConnectionState.connecting);
 
@@ -48,6 +67,10 @@ export class ObsStudioSettingsComponent {
     } else {
       this.formGroup.markAsTouched();
     }
+  }
+
+  public setObsFeed(feed: ObsFeed): void {
+    this.store.dispatch(SettingsActions.setObsFeed({ feed }));
   }
 
   public disconnect(): void {

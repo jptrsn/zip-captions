@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, OnDestroy, Signal, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { slideInRightOnEnterAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
-import { ObsConnectionService } from '../../../../services/obs-connection/obs-connection.service';
 import { RecognitionService } from '../../../media/services/recognition.service';
 
 @Component({
@@ -18,35 +16,22 @@ import { RecognitionService } from '../../../media/services/recognition.service'
     slideOutRightOnLeaveAnimation()
   ]
 })
-export class StreamCaptionsComponent implements OnInit, OnDestroy {
+export class StreamCaptionsComponent implements OnDestroy {
 
   public recognitionConnected: Signal<boolean | undefined>;
   public recognitionPaused: Signal<boolean | undefined>;
   public liveText: Signal<string>;
 
-  private liveText$: Observable<string>;
-  private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private store: Store<AppState>,
-              private recognitionService: RecognitionService,
-              private obs: ObsConnectionService) {
+              private recognitionService: RecognitionService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
     this.liveText = computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : '')
-    this.liveText$ = toObservable(this.liveText);
-  }
-
-  ngOnInit(): void {
-    this.liveText$.pipe(
-      takeUntil(this.onDestroy$)
-    ).subscribe((live) => {
-      this.obs.sendCaption(live);
-    });
   }
 
   ngOnDestroy(): void {
     if (this.recognitionConnected()) {
       this.store.dispatch(RecognitionActions.disconnect({id: 'stream'}));
     }
-    this.onDestroy$.next();
   }
 }

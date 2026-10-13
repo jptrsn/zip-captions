@@ -1,7 +1,7 @@
 import { defaultAppState } from '../reducers/app.reducer';
 import { AppState } from '../models/app.model';
 import { TranslationSettings, UiLanguagePreference } from '../modules/settings/models/settings.model';
-import { selectPaneOrder, selectPipContent, selectSplitOrientation, selectUiLanguage, selectUiLanguagePreference } from './settings.selector';
+import { selectObsFeed, selectPaneOrder, selectPipContent, selectSplitOrientation, selectUiLanguage, selectUiLanguagePreference } from './settings.selector';
 
 describe('settings selectors', () => {
   const withLanguages = (lang: AppState['settings']['lang'], uiLanguage?: UiLanguagePreference): AppState => ({
@@ -33,6 +33,7 @@ describe('settings selectors', () => {
       expect(selectSplitOrientation(state)).toBe('vertical');
       expect(selectPaneOrder(state)).toBe('original-first');
       expect(selectPipContent(state)).toBe('translated');
+      expect(selectObsFeed(state)).toBe('original');
     });
 
     it('returns the stored layout', () => {
@@ -40,6 +41,10 @@ describe('settings selectors', () => {
       expect(selectSplitOrientation(state)).toBe('horizontal');
       expect(selectPaneOrder(state)).toBe('translated-first');
       expect(selectPipContent(state)).toBe('split');
+    });
+
+    it('returns the stored OBS feed', () => {
+      expect(selectObsFeed(withTranslation({ obsFeed: 'translated' }))).toBe('translated');
     });
   });
 });

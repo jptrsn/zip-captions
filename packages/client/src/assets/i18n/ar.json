@@ -676,7 +676,12 @@
     "obsPassword": "obsPassword",
     "obsStreamInactive": "في انتظار بدء بث OBS",
     "connectionEstablished": "تم الاتصال - يمكنك بدء جلسة التعليق الآن",
-    "disconnected": "تم قطع الاتصال"
+    "disconnected": "تم قطع الاتصال",
+    "obsCaptionSource": "إرسال رسالة خاصة إلى OBS",
+    "obsCaptionOriginal": "القبائل الأصلية",
+    "obsCaptionTranslated": "ترجمة Captions",
+    "obsCaptionTranslatedFallback": "في حين أن الترجمة غير متوفرة أو غير متوفرة ، تتلقى OBS الملاحظات الأصلية.",
+    "obsCaptionUnsupportedLanguage": "تستخدم مقاطع تدفق OBS تنسيق CEA-608 ، والتي لا يمكن أن تظهر هذه اللغة."
   },
   "AUTH": {
     "title": "تسجيل الدخول إلى Zip Captions",

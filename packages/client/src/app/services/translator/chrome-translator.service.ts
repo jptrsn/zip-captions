@@ -1,7 +1,7 @@
 import { Platform } from '@angular/cdk/platform';
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, Subject, from, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { BrowserTranslator, TranslatorApiAdapter, TranslatorCreateOptions } from './translator-api.adapter';
 
 export type TranslationUnsupportedReason = 'mobile' | 'browser';
@@ -55,8 +55,11 @@ export class ChromeTranslatorService {
         if (!text || !text.trim()) {
           return of('');
         }
-        return from(this.translate(text, sourceLang, targetLang)).pipe(
-          catchError(() => of(text))
+        // Strict: a failed translation is '' and never the source text, so nothing shows or is sent
+        // (broadcast, OBS) as a translation when it isn't one
+        return from(this.translateSegmentsStrict([text], sourceLang, targetLang, false)).pipe(
+          map(([translated]) => translated ?? ''),
+          catchError(() => of(''))
         );
       })
     );
@@ -408,7 +411,7 @@ export class ChromeTranslatorService {
    * Text already in the target language is returned unchanged. Callers use it to tell a translation
    * from a failure, for example before sending one to broadcast viewers.
    */
-  public async translateSegmentsStrict(segments: string[], sourceLang: string, targetLang: string): Promise<(string | null)[]> {
+  public async translateSegmentsStrict(segments: string[], sourceLang: string, targetLang: string, cacheResults = true): Promise<(string | null)[]> {
     const s = this.normalizeLanguageCode(sourceLang);
     const t = this.normalizeLanguageCode(targetLang);
 
@@ -440,7 +443,9 @@ export class ChromeTranslatorService {
         if (!result || !result.trim()) {
           return null;
         }
-        this.cacheSegment(cacheKey, result);
+        if (cacheResults) {
+          this.cacheSegment(cacheKey, result);
+        }
         return result;
       } catch (err: any) {
         console.warn('Translate execution failed:', err);

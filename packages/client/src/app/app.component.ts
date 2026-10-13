@@ -13,6 +13,7 @@ import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
 import { StorageService } from './services/storage.service';
+import { ObsCaptionFeedService } from './services/obs-connection/obs-caption-feed.service';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,9 @@ export class AppComponent {
               private renderer: Renderer2,
               private updates: SwUpdate,
               private translate: TranslateService,
-						  private storage: StorageService) {
+						  private storage: StorageService,
+              // Injected so OBS captions are sent from any page
+              private obsCaptionFeed: ObsCaptionFeedService) {
 
     AvailableLanguages.forEach((lang) => this.translate.reloadLang(lang));
 

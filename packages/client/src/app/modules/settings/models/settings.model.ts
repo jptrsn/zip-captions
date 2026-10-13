@@ -281,9 +281,13 @@ export type PaneOrder = 'original-first' | 'translated-first';
 /** What the Picture-in-Picture window shows while translation is on (FR-W1) */
 export type PipContent = 'original' | 'translated' | 'split';
 
+/** What OBS stream captions carry while translation is on (FR-P3) */
+export type ObsFeed = 'original' | 'translated';
+
 export const DefaultSplitOrientation: SplitOrientation = 'vertical';
 export const DefaultPaneOrder: PaneOrder = 'original-first';
 export const DefaultPipContent: PipContent = 'translated';
+export const DefaultObsFeed: ObsFeed = 'original';
 
 export interface TranslationSettings {
   enabled: boolean;
@@ -293,6 +297,7 @@ export interface TranslationSettings {
   splitOrientation?: SplitOrientation;
   paneOrder?: PaneOrder;
   pipContent?: PipContent;
+  obsFeed?: ObsFeed;
   // Last dialect used per spoken language, so swapping back restores e.g. fr-CA rather than the default
   dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
 }

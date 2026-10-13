@@ -340,6 +340,45 @@ describe('ChromeTranslatorService', () => {
     });
   });
 
+  describe('live line translation', () => {
+    beforeEach(() => setup());
+
+    // liveOutput$ debounces by 150 ms
+    const nextLive = (text: string, source = 'en', target = 'fr') => new Promise<string>((resolve) => {
+      const subscription = service.liveOutput$.subscribe((value) => {
+        subscription.unsubscribe();
+        resolve(value);
+      });
+      service.queueLiveTranslation(text, source, target);
+    });
+
+    it('emits the translation', async () => {
+      await expect(nextLive('hello')).resolves.toBe('fr:hello');
+    });
+
+    it('emits an empty string, not the source text, when the translation fails', async () => {
+      translator.translate.mockRejectedValue(new Error('boom'));
+      await expect(nextLive('hello')).resolves.toBe('');
+    });
+
+    it('emits an empty string for an unsupported pair', async () => {
+      adapter.availability.mockResolvedValue('unavailable');
+      await expect(nextLive('hello', 'en', 'xx')).resolves.toBe('');
+    });
+
+    it('emits an empty string while the model still needs a download', async () => {
+      adapter.availability.mockResolvedValue('downloadable');
+      await expect(nextLive('hello')).resolves.toBe('');
+    });
+
+    it('does not fill the segment cache with interim lines', async () => {
+      await nextLive('hello');
+      translator.translate.mockClear();
+      await service.translateSegmentsStrict(['hello'], 'en', 'fr');
+      expect(translator.translate).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('normalizes dialect language codes', () => {
     setup();
     expect(service.normalizeLanguageCode('en-US')).toBe('en');
