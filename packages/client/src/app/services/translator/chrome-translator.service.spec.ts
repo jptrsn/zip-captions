@@ -425,6 +425,23 @@ describe('ChromeTranslatorService', () => {
       expect(results).toEqual(['']);
     });
 
+    it('cancel() followed at once by a new line still drops the result of the translation in flight', async () => {
+      const channel = service.createLiveChannel();
+      const results = collect(channel);
+      let finishOld: (text: string) => void = () => undefined;
+      translator.translate.mockImplementationOnce(() => new Promise<string>((resolve) => (finishOld = resolve)));
+
+      channel.queue('old line', 'en', 'fr');
+      await new Promise((resolve) => setTimeout(resolve, 300)); // past the delay: the translation is in flight
+      channel.cancel();
+      channel.queue('new line', 'en', 'de', true); // same tick, as on a language change
+      finishOld('fr:old line'); // arrives while the new line is still waiting
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      expect(results).not.toContain('fr:old line');
+      expect(results).toEqual(['', 'fr:new line']);
+    });
+
     it('cancel() lets the same line be translated again', async () => {
       const channel = service.createLiveChannel();
       const results = collect(channel);

@@ -1,7 +1,7 @@
 import { Platform } from '@angular/cdk/platform';
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, Subject, from, of, timer } from 'rxjs';
-import { catchError, debounce, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { BrowserTranslator, TranslatorApiAdapter, TranslatorCreateOptions } from './translator-api.adapter';
 
 export type TranslationUnsupportedReason = 'mobile' | 'browser';
@@ -377,8 +377,10 @@ export class ChromeTranslatorService {
     // null is a cancel
     const input = new Subject<{ text: string; sourceLang: string; targetLang: string; retry: boolean } | null>();
     const output$ = input.pipe(
-      // A cancel doesn't wait out the debounce, so it replaces a pending line and a result can't land after it
-      debounce((request) => timer(request ? 150 : 0)),
+      // A line waits 150 ms and a newer value replaces it (latest wins). A cancel (null) passes through at once,
+      // so it reaches the translation switchMap before any later request and invalidates in-flight work
+      // immediately, even when a new line is queued in the same tick.
+      switchMap((request) => request ? timer(150).pipe(map(() => request)) : of(null)),
       distinctUntilChanged((prev, curr) => !!prev && !!curr && !curr.retry
         && prev.text === curr.text && prev.sourceLang === curr.sourceLang && prev.targetLang === curr.targetLang),
       switchMap((request) => {
