@@ -36,7 +36,7 @@
                 (blur)="onUserActivity()"
                 [title]="'SETTINGS.TRANSLATION.targetLang' | translate"
               >
-                <option *ngFor="let lang of availableLanguages()" [value]="lang.code">
+                <option *ngFor="let lang of availableLanguages()" [value]="lang.code" [selected]="lang.code === targetLanguage()">
                   {{ lang.code.toUpperCase() }} - {{ lang.name }}
                 </option>
               </select>

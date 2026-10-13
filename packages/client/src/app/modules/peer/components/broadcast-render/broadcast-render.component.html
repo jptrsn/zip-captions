@@ -39,18 +39,18 @@
             >
               <ng-container *ngIf="languageOptions().fromBroadcaster.length; else localOnly">
                 <optgroup [label]="'STREAM.fromBroadcaster' | translate">
-                  <option *ngFor="let lang of languageOptions().fromBroadcaster" [value]="lang.code">
+                  <option *ngFor="let lang of languageOptions().fromBroadcaster" [value]="lang.code" [selected]="lang.code === targetLanguage()">
                     {{ lang.code.toUpperCase() }} - {{ lang.name }}
                   </option>
                 </optgroup>
                 <optgroup *ngIf="languageOptions().local.length" [label]="'STREAM.translatedOnDevice' | translate">
-                  <option *ngFor="let lang of languageOptions().local" [value]="lang.code">
+                  <option *ngFor="let lang of languageOptions().local" [value]="lang.code" [selected]="lang.code === targetLanguage()">
                     {{ lang.code.toUpperCase() }} - {{ lang.name }}
                   </option>
                 </optgroup>
               </ng-container>
               <ng-template #localOnly>
-                <option *ngFor="let lang of languageOptions().local" [value]="lang.code">
+                <option *ngFor="let lang of languageOptions().local" [value]="lang.code" [selected]="lang.code === targetLanguage()">
                   {{ lang.code.toUpperCase() }} - {{ lang.name }}
                 </option>
               </ng-template>
