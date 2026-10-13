@@ -37,7 +37,10 @@ Constraints that still apply: `toObservable()` only in constructors or field ini
 
 ## Running it in a parallel session
 
-- **Branch from `develop` in its own worktree**, not from `feature/on-device-translation` and not in the main working directory (shared git index and jest cache): `git worktree add ../zip-captions-tests -b test/fix-failing-suites develop`. Recompute the baseline there, since `develop` differs from this branch.
+**Parked until PR #149 is approved** (2026-10-13). Then follow gitflow (the repo uses `feature/*` branches off `develop`):
+
+- Start a new branch off `develop`, for example `git switch -c feature/fix-failing-client-tests develop`. Not from `feature/on-device-translation`. If another session is working in this checkout, use a separate worktree instead (`git worktree add ../zip-captions-tests -b feature/fix-failing-client-tests develop`) so the two do not share a git index or jest cache.
+- Recompute the baseline on `develop`; it differs from this branch.
 - **CodeRabbit skips a PR over 100 files** (see `.coderabbit.yaml`), so split the work by group into several PRs.
-- **Wait for PR #149 to merge before touching these 10**, which sit next to files that PR changes: app.component, recognition-control-sidebar, recognition-render, broadcast-room, stream-captions, obs-studio-settings, recognition-engine, settings, ui-settings, user-saved-settings. The other 34 do not overlap and can start now. Fixing the 10 after the merge also lets their specs cover the new translation UI.
+- **Do the 10 specs that sit next to files PR #149 changes after #149 has merged:** app.component, recognition-control-sidebar, recognition-render, broadcast-room, stream-captions, obs-studio-settings, recognition-engine, settings, ui-settings, user-saved-settings. The other 34 do not overlap. Fixing the 10 after the merge also lets their specs cover the new translation UI.
 - Nothing in PR #149 depends on this work.
