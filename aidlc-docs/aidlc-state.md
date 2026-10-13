@@ -6,7 +6,7 @@
 | Branch | `feature/on-device-translation` (from `develop` @ `7e0f8a4`) |
 | Project type | Brownfield (Angular 16 / NgRx / Nx client in `packages/client`) |
 | Current phase | **Inception → Construction** |
-| Current stage | Release 1 Construction — U0, U1, U2, U3 done; next U4 (broadcast both feeds) |
+| Current stage | Release 1 Construction — U0, U1, U2, U3, U4 done; next U5 (per-language windows, starting with the PiP spike) |
 
 ## Phase / stage tracker
 

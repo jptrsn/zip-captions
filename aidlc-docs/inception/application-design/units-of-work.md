@@ -23,9 +23,9 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-P1/P2 | Done |
 | FR-P3 OBS feed | **Gap** |
 | FR-D1, FR-D4 | Done (stacked) |
-| FR-D2 orientation/swap | Done in U3 (broadcaster side; the viewer keeps stacked until U4) |
-| FR-D3 alignment | Broadcaster done (IDs in U1, placeholders in U3). Viewer alignment is U4. |
-| FR-B1, FR-B2, FR-B4, FR-B5 | **Gap** (FR-B3 done) |
+| FR-D2 orientation/swap | Done in U3 (caption view) and U4 (broadcast viewer) |
+| FR-D3 alignment | Done: IDs (U1), placeholders (U3), viewer by ID (U4) |
+| FR-B1, FR-B2, FR-B4, FR-B5 | Done in U4 (FR-B3 was already done in the baseline) |
 | FR-W1 | Done in U3 (PiP content setting). FR-W2–W5 are U5. |
 | NFR-7 | Done |
 | Regression | `saveTranscriptionSettingsFailure` reducer handler removed. **Fixed in `2292605`**, with a reducer test. |
@@ -37,11 +37,14 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 
 **Current test baseline (after U3):** 44 of 109 client suites failing. Compared by name against a `HEAD` (`2c6eda7`) worktree run: **no newly failing suite**. (The baseline run hung on its last suite and was killed, so one suite, `leave-session`, has no baseline result; it passes now. `recognized-text.component.spec` and `wake-lock-enabled.component.spec` failed in that baseline run and pass now; the first was rewritten, the second is unrelated and probably order-dependent.) Hangs with idle workers happened twice this unit; kill and rerun.
 
+**Current test baseline (after U4):** 44 of 113 client suites failing. Compared by name against a `HEAD` (`26312a9`) worktree run: **no newly failing suite** caused by U4. The baseline run hung again near the end and was killed, so `room-card` and `third-party-connections` have no baseline result. `room-card` fails on a missing `HttpClient` provider in its own spec (a file U4 doesn't touch, and it failed in the earlier baselines too); `third-party-connections` passes. `peer-server-status-chip` failed in the baseline run and passes now (unrelated, probably order-dependent).
+
 **Test patterns that work around the pre-existing setup gaps:**
 - Engines: stub `globalThis.webkitSpeechRecognition` with a fake `EventTarget` (see `web-recognition.service.spec.ts`).
 - The Azure SDK: `jest.mock('microsoft-cognitiveservices-speech-sdk')` (see `azure-recognition.service.spec.ts`).
 - The `RecognitionService` facade: provide stub engines.
 - Component logic (for example `recognition-render`, which still fails on `webkitSpeechRecognition`): extract it into pure helpers (`segment-translations.ts`) and test those.
+- Root services built on `toObservable`: their effects run during change detection, so create a trivial host component fixture and call `detectChanges()` between steps (`TestBed.flushEffects` and `ApplicationRef.tick()` don't flush them in this Angular version). See `caption-translation.service.spec.ts`.
 
 ## U0 — Baseline hardening ✅ (done: `2292605`, `3c53761`)
 ~~Fix the NG0203 bug; restore the `saveTranscriptionSettingsFailure` handler~~ (done, `2292605`). Add eligibility gating (`'Translator' in self` and desktop; toggle disabled with an explanation; "Experimental" label). Trim the pre-release API probes down to the shipped `Translator` API. Add `lang`/`dir` on caption text. Add tests for the translator service through an adapter.
@@ -96,9 +99,20 @@ Design: `construction/u3-split-orientation-pip/functional-design.md` (ten decisi
 
 *Left for U4:* `broadcast-render` (viewer) keeps its own stacked split, ignores orientation and pane order, and is still index-aligned (no payload IDs). When it gets IDs, lift the pane markup into a shared component.
 
-## U4 — Broadcast both feeds
+## U4 — Broadcast both feeds ✅
 Versioned payload carrying `{ id, text, lang }` for both original and translated segments, plus `translations: [targetLang]`. Viewer picker merges the broadcaster's languages with local ones (FR-B4/B5). Old viewers still get `recognition` as before.
 *Stories:* US-D1–D3.
+
+Design: `construction/u4-broadcast-both-feeds/functional-design.md` (ten decisions approved as recommended; deviations in §12). Done:
+- **Wire format v2 (additive):** the existing `live` and `segment` messages keep `recognition` and `lang` and gain `v: 2`, `segments` (`{id,text,lang}`), `translations` (languages offered), `translated` and `translatedLive`. A v1 viewer ignores the extra fields. A v2 viewer reads a v1 broadcaster with synthetic IDs (`text#n`, stable across rollover). Pure builders and parsers are in `modules/peer/models/broadcast-payload.ts`.
+- **Broadcaster (FR-B1):** a root `CaptionTranslationService` owns the translation of the local recognition feed (a reusable `SegmentTranslationSession`), and both `recognition-render` and `broadcast-room` consume it. The room sends the translation only when translation is active, and only translations that really exist.
+- **Strict translation:** new `translateSegmentsStrict` returns `null` for a segment that couldn't be translated. `translateSegments` still returns the source text on failure and is unchanged. The local translated pane now keeps its placeholder on failure instead of showing source text.
+- **Viewer (FR-B2–B5):** `resolveViewerTranslation` prefers the broadcaster's translation when it offers the chosen language (no double translation), else translates on the device if eligible, else moves the viewer to the first offered language. The picker lists the broadcaster's languages first. An ineligible viewer (a phone) can now show the broadcaster's translation, with the translation menu available. Viewer-side local translation (FR-B3) uses its own session and each segment's own language.
+- **Viewer layout:** the U3 pane markup is lifted into a shared `app-caption-panes` component used by both the caption view and `broadcast-render`, so viewers get orientation, pane order, aligned panes with placeholders, and per-line `lang`/`dir`.
+- **i18n:** 2 new keys (`STREAM.fromBroadcaster`, `STREAM.translatedOnDevice`), generated with `scripts/translate.py`.
+- **Server:** no change; broadcast payloads are peer to peer.
+
+*Left out (follow-up):* late joiners see nothing until the next recognition update (existing behaviour). One offered language at a time (the `translations` array allows more later).
 
 ## U5 — Per-language windows
 **Spike first:** can two top-level windows hold Document PiP windows at the same time in Chrome? Then: a popup per language synced over `BroadcastChannel`, full-screen on any display, closing with the opener, and its own PiP window if the spike passes. Settings → "Display windows".
