@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDest
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { Subject, distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { Subject, map, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { CaptionSegment } from '../../../../models/caption-segment.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
@@ -11,7 +11,8 @@ import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSe
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { SegmentTranslation, alignTranslations, mergeTranslations, planTranslations } from '../../../../services/translator/segment-translations';
+import { alignTranslations } from '../../../../services/translator/segment-translations';
+import { CaptionTranslationService } from '../../../../services/translator/caption-translation.service';
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
@@ -59,7 +60,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public originalTextDir: Signal<'ltr' | 'rtl'>;
   public translatedTextDir: Signal<'ltr' | 'rtl'>;
   public availableLanguages: Signal<SupportedTranslationLanguage[]>;
-  public translatedLiveText: WritableSignal<string> = signal('');
+  public translatedLiveText: Signal<string>;
   public translatedTextOutput: Signal<string[]>;
   public hasTranslatedResults: Signal<boolean>;
   public originalLanguageLabel: Signal<string>;
@@ -74,13 +75,6 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
   private onDestroy$: Subject<void> = new Subject<void>();
   private segments: Signal<CaptionSegment[]>;
-  // Translations keyed by segment ID, for the current target language
-  private translationsById: WritableSignal<Map<string, SegmentTranslation>> = signal(new Map());
-  // Previous target's translations, shown until re-translation lands so the pane doesn't blank
-  private previousTranslationsById: WritableSignal<Map<string, SegmentTranslation>> = signal(new Map());
-  private requestedIds: Set<string> = new Set();
-  // Incremented whenever translations are reset, so stale in-flight results are discarded
-  private translationGeneration = 0;
   private idleTimeoutId: any = null;
   private readonly IDLE_TIMEOUT_MS = 3500;
 
@@ -90,6 +84,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
               private documentPip: DocumentPipService,
               private recognitionService: RecognitionService,
               private translatorService: ChromeTranslatorService,
+              private captionTranslation: CaptionTranslationService,
               private ngZone: NgZone,
               private cd: ChangeDetectorRef) {
     this.isPipActive = this.documentPip.isPipActive;
@@ -99,12 +94,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
     this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput()() : '');
     this.textOutput = computed(() => id() ? this.recognitionService.getRecognizedText()() : []);
-    this.segments = computed(() => id() ? this.recognitionService.getRecognizedSegments()() : []);
-    this.translatedTextOutput = computed(() => {
-      const current = this.translationsById();
-      const previous = this.previousTranslationsById();
-      return alignTranslations(this.segments(), previous.size ? new Map([...previous, ...current]) : current);
-    });
+    this.segments = this.captionTranslation.segments;
+    this.translatedLiveText = this.captionTranslation.translatedLive;
+    this.translatedTextOutput = computed(() => alignTranslations(this.segments(), this.captionTranslation.translations()));
     this.hasLiveResults = computed(() => {
       if (this.connected()) {
         if (this.liveText() == '' && this.textOutput().length === 0) {
@@ -150,11 +142,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     });
 
     this.originalLines = computed(() => buildOriginalLines(this.segments(), this.sourceLanguage()));
-    this.translatedLines = computed(() => {
-      const current = this.translationsById();
-      const previous = this.previousTranslationsById();
-      return buildTranslatedLines(this.segments(), previous.size ? new Map([...previous, ...current]) : current, this.targetLanguage());
-    });
+    this.translatedLines = computed(() => buildTranslatedLines(this.segments(), this.captionTranslation.translations(), this.targetLanguage()));
 
     this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
     this.translatedTextDir = computed(() => textDirection(this.targetLanguage()));
@@ -179,84 +167,14 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
 
-    // Handle live text translation
-    toObservable(this.liveText).pipe(
-      takeUntil(this.onDestroy$),
-      distinctUntilChanged()
-    ).subscribe((live) => {
-      const mode = this.translationMode();
-      const src = this.sourceLanguage();
-      const tgt = this.targetLanguage();
-
-      if (mode !== 'off' && live && this.translatorService.isSupported()) {
-        this.translatorService.queueLiveTranslation(live, src, tgt);
-      } else if (!live) {
-        this.ngZone.run(() => {
-          this.translatedLiveText.set('');
-          this.cd.detectChanges();
-        });
-      }
-    });
-
-    // Handle finalized segment translations
-    toObservable(this.segments).pipe(
-      takeUntil(this.onDestroy$)
-    ).subscribe((segments) => {
-      if (this.translationMode() !== 'off' && segments.length > 0 && this.translatorService.isSupported()) {
-        this.translatePendingSegments();
-      } else if (segments.length === 0) {
-        this.ngZone.run(() => {
-          this.resetTranslations();
-          this.cd.detectChanges();
-        });
-      }
-    });
-
-    // Re-translate when translation settings change
-    toObservable(this.translationSettings).pipe(
-      takeUntil(this.onDestroy$)
-    ).subscribe((settings) => {
-      const src = this.sourceLanguage();
-      const tgt = this.targetLanguage();
-      if (this.translatorService.isSupported()) {
-        this.translatorService.checkModelStatus(src, tgt);
-      }
-      if (settings?.enabled && settings.mode !== 'off') {
-        if (this.segments().length > 0 && this.translatorService.isSupported()) {
-          this.translatePendingSegments(true);
-        }
-      } else if (!settings?.enabled || settings?.mode === 'off') {
-        this.ngZone.run(() => {
-          this.translatedLiveText.set('');
-          this.resetTranslations();
-          this.cd.detectChanges();
-        });
-      }
-    });
-
-    // Automatically re-translate all segments when the on-device model finishes downloading
-    this.translatorService.modelReady$.pipe(
+    // The translations themselves come from CaptionTranslationService; this component only keeps the
+    // model status (for the download button) up to date when the languages change
+    toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}`)).pipe(
       takeUntil(this.onDestroy$)
     ).subscribe(() => {
-      const src = this.sourceLanguage();
-      const tgt = this.targetLanguage();
-      if (this.segments().length > 0 && this.translationMode() !== 'off') {
-        this.translatePendingSegments(true);
+      if (this.translatorService.isSupported()) {
+        this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
       }
-      const live = this.liveText();
-      if (live && this.translationMode() !== 'off') {
-        this.translatorService.queueLiveTranslation(live, src, tgt);
-      }
-    });
-
-    // Subscribe to debounced live translation outputs
-    this.translatorService.liveOutput$.pipe(
-      takeUntil(this.onDestroy$)
-    ).subscribe((translated) => {
-      this.ngZone.run(() => {
-        this.translatedLiveText.set(translated);
-        this.cd.detectChanges();
-      });
     });
 
     if (this.fullScreen.isAvailable) {
@@ -311,51 +229,6 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       this.idleTimeoutId = null;
     }
     this.controlsVisible.set(true);
-  }
-
-  /**
-   * Translates segments that have no translation yet (or whose language changed) from their own
-   * language, merging results by segment ID so a late result can never land on the wrong caption.
-   * `reset` re-translates everything (target language changed or a model became ready).
-   */
-  private translatePendingSegments(reset = false): void {
-    if (reset) {
-      const shown = new Map([...this.previousTranslationsById(), ...this.translationsById()]);
-      this.resetTranslations();
-      this.previousTranslationsById.set(shown);
-    }
-    const generation = this.translationGeneration;
-    const target = this.targetLanguage();
-    // Each segment translates from its own language; segments already in the target pass through
-    const groups = planTranslations(this.segments(), this.translationsById(), target, this.requestedIds);
-    groups.forEach(({ sourceLang, segments: pending, passThrough }) => {
-      pending.forEach((segment) => this.requestedIds.add(segment.id));
-      // Already in the target language: resolves at once without the translator, so no placeholder lingers.
-      // It goes through the same async merge, because this runs inside a signal effect and must not write signals.
-      const texts = pending.map((segment) => segment.text);
-      const result = passThrough ? Promise.resolve(texts) : this.translatorService.translateSegments(texts, sourceLang, target);
-      result.then((translated) => {
-        if (generation !== this.translationGeneration) return;
-        pending.forEach((segment) => this.requestedIds.delete(segment.id));
-        this.ngZone.run(() => {
-          this.translationsById.update((current) => mergeTranslations(current, this.segments(), pending, translated));
-          if (this.requestedIds.size === 0) {
-            this.previousTranslationsById.set(new Map());
-          }
-          this.cd.detectChanges();
-        });
-      }).catch((err) => {
-        pending.forEach((segment) => this.requestedIds.delete(segment.id));
-        console.warn('Segment translation failed:', err);
-      });
-    });
-  }
-
-  private resetTranslations(): void {
-    this.translationGeneration++;
-    this.requestedIds.clear();
-    this.translationsById.set(new Map());
-    this.previousTranslationsById.set(new Map());
   }
 
   public setTargetLanguage(targetLanguage: string): void {

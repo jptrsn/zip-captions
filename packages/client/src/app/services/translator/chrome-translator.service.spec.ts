@@ -294,6 +294,52 @@ describe('ChromeTranslatorService', () => {
     });
   });
 
+  describe('translateSegmentsStrict', () => {
+    beforeEach(() => setup());
+
+    it('returns the translation of each segment', async () => {
+      await expect(service.translateSegmentsStrict(['one', 'two'], 'en-US', 'fr')).resolves.toEqual(['fr:one', 'fr:two']);
+    });
+
+    it('returns text already in the target language unchanged, without a translator', async () => {
+      await expect(service.translateSegmentsStrict(['bonjour'], 'fr-CA', 'fr')).resolves.toEqual(['bonjour']);
+      expect(adapter.create).not.toHaveBeenCalled();
+    });
+
+    it('returns null for every segment of an unsupported pair', async () => {
+      adapter.availability.mockResolvedValue('unavailable');
+      await expect(service.translateSegmentsStrict(['one', 'two'], 'en', 'xx')).resolves.toEqual([null, null]);
+    });
+
+    it('returns null when the model still needs a download and nobody asked for one', async () => {
+      adapter.availability.mockResolvedValue('downloadable');
+      await expect(service.translateSegmentsStrict(['one'], 'en', 'fr')).resolves.toEqual([null]);
+      expect(adapter.create).not.toHaveBeenCalled();
+    });
+
+    it('returns null for a segment whose translation throws, and still translates the others', async () => {
+      translator.translate.mockImplementation((text: string) => text === 'bad' ? Promise.reject(new Error('boom')) : Promise.resolve(`fr:${text}`));
+      await expect(service.translateSegmentsStrict(['good', 'bad'], 'en', 'fr')).resolves.toEqual(['fr:good', null]);
+    });
+
+    it('returns null for an empty translation result', async () => {
+      translator.translate.mockResolvedValue('  ');
+      await expect(service.translateSegmentsStrict(['one'], 'en', 'fr')).resolves.toEqual([null]);
+    });
+
+    it('shares the segment cache with translateSegments', async () => {
+      await service.translateSegments(['one'], 'en', 'fr');
+      translator.translate.mockClear();
+      await expect(service.translateSegmentsStrict(['one'], 'en', 'fr')).resolves.toEqual(['fr:one']);
+      expect(translator.translate).not.toHaveBeenCalled();
+    });
+
+    it('leaves translateSegments returning the source text on failure', async () => {
+      translator.translate.mockRejectedValue(new Error('boom'));
+      await expect(service.translateSegments(['one'], 'en', 'fr')).resolves.toEqual(['one']);
+    });
+  });
+
   it('normalizes dialect language codes', () => {
     setup();
     expect(service.normalizeLanguageCode('en-US')).toBe('en');

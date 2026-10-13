@@ -491,7 +491,9 @@
       "copied": "Link copiato negli appunti",
       "create": "Creane uno nuovo",
       "changeWarning": "L'ID trasmissione non può essere modificato dopo il salvataggio."
-    }
+    },
+    "fromBroadcaster": "Tradotto dalla radiodifusione",
+    "translatedOnDevice": "Tradotto su questo dispositivo"
   },
   "MODAL": {
     "confirmEndBroadcast": "Questo terminerà la trasmissione corrente e disconnetterà tutti i peer",

@@ -491,7 +491,9 @@
       "copied": "Enlace copiado al portapapeles",
       "create": "Crear un nuevo",
       "changeWarning": "La ID de transmisión no se puede cambiar después de guardar"
-    }
+    },
+    "fromBroadcaster": "Traducido por el emisor",
+    "translatedOnDevice": "Traducido en este dispositivo"
   },
   "MODAL": {
     "confirmEndBroadcast": "Esto terminará la transmisión actual y desconectará a todos los pares",

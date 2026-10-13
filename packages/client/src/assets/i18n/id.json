@@ -491,7 +491,9 @@
       "copied": "Tautan disalin ke papan klip",
       "create": "Buat yang baru",
       "changeWarning": "ID siaran tidak dapat diubah setelah disimpan."
-    }
+    },
+    "fromBroadcaster": "Terjemahan oleh broadcaster",
+    "translatedOnDevice": "Terjemahan pada perangkat ini"
   },
   "MODAL": {
     "confirmEndBroadcast": "Ini akan mengakhiri siaran saat ini dan memutuskan semua rekan.",

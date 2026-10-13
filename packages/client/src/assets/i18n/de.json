@@ -491,7 +491,9 @@
       "copied": "Link in die Zwischenablage kopiert",
       "create": "Erstelle eine neue",
       "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden."
-    }
+    },
+    "fromBroadcaster": "Übersetzt durch den Broadcaster",
+    "translatedOnDevice": "Übersetzt auf diesem Gerät"
   },
   "MODAL": {
     "confirmEndBroadcast": "Dadurch wird die aktuelle Übertragung beendet und die Verbindung zu allen Teilnehmern getrennt.",

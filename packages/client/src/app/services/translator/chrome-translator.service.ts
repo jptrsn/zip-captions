@@ -402,6 +402,53 @@ export class ChromeTranslatorService {
     return await Promise.all(promises);
   }
 
+  /**
+   * Like translateSegments, but a segment that could not really be translated yields null instead of
+   * its source text (unsupported pair, no translator available, model still to download, an error).
+   * Text already in the target language is returned unchanged. Callers use it to tell a translation
+   * from a failure, for example before sending one to broadcast viewers.
+   */
+  public async translateSegmentsStrict(segments: string[], sourceLang: string, targetLang: string): Promise<(string | null)[]> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+
+    if (!segments || segments.length === 0) {
+      return [];
+    }
+    if (s === t) {
+      return [...segments];
+    }
+    if (this.unsupportedPairs.has(`${s}->${t}`)) {
+      return segments.map(() => null);
+    }
+
+    return Promise.all(segments.map(async (segment): Promise<string | null> => {
+      if (!segment || !segment.trim()) {
+        return segment;
+      }
+      const cacheKey = `${s}->${t}:${segment}`;
+      const cached = this.segmentCache.get(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
+      try {
+        const translator = await this.getOrCreateTranslator(s, t, false);
+        if (!translator || typeof translator.translate !== 'function') {
+          return null;
+        }
+        const result = await translator.translate(segment);
+        if (!result || !result.trim()) {
+          return null;
+        }
+        this.cacheSegment(cacheKey, result);
+        return result;
+      } catch (err: any) {
+        console.warn('Translate execution failed:', err);
+        return null;
+      }
+    }));
+  }
+
   private cacheSegment(cacheKey: string, translated: string): void {
     this.segmentCache.delete(cacheKey);
     this.segmentCache.set(cacheKey, translated);

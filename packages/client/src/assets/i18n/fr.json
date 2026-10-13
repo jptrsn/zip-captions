@@ -491,7 +491,9 @@
       "copied": "Lien copié dans le presse-papier",
       "create": "Créer un nouveau",
       "changeWarning": "L'ID de diffusion ne peut pas être modifié après l'enregistrement."
-    }
+    },
+    "fromBroadcaster": "Traduction par la radiodiffusion",
+    "translatedOnDevice": "Traduction sur ce dispositif"
   },
   "MODAL": {
     "confirmEndBroadcast": "Cette opération met fin à la diffusion en cours et déconnecte tous les pairs.",

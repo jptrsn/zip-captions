@@ -8,7 +8,8 @@ import { RecognitionStatus } from '../../../../models/recognition.model';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector } from '../../../../selectors/settings.selector';
-import { RecognitionService } from '../../../media/services/recognition.service';
+import { CaptionTranslationService } from '../../../../services/translator/caption-translation.service';
+import { LivePayload, SegmentPayload, buildLivePayload, buildSegmentPayload, buildTranslatedWire } from '../../models/broadcast-payload';
 import { PeerService } from '../../services/peer.service';
 
 @Component({
@@ -26,12 +27,12 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
   private recognitionPaused: Signal<boolean | undefined>;
   private sourceLanguage: Signal<string>;
   private sourceLanguage$: Observable<string>;
-  private liveText: Observable<string>;
-  private recognizedText: Observable<string[]>;
+  private livePayload$: Observable<LivePayload>;
+  private segmentPayload$: Observable<SegmentPayload>;
   private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<AppState>,
-              private recognitionService: RecognitionService,
+              private captionTranslation: CaptionTranslationService,
               private peerService: PeerService) {
     this.recognitionConnected = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
@@ -45,8 +46,24 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
     });
     this.sourceLanguage$ = toObservable(this.sourceLanguage);
 
-    this.liveText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getLiveOutput()() : ''))
-    this.recognizedText = toObservable(computed(() => (this.recognitionConnected() || this.recognitionPaused()) ? this.recognitionService.getRecognizedText()() : []));
+    // Viewers get the original text, and the translation too when this broadcaster is translating.
+    // Only translations that really exist are sent; a pending or failed one is left out.
+    const running = computed(() => !!(this.recognitionConnected() || this.recognitionPaused()));
+    const offered = computed(() => this.captionTranslation.active() ? [this.captionTranslation.target()] : []);
+    this.livePayload$ = toObservable(computed(() => buildLivePayload(
+      running() ? this.captionTranslation.liveText() : '',
+      this.sourceLanguage(),
+      offered(),
+      running() && this.captionTranslation.active() ? this.captionTranslation.translatedLive() : '')));
+    this.segmentPayload$ = toObservable(computed(() => {
+      const segments = running() ? this.captionTranslation.segments() : [];
+      const target = this.captionTranslation.target();
+      return buildSegmentPayload(
+        segments,
+        this.sourceLanguage(),
+        offered(),
+        offered().length ? buildTranslatedWire(segments, this.captionTranslation.translations(), target) : []);
+    }));
     let isPaused = false;
     effect(() => {
       if (this.recognitionPaused()) {
@@ -63,15 +80,15 @@ export class BroadcastRoomComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.store.dispatch(RecognitionActions.connect({id: 'broadcast'}));
-    this.liveText.pipe(
+    this.livePayload$.pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe((live) => {
-      this.peerService.broadcastData({ recognition: live, type: 'live', lang: this.sourceLanguage() })
+    ).subscribe((payload) => {
+      this.peerService.broadcastData(payload);
     });
-    this.recognizedText.pipe(
+    this.segmentPayload$.pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe((recognized) => {
-      this.peerService.broadcastData({ recognition: recognized, type: 'segment', lang: this.sourceLanguage() })
+    ).subscribe((payload) => {
+      this.peerService.broadcastData(payload);
     });
     this.sourceLanguage$.pipe(
       takeUntil(this.onDestroy$)

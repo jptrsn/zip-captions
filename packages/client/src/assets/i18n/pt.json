@@ -491,7 +491,9 @@
       "copied": "Link copiado para a área de transferência",
       "create": "Crie um novo",
       "changeWarning": "O ID de transmissão não pode ser alterado após salvar."
-    }
+    },
+    "fromBroadcaster": "Traduzido pela emissora",
+    "translatedOnDevice": "Traduzido neste dispositivo"
   },
   "MODAL": {
     "confirmEndBroadcast": "Isso terminará a transmissão atual e desconectará todos os colegas",

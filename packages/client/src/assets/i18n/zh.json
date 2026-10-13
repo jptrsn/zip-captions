@@ -491,7 +491,9 @@
       "copied": "链接复制到Clipboard",
       "create": "创建一个新",
       "changeWarning": "播放 ID 不能在存储后更改。"
-    }
+    },
+    "fromBroadcaster": "由广播公司翻译",
+    "translatedOnDevice": "在此设备上翻译"
   },
   "MODAL": {
     "confirmEndBroadcast": "这将结束当前的广播,并将切断所有对手。",

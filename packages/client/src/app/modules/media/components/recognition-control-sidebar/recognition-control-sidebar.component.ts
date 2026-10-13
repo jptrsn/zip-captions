@@ -11,6 +11,7 @@ import { recognitionConnectedSelector } from '../../../../selectors/recognition.
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
+import { ViewerLanguageOptions, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
 import { PeerService } from '../../../peer/services/peer.service';
 import { Subject, map, takeUntil } from 'rxjs';
 
@@ -43,6 +44,9 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
 
   // Translation signals
   public isTranslatorSupported: boolean;
+  public offeredLanguages: Signal<string[]>;
+  public translationAvailable: Signal<boolean>;
+  public languageOptions: Signal<ViewerLanguageOptions>;
   public translationSettings: Signal<TranslationSettings | undefined>;
   public translationMode: Signal<TranslationDisplayMode>;
   public targetLanguage: Signal<string>;
@@ -64,8 +68,11 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
               private peerService: PeerService,
               private documentPip: DocumentPipService) {
     this.isTranslatorSupported = this.translatorService.isSupported();
+    this.offeredLanguages = toSignal(this.peerService.offeredLanguages$, { initialValue: [] });
+    // A viewer whose device can't translate can still show the broadcaster's translation
+    this.translationAvailable = computed(() => this.isTranslatorSupported || this.offeredLanguages().length > 0);
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.translationMode = computed(() => this.isTranslatorSupported ? (this.translationSettings()?.mode ?? 'off') : 'off');
+    this.translationMode = computed(() => this.translationAvailable() ? (this.translationSettings()?.mode ?? 'off') : 'off');
 
     const hostLang = toSignal(this.peerService.hostLanguage$);
     const dialect = toSignal(this.store.select(dialectSelector));
@@ -82,6 +89,8 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
       const src = sourceLanguageCode();
       return AvailableTranslationLanguages.filter((l) => l.code !== src);
     });
+    // The broadcaster's languages first, then those this device can translate into
+    this.languageOptions = computed(() => viewerLanguageOptions(AvailableTranslationLanguages, this.offeredLanguages(), sourceLanguageCode(), this.isTranslatorSupported));
 
     this.targetLanguage = computed(() => {
       return this.translationSettings()?.targetLanguage ?? (sourceLanguageCode() === 'es' ? 'en' : 'es');

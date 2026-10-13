@@ -11,6 +11,7 @@ import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectP
 import { CacheService } from '../../../services/cache/cache.service';
 import { selectUserId } from '../../../selectors/user.selector';
 import { dialectSelector, languageSelector } from '../../../selectors/settings.selector';
+import { WireSegment, parseLivePayload, parseSegmentPayload } from '../models/broadcast-payload';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,12 @@ export class PeerService {
   public liveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public textOutput$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public hostLanguage$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  // Segments with IDs and languages. For a broadcaster that predates them, synthesised from textOutput$.
+  public segments$: BehaviorSubject<WireSegment[]> = new BehaviorSubject<WireSegment[]>([]);
+  // Languages the broadcaster translates into, and the translations that exist so far (matching segments$ by ID)
+  public offeredLanguages$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public broadcasterTranslations$: BehaviorSubject<WireSegment[]> = new BehaviorSubject<WireSegment[]>([]);
+  public translatedLiveText$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private hostLanguage: Signal<string>;
 
   private readonly CACHE_PERSIST_MINS = 60;
@@ -358,7 +365,18 @@ export class PeerService {
     });
     this.textOutput$.next([]);
     this.liveText$.next('')
+    this.segments$.next([]);
+    this.broadcasterTranslations$.next([]);
+    this.translatedLiveText$.next('');
+    this.offeredLanguages$.next([]);
     this.peerMap.clear();
+  }
+
+  private _setOffered(offered: string[]): void {
+    const current = this.offeredLanguages$.value;
+    if (current.length !== offered.length || current.some((lang, index) => lang !== offered[index])) {
+      this.offeredLanguages$.next(offered);
+    }
   }
 
   private _reconnectPeerServer(tryNumber?: number): void {
@@ -494,12 +512,21 @@ export class PeerService {
           this.hostLanguage$.next(data.lang);
         }
         switch (data.type) {
-          case 'live': 
+          case 'live': {
+            const live = parseLivePayload(data);
             this.liveText$.next(data.recognition);
+            this.translatedLiveText$.next(live.translatedLive);
+            this._setOffered(live.offered);
             break;
-          case 'segment':
+          }
+          case 'segment': {
+            const parsed = parseSegmentPayload(data, this.hostLanguage$.value);
             this.textOutput$.next(data.recognition);
+            this.segments$.next(parsed.segments);
+            this.broadcasterTranslations$.next(parsed.translated);
+            this._setOffered(parsed.offered);
             break;
+          }
         }
       } else if (data?.type === 'hostLanguage' && data?.lang) {
         this.hostLanguage$.next(data.lang);

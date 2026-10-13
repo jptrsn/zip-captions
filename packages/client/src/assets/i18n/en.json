@@ -474,6 +474,8 @@
     "authentication": "Authentication",
     "authDescription": "Require viewers to enter join code",
     "countdown": "Time remaining",
+    "fromBroadcaster": "Translated by the broadcaster",
+    "translatedOnDevice": "Translated on this device",
     "ROOMCARD": {
       "broadcastId": "Broadcast ID",
       "broadcastType": "Broadcast Type",

@@ -491,7 +491,9 @@
       "copied": "Link skopiowany do schowka",
       "create": "Stwórz nowy",
       "changeWarning": "Po zapisaniu nie można zmienić identyfikatora transmisji."
-    }
+    },
+    "fromBroadcaster": "Tłumaczenie przez nadawcę",
+    "translatedOnDevice": "Tłumaczenie na tym urządzeniu"
   },
   "MODAL": {
     "confirmEndBroadcast": "To zakończy aktualną transmisję i odłączy wszystkich rówieśników.",
