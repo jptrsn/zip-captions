@@ -62,6 +62,10 @@ describe('broadcast payload', () => {
       expect('translatedLive' in without).toBe(false);
       expect(buildLivePayload('hello', 'en-US', ['fr'], 'bonjour')).toMatchObject({ translations: ['fr'], translatedLive: 'bonjour' });
     });
+
+    it('never sends a translated line without the live line it translates', () => {
+      expect('translatedLive' in buildLivePayload('', 'en-US', ['fr'], 'bonjour')).toBe(false);
+    });
   });
 
   describe('parseSegmentPayload', () => {

@@ -33,11 +33,11 @@ describe('CaptionTranslationService', () => {
     createLiveChannel: jest.Mock;
     modelReady$: Subject<unknown>;
   };
-  let liveChannel: { queue: jest.Mock; output$: Subject<string> };
+  let liveChannel: { queue: jest.Mock; cancel: jest.Mock; output$: Subject<string> };
   let store: MockStore;
 
   const setup = (translation: Partial<TranslationSettings>, supported = true) => {
-    liveChannel = { queue: jest.fn(), output$: new Subject<string>() };
+    liveChannel = { queue: jest.fn(), cancel: jest.fn(), output$: new Subject<string>() };
     segments = signal<CaptionSegment[]>([]);
     live = signal('');
     translator = {
@@ -126,6 +126,45 @@ describe('CaptionTranslationService', () => {
     live.set('');
     await flush();
     expect(service.translatedLive()).toBe('');
+  });
+
+  it('cancels a pending live translation when the live line ends, so it can not appear afterwards', async () => {
+    const service = setup({});
+    live.set('hello there');
+    await flush();
+    liveChannel.cancel.mockClear();
+    live.set('');
+    await flush();
+    expect(liveChannel.cancel).toHaveBeenCalled();
+    expect(service.translatedLive()).toBe('');
+  });
+
+  it('drops the translation and translates the current line again when the target language changes', async () => {
+    const service = setup({});
+    live.set('hello there');
+    await flush();
+    liveChannel.output$.next('bonjour');
+    expect(service.translatedLive()).toBe('bonjour');
+    liveChannel.cancel.mockClear();
+    liveChannel.queue.mockClear();
+
+    store.overrideSelector(selectTranslationSettings, { enabled: true, mode: 'split', targetLanguage: 'de' } as TranslationSettings);
+    store.refreshState();
+    await flush();
+
+    expect(liveChannel.cancel).toHaveBeenCalled();
+    expect(service.translatedLive()).toBe('');
+    expect(liveChannel.queue).toHaveBeenCalledWith('hello there', 'en-US', 'de', true);
+  });
+
+  it('translates the current live line again, as a retry, when a model becomes ready', async () => {
+    setup({});
+    live.set('hello there');
+    await flush();
+    liveChannel.queue.mockClear();
+    translator.modelReady$.next({});
+    await flush();
+    expect(liveChannel.queue).toHaveBeenCalledWith('hello there', 'en-US', 'fr', true);
   });
 
   it('retranslates what was waiting when a model becomes ready', async () => {

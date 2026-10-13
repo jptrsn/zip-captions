@@ -239,6 +239,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       if (this.isLocalTranslation() && text) {
         this.liveChannel.queue(text, this.sourceLanguage(), this.targetLanguage());
       } else if (!text) {
+        this.liveChannel.cancel();
         this.localLiveText.set('');
       }
       this.cd.detectChanges();
@@ -264,7 +265,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       this.localSession.update(this.peerService.segments$.value, this.targetLanguage(), true);
       const live = this.liveText();
       if (live) {
-        this.liveChannel.queue(live, this.sourceLanguage(), this.targetLanguage());
+        this.liveChannel.queue(live, this.sourceLanguage(), this.targetLanguage(), true);
       }
     });
 

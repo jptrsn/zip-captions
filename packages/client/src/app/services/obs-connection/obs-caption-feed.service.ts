@@ -42,9 +42,11 @@ export class ObsCaptionFeedService {
       targetLanguage: captionTranslation.target()
     }));
 
+    // The inactive state (null) goes through the de-duplication, so after OBS stops streaming or disconnects
+    // the same caption is sent again when it comes back; it is only dropped just before sending
     toObservable(this.caption).pipe(
-      filter((text): text is string => text !== null),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      filter((text): text is string => text !== null)
     ).subscribe((text) => obs.sendCaption(text));
   }
 }

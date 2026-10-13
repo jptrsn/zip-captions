@@ -92,16 +92,29 @@ export class CaptionTranslationService {
       }
       const live = this.liveText();
       if (live) {
-        this.liveChannel.queue(live, this.sourceLanguage(), this.target());
+        this.liveChannel.queue(live, this.sourceLanguage(), this.target(), true);
       }
     });
 
     // The live line
     toObservable(this.liveText).pipe(distinctUntilChanged()).subscribe((live) => {
-      if (this.active() && live) {
-        this.liveChannel.queue(live, this.sourceLanguage(), this.target());
-      } else if (!live) {
+      if (!live) {
+        // The line ended: drop a translation still being made for it so it can't appear afterwards
+        this.liveChannel.cancel();
         this.translatedLive.set('');
+      } else if (this.active()) {
+        // Within a line the previous translation stays up until the next one arrives (latest wins)
+        this.liveChannel.queue(live, this.sourceLanguage(), this.target());
+      }
+    });
+
+    // Translation switched on or off, or a language changed: a translation for the old pair is wrong now
+    toObservable(computed(() => `${this.active()}|${this.sourceLanguage()}|${this.target()}`)).subscribe(() => {
+      this.liveChannel.cancel();
+      this.translatedLive.set('');
+      const live = this.liveText();
+      if (live && this.active()) {
+        this.liveChannel.queue(live, this.sourceLanguage(), this.target(), true);
       }
     });
     this.liveChannel.output$.subscribe((translated) => this.translatedLive.set(translated));

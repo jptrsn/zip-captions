@@ -80,7 +80,8 @@ export function buildSegmentPayload(segments: CaptionSegment[],
 
 export function buildLivePayload(live: string, hostLang: string, offered: string[] = [], translatedLive = ''): LivePayload {
   const payload: LivePayload = { type: 'live', recognition: live, lang: hostLang, v: BROADCAST_PAYLOAD_VERSION, translations: offered };
-  if (translatedLive) payload.translatedLive = translatedLive;
+  // A translation without the line it translates is stale, so it is never sent alone
+  if (translatedLive && live) payload.translatedLive = translatedLive;
   return payload;
 }
 

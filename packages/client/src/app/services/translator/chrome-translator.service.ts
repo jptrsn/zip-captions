@@ -1,7 +1,7 @@
 import { Platform } from '@angular/cdk/platform';
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { Observable, Subject, from, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { Observable, Subject, from, of, timer } from 'rxjs';
+import { catchError, debounce, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { BrowserTranslator, TranslatorApiAdapter, TranslatorCreateOptions } from './translator-api.adapter';
 
 export type TranslationUnsupportedReason = 'mobile' | 'browser';
@@ -15,7 +15,14 @@ export interface TranslationCapability {
 
 /** One consumer's live-line translation: queue lines in, translations (or '') out */
 export interface LiveTranslationChannel {
-  queue: (text: string, sourceLang: string, targetLang: string) => void;
+  /**
+   * Translate a live line. A line identical to the previous one (same languages) is ignored unless `retry`
+   * is set, which is for a line that could not be translated before: a model has just finished downloading,
+   * or the languages changed.
+   */
+  queue: (text: string, sourceLang: string, targetLang: string, retry?: boolean) => void;
+  /** Drops pending and in-flight work and forgets the last line, because the line ended or its languages changed. Emits ''. */
+  cancel: () => void;
   output$: Observable<string>;
 }
 
@@ -367,17 +374,20 @@ export class ChromeTranslatorService {
    * line once per subscriber and hand each consumer the other's results.
    */
   public createLiveChannel(): LiveTranslationChannel {
-    const input = new Subject<{ text: string; sourceLang: string; targetLang: string }>();
+    // null is a cancel
+    const input = new Subject<{ text: string; sourceLang: string; targetLang: string; retry: boolean } | null>();
     const output$ = input.pipe(
-      debounceTime(150),
-      distinctUntilChanged((prev, curr) => prev.text === curr.text && prev.targetLang === curr.targetLang),
-      switchMap(({ text, sourceLang, targetLang }) => {
-        if (!text || !text.trim()) {
+      // A cancel doesn't wait out the debounce, so it replaces a pending line and a result can't land after it
+      debounce((request) => timer(request ? 150 : 0)),
+      distinctUntilChanged((prev, curr) => !!prev && !!curr && !curr.retry
+        && prev.text === curr.text && prev.sourceLang === curr.sourceLang && prev.targetLang === curr.targetLang),
+      switchMap((request) => {
+        if (!request || !request.text || !request.text.trim()) {
           return of('');
         }
         // Strict: a failed translation is '' and never the source text, so nothing shows or is sent
         // (broadcast, OBS) as a translation when it isn't one. Interim lines are not cached.
-        return from(this.translateSegmentsStrict([text], sourceLang, targetLang, false)).pipe(
+        return from(this.translateSegmentsStrict([request.text], request.sourceLang, request.targetLang, false)).pipe(
           map(([translated]) => translated ?? ''),
           catchError(() => of(''))
         );
@@ -385,12 +395,13 @@ export class ChromeTranslatorService {
     );
     return {
       output$,
-      queue: (text: string, sourceLang: string, targetLang: string): void => {
+      queue: (text: string, sourceLang: string, targetLang: string, retry = false): void => {
         const s = this.normalizeLanguageCode(sourceLang);
         const t = this.normalizeLanguageCode(targetLang);
         if (s === t) return;
-        input.next({ text, sourceLang: s, targetLang: t });
-      }
+        input.next({ text, sourceLang: s, targetLang: t, retry });
+      },
+      cancel: (): void => input.next(null)
     };
   }
 

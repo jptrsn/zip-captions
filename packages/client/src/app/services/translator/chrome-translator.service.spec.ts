@@ -371,6 +371,72 @@ describe('ChromeTranslatorService', () => {
       channel.queue(text, source, target);
     });
 
+    // One subscription per channel, as the real consumers have: output$ is cold, so a second subscription
+    // would be a separate pipeline with its own "same line as last time" memory
+    const collect = (channel: ReturnType<ChromeTranslatorService['createLiveChannel']>) => {
+      const results: string[] = [];
+      channel.output$.subscribe((value) => results.push(value));
+      return results;
+    };
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 400));
+
+    it('translates an unchanged line again when asked to retry, which is what a freshly downloaded model needs', async () => {
+      const channel = service.createLiveChannel();
+      const results = collect(channel);
+      adapter.availability.mockResolvedValue('downloadable');
+      channel.queue('hello', 'en', 'fr');
+      await settle();
+      expect(results).toEqual(['']); // the model is missing
+
+      adapter.availability.mockResolvedValue('available');
+      channel.queue('hello', 'en', 'fr');
+      await settle();
+      expect(results).toEqual(['']); // the same line is ignored
+
+      channel.queue('hello', 'en', 'fr', true);
+      await settle();
+      expect(results).toEqual(['', 'fr:hello']);
+    });
+
+    it('does not treat the same text from another source language as the same line', async () => {
+      const channel = service.createLiveChannel();
+      const results = collect(channel);
+      channel.queue('chat', 'en', 'es');
+      await settle();
+      channel.queue('chat', 'fr', 'es');
+      await settle();
+      expect(results).toEqual(['fr:chat', 'fr:chat']);
+      expect(translator.translate).toHaveBeenCalledTimes(2);
+    });
+
+    it('cancel() drops the pending line and the result of one in flight, and emits an empty string', async () => {
+      const channel = service.createLiveChannel();
+      let finish: (text: string) => void = () => undefined;
+      translator.translate.mockImplementation(() => new Promise<string>((resolve) => (finish = resolve)));
+      const results: string[] = [];
+      channel.output$.subscribe((value) => results.push(value));
+
+      channel.queue('hello', 'en', 'fr');
+      await new Promise((resolve) => setTimeout(resolve, 300)); // past the debounce: the translation is in flight
+      channel.cancel();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      finish('fr:hello'); // arrives too late
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(results).toEqual(['']);
+    });
+
+    it('cancel() lets the same line be translated again', async () => {
+      const channel = service.createLiveChannel();
+      const results = collect(channel);
+      channel.queue('hello', 'en', 'fr');
+      await settle();
+      channel.cancel();
+      await settle();
+      channel.queue('hello', 'en', 'fr');
+      await settle();
+      expect(results).toEqual(['fr:hello', '', 'fr:hello']);
+    });
+
     it('gives each consumer its own channel: a line queued on one is translated once and its result goes only to that one', async () => {
       const first = service.createLiveChannel();
       const second = service.createLiveChannel();

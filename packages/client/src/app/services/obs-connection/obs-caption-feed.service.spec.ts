@@ -125,6 +125,20 @@ describe('ObsCaptionFeedService', () => {
     expect(sendCaption).toHaveBeenLastCalledWith('hello');
   });
 
+  it('sends the same caption again after streaming stops and restarts', () => {
+    setup('original');
+    sendCaption.mockClear(); // setup sends the initial empty caption
+    live.set('hello');
+    flush();
+    expect(sendCaption).toHaveBeenCalledTimes(1);
+    store.overrideSelector(selectObsStreamActive, false);
+    flush();
+    store.overrideSelector(selectObsStreamActive, true);
+    flush();
+    expect(sendCaption).toHaveBeenCalledTimes(2);
+    expect(sendCaption).toHaveBeenLastCalledWith('hello');
+  });
+
   it('changes what is sent when the feed changes', () => {
     setup('original');
     live.set('hello');
