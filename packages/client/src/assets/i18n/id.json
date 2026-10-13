@@ -677,11 +677,9 @@
     "obsStreamInactive": "Menunggu aliran obs untuk memulai",
     "connectionEstablished": "Terhubung - Anda dapat memulai sesi teks",
     "disconnected": "Terputus",
-    "obsCaptionSource": "Pesan yang dikirim ke OBS",
-    "obsCaptionOriginal": "Capsi asli",
-    "obsCaptionTranslated": "Terjemahan Captions",
-    "obsCaptionTranslatedFallback": "Sementara terjemahan tidak tersedia atau tidak tersedia, OBS menerima capsi asli.",
-    "obsCaptionUnsupportedLanguage": "OBS streaming captions menggunakan format CEA-608, yang tidak dapat menampilkan bahasa ini."
+    "obsCaptionSource": "Apa yang diperoleh OBS",
+    "obsCaptionTranslatedFallback": "OBS menerima teks asli saat terjemahan tidak tersedia atau tidak tersedia.",
+    "obsCaptionUnsupportedLanguage": "OBS tidak dapat menunjukkan bahasa ini, karena menggunakan format CEA-608."
   },
   "AUTH": {
     "title": "Masuk ke Zip Captions",

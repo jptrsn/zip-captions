@@ -677,11 +677,9 @@
     "obsStreamInactive": "In attesa dell'inizio del flusso OBS",
     "connectionEstablished": "Connesso - può iniziare la sessione di didascalia",
     "disconnected": "Disconnesso",
-    "obsCaptionSource": "Scrivi una recensione su OBS",
-    "obsCaptionOriginal": "Le capture originali",
-    "obsCaptionTranslated": "Cappuccetto tradotto",
-    "obsCaptionTranslatedFallback": "Mentre la traduzione è aperta o non disponibile, OBS riceve le cache originali.",
-    "obsCaptionUnsupportedLanguage": "Le capzioni di flusso OBS utilizzano il formato CEA-608, che non può mostrare questo linguaggio."
+    "obsCaptionSource": "Quello che OBS riceve",
+    "obsCaptionTranslatedFallback": "OBS riceve il testo originale mentre la traduzione è aperta o non disponibile.",
+    "obsCaptionUnsupportedLanguage": "OBS non può mostrare questo linguaggio, perché utilizza il formato CEA-608."
   },
   "AUTH": {
     "title": "Accedi a didascalie zip",

@@ -677,11 +677,9 @@
     "obsStreamInactive": "Очікування початку стріму OBS Studio",
     "connectionEstablished": "Підключено – ви можете почати сеанс створення субтитрів",
     "disconnected": "Відключено",
-    "obsCaptionSource": "Повідомлення від OBS",
-    "obsCaptionOriginal": "Оригінальна капсула",
-    "obsCaptionTranslated": "Перекладені капсули",
-    "obsCaptionTranslatedFallback": "У той час як переклад вимкнений або недоступний, OBS отримує оригінальні записи.",
-    "obsCaptionUnsupportedLanguage": "ОБС стрічки використовують формат CEA-608, який не може відображати цей мову."
+    "obsCaptionSource": "Що OBS отримує",
+    "obsCaptionTranslatedFallback": "OBS отримує оригінальний текст, поки переклад вимкнений або недоступний.",
+    "obsCaptionUnsupportedLanguage": "OBS не може показати цей мову, оскільки він використовує формат CEA-608."
   },
   "AUTH": {
     "title": "Увійти до поштового підписи",

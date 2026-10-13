@@ -677,11 +677,9 @@
     "obsStreamInactive": "等待OBS流开始",
     "connectionEstablished": "连接 - 您可以开始 caption 会议",
     "disconnected": "连接",
-    "obsCaptionSource": "信件发送给OBS",
-    "obsCaptionOriginal": "原始捕捉",
-    "obsCaptionTranslated": "翻译 Captions",
-    "obsCaptionTranslatedFallback": "虽然翻译已关闭或不可用,但 OBS 接收原始录像。",
-    "obsCaptionUnsupportedLanguage": "OBS 流容器使用 CEA-608 格式,无法显示此语言。"
+    "obsCaptionSource": "OBS 收到的",
+    "obsCaptionTranslatedFallback": "OBS 接收原文,翻译关闭或不可用。",
+    "obsCaptionUnsupportedLanguage": "OBS 无法显示此语言,因为它使用 CEA-608 格式。"
   },
   "AUTH": {
     "title": "登录到 Zip Captions",

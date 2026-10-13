@@ -677,11 +677,9 @@
     "obsStreamInactive": "Esperando o fluxo do OBS começar",
     "connectionEstablished": "Conectado - você pode começar a sessão de legenda",
     "disconnected": "Desconectado",
-    "obsCaptionSource": "Arquivos enviados para OBS",
-    "obsCaptionOriginal": "Capturas originais",
-    "obsCaptionTranslated": "Captura Traduzida",
-    "obsCaptionTranslatedFallback": "Enquanto a tradução está apagada ou não disponível, OBS recebe as capções originais.",
-    "obsCaptionUnsupportedLanguage": "As capções de fluxo da OBS usam o formato CEA-608, que não pode exibir esse idioma."
+    "obsCaptionSource": "O que OBS recebe",
+    "obsCaptionTranslatedFallback": "OBS recebe o texto original enquanto a tradução está desligada ou não disponível.",
+    "obsCaptionUnsupportedLanguage": "OBS não pode exibir este idioma, porque usa o formato CEA-608."
   },
   "AUTH": {
     "title": "Faça login em legendas",
