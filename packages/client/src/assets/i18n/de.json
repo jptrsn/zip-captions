@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "Die Spracherkennung ist separat und je nach gewähltem Spracherkennungssystem kann die Audioverarbeitung in der Cloud erfolgen.",
       "experimental": "Experimentelle Funktion",
       "unsupportedMobileHint": "Die Übersetzung auf dem Gerät ist nur in Desktop-Browsern (Chrome 138+ oder Edge 148+) verfügbar und wird auf Smartphones oder Tablets nicht unterstützt.",
-      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, und übersetzter Text wird niemals an einen Server gesendet.",
       "modelsTitle": "Übersetzungsmodelle",
       "modelsPerPair": "Jedes Sprachpaar verwendet sein eigenes Übersetzungsmodell, das Chrome beim ersten Gebrauch herunterlädt.",
       "modelPerPairNotice": "Einmaliger Download für dieses Sprachpaar",
@@ -437,7 +436,8 @@
       "pipContent": "Picture-in-Picture zeigt",
       "pipContentOriginal": "Nur Original",
       "pipContentTranslated": "Nur übersetzt",
-      "pipContentSplit": "Original und übersetzt"
+      "pipContentSplit": "Original und übersetzt",
+      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, sodass kein Übersetzungsdienst Ihren Text erhält."
     }
   },
   "STREAM": {

@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "Pengenalan ucapan bersifat terpisah, dan tergantung pada mesin ucapan yang Anda pilih, audio mungkin diproses di cloud.",
       "experimental": "Fitur eksperimental",
       "unsupportedMobileHint": "Terjemahan di perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung di ponsel atau tablet.",
-      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, dan teks terjemahan tidak pernah dikirim ke server mana pun.",
       "modelsTitle": "Model penerjemahan",
       "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan sendiri, yang diunduh oleh Chrome saat pertama kali Anda menggunakannya.",
       "modelPerPairNotice": "Unduhan sekali untuk pasangan bahasa ini",
@@ -437,7 +436,8 @@
       "pipContent": "Picture-in-Picture menampilkan",
       "pipContentOriginal": "Hanya asli",
       "pipContentTranslated": "Hanya diterjemahkan",
-      "pipContentSplit": "Asli dan terjemahan"
+      "pipContentSplit": "Asli dan terjemahan",
+      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda."
     }
   },
   "STREAM": {

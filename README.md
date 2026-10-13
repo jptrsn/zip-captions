@@ -12,10 +12,10 @@ We also welcome bug reports, feature requests, and conversation in our Discord s
 The interface is available in several languages. Under `Settings` you choose the **spoken language** (what the microphone is listening for, including regional dialects) and, separately, an optional **interface language**. By default the interface follows the spoken language.
 
 ## Live Translation (experimental)
-ZipCaptions can translate captions into another language while you speak. Translation runs **on your device**, using the browser's built-in [Translator API](https://developer.chrome.com/docs/ai/translator-api): translated text is never sent to a server.
+ZipCaptions can translate captions into another language while you speak. Translation runs **on your device**, using the browser's built-in [Translator API](https://developer.chrome.com/docs/ai/translator-api), so no translation service receives your text.
 
 * **Requirements:** a desktop browser that provides the Translator API (Chrome 138 or later, Edge 148 or later). On other browsers and on phones the option is shown as unavailable and captions work as usual. The browser downloads a small language model the first time you use a language pair; use the download button in `Settings` > `Translation` to prepare a pair ahead of time. Chrome manages the downloaded models and may remove them to free space.
-* **Privacy:** speech recognition is separate from translation. Depending on the speech engine you choose, audio may be processed in the cloud, as before. Only the translation step is on-device. Transcripts keep the original text only.
+* **Privacy:** speech recognition is separate from translation. Depending on the speech engine you choose, audio may be processed in the cloud, as before. Only the translation step is on-device. Captions you choose to share, including translations, still go where you send them: to the viewers of a broadcast, and to OBS Studio if you connect it. Transcripts keep the original text only.
 * **Settings:** turn translation on, pick the translation language, and swap the spoken and translation languages with one click (also from the caption view and the sidebar).
 * **Layouts:** show the original, the translation, or both in two panes, stacked or side by side. The panes can be swapped.
 * **Picture-in-Picture:** the floating window shows the original, the translation or both, and has a small switch inside the window to change it.

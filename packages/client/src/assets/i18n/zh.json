@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "语音识别是独立的，根据您选择的语音引擎，音频可能会在云端进行处理。",
       "experimental": "实验性功能",
       "unsupportedMobileHint": "设备端翻译仅在桌面浏览器（Chrome 138+ 或 Edge 148+）中可用，不支持手机或平板电脑。",
-      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，翻译后的文本绝不会发送到任何服务器。",
       "modelsTitle": "翻译模型",
       "modelsPerPair": "每种语言对使用各自的翻译模型，Chrome 会在您首次使用时下载该模型。",
       "modelPerPairNotice": "此语言对的一次性下载",
@@ -437,7 +436,8 @@
       "pipContent": "画中画显示",
       "pipContentOriginal": "仅原始",
       "pipContentTranslated": "仅翻译",
-      "pipContentSplit": "原文和译文"
+      "pipContentSplit": "原文和译文",
+      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。"
     }
   },
   "STREAM": {

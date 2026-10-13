@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "O reconhecimento de fala é separado e, dependendo do mecanismo de fala escolhido, o áudio pode ser processado na nuvem.",
       "experimental": "Recurso experimental",
       "unsupportedMobileHint": "A tradução no dispositivo está disponível apenas em navegadores de desktop (Chrome 138+ ou Edge 148+) e não é suportada em celulares ou tablets.",
-      "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem integrados do Chrome, e o texto traduzido nunca é enviado a nenhum servidor.",
       "modelsTitle": "Modelos de tradução",
       "modelsPerPair": "Cada par de idiomas usa seu próprio modelo de tradução, que o Chrome baixa na primeira vez que você o usa.",
       "modelPerPairNotice": "Download único para este par de idiomas",
@@ -437,7 +436,8 @@
       "pipContent": "Picture-in-Picture exibe",
       "pipContentOriginal": "Somente o original",
       "pipContentTranslated": "Somente traduzido",
-      "pipContentSplit": "Original e traduzido"
+      "pipContentSplit": "Original e traduzido",
+      "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem incorporados do Chrome, portanto, nenhum serviço de tradução recebe o seu texto."
     }
   },
   "STREAM": {

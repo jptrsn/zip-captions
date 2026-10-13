@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "Rozpoznawanie mowy jest osobnym procesem, a w zależności od wybranego silnika mowy, audio może być przetwarzane w chmurze.",
       "experimental": "Funkcja eksperymentalna",
       "unsupportedMobileHint": "Tłumaczenie na urządzeniu jest dostępne wyłącznie w przeglądarkach desktopowych (Chrome 138+ lub Edge 148+) i nie jest obsługiwane na telefonach ani tabletach.",
-      "privacyNotice": "Tłumaczenie odbywa się w całości na Twoim urządzeniu, korzystając z wbudowanych modeli językowych Chrome, a przetłumaczony tekst nigdy nie jest wysyłany na żaden serwer.",
       "modelsTitle": "Modele tłumaczeniowe",
       "modelsPerPair": "Każda para języków używa własnego modelu tłumaczenia, który Chrome pobiera po raz pierwszy przy pierwszym użyciu.",
       "modelPerPairNotice": "Jednorazowe pobranie dla tej pary językowej",
@@ -437,7 +436,8 @@
       "pipContent": "Picture-in-Picture wyświetla",
       "pipContentOriginal": "Tylko oryginał",
       "pipContentTranslated": "Tylko przetłumaczone",
-      "pipContentSplit": "Oryginał i tłumaczenie"
+      "pipContentSplit": "Oryginał i tłumaczenie",
+      "privacyNotice": "Tłumaczenie jest wykonywane w całości na Twoim urządzeniu za pomocą wbudowanych modeli językowych Chrome, więc żadna usługa tłumaczeniowa nie otrzymuje Twojego tekstu."
     }
   },
   "STREAM": {

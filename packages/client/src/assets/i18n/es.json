@@ -418,7 +418,6 @@
       "privacyNoticeSpeech": "El reconocimiento de voz es independiente y, según el motor de voz que elijas, el audio puede procesarse en la nube.",
       "experimental": "Función experimental",
       "unsupportedMobileHint": "La traducción en el dispositivo solo está disponible en navegadores de escritorio (Chrome 138+ o Edge 148+) y no se admite en teléfonos ni tabletas.",
-      "privacyNotice": "La traducción se realiza completamente en tu dispositivo mediante los modelos de lenguaje integrados de Chrome, y el texto traducido nunca se envía a ningún servidor.",
       "modelsTitle": "Modelos de traducción",
       "modelsPerPair": "Cada par de idiomas utiliza su propio modelo de traducción, que Chrome descarga la primera vez que lo usas.",
       "modelPerPairNotice": "Descarga única para este par de idiomas",
@@ -437,7 +436,8 @@
       "pipContent": "Picture-in-Picture muestra",
       "pipContentOriginal": "Solo original",
       "pipContentTranslated": "Solo traducido",
-      "pipContentSplit": "Original y traducido"
+      "pipContentSplit": "Original y traducido",
+      "privacyNotice": "La traducción se realiza por completo en tu dispositivo mediante los modelos de idioma integrados de Chrome, por lo que ningún servicio de traducción recibe tu texto."
     }
   },
   "STREAM": {
