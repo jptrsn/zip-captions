@@ -13,6 +13,12 @@ export interface TranslationCapability {
   status: 'readily' | 'after-download' | 'no';
 }
 
+/** One consumer's live-line translation: queue lines in, translations (or '') out */
+export interface LiveTranslationChannel {
+  queue: (text: string, sourceLang: string, targetLang: string) => void;
+  output$: Observable<string>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,29 +46,11 @@ export class ChromeTranslatorService {
   private segmentCache: Map<string, string> = new Map();
   private readonly MAX_CACHED_SEGMENTS = 500;
 
-  // Subject for live caption streaming with debounce
-  private liveInputSubject = new Subject<{ text: string; sourceLang: string; targetLang: string }>();
-  public liveOutput$: Observable<string>;
 
   constructor(private translatorApi: TranslatorApiAdapter,
               private platform: Platform) {
     this.checkInitialSupport();
 
-    this.liveOutput$ = this.liveInputSubject.pipe(
-      debounceTime(150),
-      distinctUntilChanged((prev, curr) => prev.text === curr.text && prev.targetLang === curr.targetLang),
-      switchMap(({ text, sourceLang, targetLang }) => {
-        if (!text || !text.trim()) {
-          return of('');
-        }
-        // Strict: a failed translation is '' and never the source text, so nothing shows or is sent
-        // (broadcast, OBS) as a translation when it isn't one
-        return from(this.translateSegmentsStrict([text], sourceLang, targetLang, false)).pipe(
-          map(([translated]) => translated ?? ''),
-          catchError(() => of(''))
-        );
-      })
-    );
   }
 
   /**
@@ -271,7 +259,11 @@ export class ChromeTranslatorService {
         this.safeSetSignal(this.modelStatus, 'ready');
         this.safeSetSignal(this.downloadProgress, 100);
         this.safeSetSignal(this.lastError, undefined);
-        this.modelReadySubject.next({ sourceLang: s, targetLang: t });
+        // Only a download changes what can be translated. A model that was already available needs no
+        // refresh, and announcing it would restart sessions whose batch is already in flight.
+        if (capability.status === 'after-download') {
+          this.modelReadySubject.next({ sourceLang: s, targetLang: t });
+        }
         return translator;
       } catch (err: any) {
         const msg = err?.message || String(err);
@@ -369,11 +361,37 @@ export class ChromeTranslatorService {
     }
   }
 
-  public queueLiveTranslation(text: string, sourceLang: string, targetLang: string): void {
-    const s = this.normalizeLanguageCode(sourceLang);
-    const t = this.normalizeLanguageCode(targetLang);
-    if (s === t) return;
-    this.liveInputSubject.next({ text, sourceLang: s, targetLang: t });
+  /**
+   * A live-line translator for one consumer: debounced "latest wins", and strict, so a failed translation
+   * is '' and never the source text. Each consumer needs its own channel; sharing one would translate every
+   * line once per subscriber and hand each consumer the other's results.
+   */
+  public createLiveChannel(): LiveTranslationChannel {
+    const input = new Subject<{ text: string; sourceLang: string; targetLang: string }>();
+    const output$ = input.pipe(
+      debounceTime(150),
+      distinctUntilChanged((prev, curr) => prev.text === curr.text && prev.targetLang === curr.targetLang),
+      switchMap(({ text, sourceLang, targetLang }) => {
+        if (!text || !text.trim()) {
+          return of('');
+        }
+        // Strict: a failed translation is '' and never the source text, so nothing shows or is sent
+        // (broadcast, OBS) as a translation when it isn't one. Interim lines are not cached.
+        return from(this.translateSegmentsStrict([text], sourceLang, targetLang, false)).pipe(
+          map(([translated]) => translated ?? ''),
+          catchError(() => of(''))
+        );
+      })
+    );
+    return {
+      output$,
+      queue: (text: string, sourceLang: string, targetLang: string): void => {
+        const s = this.normalizeLanguageCode(sourceLang);
+        const t = this.normalizeLanguageCode(targetLang);
+        if (s === t) return;
+        input.next({ text, sourceLang: s, targetLang: t });
+      }
+    };
   }
 
   public async translateSegments(segments: string[], sourceLang: string, targetLang: string): Promise<string[]> {

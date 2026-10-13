@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { distinctUntilChanged, filter } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { ObsConnectionState } from '../../reducers/obs.reducer';
-import { selectObsConnected } from '../../selectors/obs.selectors';
+import { selectObsConnected, selectObsStreamActive } from '../../selectors/obs.selectors';
 import { selectObsFeed } from '../../selectors/settings.selector';
 import { CaptionTranslationService } from '../translator/caption-translation.service';
 import { ObsConnectionService } from './obs-connection.service';
@@ -28,9 +28,12 @@ export class ObsCaptionFeedService {
               captionTranslation: CaptionTranslationService,
               obs: ObsConnectionService) {
     const connected = toSignal(store.select(selectObsConnected));
+    // OBS only accepts captions while the stream is active. Gating here, not only in sendCaption, means a
+    // caption that couldn't be sent isn't treated as sent by the de-duplication below.
+    const streaming = toSignal(store.select(selectObsStreamActive));
     const feed = toSignal(store.select(selectObsFeed), { initialValue: 'original' as const });
 
-    this.caption = computed(() => connected() !== ObsConnectionState.connected ? null : resolveObsCaption({
+    this.caption = computed(() => connected() !== ObsConnectionState.connected || !streaming() ? null : resolveObsCaption({
       feed: feed(),
       live: captionTranslation.liveText(),
       translatedLive: captionTranslation.translatedLive(),

@@ -221,6 +221,11 @@ def update_translations(args):
     if unknown:
         sys.exit(f"--retranslate: not keys of {BASE_LANG}.json: {', '.join(unknown)}")
     only = {c.strip() for c in args.lang.split(",") if c.strip()} if args.lang else None
+    if only:
+        available = {f.removesuffix(".json") for f in os.listdir(I18N_FOLDER) if f.endswith(".json")} - {BASE_LANG}
+        unknown_langs = sorted(only - available)
+        if unknown_langs:
+            sys.exit(f"--lang: no locale file for {', '.join(unknown_langs)} (available: {', '.join(sorted(available))})")
 
     backend = None
     skipped = []

@@ -7,7 +7,7 @@ import { CaptionSegment } from '../../models/caption-segment.model';
 import { RecognitionService } from '../../modules/media/services/recognition.service';
 import { recognitionIdSelector } from '../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../selectors/settings.selector';
-import { ChromeTranslatorService } from './chrome-translator.service';
+import { ChromeTranslatorService, LiveTranslationChannel } from './chrome-translator.service';
 import { SegmentTranslationSession } from './segment-translation-session';
 import { SegmentTranslation } from './segment-translations';
 
@@ -38,10 +38,13 @@ export class CaptionTranslationService {
   public readonly sourceLanguage: Signal<string>;
 
   private session: SegmentTranslationSession;
+  /** This service's own live-line translator (see `createLiveChannel`) */
+  private liveChannel: LiveTranslationChannel;
 
   constructor(private store: Store<AppState>,
               private recognitionService: RecognitionService,
               private translatorService: ChromeTranslatorService) {
+    this.liveChannel = this.translatorService.createLiveChannel();
     this.session = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
     this.translations = this.session.translations;
 
@@ -89,18 +92,18 @@ export class CaptionTranslationService {
       }
       const live = this.liveText();
       if (live) {
-        this.translatorService.queueLiveTranslation(live, this.sourceLanguage(), this.target());
+        this.liveChannel.queue(live, this.sourceLanguage(), this.target());
       }
     });
 
     // The live line
     toObservable(this.liveText).pipe(distinctUntilChanged()).subscribe((live) => {
       if (this.active() && live) {
-        this.translatorService.queueLiveTranslation(live, this.sourceLanguage(), this.target());
+        this.liveChannel.queue(live, this.sourceLanguage(), this.target());
       } else if (!live) {
         this.translatedLive.set('');
       }
     });
-    this.translatorService.liveOutput$.subscribe((translated) => this.translatedLive.set(translated));
+    this.liveChannel.output$.subscribe((translated) => this.translatedLive.set(translated));
   }
 }

@@ -30,21 +30,21 @@ describe('CaptionTranslationService', () => {
   let translator: {
     isSupported: jest.Mock;
     translateSegmentsStrict: jest.Mock;
-    queueLiveTranslation: jest.Mock;
+    createLiveChannel: jest.Mock;
     modelReady$: Subject<unknown>;
-    liveOutput$: Subject<string>;
   };
+  let liveChannel: { queue: jest.Mock; output$: Subject<string> };
   let store: MockStore;
 
   const setup = (translation: Partial<TranslationSettings>, supported = true) => {
+    liveChannel = { queue: jest.fn(), output$: new Subject<string>() };
     segments = signal<CaptionSegment[]>([]);
     live = signal('');
     translator = {
       isSupported: jest.fn(() => supported),
       translateSegmentsStrict: jest.fn((texts: string[], _s: string, t: string) => Promise.resolve(texts.map((text) => `${t}:${text}`))),
-      queueLiveTranslation: jest.fn(),
+      createLiveChannel: jest.fn(() => liveChannel),
       modelReady$: new Subject(),
-      liveOutput$: new Subject<string>(),
     };
     TestBed.configureTestingModule({
       providers: [
@@ -120,8 +120,8 @@ describe('CaptionTranslationService', () => {
     const service = setup({});
     live.set('hello there');
     await flush();
-    expect(translator.queueLiveTranslation).toHaveBeenCalledWith('hello there', 'en-US', 'fr');
-    translator.liveOutput$.next('bonjour');
+    expect(liveChannel.queue).toHaveBeenCalledWith('hello there', 'en-US', 'fr');
+    liveChannel.output$.next('bonjour');
     expect(service.translatedLive()).toBe('bonjour');
     live.set('');
     await flush();

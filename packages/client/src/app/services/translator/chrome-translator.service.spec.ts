@@ -294,6 +294,25 @@ describe('ChromeTranslatorService', () => {
     });
   });
 
+  describe('modelReady$', () => {
+    beforeEach(() => setup());
+
+    it('does not announce a translator created for a model that was already available', async () => {
+      const ready = jest.fn();
+      service.modelReady$.subscribe(ready);
+      await service.getOrCreateTranslator('en', 'fr');
+      expect(ready).not.toHaveBeenCalled();
+    });
+
+    it('announces a model that had to be downloaded', async () => {
+      adapter.availability.mockResolvedValue('downloadable');
+      const ready = jest.fn();
+      service.modelReady$.subscribe(ready);
+      await service.getOrCreateTranslator('en', 'fr', true);
+      expect(ready).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('translateSegmentsStrict', () => {
     beforeEach(() => setup());
 
@@ -343,13 +362,23 @@ describe('ChromeTranslatorService', () => {
   describe('live line translation', () => {
     beforeEach(() => setup());
 
-    // liveOutput$ debounces by 150 ms
-    const nextLive = (text: string, source = 'en', target = 'fr') => new Promise<string>((resolve) => {
-      const subscription = service.liveOutput$.subscribe((value) => {
+    // The live channel debounces by 150 ms
+    const nextLive = (text: string, source = 'en', target = 'fr', channel = service.createLiveChannel()) => new Promise<string>((resolve) => {
+      const subscription = channel.output$.subscribe((value) => {
         subscription.unsubscribe();
         resolve(value);
       });
-      service.queueLiveTranslation(text, source, target);
+      channel.queue(text, source, target);
+    });
+
+    it('gives each consumer its own channel: a line queued on one is translated once and its result goes only to that one', async () => {
+      const first = service.createLiveChannel();
+      const second = service.createLiveChannel();
+      const fromSecond = jest.fn();
+      second.output$.subscribe(fromSecond);
+      await expect(nextLive('hello', 'en', 'fr', first)).resolves.toBe('fr:hello');
+      expect(translator.translate).toHaveBeenCalledTimes(1);
+      expect(fromSecond).not.toHaveBeenCalled();
     });
 
     it('emits the translation', async () => {

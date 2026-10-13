@@ -12,7 +12,7 @@ describe('recognition-render caption container', () => {
   const html = readFileSync(join(__dirname, 'recognition-render', 'recognition-render.component.html'), 'utf8');
   const container = html.match(/<div #captionContainer\b[^>]*>/s)?.[0] ?? '';
 
-  it('is found', () => {
+  it('finds the #captionContainer element in the recognition-render template', () => {
     expect(container).not.toBe('');
   });
 

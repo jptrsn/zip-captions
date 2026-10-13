@@ -43,7 +43,7 @@ describe('TranslationSettingsComponent', () => {
   const reasonText = (): string | undefined =>
     fixture.nativeElement.querySelector('[data-testid="zc-translation-unsupported-reason"]')?.textContent?.trim();
 
-  it('should create', async () => {
+  it('creates the component on a desktop browser that provides the Translator API', async () => {
     await createComponent({ apiAvailable: true, mobile: false });
     expect(component).toBeTruthy();
   });

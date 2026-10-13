@@ -6,6 +6,7 @@ import { Action } from '@ngrx/store';
 import { ReplaySubject, of } from 'rxjs';
 import { SettingsActions } from '../modules/settings/models/settings.model';
 import { defaultAppState } from '../reducers/app.reducer';
+import { settingsReducers } from '../reducers/settings.reducer';
 import { selectUiLanguage } from '../selectors/settings.selector';
 import { StorageService } from '../services/storage.service';
 import { SettingsEffects } from './settings.effects';
@@ -55,7 +56,18 @@ describe('SettingsEffects', () => {
   });
 
   it('persists the swapped spoken language and dialect', (done) => {
-    store.setState({ ...defaultAppState, settings: { ...defaultAppState.settings, lang: 'en', dialect: 'en-GB' } });
+    // MockStore doesn't run reducers, so build the post-swap state with the real one: French (Canada) swapped
+    // with English comes back as English with the dialect last used for English
+    const before = {
+      ...defaultAppState.settings,
+      lang: 'fr' as const,
+      dialect: 'fr-CA' as const,
+      translation: { ...defaultAppState.settings.translation, targetLanguage: 'en', dialectByLanguage: { en: 'en-GB' as const } }
+    };
+    const after = settingsReducers(before, SettingsActions.swapTranslationLanguages());
+    expect(after.lang).toBe('en');
+    expect(after.dialect).toBe('en-GB');
+    store.setState({ ...defaultAppState, settings: after });
     actions$.next(SettingsActions.swapTranslationLanguages());
     effects.swapTranslationLanguages$.subscribe(() => {
       expect(storage.update).toHaveBeenCalledWith('settings', 'lang', 'en');

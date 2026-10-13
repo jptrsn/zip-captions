@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { ObsFeed } from '../../modules/settings/models/settings.model';
 import { defaultAppState } from '../../reducers/app.reducer';
 import { ObsConnectionState } from '../../reducers/obs.reducer';
-import { selectObsConnected } from '../../selectors/obs.selectors';
+import { selectObsConnected, selectObsStreamActive } from '../../selectors/obs.selectors';
 import { selectObsFeed } from '../../selectors/settings.selector';
 import { CaptionTranslationService } from '../translator/caption-translation.service';
 import { ObsCaptionFeedService } from './obs-caption-feed.service';
@@ -28,7 +28,7 @@ describe('ObsCaptionFeedService', () => {
     host.detectChanges();
   };
 
-  const setup = (feed: ObsFeed = 'translated', connection = ObsConnectionState.connected) => {
+  const setup = (feed: ObsFeed = 'translated', connection = ObsConnectionState.connected, streaming = true) => {
     live = signal('');
     translatedLive = signal('');
     active = signal(true);
@@ -46,6 +46,7 @@ describe('ObsCaptionFeedService', () => {
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectObsFeed, feed);
     store.overrideSelector(selectObsConnected, connection);
+    store.overrideSelector(selectObsStreamActive, streaming);
     store.refreshState();
     host = TestBed.createComponent(HostComponent);
     const service = TestBed.inject(ObsCaptionFeedService);
@@ -112,6 +113,16 @@ describe('ObsCaptionFeedService', () => {
     live.set('hello');
     flush();
     expect(sendCaption).not.toHaveBeenCalled();
+  });
+
+  it('sends nothing while OBS is connected but not streaming, then sends the unchanged text once streaming starts', () => {
+    setup('original', ObsConnectionState.connected, false);
+    live.set('hello');
+    flush();
+    expect(sendCaption).not.toHaveBeenCalled();
+    store.overrideSelector(selectObsStreamActive, true);
+    flush();
+    expect(sendCaption).toHaveBeenLastCalledWith('hello');
   });
 
   it('changes what is sent when the feed changes', () => {

@@ -16,7 +16,7 @@ import { SegmentTranslationSession } from '../../../../services/translator/segme
 import { SegmentTranslation } from '../../../../services/translator/segment-translations';
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ViewerLanguageOptions, ViewerTranslationSource, coerceViewerTarget, resolveViewerTranslation, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
-import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
+import { ChromeTranslatorService, LiveTranslationChannel, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultSplitOrientation, PaneOrder, SettingsActions, SplitOrientation, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
 
 @Component({
@@ -42,6 +42,8 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public renderHistory: Signal<number | undefined>;
 
   // Translation signals
+  /** This viewer's own live-line translator, separate from the one for the local recognition feed */
+  private liveChannel: LiveTranslationChannel;
   public isTranslatorSupported: boolean;
   public translationSettings: Signal<TranslationSettings | undefined>;
   public translationMode: Signal<TranslationDisplayMode>;
@@ -87,6 +89,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
               private ngZone: NgZone,
               private translatorService: ChromeTranslatorService) {
 
+    this.liveChannel = this.translatorService.createLiveChannel();
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.modelStatus = this.translatorService.modelStatus;
     this.downloadProgress = this.translatorService.downloadProgress;
@@ -234,7 +237,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     ).subscribe((text) => {
       this.liveText.set(text);
       if (this.isLocalTranslation() && text) {
-        this.translatorService.queueLiveTranslation(text, this.sourceLanguage(), this.targetLanguage());
+        this.liveChannel.queue(text, this.sourceLanguage(), this.targetLanguage());
       } else if (!text) {
         this.localLiveText.set('');
       }
@@ -261,11 +264,11 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       this.localSession.update(this.peerService.segments$.value, this.targetLanguage(), true);
       const live = this.liveText();
       if (live) {
-        this.translatorService.queueLiveTranslation(live, this.sourceLanguage(), this.targetLanguage());
+        this.liveChannel.queue(live, this.sourceLanguage(), this.targetLanguage());
       }
     });
 
-    this.translatorService.liveOutput$.pipe(
+    this.liveChannel.output$.pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((translated) => {
       this.ngZone.run(() => {

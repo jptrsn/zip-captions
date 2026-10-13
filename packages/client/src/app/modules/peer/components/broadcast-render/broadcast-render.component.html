@@ -62,14 +62,14 @@
           <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
             <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-viewer-download-model" (click)="downloadModel()">
               <ng-icon name="heroArrowDownTray"></ng-icon>
-              <span>Download {{ targetLanguageLabel() }} model</span>
+              <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
             </button>
             <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
           </div>
 
           <!-- Download Progress if downloading -->
           <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloading'" data-testid="zc-viewer-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
-            <span class="text-xs text-info font-medium">Downloading {{ downloadProgress() }}%</span>
+            <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
             <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
           </div>
         </div>

@@ -369,6 +369,7 @@ export class PeerService {
     this.broadcasterTranslations$.next([]);
     this.translatedLiveText$.next('');
     this.offeredLanguages$.next([]);
+    this.hostLanguage$.next('');
     this.peerMap.clear();
   }
 

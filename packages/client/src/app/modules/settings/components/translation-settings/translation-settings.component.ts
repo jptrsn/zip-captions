@@ -193,6 +193,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   public downloadModel(): void {
