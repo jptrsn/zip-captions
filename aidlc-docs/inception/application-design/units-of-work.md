@@ -26,7 +26,7 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-D2 orientation/swap | Done in U3 (caption view) and U4 (broadcast viewer) |
 | FR-D3 alignment | Done: IDs (U1), placeholders (U3), viewer by ID (U4) |
 | FR-B1, FR-B2, FR-B4, FR-B5 | Done in U4 (FR-B3 was already done in the baseline) |
-| FR-W1 | Done in U3 (PiP content setting). FR-W2–W5 are U5. |
+| FR-W1 | Done in U3 (PiP content setting) and U5 (switch inside the PiP window). FR-W2–W5 are in the backlog (U5 spike: one PiP at a time; FR-W3b dropped). |
 | NFR-7 | Done |
 | Regression | `saveTranscriptionSettingsFailure` reducer handler removed. **Fixed in `2292605`**, with a reducer test. |
 | **Bug** | `toObservable()` in `ngOnInit` threw NG0203 in `broadcast-render` (viewer) **and** `broadcast-room` (broadcaster; masked by a pre-existing test-setup failure). **Fixed in `2292605`**: created in the constructor. |
@@ -38,6 +38,8 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 **Current test baseline (after U3):** 44 of 109 client suites failing. Compared by name against a `HEAD` (`2c6eda7`) worktree run: **no newly failing suite**. (The baseline run hung on its last suite and was killed, so one suite, `leave-session`, has no baseline result; it passes now. `recognized-text.component.spec` and `wake-lock-enabled.component.spec` failed in that baseline run and pass now; the first was rewritten, the second is unrelated and probably order-dependent.) Hangs with idle workers happened twice this unit; kill and rerun.
 
 **Current test baseline (after U4):** 44 of 113 client suites failing. Compared by name against a `HEAD` (`26312a9`) worktree run: **no newly failing suite** caused by U4. The baseline run hung again near the end and was killed, so `room-card` and `third-party-connections` have no baseline result. `room-card` fails on a missing `HttpClient` provider in its own spec (a file U4 doesn't touch, and it failed in the earlier baselines too); `third-party-connections` passes. `peer-server-status-chip` failed in the baseline run and passes now (unrelated, probably order-dependent).
+
+**Current test baseline (after U5):** 44 of 113 client suites failing. Compared by name against a `HEAD` (`095144b`) worktree run, after stripping the path prefix (the two runs print different prefixes, so a first comparison without normalising shows every suite as new): **no newly failing suite**. The baseline run hung on its last suite again and was killed, so `save-to-server-dialog` has no baseline result; it fails on a missing `TranslateService` provider in its own spec, a file U5 doesn't touch.
 
 **Test patterns that work around the pre-existing setup gaps:**
 - Engines: stub `globalThis.webkitSpeechRecognition` with a fake `EventTarget` (see `web-recognition.service.spec.ts`).
@@ -114,9 +116,16 @@ Design: `construction/u4-broadcast-both-feeds/functional-design.md` (ten decisio
 
 *Left out (follow-up):* late joiners see nothing until the next recognition update (existing behaviour). One offered language at a time (the `translations` array allows more later).
 
-## U5 — Per-language windows
-**Spike first:** can two top-level windows hold Document PiP windows at the same time in Chrome? Then: a popup per language synced over `BroadcastChannel`, full-screen on any display, closing with the opener, and its own PiP window if the spike passes. Settings → "Display windows".
-*Stories:* US-W2, US-W3.
+## U5 — PiP feed switch ✅ *(rescoped 2026-10-12 from "Per-language windows")*
+**Spike (Chrome 154):** a second Document PiP window, opened from another top-level window, closes the first, so only one PiP exists at a time. A PiP window per popup (FR-W3b / US-W3) is dropped. The human rescoped U5 to the PiP itself.
+
+Design: `construction/u5-per-language-windows/functional-design.md` (v2, six decisions approved as recommended). Done:
+- A three-way switch **inside the PiP window**: spoken language, translated language, both (`EN`, `ES`, `EN+ES`). It dispatches the existing `setPipContent`, so the choice persists and the sidebar and Settings agree. The sidebar isn't in the PiP window, so before this the feed could only be changed from the main window.
+- Shown only while the PiP is open and translation is on (`showPipFeedSwitch`). Top centre, extra-small buttons, same idle fade as the other overlays. No new setting, action, effect or i18n string.
+- "Both" is the existing `split` option (stacked by default, with the divider cluster): the simple dual-language display. 
+
+*Backlog:* per-language popup windows over `BroadcastChannel`, full screen on any display, "Display windows" setting, closing popups with the main window (FR-W2, W3a, W4, W5 · US-W2; draft design `construction/u5-per-language-windows/backlog-popup-windows-design.md`), and a purpose-built dual-language display.
+*Stories:* US-W1 (completed).
 
 ## U6 — OBS feed
 OBS caption source setting: original or translated.

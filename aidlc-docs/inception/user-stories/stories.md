@@ -112,13 +112,16 @@ As a viewer whose preferred language isn't the one the broadcaster translates in
 
 ### US-W1 Choose what the PiP window shows (M)
 As Marco, I want the PiP window to show translated-only, original-only or split, so I can choose what floats over my other apps.
+- **Given** the PiP window is open and translation is on, **then** a small switch inside the window (spoken, translated, both) changes what it shows, without going back to the main window. It fades with the other overlays and is absent when translation is off.
 
-### US-W2 Open a separate window per language (S)
+> **Update 2026-10-12 (U5 spike and rescope):** Chrome allows only one Document PiP window at a time, so US-W3 is dropped. US-W2 (popups for a projector) is deferred to the backlog; its draft design is `construction/u5-per-language-windows/backlog-popup-windows-design.md`. US-W1 gains a switch inside the PiP window (U5).
+
+### US-W2 Open a separate window per language (S, **backlog**)
 As Marco presenting to a bilingual room, I want to open the translated feed in its own window, so I can drag it full-screen onto the projector and keep the original on my laptop.
 - Opens a popup that shows one feed, synced live from the main window. Recognition and translation run only once.
 - The popup can go full-screen on any connected display.
 - Closing the main window closes the popup.
 
-### US-W3 Each language window floats on top (C, spike-gated)
+### US-W3 Each language window floats on top (C, **dropped by the spike**)
 As Marco, I want each language window to have its own always-on-top PiP window.
 - Only if the spike shows Chrome allows PiP windows in two top-level windows at once. Otherwise this story is dropped and US-W1 split-PiP is the floating option.

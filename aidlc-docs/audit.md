@@ -151,3 +151,35 @@
 - **Corrected a claim:** I had written that Angular 16 forbids a synchronous signal write in the `toObservable` callback (U3 notes). That was never verified; the U3 design and the U3 audit entry now say so.
 - **Tests:** new suites for the payload module, `SegmentTranslationSession`, the viewer rules and `CaptionTranslationService`; extended specs for `translateSegmentsStrict` and the viewer component (broadcaster translation shown on a device that can't translate, placeholders filling in place, split order and orientation, moving to an offered language, a v1 broadcaster). Full client suite: 44 of 113 failing. Compared by name against a `HEAD` worktree run: **no newly failing suites**. The baseline run hung near the end again and was killed (two suites have no baseline result; see `units-of-work.md`). Typecheck and the `ngc` template check are clean.
 - Not verified: a real two-browser PeerJS session, Chrome's Translator API in this flow, and the visual layout. The `recognition-render`, sidebar and `broadcast-room` component specs still fail on the old setup gaps.
+
+## 2026-10-12 — U5 spike: Document PiP in two top-level windows
+
+**Question:** can an opener and a same-origin popup each hold a Document PiP window at the same time (FR-W3b / US-W3)?
+
+**Method:** a throwaway page (not in the repo) with an opener and a `window.open` popup, each with an "Open PiP" button, logging `requestWindow()` results and `pagehide` on its own PiP window, mirrored between the windows over `BroadcastChannel`. Run by the human in Chrome 154.0.8037.98 (macOS 15.7.5, arm64), served from `http://localhost`.
+
+**Result (human's observation):** opening a second PiP window closed the first, in both orders (opener first, popup first). No `requestWindow()` call was rejected.
+
+**Log caveat (recorded for honesty):** the pasted log doesn't show the closure cleanly.
+- Order 1: the popup's PiP resolved at 10.1 s and the opener's at 12.5 s. The popup's PiP `pagehide` is logged at 24.2 s, not at 12.5 s, and the opener's PiP closed at 17.2 s. Read literally, the two were both alive for about 5 s.
+- Order 2: the popup's PiP closed at 35.1 s, before the opener's opened at 42.2 s, so the log has no overlap in that order.
+- `documentPictureInPicture.window` is per window (each window reported `null` before its own request, and the popup reported `null` while the opener's PiP was open), so it says nothing about the other window.
+- The likeliest reconciliation is that Chrome closed the first PiP at once and the `pagehide` reached the backgrounded popup late, as the human saw. That isn't proven. A poll of `pipWindow.closed` would settle it.
+
+**Decision:** treat the human's observation as the result. FR-W3b / US-W3 (a PiP window per popup) are dropped. The popup works as a normal window. Single PiP (US-W1, `pipContent`) remains the floating option. The design adds no PiP to popups; it also adds nothing that would make one hard to add later, so a re-test can reopen it cheaply.
+
+**Rescope (same day):** the human questioned the popup plan: the PiP is the product (placeable, always on top, minimal UI), popups don't replace it, and with translation on the PiP should show the spoken or the translated language, with dual-language display backlogged. Agreed: **U5 is PiP-only.** A minimal spoken/translated/both switch inside the PiP window (the sidebar is left behind, so today the feed can't be changed from the floating window), using the existing `pipContent` setting. The `split` option stays and serves as the simple dual-language display; a purpose-built dual-language design goes to the backlog. The projector use case (popups, full screen on any display, "Display windows") is deferred; the draft popup design is kept as `construction/u5-per-language-windows/backlog-popup-windows-design.md`. No code was written for either version.
+
+**Docs:** indexed in docs-mcp as `document-pip` (Chrome guide; says `requestWindow()` needs a user gesture and is silent on several top-level windows) and `window-management` (`getScreenDetails()`, the `window-management` permission, `requestFullscreen({ screen })`). The WICG spec page produced no searchable content.
+
+## 2026-10-12 — U5 PiP feed switch complete
+
+**Human:** answered the spike (second PiP closes the first), questioned the popup plan (the PiP is the product; popups don't replace it), agreed to PiP-only, said to keep `split` and use it as the simple dual-language display, deferred the projector use case to the backlog, then approved all six decisions of the v2 design.
+
+**AI actions:**
+- Design: `construction/u5-per-language-windows/functional-design.md` (v2). The popup draft is kept as `backlog-popup-windows-design.md`. The first draft led with popups and gave the PiP a secondary role; the human's correction was right and is why U5 changed.
+- **Code:** `showPipFeedSwitch(mode, pipActive)` and a three-way switch inside the PiP window (`EN` / `ES` / `EN+ES`) in `recognition-render`, dispatching the existing `setPipContent`. No new setting, action, effect or string, so no locale changes.
+- **Docs:** requirements (FR-W2, W3a, W4, W5 to the backlog; FR-W3b dropped), stories (US-W1 amended, US-W2 backlog, US-W3 dropped), units-of-work, state.
+- **Tests:** `caption-view.spec.ts` extended (3 new cases, 8 total, all pass). Full client suite: 44 of 113 failing. Compared by name against a `HEAD` worktree run: **no newly failing suite**. My first comparison showed every suite as new because the two runs print different path prefixes; I normalised the names and redid it. The baseline run hung on its last suite again and was killed (`save-to-server-dialog` has no baseline result; it fails on a missing `TranslateService` provider in its own spec). Typecheck and the `ngc` template check are clean.
+- **Not verified:** the control in a real PiP window. Specifically that the `join` button group renders joined there (no other template uses `join`), that it fades with idle, and that it doesn't cover captions at the 640×320 default size.
+- **Spike tooling:** the throwaway page was in the session scratchpad only, not the repo.

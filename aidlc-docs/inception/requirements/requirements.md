@@ -138,11 +138,12 @@ A segment that mixes both languages within one sentence goes to the translator u
 
 ### Picture-in-Picture & multi-window (added 2026-10-10)
 Platform constraint: the Document PiP spec (WICG §6.5) allows **at most one PiP window per top-level browsing context**. `requestWindow()` closes the opener's existing PiP window. Whether a *different* tab or window may hold a second PiP window at the same time is left to the browser.
-- **FR-W1:** Single PiP window, configurable content: `original` | `translated` | `split` (stacked). The merged branch forces translated-only in PiP; this becomes a setting, defaulting to translated-only.
-- **FR-W2:** **Per-language windows (option):** "Open <language> in a new window" opens a same-origin popup (`window.open`) that renders exactly one feed (original or translated) with the user's typography settings. It's synced live from the main window through `BroadcastChannel`, with no second recognition or translation run.
-- **FR-W3:** A per-language popup can (a) go full-screen on its current or another display, for example a projector, and (b) request its **own** Document PiP window, *if the browser allows a second PiP window across top-level windows*. **Spike required** to verify Chrome behavior. If Chrome closes the other PiP window, (b) is dropped and the popup works as a normal window.
-- **FR-W4:** Closing the main window closes its per-language popups. Closing a popup never stops recognition.
-- **FR-W5:** Configuration: Settings → Translation → "Display windows", choosing a single window (split or translated-only) or separate windows per language.
+- **FR-W1:** Single PiP window, configurable content: `original` | `translated` | `split` (stacked). The merged branch forces translated-only in PiP; this becomes a setting, defaulting to translated-only. *(Done in U3. U5 adds a switch inside the PiP window itself, shown while translation is on, because the sidebar can't be reached from the floating window.)*
+- *Spike result, 2026-10-12 (Chrome 154):* opening a second Document PiP window from another top-level window closes the first, so only one PiP exists at a time. FR-W3b is dropped. U5 was rescoped to the PiP feed switch above; FR-W2–W5 below are **deferred to the backlog** (projector use case). Draft design: `construction/u5-per-language-windows/backlog-popup-windows-design.md`.
+- **FR-W2 (backlog):** **Per-language windows (option):** "Open <language> in a new window" opens a same-origin popup (`window.open`) that renders exactly one feed (original or translated) with the user's typography settings. It's synced live from the main window through `BroadcastChannel`, with no second recognition or translation run.
+- **FR-W3 (a backlog; b dropped by the spike):** A per-language popup can (a) go full-screen on its current or another display, for example a projector, and (b) request its **own** Document PiP window, *if the browser allows a second PiP window across top-level windows*. **Spike required** to verify Chrome behavior. If Chrome closes the other PiP window, (b) is dropped and the popup works as a normal window.
+- **FR-W4 (backlog):** Closing the main window closes its per-language popups. Closing a popup never stops recognition.
+- **FR-W5 (backlog):** Configuration: Settings → Translation → "Display windows", choosing a single window (split or translated-only) or separate windows per language.
 
 ### Transcripts (Q8 = A)
 - **FR-T1:** Transcripts store the original text only. They store per-segment `lang` once FR-AZ-3 is in place.
