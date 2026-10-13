@@ -37,7 +37,7 @@ Constraints that still apply: `toObservable()` only in constructors or field ini
 
 ## Running it in a parallel session
 
-**Parked until PR #149 is approved** (2026-10-13). Then follow gitflow (the repo uses `feature/*` branches off `develop`):
+**Parked until PR #149 is approved** (2026-10-13), and after the settings-persistence follow-up (`backlog-settings-persistence.md`), because the `user-saved-settings` spec overlaps with it. Then follow gitflow (the repo uses `feature/*` branches off `develop`):
 
 - Start a new branch off `develop`, for example `git switch -c feature/fix-failing-client-tests develop`. Not from `feature/on-device-translation`. If another session is working in this checkout, use a separate worktree instead (`git worktree add ../zip-captions-tests -b feature/fix-failing-client-tests develop`) so the two do not share a git index or jest cache.
 - Recompute the baseline on `develop`; it differs from this branch.
