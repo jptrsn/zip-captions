@@ -21,7 +21,7 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 | FR-9, FR-AZ-* | Done for user-set languages (U2): segments translate from their own `lang`. Detection-based tagging (FR-AZ-3/4) is parked to R2-U1. FR-AZ-1/2/5 are done. |
 | FR-C* conversation | Deferred to Release 2 |
 | FR-P1/P2 | Done |
-| FR-P3 OBS feed | **Gap** |
+| FR-P3 OBS feed | Done in U6 |
 | FR-D1, FR-D4 | Done (stacked) |
 | FR-D2 orientation/swap | Done in U3 (caption view) and U4 (broadcast viewer) |
 | FR-D3 alignment | Done: IDs (U1), placeholders (U3), viewer by ID (U4) |
@@ -40,6 +40,8 @@ crippit/zip-captions `translations` (Chris Webb) provides:
 **Current test baseline (after U4):** 44 of 113 client suites failing. Compared by name against a `HEAD` (`26312a9`) worktree run: **no newly failing suite** caused by U4. The baseline run hung again near the end and was killed, so `room-card` and `third-party-connections` have no baseline result. `room-card` fails on a missing `HttpClient` provider in its own spec (a file U4 doesn't touch, and it failed in the earlier baselines too); `third-party-connections` passes. `peer-server-status-chip` failed in the baseline run and passes now (unrelated, probably order-dependent).
 
 **Current test baseline (after U5):** 44 of 113 client suites failing. Compared by name against a `HEAD` (`095144b`) worktree run, after stripping the path prefix (the two runs print different prefixes, so a first comparison without normalising shows every suite as new): **no newly failing suite**. The baseline run hung on its last suite again and was killed, so `save-to-server-dialog` has no baseline result; it fails on a missing `TranslateService` provider in its own spec, a file U5 doesn't touch.
+
+**Current test baseline (after U6):** 44 of 115 client suites failing. Compared by name against a `HEAD` (`0a0a878`) worktree run, path prefix stripped: the same 44 fail on both sides, **no newly failing suite**. The baseline run completed without a hang.
 
 **Test patterns that work around the pre-existing setup gaps:**
 - Engines: stub `globalThis.webkitSpeechRecognition` with a fake `EventTarget` (see `web-recognition.service.spec.ts`).
@@ -127,9 +129,19 @@ Design: `construction/u5-per-language-windows/functional-design.md` (v2, six dec
 *Backlog:* per-language popup windows over `BroadcastChannel`, full screen on any display, "Display windows" setting, closing popups with the main window (FR-W2, W3a, W4, W5 · US-W2; draft design `construction/u5-per-language-windows/backlog-popup-windows-design.md`), and a purpose-built dual-language display.
 *Stories:* US-W1 (completed).
 
-## U6 — OBS feed
+## U6 — OBS feed ✅
 OBS caption source setting: original or translated.
 *Stories:* US-B4.
+
+Design: `construction/u6-obs-feed/functional-design.md` (eight decisions approved as recommended; deviations in §11). Done:
+- **Setting:** `obsFeed` (`original` | `translated`, default `original`) in `TranslationSettings`, changed from a radio pair in Settings → OBS Studio, persisted by the existing translation write.
+- **One sender:** a root `ObsCaptionFeedService` reads `CaptionTranslationService` and sends the live line (original, or its translation) on any page and for both engines. The Web Speech dispatch, the stream component's send and the unused `sendCaption` action/effect are removed. `sendCaption` requires a connected socket and catches a rejected call.
+- **What OBS gets:** the translation on the translated feed; nothing while it is pending or failed; the original while translation is off or the device can't translate (with a hint). Never the source text as a translation. Transcripts are untouched (FR-T1).
+- **Strict live line:** `liveOutput$` yields `''` instead of the source on failure. This also closes a U4 gap (broadcast `translatedLive` could carry source text).
+- **CEA-608 limit:** a warning when the language OBS would receive is Arabic, Chinese, Japanese, Korean, Hindi, Russian or Ukrainian (no characters in OBS's sets; the text is sent unchanged).
+- **i18n:** 5 keys, generated with `translate.py`.
+
+*Left out:* sending finals or holding a caption before clearing it (existing behaviour kept); a per-letter CEA-608 check for partly-Latin languages.
 
 ## Release 2
 **R2-U1 — Conversation mode:** language pair (interface languages only), manual Switch (finalize, then restart), automatic turns on bilingual locales, two-pane conversation view. **Includes automatic language detection** (`LanguageDetector` tagging for bilingual locales, FR-AZ-3/4), parked from U2 on 2026-10-10. *Stories:* US-A1–A4.

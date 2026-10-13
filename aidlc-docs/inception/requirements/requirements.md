@@ -121,7 +121,7 @@ A segment that mixes both languages within one sentence goes to the translator u
 ### Presenter (Epic B)
 - **FR-P1:** Display mode `translated` shows only translated text, using the existing typography and text-flow settings.
 - **FR-P2:** Works in full-screen and Document PiP.
-- **FR-P3:** OBS feed setting: `original` | `translated`.
+- **FR-P3:** OBS feed setting: `original` | `translated`. *(Done in U6. With translation off or unavailable, OBS receives the original; a pending or failed translation sends nothing. OBS stream captions are CEA-608, which has no characters for Arabic, CJK, Hindi, Russian or Ukrainian.)*
 
 ### Dual display (Epic C)
 - **FR-D1:** Display mode `split` shows original and translated text in two panes.
