@@ -379,7 +379,6 @@
     },
     "PROVIDER": {
       "title": "API 供应商",
-      "description": "选择哪个服务提供商你会喜欢使用安全处理音频和返回结果. 不同的发动机将因速度,质量和成本而有所不同. 我们竭尽全力为您提供尽可能多的选择,同时保持事物尽可能自由。",
       "web": {
         "label": "浏览器(Chrome/Safari)",
         "description": "使用浏览器提供商,Zip Captions 将从您的设备直接向您的浏览器提供商发送音频数据,使用 Web Speech API。",
@@ -395,7 +394,8 @@
       "balance": "你的平衡",
       "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
       "requestTokens": "请求免费代币",
-      "bilingualHint": "该方言也能识别英语。"
+      "bilingualHint": "该方言也能识别英语。",
+      "description": "选择您希望用于安全处理音频并返回结果的服务提供商。不同的引擎在速度、质量和成本方面会有所不同。我们尽力在尽可能保持免费的同时，为您提供尽可能多的选择。"
     },
     "TRANSLATION": {
       "enable": "实时翻译",

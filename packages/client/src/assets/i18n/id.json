@@ -379,7 +379,6 @@
     },
     "PROVIDER": {
       "title": "Penyedia API",
-      "description": "Pilih mana penyedia layanan yang ingin Anda gunakan untuk memproses audio dengan aman dan mengembalikan hasil. mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. kami melakukan yang terbaik untuk membawa Anda sebanyak pilihan yang mungkin sambil menjaga hal-hal gratis sebanyak yang kita bisa.",
       "web": {
         "label": "Penggunaan Browser (Chrome dan Safari)",
         "description": "Dengan menggunakan penyedia browser, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke penyedia browser Anda menggunakan Web Speech API.",
@@ -395,7 +394,8 @@
       "balance": "Keseimbangan Anda",
       "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
       "requestTokens": "Meminta Token Gratis",
-      "bilingualHint": "Dialek ini juga mengenali bahasa Inggris."
+      "bilingualHint": "Dialek ini juga mengenali bahasa Inggris.",
+      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya."
     },
     "TRANSLATION": {
       "enable": "Terjemahan Langsung",

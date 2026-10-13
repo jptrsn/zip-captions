@@ -379,7 +379,6 @@
     },
     "PROVIDER": {
       "title": "Le fournisseur d’API",
-      "description": "Choisissez quel fournisseur de services vous aimeriez utiliser pour traiter en toute sécurité les résultats audio et de retour. Différents moteurs varieront en vitesse, qualité et coût. Nous faisons notre mieux pour vous apporter autant de choix que possible tout en gardant les choses aussi libres que nous pouvons.",
       "web": {
         "label": "Le navigateur (Chrome et Safari)",
         "description": "En utilisant le fournisseur de navigateur, Zip Captions enverra des données audio de votre appareil directement à votre fournisseur de navigateur en utilisant l’API Web Speech.",
@@ -395,7 +394,8 @@
       "balance": "Votre équilibre",
       "acquire": "Nos supporters de Patreon reçoivent automatiquement des tokens gratuits chaque mois.",
       "requestTokens": "Demander des tokens gratuits",
-      "bilingualHint": "Ce dialecte reconnaît également l'anglais."
+      "bilingualHint": "Ce dialecte reconnaît également l'anglais.",
+      "description": "Sélectionnez le fournisseur de services que vous souhaitez utiliser pour traiter l’audio de manière sécurisée et renvoyer les résultats. Les différents moteurs varient en termes de vitesse, de qualité et de coût. Nous faisons de notre mieux pour vous offrir le plus de choix possible tout en gardant les choses aussi gratuites que nous le pouvons."
     },
     "TRANSLATION": {
       "enable": "Traduction en direct",

@@ -379,7 +379,6 @@
     },
     "PROVIDER": {
       "title": "Anerkennung API Provider",
-      "description": "Wählen Sie aus, welcher Dienstleister Sie verwenden möchten, um sichere Audio- und Rückgabeergebnisse zu verarbeiten. Verschiedene Motoren werden in Geschwindigkeit, Qualität und Kosten unterschiedlich sein. Wir tun unser Bestes, um Ihnen so viel Wahl wie möglich zu bringen, während die Dinge so frei wie wir können.",
       "web": {
         "label": "Browser (Chrome und Safari)",
         "description": "Mit dem Browser-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an Ihren Browser-Anbieter über die Web Speech API.",
@@ -395,7 +394,8 @@
       "balance": "Dein Gleichgewicht",
       "acquire": "Unsere Patreon-Folder erhalten jeden Monat automatisch Tokens kostenlos.",
       "requestTokens": "Kostenlose Tokens anfordern",
-      "bilingualHint": "Dieser Dialekt erkennt auch Englisch."
+      "bilingualHint": "Dieser Dialekt erkennt auch Englisch.",
+      "description": "Wählen Sie den Diensteanbieter, mit dem Sie Audio sicher verarbeiten und Ergebnisse zurückgeben möchten. Verschiedene Engines unterscheiden sich in Geschwindigkeit, Qualität und Kosten. Wir tun unser Bestes, um Ihnen so viel Auswahl wie möglich zu bieten, während wir die Dinge so kostenlos wie möglich halten."
     },
     "TRANSLATION": {
       "enable": "Live-Übersetzung",
