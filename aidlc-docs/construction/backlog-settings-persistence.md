@@ -30,3 +30,13 @@ Consequences:
 - The real login flow cannot be run from localhost (the API's CORS allows only `zipcaptions.app` and the Azure redirect is registered to production, as PR #143's author found). Plan the verification as server-side tests plus a direct authenticated POST/GET against a local server and database; say plainly what was not verified end to end.
 - Privacy: language preferences and a transcript title pattern the user typed. No audio or transcript text.
 - Related open issue **#147** (replace the M2M100 locale pipeline with a local LLM) overlaps with the `scripts/translate.py` work in PR #149; link them.
+
+## Also in this follow-up: remove the `PRIVACY.4.6` paragraph
+
+Carried over from issue #147, which PR #149 supersedes but does not fully implement. The decision recorded there: Zip Captions has no payment services (it is funded through Patreon), so the privacy-policy paragraph about "our payment services provider, PSP name" does not apply, and its "PSP name" and "URL" placeholders go with it.
+
+- Delete the key `PRIVACY.4.6` from `en.json` and the ten other locale files. `translate.py` has no `--prune`, so this is a plain deletion in each file; keep each file's formatting (two-space indent, trailing newline in `en.json` only).
+- Delete the matching entry `{ text: 'PRIVACY.4.6' }` in `packages/client/src/app/components/privacy/privacy.component.ts` (line 69 at the time of writing). The page lists its keys explicitly, so removing only the JSON key would show a raw key on the privacy page.
+- Check afterwards that the privacy page renders without a gap, in English and in one other language.
+- It is a legal-policy text change; the human should confirm before it ships.
+
