@@ -226,3 +226,13 @@
 
 **Not verified:** the caption view, split panes, PiP, broadcast between two browsers and the live OBS feed in a running session; a real OBS; real Translator API translation in a browser; the two PiP and select fixes beyond reproduction and template guards.
 
+### OBS feed, end to end against a mock OBS (same day)
+A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4466 accepted the app's real `obs-websocket-js` connection, reported the stream as active and logged every `SendStreamCaption`. Live text was set from the browser console through Angular's dev-mode handles (no microphone), and Chrome's real Translator API was used.
+- Connect: badge showed "Connected"; the app requested `GetStreamStatus`.
+- Original feed: `captionText: "hello world"` received.
+- Translated feed with translation **off**: the original was sent (`"second sentence"`); an identical repeat was not resent; a cleared live line sent `""`.
+- Translation **on**, model **not** downloaded (`availability: downloadable`): the live line `"good morning everyone"` produced **no** call to OBS; the source text was not sent.
+- Translation on, model downloaded via the app's button: `"good evening everyone"` reached OBS as `"buenas tardes a todos"`, never as English; the clear then sent `""`.
+- **Observed quirk (pre-existing, not fixed):** the live-line pipeline drops a line identical to the last one it saw (`distinctUntilChanged`), so a line that failed while the model was missing is not retried until the text changes. In practice the next word changes it. Noted, not fixed.
+- **Still not verified:** a real OBS (the mock implements only the handshake, `GetStreamStatus` and `SendStreamCaption`); that a streaming platform renders the CEA-608 track; the caption view, split panes, PiP and a two-browser broadcast in a running session; recognition itself.
+
