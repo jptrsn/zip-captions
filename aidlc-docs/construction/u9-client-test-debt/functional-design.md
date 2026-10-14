@@ -1,6 +1,6 @@
 # U9 — Client Test Debt: Functional Design
 
-**Status:** v1. Decisions D1-D8 approved as recommended 2026-10-13 ("start PR1 as recommended"). PR 1 implemented on `feature/fix-failing-client-tests-1`; notes in §8. Builds on `construction/backlog-test-debt.md`.
+**Status:** v1. Decisions D1-D8 approved as recommended 2026-10-13 ("start PR1 as recommended"). Implemented on `feature/fix-failing-client-tests-1` as **one PR** (the human approved folding groups B-I into it, with a stop at 80 counted files); notes in §8 and §9. Builds on `construction/backlog-test-debt.md`.
 **Goal:** the client suite has no failing suites, so a regression in those components shows up as a red test.
 **Not in scope:** the 8 failing server suites (Nest boilerplate, same pattern; proposed as a follow-up, D7).
 
@@ -80,3 +80,18 @@ Branch-protection settings; whether any suite hangs only in CI; that fixed specs
   - `StartBroadcastComponent` always renders the Create button; on mobile or an incompatible browser only the intro text and a warning change. Whether the button is disabled depends on the `disabled` input the parent passes (not checked).
 - **Test-tooling notes:** `MockStore.overrideSelector(sel, undefined)` is treated as no override (use `null` for "no value"); jsdom's `Blob` has no `.text()`; `ngx-translate-testing` here renders Spanish text by default, so specs avoid asserting translated text.
 - **Left for later PRs:** groups B, H, I, D, C, F, and `user-saved-settings` (waits for #150).
+
+## 9. Result of the single-PR plan (2026-10-13/14)
+
+- **Branch `feature/fix-failing-client-tests-1`:** 43 of the 44 failing suites fixed; **one left: `user-saved-settings`**, which waits for #150 (it changed that component). Full client run against the `develop` baseline (`93fc76b`) by suite name: no newly failing suite, every suite reported (no hang this time), 119 of 120 passing. A worker crash (SIGSEGV) on `recognized-live-text` in an earlier run did not recur.
+- **Size:** 43 files counted by CodeRabbit (specs only; `aidlc-docs/**` is excluded). No production code changed.
+- **D3 held:** every fixed suite tests what its component does; "should create" specs were replaced. Suites rewritten against what the code does now: `home`, `app`, `start-broadcast`, `join-broadcast`, `user.reducer`, `jwt.interceptor`, `unsaved-changes.guard`. Mutation checks (one broken line per component, then restored) on the larger components: all mutations were caught.
+- **Test-tooling notes (additions):** `TestBed.overrideProvider` fails once anything has been injected, so use mutable stubs; `MockStore.setState` is needed for selectors that are plain functions (`selectAppAppearance`, `selectRecognition`); a synchronous `of()` stub triggers `ExpressionChangedAfterItHasBeenChecked` where the real call is async; Angular 16.0 has no `TestBed.flushEffects`; jsdom cannot submit `method="dialog"` forms.
+- **Findings, not fixed (D5):**
+  - `es.json` has four strings that are Portuguese (`LABELS.transcriptEnabled`, `LABELS.transcriptDisabled`, `LABELS.transcriptTitlePattern`, `SETTINGS.PROVIDER.requestTokens`). They need regenerating with `translate.py`, not hand-editing.
+  - `UserService.saveUserRooms` sends `PATCH /profile/:id/rooms` and `getUserRoom` sends `GET /profile/:id/rooms/:roomId`; the server has `POST` on the first and no `GET` on the second. Both are used only by the `saveRooms` effect, which nothing dispatches, so this is dead code.
+  - `AppComponent` reads `settings.language` from storage; the stored key is `lang`, so the "same language as the browser" check there is always true.
+  - `RoomCardComponent.deleteRoom` has no error handler (a failed delete is an unhandled error), and `saveAndClose` re-enables the locked `roomId` control of an existing room.
+  - `JoinBroadcastComponent` and `PeerLandingComponent` mangle an undashed session id set in one go (`4NA79EF2GV` becomes `4N-A79E-F-2GV`); typing it character by character works.
+  - `StartBroadcastComponent` always shows its Create button, even on mobile or an incompatible browser.
+- **Still to do for U9:** `user-saved-settings` after #150 merges; the 8 server boilerplate suites (D7); a CI test job (D6), now that the client suite is green except for that one.

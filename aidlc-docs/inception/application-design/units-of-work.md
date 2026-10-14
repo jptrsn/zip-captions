@@ -148,5 +148,5 @@ Design: `construction/u6-obs-feed/functional-design.md` (eight decisions approve
 
 ## Follow-ups
 US-C4 draggable divider. More bilingual profiles.
-**U9 — Client test debt (in progress 2026-10-13):** design `construction/u9-client-test-debt/functional-design.md`; PR 1 (19 suites) done, 25 suites left in PRs 2-4. Earlier note: **Test debt (proposed 2026-10-13):** fix the 44 failing client suites, grouped by cause, so regressions in those components are visible. See `construction/backlog-test-debt.md`.
+**U9 — Client test debt (in progress 2026-10-13):** design `construction/u9-client-test-debt/functional-design.md`; 43 of 44 failing suites fixed on one branch (specs only); `user-saved-settings` waits for #150; server suites and a CI test job remain. Earlier note: **Test debt (proposed 2026-10-13):** fix the 44 failing client suites, grouped by cause, so regressions in those components are visible. See `construction/backlog-test-debt.md`.
 **Settings persistence (bug, decided 2026-10-13):** `transcription` and `translation` are sent on "Save current" but dropped by the server schema. One follow-up after PR #149 merges; see `construction/backlog-settings-persistence.md`, which also carries the `PRIVACY.4.6` removal from issue #147.

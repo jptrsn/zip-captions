@@ -249,3 +249,16 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - Product findings, not fixed: the join-id dash insertion bug and the always-rendered start button (see §8).
 
 **Not verified:** the components in a browser (these are specs); that the 19 suites stay stable across runs; the SIGSEGV cause.
+
+## 2026-10-14 — U9 client test debt, single PR (feature/fix-failing-client-tests-1)
+
+**Human:** pushed the branch, approved folding the remaining groups into the same PR with a stop at 80 counted files, and asked me to continue while waiting on review quota for #150.
+
+**AI actions:**
+- Fixed the remaining suites: the three services, the two OAuth components, the interceptor, guard and user reducer, the two confirmation dialogs and the engine select, `editable-string`, `transcript-enabled`, `end-broadcast`, `room-card`, `home`, `welcome-splash`, `settings`, `peer-landing`, `stream-captions`, `broadcast-room`, the control sidebar, `recognition-render` and `app.component`.
+- Every spec tests behaviour; mutation checks on the large components (restored afterwards).
+- Full client run vs the `develop` baseline by suite name: 43 fixed, none new, none missing; 119 of 120 passing, the 120th being `user-saved-settings` (waits for #150).
+- 43 files counted for CodeRabbit.
+- Findings (not fixed): Portuguese strings in `es.json`; client/server room route mismatch (dead code); `settings.language` vs `lang`; unhandled delete failure in the room card; id mangling when set in one go; always-visible Create button.
+
+**Not verified:** components in a browser (these are specs); that the specs stay stable across runs and CI (the earlier worker segfault and last-suite hang did not recur in this run).
