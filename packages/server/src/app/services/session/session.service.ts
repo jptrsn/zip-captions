@@ -104,12 +104,16 @@ export class SessionService {
     return broadcast.toObject();
   }
 
-  async endBroadcastSession(clientId: string, payload: { room: string}): Promise<BroadcastSession> {
+  /** Ends the live broadcast of a room; null when the room has none (for example it was already ended) */
+  async endBroadcastSession(clientId: string, payload: { room: string}): Promise<BroadcastSession | null> {
     const userId = await this._getClientUserId(clientId);
     if (!userId) {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
     const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
+    if (!broadcast) {
+      return null;
+    }
     broadcast.endTime = new Date();
     await broadcast.save();
     return broadcast.toObject();

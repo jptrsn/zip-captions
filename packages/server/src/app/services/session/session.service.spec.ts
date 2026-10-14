@@ -210,6 +210,13 @@ describe('SessionService', () => {
       expect(broadcasts.docs[0]['endTime']).toBeInstanceOf(Date);
     });
 
+    it('ends nothing, and does not fail, when the room has no live broadcast', async () => {
+      broadcasts.add({ roomId: 'r1', hostUserId: 'u1', hostClientId: 'c1', endTime: new Date('2026-01-01') });
+      await expect(service.endBroadcastSession('c1', { room: 'r1' })).resolves.toBeNull();
+      await expect(service.endBroadcastSession('c1', { room: 'unknown' })).resolves.toBeNull();
+      expect(broadcasts.docs[0]['endTime']).toEqual(new Date('2026-01-01'));
+    });
+
     it('refuses a client it cannot place', async () => {
       await expect(service.endBroadcastSession('stranger', { room: 'r1' })).rejects.toThrow('Cannot determine client user');
     });

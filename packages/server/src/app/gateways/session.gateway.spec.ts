@@ -214,6 +214,14 @@ describe('SessionGateway', () => {
       expect(client.emitToRoom).toHaveBeenCalledWith('message', { message: 'broadcast ended', expiredAt: endTime.getTime() });
     });
 
+    it('does nothing, and does not fail, when there is no live broadcast to end', async () => {
+      const client = fakeClient('host');
+      service.endBroadcastSession.mockResolvedValue(null);
+      await expect(gateway.handleEndBroadcast(client as never, { room: 'r1' })).resolves.toBeUndefined();
+      expect(inEmit).not.toHaveBeenCalled();
+      expect(client.broadcast.to).not.toHaveBeenCalled();
+    });
+
     it('does not tell viewers when someone other than the host sends it', async () => {
       const client = fakeClient('other');
       service.endBroadcastSession.mockResolvedValue({ hostUserId: 'u1', endTime: new Date() });

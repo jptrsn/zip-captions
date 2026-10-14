@@ -122,6 +122,10 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('endBroadcast')
   async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
     const broadcast = await this.sessionService.endBroadcastSession(client.id, payload);
+    if (!broadcast) {
+      this.logger.warn(`endBroadcast for room ${payload.room} with no live broadcast, from client id ${client.id}`);
+      return;
+    }
     const userId = await this.sessionService.getUserFromClientId(client.id);
     // this.logger.log(`end ${payload.room} broadcast`)
     this.server.in(payload.room).emit('endBroadcast');
