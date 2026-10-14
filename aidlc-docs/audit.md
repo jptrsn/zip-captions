@@ -289,3 +289,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - Findings (not fixed): Portuguese strings in `es.json`; client/server room route mismatch (dead code); `settings.language` vs `lang`; unhandled delete failure in the room card; id mangling when set in one go; always-visible Create button.
 
 **Not verified:** components in a browser (these are specs); that the specs stay stable across runs and CI (the earlier worker segfault and last-suite hang did not recur in this run).
+
+## 2026-10-14 — U9 closed for the client suite
+
+**Human:** #150 is merged; open the U9 PR and continue with the next fixes.
+
+**AI actions:** merged `develop` into `feature/fix-failing-client-tests-1` (documentation conflicts only: kept both sides of `audit.md` and `units-of-work.md`, kept this branch's U9 design). Fixed `user-saved-settings` (16 tests; 3 mutations caught). Full client run: 122 of 122 suites, 772 tests pass.
+
+**Not verified:** stability across repeated or CI runs; the components in a browser.

@@ -95,3 +95,7 @@ Branch-protection settings; whether any suite hangs only in CI; that fixed specs
   - `JoinBroadcastComponent` and `PeerLandingComponent` mangle an undashed session id set in one go (`4NA79EF2GV` becomes `4N-A79E-F-2GV`); typing it character by character works.
   - `StartBroadcastComponent` always shows its Create button, even on mobile or an incompatible browser.
 - **Still to do for U9:** `user-saved-settings` after #150 merges; the 8 server boilerplate suites (D7); a CI test job (D6), now that the client suite is green except for that one.
+
+## 10. Closing the client suite (2026-10-14)
+
+#150 merged into `develop`; `develop` was merged into the branch (documentation conflicts only). The last suite, `user-saved-settings`, is fixed (16 tests, including the in-sync rule and the device-specific keys from #150; three mutations of the component were all caught). **Full client run: 122 of 122 suites and 772 tests pass.** The U9 findings in §9 stand. Remaining for U9: the 8 server boilerplate suites and a CI test job.
