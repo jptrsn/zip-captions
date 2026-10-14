@@ -263,3 +263,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - Declined: `settingsMatch` ignoring saved nested keys the current state lacks (see U8 design §11).
 
 **Not verified:** the Sync tab and apply in a browser; two real devices.
+
+## 2026-10-14 — U9 server suites (feature/fix-failing-server-tests)
+
+**Human:** #150 merged; asked me to open the next PR and move on with the next fixes.
+
+**AI actions:** opened #151 (client suites, 122 of 122 passing). Started the server suites on `feature/fix-failing-server-tests` off `develop`: 8 failing suites replaced with behaviour specs, 12 of 12 passing (148 tests), mutation-checked, server builds. Two production fixes in their own commits (supporter `tiers` removal; `SupporterService` import). Two defects recorded as `it.failing`.
+
+**Not verified:** against a real MongoDB (the models are stubbed or in-memory); the webhook with a real Patreon payload.

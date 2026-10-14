@@ -67,3 +67,18 @@ Angular 16: `toObservable()` only in constructors or field initializers; file to
 ## 7. Not verified (to be reported again at the end)
 
 Branch-protection settings; whether any suite hangs only in CI; that fixed specs would have caught the regression they are meant to guard (checked per suite where a real assertion is added, by mutating the code once, not for the others).
+
+## 11. Server suites (branch `feature/fix-failing-server-tests`, off `develop` after #150)
+
+D7 was taken up: the 8 failing server suites (Nest boilerplate with no providers, one that could not load) are replaced with specs that test behaviour. **Server: 12 of 12 suites, 148 tests pass** (was 4 of 12).
+
+- **Approach:** the services are tested against their real Mongoose schemas with `save`, `findOne` and the other model calls stubbed. `SessionService` uses `src/testing/in-memory-model.ts`, a small array-backed stand-in (find / findOne / updateMany / deleteMany, document save / deleteOne, a subset of Mongo query matching). The testing helpers and `*.fixture.ts` files are excluded from the app build (`tsconfig.app.json`); the server still builds.
+- **Mutation check:** four production changes (skip the webhook signature check, skip the live-broadcast guard on room deletion, add the whole cap instead of the difference, ignore the user check on `refreshRooms`) were all caught; files restored.
+- **Production fixes (separate commits):**
+  - `AppService.upsertSupporter` used `delete` on a Mongoose document, which does nothing, so a deleted member kept their `tiers`; now `set(field, undefined)`.
+  - `SupporterService` imported `Injectable` from `@angular/core`; now from `@nestjs/common`, which also lets Jest load it. A test builds the service through Nest's DI.
+- **Defects found, recorded as `it.failing` tests, not fixed (D5):**
+  - `SessionService.getUserIdForNewClientConnection` calls `setUserId(userId)`, passing the user id where the client id belongs. The gateway only calls it for brand-new socket ids, which are never known, so it is not reached today.
+  - `generateRandomRoomId(true)` makes ids whose prefix `_validateRoomForUser` then rejects for a static room (generator and validator read the parity opposite ways). `updateUserRooms` is the only caller of the validator and is reached only from a client action nothing dispatches.
+- **Other observations:** `endBroadcastSession` throws a `TypeError` (not an HTTP error) when the room has no live broadcast; `handleEndBroadcast` would then fail; `setUserId` can create a connection with `userId` undefined, which the schema rejects (stubbed `save` hides it in the spec).
+- **Still open for U9:** a CI job that runs both suites (D6).
