@@ -1,7 +1,7 @@
 import { defaultAppState } from '../reducers/app.reducer';
 import { AppState } from '../models/app.model';
 import { TranslationSettings, UiLanguagePreference } from '../modules/settings/models/settings.model';
-import { selectObsFeed, selectPaneOrder, selectPipContent, selectSplitOrientation, selectUiLanguage, selectUiLanguagePreference } from './settings.selector';
+import { selectSyncSettings, selectObsFeed, selectPaneOrder, selectPipContent, selectSplitOrientation, selectUiLanguage, selectUiLanguagePreference } from './settings.selector';
 
 describe('settings selectors', () => {
   const withLanguages = (lang: AppState['settings']['lang'], uiLanguage?: UiLanguagePreference): AppState => ({
@@ -45,6 +45,26 @@ describe('settings selectors', () => {
 
     it('returns the stored OBS feed', () => {
       expect(selectObsFeed(withTranslation({ obsFeed: 'translated' }))).toBe('translated');
+    });
+  });
+
+  describe('sync snapshot', () => {
+    const state: AppState = {
+      ...defaultAppState,
+      settings: {
+        ...defaultAppState.settings,
+        transcription: { enabled: true, loading: true, titlePattern: 'Sunday' },
+        translation: { enabled: true, mode: 'split', targetLanguage: 'fr', pipContent: 'split', obsFeed: 'translated', dialectByLanguage: { fr: 'fr-CA' } }
+      }
+    };
+
+    it('leaves out the device-specific Picture-in-Picture and OBS settings', () => {
+      const { translation } = selectSyncSettings(state);
+      expect(translation).toEqual({ enabled: true, mode: 'split', targetLanguage: 'fr', dialectByLanguage: { fr: 'fr-CA' } });
+    });
+
+    it('leaves out the transcription loading flag', () => {
+      expect(selectSyncSettings(state).transcription).toEqual({ enabled: true, titlePattern: 'Sunday' });
     });
   });
 });

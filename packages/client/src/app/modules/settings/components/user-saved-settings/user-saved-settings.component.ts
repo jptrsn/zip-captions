@@ -8,6 +8,8 @@ import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 import { selectSyncSettings } from '../../../../selectors/settings.selector';
 import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
 import { SettingsActions, SettingsState } from '../../models/settings.model';
+import { defaultSettingsState } from '../../../../reducers/settings.reducer';
+import { settingsMatch } from './settings-match';
 import { isSimpleSettingValue } from './sync-settings-rows';
 
 @Component({
@@ -53,15 +55,7 @@ export class UserSavedSettingsComponent {
     })
     
     this.settingsMatch = computed(() => {
-      const saved = this.savedUiSettings();
-      const current = this.currentUiSettings();
-      if (saved && current) {
-        return Object.keys(saved).length === Object.keys(current).length &&
-        (Object.keys(saved) as (keyof SettingsState)[]).every((key) => 
-          (key in current && JSON.stringify(saved[key]) === JSON.stringify(current[key]))
-        )
-      }
-      return false;
+      return settingsMatch(this.savedUiSettings(), this.currentUiSettings(), defaultSettingsState);
     })
 
     this.syncControl.valueChanges.pipe(

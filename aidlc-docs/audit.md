@@ -236,3 +236,30 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - **Observed quirk (pre-existing, not fixed):** the live-line pipeline drops a line identical to the last one it saw (`distinctUntilChanged`), so a line that failed while the model was missing is not retried until the text changes. In practice the next word changes it. Noted, not fixed.
 - **Still not verified:** a real OBS (the mock implements only the handshake, `GetStreamStatus` and `SendStreamCaption`); that a streaming platform renders the CEA-608 track; the caption view, split panes, PiP and a two-browser broadcast in a running session; recognition itself.
 
+
+## 2026-10-13 — U8 settings persistence (server schema, Sync tab match, PRIVACY.4.6)
+
+**Human:** after PR #149 merged, asked for the follow-up on branch `feature/sync-transcription-translation-settings`; approved the design as recommended; confirmed removing `PRIVACY.4.6` ("we do not take payments"); said a local MongoDB, puppeteer and a dev emulator were available.
+
+**AI actions:**
+- Design: `construction/u8-settings-persistence/functional-design.md` (gate respected: stopped for approval before coding).
+- **Server:** `transcription` and `translation` sub-schemas (`_id: false`, strings without enums, `dialectByLanguage` Mixed). Commit `6361995`.
+- **Client:** `settingsMatch` extracted to `settings-match.ts`. Found while reading that the old rule also compared `JSON.stringify` per key, so key order alone could keep a saved account "out of sync" once the server returned the new fields; the old rule was re-run on three scenarios and got all three wrong. Commit follows `6361995`.
+- **Privacy:** key deleted from `en.json` and 10 locales (one line each, formatting kept), entry removed from `privacy.component.ts`; guard spec added.
+- **Tests:** new/replaced server specs (model, service, controller) and `settings-match.spec.ts`, `privacy-keys.spec.ts`. Each new server test and the privacy deletion tests were run against the old code first and fail there (server ones with type diagnostics off, since the old types lack the properties). Server: 8 of 12 suites fail (was 10), all untouched boilerplate. Client: 44 of 120 failed on the `93fc76b` worktree and 44 of 122 now, the same 44 by suite name, none new; no hang. `tsc` (client and server) and `ngc` clean.
+- **Direct request:** built the server, ran it on port 3100 against the local MongoDB with a JWT signed with the dev secret (user id `u8-e2e-test-user`, removed afterwards). Verified: 401 without a token, 403 for another user; a full client payload POST returns and stores `transcription` and `translation` (checked in Mongo, no `_id` in the sub-documents, an unknown nested key dropped); an older-client POST without them leaves the stored values; a later POST without `dialectByLanguage`/`obsFeed` removes them; after a server restart (empty cache) a GET returns the stored copy.
+- **Display of dev env:** I printed `.env.serve.development` including its dev credentials to the terminal while looking for the Mongo settings (my redaction pattern was too narrow). They are local-development values already in the repo tree, but they are now in this session's transcript.
+
+**Not verified:** the real login flow and a second device; the Sync tab in a browser (it needs a login); the privacy page in a browser (`/privacy` redirects to `https://www.zipsolutions.org/privacy.html`, which I could not load from the browser tooling; checked afterwards by fetching it: HTTP 200, no payment services paragraph or PSP wording, only a data-category table row "payment information" marked NO. Only the text was searched, not the whole policy read); behaviour against the production MongoDB version.
+
+## 2026-10-14 — U8 follow-up after the #150 review
+
+**Human:** decided on the CodeRabbit feedback: keep `pipContent` and `obsFeed` local to each device on apply (reversing the earlier decision to sync the whole `translation` object); add a validator for `dialectByLanguage`; push and reply on the PR.
+
+**AI actions:**
+- **Client:** `omitDeviceSettings` and `applySavedTranslation` (pure, in `settings.model.ts`), used by the sync selector, the apply effect and `settingsMatch`. 11 new client tests, all failing against the old production code; the surrounding suites near the change pass or are among the 44 baseline failures (checked by name).
+- **Server:** the two keys removed from the schema; `dialectByLanguage` validator; validation errors answered with 400. 9 new tests, failing against the old code. Server run against a real server and local MongoDB: a snapshot with `pipContent`/`obsFeed` stores neither, a bad `dialectByLanguage` returns 400 and leaves the stored document unchanged. Test data removed.
+- **Slip:** a `git stash` command failed on a path variable (zsh does not split it), and the following `git stash pop` tried to pop one of the human's older stash entries. Git aborted it because it would overwrite local changes, so nothing was applied; the three older stash entries are intact. I switched to copy-and-checkout for the old-code runs.
+- Declined: `settingsMatch` ignoring saved nested keys the current state lacks (see U8 design §11).
+
+**Not verified:** the Sync tab and apply in a browser; two real devices.

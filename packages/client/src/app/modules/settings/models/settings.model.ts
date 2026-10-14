@@ -302,6 +302,42 @@ export interface TranslationSettings {
   dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
 }
 
+/**
+ * Translation settings that describe this device's output (the Picture-in-Picture window and the OBS
+ * connection), so they are not synced between devices: they are left out of the saved snapshot and
+ * a saved snapshot never overwrites them.
+ */
+export const DeviceSpecificTranslationKeys = ['pipContent', 'obsFeed'] as const satisfies readonly (keyof TranslationSettings)[];
+
+/** The settings without the device-specific translation keys */
+export function omitDeviceSettings<T extends object>(settings: T): T {
+  const { translation } = settings as { translation?: TranslationSettings };
+  if (!translation) {
+    return settings;
+  }
+  const withoutDeviceKeys = { ...translation };
+  for (const key of DeviceSpecificTranslationKeys) {
+    delete withoutDeviceKeys[key];
+  }
+  return { ...settings, translation: withoutDeviceKeys };
+}
+
+/**
+ * The translation settings after applying a saved snapshot: the saved values, except that this device keeps
+ * its own device-specific keys (and, if it has none, falls back to the defaults, not to the saved ones).
+ */
+export function applySavedTranslation(existing: Partial<TranslationSettings> | undefined, saved: TranslationSettings): TranslationSettings {
+  const merged: TranslationSettings = { ...existing, ...saved };
+  for (const key of DeviceSpecificTranslationKeys) {
+    if (existing && existing[key] !== undefined) {
+      (merged as unknown as Record<string, unknown>)[key] = existing[key];
+    } else {
+      delete merged[key];
+    }
+  }
+  return merged;
+}
+
 export interface SupportedTranslationLanguage {
   code: string;
   name: string;
