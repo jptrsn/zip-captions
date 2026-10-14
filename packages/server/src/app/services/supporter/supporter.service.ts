@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Supporter, SupporterDocument } from '../../models/supporter.model';
 import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SupporterService {
 
   constructor(@InjectModel(Supporter.name) private supporterModel: Model<Supporter>,) { }
