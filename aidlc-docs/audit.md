@@ -287,3 +287,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** `endBroadcastSession` now requires the broadcast's `hostUserId` to be the client's user (null otherwise); the `it.failing` test became a normal test, plus tests for another device of the same user and for several live rooms. The non-host test failed before the fix. Gateway log message updated.
 
 **Not verified:** with real clients, in particular the anonymised second tab.
+
+## 2026-10-14 — Qwen review of #152
+
+**Human:** decided: remove the unreachable branch and its test; add the clarification; do the `toBe(0)` nit.
+
+**AI actions:** tested the review's main claim against a real MongoDB (Mongoose 7.8.6; `endTime: undefined` matches only live broadcasts) and found it does not hold. Removed the dead branch, its user lookup and its test (server: 153 tests). Documented the `setId` limitation of the ownership check. The seven inline comments on #152 were unreadable (`@c1.md` to `@c7.md`); only the review body was read.
+
+**Not verified:** the content of the seven inline comments.
