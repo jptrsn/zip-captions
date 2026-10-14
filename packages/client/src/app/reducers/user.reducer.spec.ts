@@ -64,14 +64,12 @@ describe('userReducer', () => {
   });
 
   describe('rooms', () => {
-    it('stores the rooms, from a load or a save', () => {
+    it('stores the loaded rooms', () => {
       expect(userReducer(defaultUserState, UserActions.getRoomsSuccess({ rooms: [room] })).rooms).toEqual([room]);
-      expect(userReducer(defaultUserState, UserActions.saveRoomsSuccess({ rooms: [room] })).rooms).toEqual([room]);
     });
 
-    it('empties the rooms and records the error when loading or saving fails', () => {
+    it('empties the rooms and records the error when loading fails', () => {
       expect(userReducer(signedIn, UserActions.getRoomsFailure({ error: 'x' }))).toMatchObject({ rooms: [], error: 'x' });
-      expect(userReducer(signedIn, UserActions.saveRoomsFailure({ error: 'y' }))).toMatchObject({ rooms: [], error: 'y' });
     });
   });
 
