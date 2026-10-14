@@ -313,3 +313,9 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** addressed nine inline comments and one outside the diff. Found while auditing that four specs (login, provider, user-home, ui-settings) were still creation-only, contrary to what I had written in the PR text; wrote real specs for them and corrected the PR. Added the room card delete-failed message with one new string, generated in 10 locales with `translate.py`. Mutation-checked the changes. Full client suite 837 tests.
 
 **Not verified:** the new message in a browser; the 10 generated translations by a native speaker.
+
+## 2026-10-14 — Second CodeRabbit round on #151
+
+**Human:** reported more feedback on #151 (the Qwen review was cancelled because CodeRabbit finished first).
+
+**AI actions:** two comments, both valid: renamed a test; added an in-flight guard to the room card's delete (a real double-click bug). Tests failed before the fix; `tsc` and `ngc` clean.
