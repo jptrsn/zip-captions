@@ -20,6 +20,7 @@ describe('ViewTranscriptComponent', () => {
   let blobs: Blob[];
   let click: jest.SpyInstance;
   let anchor: HTMLAnchorElement | undefined;
+  const originalCreateObjectURL = URL.createObjectURL;
 
   const create = () => {
     fixture = TestBed.createComponent(ViewTranscriptComponent);
@@ -50,7 +51,7 @@ describe('ViewTranscriptComponent', () => {
     }).compileComponents();
   });
 
-  afterEach(() => { click.mockRestore(); anchor = undefined; });
+  afterEach(() => { click.mockRestore(); anchor = undefined; URL.createObjectURL = originalCreateObjectURL; });
 
   // jsdom's Blob has no text()
   const downloaded = (): Promise<string> => new Promise((resolve) => {

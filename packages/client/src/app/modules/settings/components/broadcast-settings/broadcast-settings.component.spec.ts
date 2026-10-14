@@ -57,10 +57,19 @@ describe('BroadcastSettingsComponent', () => {
     expect(component.dynamicRooms()?.map((r) => r.roomId)).toEqual(['B', 'C']);
   });
 
-  it('has no room groups when there are no rooms of that kind', () => {
+  it('has no static group when the user has only other rooms, and no other group when they have only a static room', () => {
     create({ rooms: [room('B')] });
     expect(component.staticRooms()).toBeUndefined();
+    expect(component.dynamicRooms()?.map((r) => r.roomId)).toEqual(['B']);
+    fixture.destroy();
+    create({ rooms: [room('A', true)] });
+    expect(component.staticRooms()?.map((r) => r.roomId)).toEqual(['A']);
+    expect(component.dynamicRooms()).toBeUndefined();
+  });
+
+  it('has no groups at all when the user has no rooms', () => {
     create({ rooms: [] });
+    expect(component.staticRooms()).toBeUndefined();
     expect(component.dynamicRooms()).toBeUndefined();
   });
 

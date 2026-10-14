@@ -64,11 +64,17 @@ describe('TranscriptionService', () => {
   describe('database', () => {
     it('is not initialised until the server has answered and the database has opened', async () => {
       const service = create();
+      let openDatabase: () => void = () => undefined;
+      localDb['init'].mockReturnValue(new Promise<void>((resolve) => { openDatabase = resolve; }));
       expect(service.dbIsInitialized()).toBe(false);
       const init = service.initTranscriptDatabase('u1');
       http.expectOne(dbTokenUrl).flush({ token: 'ab' });
-      await init;
+      // The server has answered and the database is opening, but has not opened yet
+      await new Promise((resolve) => setTimeout(resolve));
       expect(localDb['init']).toHaveBeenCalledWith('u1', new Uint8Array([0, 97, 0, 98]));
+      expect(service.dbIsInitialized()).toBe(false);
+      openDatabase();
+      await init;
       expect(service.dbIsInitialized()).toBe(true);
     });
 
@@ -96,17 +102,32 @@ describe('TranscriptionService', () => {
       await expect(create().createTranscriptSegment('hello', undefined)).rejects.toThrow('No transcript ID set');
     });
 
-    it('adds segments to the current transcript, starting at the given time or where the last one ended', async () => {
-      const service = create();
-      const id = await service.createTranscript('T');
-      const start = new Date('2026-01-01T10:00:00Z');
-      await service.createTranscriptSegment('hello', start);
-      expect(localDb['createTranscriptSegment']).toHaveBeenLastCalledWith(expect.objectContaining({ transcriptId: id, text: 'hello', start }));
-      await service.createTranscriptSegment('again', undefined);
-      const second = localDb['createTranscriptSegment'].mock.calls[1][0];
-      expect(second.text).toBe('again');
-      expect(second.start).toBeInstanceOf(Date);
-      expect(second.start.getTime()).toBeGreaterThanOrEqual(second.end.getTime() - 5000);
+    describe('adding segments', () => {
+      beforeEach(() => jest.useFakeTimers({ now: new Date('2026-01-01T10:00:00Z') }));
+      afterEach(() => jest.useRealTimers());
+
+      it('adds a segment to the current transcript, starting at the given time', async () => {
+        const service = create();
+        const id = await service.createTranscript('T');
+        const start = new Date('2026-01-01T09:59:00Z');
+        jest.setSystemTime(new Date('2026-01-01T10:00:05Z'));
+        await service.createTranscriptSegment('hello', start);
+        expect(localDb['createTranscriptSegment']).toHaveBeenCalledWith({ transcriptId: id, text: 'hello', start, end: new Date('2026-01-01T10:00:05Z') });
+      });
+
+      it('starts a segment with no given time where the previous one ended, or when the transcript was created', async () => {
+        const service = create();
+        await service.createTranscript('T');
+        jest.setSystemTime(new Date('2026-01-01T10:00:05Z'));
+        await service.createTranscriptSegment('first', undefined);
+        jest.setSystemTime(new Date('2026-01-01T10:00:09Z'));
+        await service.createTranscriptSegment('second', undefined);
+        const [first, second] = localDb['createTranscriptSegment'].mock.calls.map(([segment]) => segment);
+        expect(first.start).toEqual(new Date('2026-01-01T10:00:00Z'));
+        expect(first.end).toEqual(new Date('2026-01-01T10:00:05Z'));
+        expect(second.start).toEqual(new Date('2026-01-01T10:00:05Z'));
+        expect(second.end).toEqual(new Date('2026-01-01T10:00:09Z'));
+      });
     });
 
     it('refuses to finalise without a transcript', () => {

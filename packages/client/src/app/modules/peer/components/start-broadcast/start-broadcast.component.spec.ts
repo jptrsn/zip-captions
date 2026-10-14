@@ -93,11 +93,18 @@ describe('StartBroadcastComponent', () => {
     expect(component.formGroup.enabled).toBe(true);
   });
 
-  it('explains the broadcast on a compatible desktop browser, and shows a warning on mobile or an incompatible browser', () => {
+  it('explains the broadcast on a compatible desktop browser, without a warning', () => {
     create();
     expect(fixture.nativeElement.querySelector('.text-warning')).toBeFalsy();
     expect(fixture.nativeElement.querySelector('.text-xl')).toBeTruthy();
-    fixture.componentRef.setInput('isMobileDevice', signal(true));
+  });
+
+  it.each([
+    ['a mobile device', 'isMobileDevice'],
+    ['an incompatible browser', 'isIncompatibleBrowser'],
+  ])('shows a single warning instead of the explanation on %s', (_name, input) => {
+    create();
+    fixture.componentRef.setInput(input, signal(true));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll('.text-warning').length).toBe(1);
     expect(fixture.nativeElement.querySelector('.text-xl')).toBeFalsy();

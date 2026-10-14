@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
@@ -65,10 +66,13 @@ describe('StreamCaptionsComponent', () => {
     expect(has('app-recognized-live-text')).toBe(false);
   });
 
-  it('shows the controls sidebar without the fullscreen, text flow and PiP controls', () => {
+  it('shows the controls sidebar with the fullscreen, text flow and PiP controls turned off', () => {
     create({ connected: true });
-    const sidebar = fixture.nativeElement.querySelector('app-recognition-control-sidebar');
+    const sidebar = fixture.debugElement.query(By.css('app-recognition-control-sidebar'));
     expect(sidebar).toBeTruthy();
+    expect(sidebar.properties['showFullscreen']).toBe(false);
+    expect(sidebar.properties['showTextFlow']).toBe(false);
+    expect(sidebar.properties['showPip']).toBe(false);
   });
 
   it('stops the stream recognition when the page is left while connected', () => {

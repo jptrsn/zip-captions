@@ -160,11 +160,11 @@ describe('AppComponent', () => {
       expect(dispatch).toHaveBeenCalledWith(RecognitionActions.initTranscriptDB({ userId: 'u1' }));
     });
 
-    it('does not open it when transcripts are off or the user is signed out', () => {
-      create({ userId: 'u1', loggedIn: true, transcripts: false });
-      expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: RecognitionActions.initTranscriptDB.type }));
-      fixture.destroy();
-      create({ userId: 'u1', loggedIn: false, transcripts: true });
+    it.each([
+      ['transcripts are switched off', { userId: 'u1', loggedIn: true, transcripts: false }],
+      ['the user is signed out', { userId: 'u1', loggedIn: false, transcripts: true }],
+    ])('does not open the transcript database when %s', (_name, scenario) => {
+      create(scenario);
       expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: RecognitionActions.initTranscriptDB.type }));
     });
 

@@ -37,10 +37,16 @@ describe('PeerHomeComponent', () => {
     expect(dispatch).toHaveBeenCalledWith(PeerActions.disconnectSocketServer());
   });
 
-  it('only disconnects from the servers it is connected to', () => {
+  it('disconnects only from the socket server when only the socket server is connected', () => {
     leaveWith(false, true);
     expect(dispatch).not.toHaveBeenCalledWith(PeerActions.disconnectPeerServer());
     expect(dispatch).toHaveBeenCalledWith(PeerActions.disconnectSocketServer());
+  });
+
+  it('disconnects only from the peer server when only the peer server is connected', () => {
+    leaveWith(true, false);
+    expect(dispatch).toHaveBeenCalledWith(PeerActions.disconnectPeerServer());
+    expect(dispatch).not.toHaveBeenCalledWith(PeerActions.disconnectSocketServer());
   });
 
   it('dispatches nothing when it was never connected', () => {
