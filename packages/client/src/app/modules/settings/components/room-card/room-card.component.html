@@ -72,6 +72,7 @@
         </select>
       </div>
     </div>
+    <p class="px-3 text-sm text-error text-right" role="alert" data-testid="zc-room-delete-error" *ngIf="deleteFailed()" translate>STREAM.ROOMCARD.deleteFailed</p>
     <div class="p-3 flex items-center justify-end gap-6">
       <button type="button" class="btn btn-sm btn-accent" *ngIf="room && room.roomId" (click)="deleteRoom(room.roomId)" [disabled]="loading()" translate>BUTTONS.delete</button>
       <button type="button" class="btn btn-sm" translate (click)="closeEditMode()" [disabled]="loading()">BUTTONS.cancel</button>

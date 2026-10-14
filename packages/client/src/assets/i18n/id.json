@@ -490,7 +490,8 @@
       "clickToCopy": "Klik untuk menyalin",
       "copied": "Tautan disalin ke papan klip",
       "create": "Buat yang baru",
-      "changeWarning": "ID siaran tidak dapat diubah setelah disimpan."
+      "changeWarning": "ID siaran tidak dapat diubah setelah disimpan.",
+      "deleteFailed": "Siaran tidak dapat dihapus. Silakan coba lagi."
     },
     "fromBroadcaster": "Diterjemahkan oleh penyiar",
     "translatedOnDevice": "Diterjemahkan di perangkat ini"

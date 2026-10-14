@@ -263,3 +263,59 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - Declined: `settingsMatch` ignoring saved nested keys the current state lacks (see U8 design §11).
 
 **Not verified:** the Sync tab and apply in a browser; two real devices.
+
+## 2026-10-13 — U9 client test debt, PR 1 (feature/fix-failing-client-tests-1)
+
+**Human:** approved the U9 design as recommended and asked to start PR 1.
+
+**AI actions:**
+- Design: `construction/u9-client-test-debt/functional-design.md` (notes in §8). Branch off `develop` @ `93fc76b`; only the U9 design doc was carried over from the #150 branch.
+- Fixed 19 client suites (groups A minus `user-saved-settings`, E, G): scaffold providers, shallow rendering for container components, stubbed `CaptionTranslationService` / `TranscriptionService`, and 73 behaviour tests. Rewrote the stale `start-broadcast` and `join-broadcast` specs.
+- Mutation-checked 14 components (one broken line each; all specs failed; restored).
+- Full client run vs the `develop` baseline, by suite name: 44 failing → 25, no newly failing suite. One worker crash (SIGSEGV) on `recognized-live-text` and a hang on the last suite (`language-selector`); both pass alone.
+- Product findings, not fixed: the join-id dash insertion bug and the always-rendered start button (see §8).
+
+**Not verified:** the components in a browser (these are specs); that the 19 suites stay stable across runs; the SIGSEGV cause.
+
+## 2026-10-14 — U9 client test debt, single PR (feature/fix-failing-client-tests-1)
+
+**Human:** pushed the branch, approved folding the remaining groups into the same PR with a stop at 80 counted files, and asked me to continue while waiting on review quota for #150.
+
+**AI actions:**
+- Fixed the remaining suites: the three services, the two OAuth components, the interceptor, guard and user reducer, the two confirmation dialogs and the engine select, `editable-string`, `transcript-enabled`, `end-broadcast`, `room-card`, `home`, `welcome-splash`, `settings`, `peer-landing`, `stream-captions`, `broadcast-room`, the control sidebar, `recognition-render` and `app.component`.
+- Every spec tests behaviour; mutation checks on the large components (restored afterwards).
+- Full client run vs the `develop` baseline by suite name: 43 fixed, none new, none missing; 119 of 120 passing, the 120th being `user-saved-settings` (waits for #150).
+- 43 files counted for CodeRabbit.
+- Findings (not fixed): Portuguese strings in `es.json`; client/server room route mismatch (dead code); `settings.language` vs `lang`; unhandled delete failure in the room card; id mangling when set in one go; always-visible Create button.
+
+**Not verified:** components in a browser (these are specs); that the specs stay stable across runs and CI (the earlier worker segfault and last-suite hang did not recur in this run).
+
+## 2026-10-14 — U9 closed for the client suite
+
+**Human:** #150 is merged; open the U9 PR and continue with the next fixes.
+
+**AI actions:** merged `develop` into `feature/fix-failing-client-tests-1` (documentation conflicts only: kept both sides of `audit.md` and `units-of-work.md`, kept this branch's U9 design). Fixed `user-saved-settings` (16 tests; 3 mutations caught). Full client run: 122 of 122 suites, 772 tests pass.
+
+**Not verified:** stability across repeated or CI runs; the components in a browser.
+
+## 2026-10-14 — U9 client findings fixed (on #151)
+
+**Human:** fix the client findings from earlier and include them in the tests PR.
+
+**AI actions:** six commits on `feature/fix-failing-client-tests-1`, each with a test that failed before the fix (see U9 design §12). Spanish locale: six strings regenerated with `translate.py` (three Portuguese, three Italian; my earlier count of four had one false positive). `AppComponent` storage key. Room card delete error and id locking. Shared `formatSessionId`. Removed the unused rooms-save code. The "Create button always shown" finding was wrong: the stream page already gates the form, so I added tests instead of changing code.
+
+**Not verified:** the join form paste behaviour in a browser; the regenerated Spanish by a native speaker.
+
+## 2026-10-14 — Response to the CodeRabbit review of #151
+
+**Human:** reported feedback (written as "PR 150"; #150 had none, #151 had a review).
+
+**AI actions:** addressed nine inline comments and one outside the diff. Found while auditing that four specs (login, provider, user-home, ui-settings) were still creation-only, contrary to what I had written in the PR text; wrote real specs for them and corrected the PR. Added the room card delete-failed message with one new string, generated in 10 locales with `translate.py`. Mutation-checked the changes. Full client suite 837 tests.
+
+**Not verified:** the new message in a browser; the 10 generated translations by a native speaker.
+
+## 2026-10-14 — Second CodeRabbit round on #151
+
+**Human:** reported more feedback on #151 (the Qwen review was cancelled because CodeRabbit finished first).
+
+**AI actions:** two comments, both valid: renamed a test; added an in-flight guard to the room card's delete (a real double-click bug). Tests failed before the fix; `tsc` and `ngc` clean.

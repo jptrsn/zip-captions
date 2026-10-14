@@ -1,6 +1,6 @@
 # U9 — Client Test Debt: Functional Design
 
-**Status:** v1, **awaiting human approval** (nothing coded yet). Builds on `construction/backlog-test-debt.md`.
+**Status:** v1. Decisions D1-D8 approved as recommended 2026-10-13 ("start PR1 as recommended"). Implemented on `feature/fix-failing-client-tests-1` as **one PR** (the human approved folding groups B-I into it, with a stop at 80 counted files); notes in §8 and §9. Builds on `construction/backlog-test-debt.md`.
 **Goal:** the client suite has no failing suites, so a regression in those components shows up as a red test.
 **Not in scope:** the 8 failing server suites (Nest boilerplate, same pattern; proposed as a follow-up, D7).
 
@@ -67,3 +67,59 @@ Angular 16: `toObservable()` only in constructors or field initializers; file to
 ## 7. Not verified (to be reported again at the end)
 
 Branch-protection settings; whether any suite hangs only in CI; that fixed specs would have caught the regression they are meant to guard (checked per suite where a real assertion is added, by mutating the code once, not for the others).
+
+## 8. PR 1 implementation notes (groups A minus user-saved-settings, E, G: 19 suites)
+
+- **Result:** the 19 target suites pass (73 tests). Full client run compared by suite name with the `develop` baseline (`93fc76b`): the 44 failing suites become 25 failing, none newly failing, 19 fixed. The run also showed one jest worker crash (SIGSEGV) on `recognized-live-text`, which passes on its own and was not touched, and the usual hang on the last suite (`language-selector`, passes on its own; I killed jest and listed the suite with no result). Treated as the known runner flake, not as a regression; not investigated.
+- **Mechanical fix:** `TestingModuleImports` / `TestingModuleProviders` from the scaffold (14 suites). The other groups needed more:
+  - **Stubs/shallow render:** `NO_ERRORS_SCHEMA` for four container components whose children have their own specs (provider, login, user-home, ui-settings), and for the components whose templates embed child components. `CaptionTranslationService` is stubbed for the OBS settings spec because the real one pulls in the speech recogniser and the Translator API. `TranscriptionService` is stubbed for the transcript specs.
+  - **Real behaviour assertions (D3)** in all 19 suites instead of "should create": 73 tests. Two specs were stale and tested an API that no longer exists (`start-broadcast` and `join-broadcast` called `PeerService.joinRoom` / `createRoom`; the components dispatch a store action and navigate). They were rewritten against what the components do now.
+  - **Mutation check:** for 14 of the components I broke one line of logic and confirmed their spec fails (restored afterwards); this is not a coverage measurement.
+- **Findings (not fixed, per D5):**
+  - `JoinBroadcastComponent`'s dash insertion mangles an id set in one go without dashes: `4NA79EF2GV` becomes `4N-A79E-F-2GV` (the handler inserts at both positions from the stale value). Typing one character at a time works, so the spec types. Not observed in a browser; a paste into the input might behave differently.
+  - `StartBroadcastComponent` always renders the Create button; on mobile or an incompatible browser only the intro text and a warning change. Whether the button is disabled depends on the `disabled` input the parent passes (not checked).
+- **Test-tooling notes:** `MockStore.overrideSelector(sel, undefined)` is treated as no override (use `null` for "no value"); jsdom's `Blob` has no `.text()`; `ngx-translate-testing` here renders Spanish text by default, so specs avoid asserting translated text.
+- **Left for later PRs:** groups B, H, I, D, C, F, and `user-saved-settings` (waits for #150).
+
+## 9. Result of the single-PR plan (2026-10-13/14)
+
+- **Branch `feature/fix-failing-client-tests-1`:** 43 of the 44 failing suites fixed; **one left: `user-saved-settings`**, which waits for #150 (it changed that component). Full client run against the `develop` baseline (`93fc76b`) by suite name: no newly failing suite, every suite reported (no hang this time), 119 of 120 passing. A worker crash (SIGSEGV) on `recognized-live-text` in an earlier run did not recur.
+- **Size:** 43 files counted by CodeRabbit (specs only; `aidlc-docs/**` is excluded). No production code changed.
+- **D3 held:** every fixed suite tests what its component does; "should create" specs were replaced. Suites rewritten against what the code does now: `home`, `app`, `start-broadcast`, `join-broadcast`, `user.reducer`, `jwt.interceptor`, `unsaved-changes.guard`. Mutation checks (one broken line per component, then restored) on the larger components: all mutations were caught.
+- **Test-tooling notes (additions):** `TestBed.overrideProvider` fails once anything has been injected, so use mutable stubs; `MockStore.setState` is needed for selectors that are plain functions (`selectAppAppearance`, `selectRecognition`); a synchronous `of()` stub triggers `ExpressionChangedAfterItHasBeenChecked` where the real call is async; Angular 16.0 has no `TestBed.flushEffects`; jsdom cannot submit `method="dialog"` forms.
+- **Findings, not fixed (D5):**
+  - `es.json` has four strings that are Portuguese (`LABELS.transcriptEnabled`, `LABELS.transcriptDisabled`, `LABELS.transcriptTitlePattern`, `SETTINGS.PROVIDER.requestTokens`). They need regenerating with `translate.py`, not hand-editing.
+  - `UserService.saveUserRooms` sends `PATCH /profile/:id/rooms` and `getUserRoom` sends `GET /profile/:id/rooms/:roomId`; the server has `POST` on the first and no `GET` on the second. Both are used only by the `saveRooms` effect, which nothing dispatches, so this is dead code.
+  - `AppComponent` reads `settings.language` from storage; the stored key is `lang`, so the "same language as the browser" check there is always true.
+  - `RoomCardComponent.deleteRoom` has no error handler (a failed delete is an unhandled error), and `saveAndClose` re-enables the locked `roomId` control of an existing room.
+  - `JoinBroadcastComponent` and `PeerLandingComponent` mangle an undashed session id set in one go (`4NA79EF2GV` becomes `4N-A79E-F-2GV`); typing it character by character works.
+  - `StartBroadcastComponent` always shows its Create button, even on mobile or an incompatible browser.
+- **Still to do for U9:** `user-saved-settings` after #150 merges; the 8 server boilerplate suites (D7); a CI test job (D6), now that the client suite is green except for that one.
+
+## 10. Closing the client suite (2026-10-14)
+
+#150 merged into `develop`; `develop` was merged into the branch (documentation conflicts only). The last suite, `user-saved-settings`, is fixed (16 tests, including the in-sync rule and the device-specific keys from #150; three mutations of the component were all caught). **Full client run: 122 of 122 suites and 772 tests pass.** The U9 findings in §9 stand. Remaining for U9: the 8 server boilerplate suites and a CI test job.
+
+## 12. Client findings fixed (2026-10-14, on the client PR)
+
+The human asked for the client findings of §9 to be fixed in the same PR. Each fix has a test that failed first, and its own commit.
+
+| Finding (§9) | Outcome |
+|---|---|
+| Portuguese strings in `es.json` | Six Spanish strings were wrong, not four: three Portuguese (`transcriptEnabled`, `transcriptDisabled`, `transcriptTitlePattern`) and three Italian (`wakelockOn`, `wakelockOff`, `rememberSetting`). Regenerated with `translate.py --lang es --retranslate` (the Spark's Qwen). `requestTokens` was a false positive: "Solicitar tokens gratuitos" is valid Spanish that is also valid Portuguese. A scan for other strings shared between locales found nothing else. A native speaker should still review the six. |
+| `AppComponent` read `settings.language` | Now `settings.lang`. A user who had chosen German with a French browser no longer gets a French dialect. |
+| Room card: unhandled delete error, id re-enabled | The delete error is handled (logged; the room stays; the parent is not told to refresh); the id of an existing room stays locked after saving. There is no on-screen message for a failed delete (it would need a new translated string). |
+| Undashed session id mangled | New `formatSessionId` (`modules/peer/models/session-id.ts`): removes dashes and puts them back at 2 and 6. Used by the join form and the stream page. A pasted id and a typed one now give the same result. |
+| `saveUserRooms` / `getUserRoom` / `saveRooms` | Removed (unused, sent requests the server has no route for). Wiring them to the server's `POST /rooms` instead would hit the static-id validator bug from §11, so removal was the safer choice. |
+| Create button always shown | **Withdrawn, not a bug.** The stream page never renders the form on mobile (the tab list is just "view") and renders it disabled on an unsupported browser. Tests added to show it. |
+
+## 14. After the CodeRabbit review of #151 (2026-10-14)
+
+Nine inline comments and one outside the diff; all valid, all addressed.
+
+- **A correction to my own claim:** §9 and the PR description said every fixed suite tests behaviour. Four did not: `login`, `provider`, `user-home` and `ui-settings` were still `should create` with the stubs added. CodeRabbit flagged `login`; I audited the rest by counting tests per spec file and wrote real specs for all four (45 tests), mutation-checked.
+- **Test tightening (eight comments):** the combined negative app test is split with `it.each`; the transcription service tests hold the database open to show it is not initialised early and control the clock for segment start times; peer-home covers the peer-only case; start-broadcast covers the incompatible-browser warning; stream-captions asserts the sidebar inputs; broadcast-settings destroys its first fixture and asserts both groups; view-transcript restores `URL.createObjectURL`. I reintroduced each regression the comments described and the specs failed.
+- **Room card delete error (the one behaviour change):** a failed delete now shows a message beside the Delete button (`STREAM.ROOMCARD.deleteFailed`), keeps the room for another try, and clears on the next attempt or when the editor closes. This supersedes the "no on-screen message" note in §12. The new string was generated for the 10 other locales with `translate.py`; those are machine translations.
+- Client: 123 of 123 suites, 837 tests. `tsc` and `ngc` clean.
+
+**Second review round (2026-10-14):** two more comments, both valid. A test was renamed to say what it covers. The room card's delete had no in-flight guard (`loading` was never set), so a fast double click sent two DELETE requests and the second could fail and show the error on a room that was already gone; `deleteRoom` now sets `loading` for the request, ignores further calls, and releases it on success and failure (4 tests, two of which failed before the fix).
