@@ -271,3 +271,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** opened #151 (client suites, 122 of 122 passing). Started the server suites on `feature/fix-failing-server-tests` off `develop`: 8 failing suites replaced with behaviour specs, 12 of 12 passing (148 tests), mutation-checked, server builds. Two production fixes in their own commits (supporter `tiers` removal; `SupporterService` import). Two defects recorded as `it.failing`.
 
 **Not verified:** against a real MongoDB (the models are stubbed or in-memory); the webhook with a real Patreon payload.
+
+## 2026-10-14 — U9 server defects fixed (on #152)
+
+**Human:** the three server defects are next.
+
+**AI actions:** three fixes, each with a test that failed first and its own commit: the wrong argument in `getUserIdForNewClientConnection`; the static room id check (validator changed to follow the generator, since stored ids come from the generator); `endBroadcastSession` returning null instead of throwing. Found while doing the third: any client can end another user's live broadcast (lookup by room only). Recorded as an `it.failing` test and **not changed**, because the fix changes who may end a broadcast. Server: 12 of 12 suites, 152 tests.
+
+**Not verified:** against a real database; the room id convention against production data (I reasoned from the generator, not from stored ids).

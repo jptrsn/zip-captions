@@ -82,3 +82,15 @@ D7 was taken up: the 8 failing server suites (Nest boilerplate with no providers
   - `generateRandomRoomId(true)` makes ids whose prefix `_validateRoomForUser` then rejects for a static room (generator and validator read the parity opposite ways). `updateUserRooms` is the only caller of the validator and is reached only from a client action nothing dispatches.
 - **Other observations:** `endBroadcastSession` throws a `TypeError` (not an HTTP error) when the room has no live broadcast; `handleEndBroadcast` would then fail; `setUserId` can create a connection with `userId` undefined, which the schema rejects (stubbed `save` hides it in the spec).
 - **Still open for U9:** a CI job that runs both suites (D6).
+
+## 13. Server defects fixed (2026-10-14, on the server PR)
+
+| Defect (§11) | Outcome |
+|---|---|
+| `getUserIdForNewClientConnection` passed the user id as the client id | Fixed: `setUserId(clientId, userId)`. The `it.failing` test is now a normal test. Not reached in practice (the gateway only calls it for new socket ids). |
+| Static room ids rejected by the validator | The generator and validator read the prefix parity opposite ways. I changed the **validator** to follow the generator, because ids already in the database were made by the generator (static rooms have an odd prefix, dynamic rooms an even one); changing the generator would have needed a migration. The helper is now `_prefixIndicatesStatic`, with a comment, and a test pins the convention. `updateUserRooms` is the only user of the validator and is not reached by the app today. |
+| `endBroadcastSession` threw a `TypeError` with no live broadcast | Returns `null`; the gateway logs and does nothing. |
+
+**New finding, not fixed (needs a decision):** `endBroadcastSession` looks the broadcast up by room only, so any client with a known user can end someone else's live broadcast by naming its room (the gateway notices a non-owner only after the broadcast is ended). Recorded as an `it.failing` test. The fix is a one-line change (also match `hostUserId`), but it changes who can end a broadcast; in particular a second tab of the same account is treated as an anonymous user (the `isAnonymized` path in `handleSetUserId`) and would lose the ability to end the broadcast. Not checked against real clients.
+
+Server: 12 of 12 suites, 152 tests pass; `tsc` and a development build are clean.
