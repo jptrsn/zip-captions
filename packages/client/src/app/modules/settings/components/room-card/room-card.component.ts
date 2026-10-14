@@ -27,6 +27,8 @@ export class RoomCardComponent implements AfterViewInit {
   public showCopied: WritableSignal<boolean> = signal(false);
   public roomIdsList: WritableSignal<string[] | undefined> = signal(undefined);
   public loading: WritableSignal<boolean> = signal(false);
+  /** The last attempt to delete the room failed; the room is still there */
+  public deleteFailed: WritableSignal<boolean> = signal(false);
 
   constructor(private fb: FormBuilder,
               private userService: UserService) {
@@ -58,6 +60,7 @@ export class RoomCardComponent implements AfterViewInit {
 
   closeEditMode(): void {
     this.editMode.set(false);
+    this.deleteFailed.set(false);
     this.editClosed.next(false);
   }
 
@@ -65,13 +68,17 @@ export class RoomCardComponent implements AfterViewInit {
     if (this.room?.roomId !== roomId) {
       throw new Error('cannot delete room')
     }
+    this.deleteFailed.set(false);
     this.userService.deleteUserRoom(roomId).subscribe({
       next: () => {
         this.room = undefined;
         this.editClosed.next(true);
       },
       // The room is still there, so leave the card as it is
-      error: (err) => console.error('Failed to delete room', err)
+      error: (err) => {
+        console.error('Failed to delete room', err);
+        this.deleteFailed.set(true);
+      }
     })
   }
 

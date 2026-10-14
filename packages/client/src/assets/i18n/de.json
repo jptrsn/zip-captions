@@ -490,7 +490,8 @@
       "clickToCopy": "Zum Kopieren klicken",
       "copied": "Link in die Zwischenablage kopiert",
       "create": "Erstelle eine neue",
-      "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden."
+      "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden.",
+      "deleteFailed": "Die Übertragung konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
     },
     "fromBroadcaster": "Übersetzt von der Sendenden Person",
     "translatedOnDevice": "Auf diesem Gerät übersetzt"

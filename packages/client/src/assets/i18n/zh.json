@@ -490,7 +490,8 @@
       "clickToCopy": "点击复制",
       "copied": "链接复制到Clipboard",
       "create": "创建一个新",
-      "changeWarning": "播放 ID 不能在存储后更改。"
+      "changeWarning": "播放 ID 不能在存储后更改。",
+      "deleteFailed": "无法删除广播。请重试。"
     },
     "fromBroadcaster": "由主播翻译",
     "translatedOnDevice": "在此设备上翻译"

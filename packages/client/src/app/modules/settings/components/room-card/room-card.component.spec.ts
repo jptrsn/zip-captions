@@ -117,16 +117,42 @@ describe('RoomCardComponent', () => {
       expect(component.roomFormGroup.touched).toBe(true);
     });
 
-    it('keeps the room, and does not tell the parent to refresh, when deleting fails', async () => {
+    it('keeps the room, tells the user, and does not tell the parent to refresh, when deleting fails', async () => {
       userService['deleteUserRoom'].mockReturnValue(throwError(() => new Error('server error')));
       await create({ room: savedRoom });
+      component.showEditMode();
+      fixture.detectChanges();
       const closed: boolean[] = [];
       component.editClosed.subscribe((v) => closed.push(v));
       const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
       expect(() => component.deleteRoom('ab-1234-5678')).not.toThrow();
+      fixture.detectChanges();
       expect(component.room).toBe(savedRoom);
       expect(closed).toEqual([]);
-      expect(error).toHaveBeenCalled();
+      expect(component.deleteFailed()).toBe(true);
+      expect(fixture.nativeElement.querySelector('[data-testid="zc-room-delete-error"]')).toBeTruthy();
+      error.mockRestore();
+    });
+
+    it('clears the delete error on the next attempt, and when the editor is closed', async () => {
+      userService['deleteUserRoom'].mockReturnValueOnce(throwError(() => new Error('server error')));
+      await create({ room: savedRoom });
+      const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      component.deleteRoom('ab-1234-5678');
+      expect(component.deleteFailed()).toBe(true);
+      component.deleteRoom('ab-1234-5678');
+      expect(component.deleteFailed()).toBe(false);
+      expect(component.room).toBeUndefined();
+      error.mockRestore();
+    });
+
+    it('clears the delete error when the editor is closed', async () => {
+      userService['deleteUserRoom'].mockReturnValue(throwError(() => new Error('server error')));
+      await create({ room: savedRoom });
+      const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      component.deleteRoom('ab-1234-5678');
+      component.closeEditMode();
+      expect(component.deleteFailed()).toBe(false);
       error.mockRestore();
     });
 

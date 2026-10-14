@@ -490,7 +490,8 @@
       "clickToCopy": "Haga clic para copiar",
       "copied": "Enlace copiado al portapapeles",
       "create": "Crear un nuevo",
-      "changeWarning": "La ID de transmisión no se puede cambiar después de guardar"
+      "changeWarning": "La ID de transmisión no se puede cambiar después de guardar",
+      "deleteFailed": "No se pudo eliminar la transmisión. Inténtalo de nuevo."
     },
     "fromBroadcaster": "Traducido por el emisor",
     "translatedOnDevice": "Traducido en este dispositivo"
