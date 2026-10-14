@@ -65,9 +65,13 @@ export class RoomCardComponent implements AfterViewInit {
     if (this.room?.roomId !== roomId) {
       throw new Error('cannot delete room')
     }
-    this.userService.deleteUserRoom(roomId).subscribe(() => {
-      this.room = undefined;
-      this.editClosed.next(true);
+    this.userService.deleteUserRoom(roomId).subscribe({
+      next: () => {
+        this.room = undefined;
+        this.editClosed.next(true);
+      },
+      // The room is still there, so leave the card as it is
+      error: (err) => console.error('Failed to delete room', err)
     })
   }
 
@@ -87,16 +91,24 @@ export class RoomCardComponent implements AfterViewInit {
             this.room = room;
           }
           this.loading.set(false);
-          this.roomFormGroup.enable();
+          this._unlockForm();
           this.closeEditMode();
         },
         error: () => {
           this.loading.set(false);
-          this.roomFormGroup.enable();
+          this._unlockForm();
         }
       })
     } else {
       this.roomFormGroup.markAllAsTouched();
+    }
+  }
+
+  /** Re-enables the form after saving; the id of an existing room can never be changed */
+  private _unlockForm(): void {
+    this.roomFormGroup.enable();
+    if (this.room) {
+      this.roomFormGroup.controls['roomId'].disable();
     }
   }
 

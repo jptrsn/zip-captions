@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TimeagoModule } from 'ngx-timeago';
-import { Subject, from, of } from 'rxjs';
+import { Subject, from, of, throwError } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 import { UserRoom } from '../../../../reducers/user.reducer';
 import { UserService } from '../../../user/services/user.service';
@@ -115,6 +115,29 @@ describe('RoomCardComponent', () => {
       component.saveAndClose();
       expect(userService['saveUserRoom']).not.toHaveBeenCalled();
       expect(component.roomFormGroup.touched).toBe(true);
+    });
+
+    it('keeps the room, and does not tell the parent to refresh, when deleting fails', async () => {
+      userService['deleteUserRoom'].mockReturnValue(throwError(() => new Error('server error')));
+      await create({ room: savedRoom });
+      const closed: boolean[] = [];
+      component.editClosed.subscribe((v) => closed.push(v));
+      const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      expect(() => component.deleteRoom('ab-1234-5678')).not.toThrow();
+      expect(component.room).toBe(savedRoom);
+      expect(closed).toEqual([]);
+      expect(error).toHaveBeenCalled();
+      error.mockRestore();
+    });
+
+    it('keeps the room\'s id locked after saving, and after a failed save', async () => {
+      await create({ room: savedRoom });
+      component.saveAndClose();
+      expect(component.roomFormGroup.controls['roomId'].disabled).toBe(true);
+      expect(component.roomFormGroup.controls['allowAnonymous'].enabled).toBe(true);
+      userService['saveUserRoom'].mockReturnValue(throwError(() => new Error('nope')));
+      component.saveAndClose();
+      expect(component.roomFormGroup.controls['roomId'].disabled).toBe(true);
     });
 
     it('refuses to delete a room other than its own', async () => {
