@@ -1,4 +1,4 @@
-import { BilingualDialects, isBilingualDialect, isSpokenLanguage, swapLanguagePair } from './settings.model';
+import { applySavedTranslation, BilingualDialects, DeviceSpecificTranslationKeys, isBilingualDialect, isSpokenLanguage, omitDeviceSettings, swapLanguagePair, TranslationSettings } from './settings.model';
 
 describe('settings model', () => {
   describe('BilingualDialects', () => {
@@ -38,6 +38,41 @@ describe('settings model', () => {
 
     it('returns undefined when the translation language cannot be spoken', () => {
       expect(swapLanguagePair({ lang: 'en', dialect: 'en-US', targetLanguage: 'ko' })).toBeUndefined();
+    });
+  });
+
+  describe('device-specific translation settings', () => {
+    const translation: TranslationSettings = { enabled: true, mode: 'split', targetLanguage: 'fr', paneOrder: 'translated-first', pipContent: 'split', obsFeed: 'translated' };
+
+    it('names the Picture-in-Picture and OBS settings', () => {
+      expect([...DeviceSpecificTranslationKeys]).toEqual(['pipContent', 'obsFeed']);
+    });
+
+    it('omits them from a settings snapshot, keeping everything else, without changing the original', () => {
+      const snapshot = { theme: 'dark', translation };
+      expect(omitDeviceSettings(snapshot)).toEqual({ theme: 'dark', translation: { enabled: true, mode: 'split', targetLanguage: 'fr', paneOrder: 'translated-first' } });
+      expect(snapshot.translation.pipContent).toBe('split');
+    });
+
+    it('leaves a snapshot with no translation settings alone', () => {
+      const snapshot = { theme: 'dark' };
+      expect(omitDeviceSettings(snapshot)).toBe(snapshot);
+    });
+
+    it('applies the saved settings but keeps this device\'s own Picture-in-Picture and OBS settings', () => {
+      const existing: Partial<TranslationSettings> = { targetLanguage: 'es', pipContent: 'original', obsFeed: 'original' };
+      expect(applySavedTranslation(existing, translation)).toEqual({ ...translation, pipContent: 'original', obsFeed: 'original' });
+    });
+
+    it('does not take a saved value for a setting this device has not set, so the default applies', () => {
+      const merged = applySavedTranslation({ targetLanguage: 'es' }, translation);
+      expect(merged.targetLanguage).toBe('fr');
+      expect('pipContent' in merged).toBe(false);
+      expect('obsFeed' in merged).toBe(false);
+    });
+
+    it('works with no local translation settings at all', () => {
+      expect(applySavedTranslation(undefined, translation)).toEqual({ enabled: true, mode: 'split', targetLanguage: 'fr', paneOrder: 'translated-first' });
     });
   });
 });

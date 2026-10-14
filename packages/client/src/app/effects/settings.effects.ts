@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { AppState } from "../models/app.model";
-import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
+import { applySavedTranslation, SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { defaultSettingsState } from "../reducers/settings.reducer";
 import { selectAppSettings, selectTranscriptionSettings, selectTranslationSettings, selectUiLanguage } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
@@ -40,7 +40,7 @@ export class SettingsEffects {
             ? { ...(existing.transcription ?? {}), ...settings.transcription }
             : existing.transcription ?? defaultSettingsState.transcription,
           translation: settings.translation
-            ? { ...(existing.translation ?? {}), ...settings.translation }
+            ? applySavedTranslation(existing.translation, settings.translation)
             : existing.translation ?? defaultSettingsState.translation,
         };
         if (merged.transcription) {

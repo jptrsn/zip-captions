@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { Action } from '@ngrx/store';
 import { ReplaySubject, of } from 'rxjs';
-import { SettingsActions } from '../modules/settings/models/settings.model';
+import { SettingsActions, SettingsState } from '../modules/settings/models/settings.model';
 import { defaultAppState } from '../reducers/app.reducer';
 import { settingsReducers } from '../reducers/settings.reducer';
 import { selectUiLanguage } from '../selectors/settings.selector';
@@ -73,6 +73,43 @@ describe('SettingsEffects', () => {
       expect(storage.update).toHaveBeenCalledWith('settings', 'lang', 'en');
       expect(storage.update).toHaveBeenCalledWith('settings', 'dialect', 'en-GB');
       done();
+    });
+  });
+
+  describe('applying saved settings', () => {
+    const saved = {
+      ...defaultAppState.settings,
+      lang: 'fr' as const,
+      translation: { enabled: true, mode: 'split' as const, targetLanguage: 'de', paneOrder: 'translated-first' as const, pipContent: 'split' as const, obsFeed: 'translated' as const }
+    };
+
+    const apply = (stored: unknown): Promise<{ result: SettingsState; written: SettingsState }> =>
+      new Promise((resolve) => {
+        storage.get.mockReturnValue(stored);
+        actions$.next(SettingsActions.applySettings({ settings: saved }));
+        effects.applySettings$.subscribe((action) => {
+          resolve({ result: action.settings, written: storage.set.mock.calls[0][1] });
+        });
+      });
+
+    it('takes the saved settings but keeps this device\'s own Picture-in-Picture and OBS settings', async () => {
+      const { result, written } = await apply({ translation: { enabled: false, mode: 'off', targetLanguage: 'es', pipContent: 'original', obsFeed: 'original' } });
+      expect(result.lang).toBe('fr');
+      expect(result.translation.targetLanguage).toBe('de');
+      expect(result.translation.paneOrder).toBe('translated-first');
+      expect(result.translation.pipContent).toBe('original');
+      expect(result.translation.obsFeed).toBe('original');
+      expect(written.translation.pipContent).toBe('original');
+      expect(written.translation.obsFeed).toBe('original');
+    });
+
+    it('uses the defaults, not the saved values, for a device that never set them', async () => {
+      const { result, written } = await apply(null);
+      expect(result.translation.targetLanguage).toBe('de');
+      expect(result.translation.pipContent).toBe(defaultAppState.settings.translation.pipContent);
+      expect(result.translation.obsFeed).toBeUndefined();
+      expect('pipContent' in written.translation).toBe(false);
+      expect('obsFeed' in written.translation).toBe(false);
     });
   });
 });
