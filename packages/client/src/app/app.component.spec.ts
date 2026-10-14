@@ -125,6 +125,16 @@ describe('AppComponent', () => {
       expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: setDefaultDialect.type }));
     });
 
+    it('keeps the dialect unset when the user chose a different language from the browser\'s', () => {
+      create({ languages: ['fr-CA', 'fr'], storedSettings: { lang: 'de' } });
+      expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: setDefaultDialect.type }));
+    });
+
+    it('still sets the browser\'s dialect when the stored language is the browser\'s language', () => {
+      create({ languages: ['fr-CA', 'fr'], storedSettings: { lang: 'fr' } });
+      expect(dispatch).toHaveBeenCalledWith(setDefaultDialect({ dialect: 'fr-CA' }));
+    });
+
     it('sets nothing when the browser prefers no dialect we support', () => {
       create({ languages: ['ja-JP', 'ja'] });
       expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: setDefaultDialect.type }));
