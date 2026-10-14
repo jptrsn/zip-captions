@@ -1,6 +1,6 @@
 import { model } from 'mongoose';
 import { clientPayload } from './ui-settings.fixture';
-import { UiSettings, UiSettingsSchema } from './ui-settings.model';
+import { isStringRecord, UiSettings, UiSettingsSchema } from './ui-settings.model';
 
 describe('UiSettingsSchema', () => {
   const Model = model<UiSettings>('UiSettingsSchemaSpec', UiSettingsSchema);
@@ -14,7 +14,7 @@ describe('UiSettingsSchema', () => {
     expect(UiSettingsSchema.path('transcription')).toBeDefined();
     expect(UiSettingsSchema.path('translation')).toBeDefined();
     expect(UiSettingsSchema.path('translation.enabled')?.instance).toBe('Boolean');
-    expect(UiSettingsSchema.path('translation.obsFeed')?.instance).toBe('String');
+    expect(UiSettingsSchema.path('translation.targetLanguage')?.instance).toBe('String');
     expect(UiSettingsSchema.path('transcription.titlePattern')?.instance).toBe('String');
   });
 
@@ -48,5 +48,35 @@ describe('UiSettingsSchema', () => {
   it('rejects a value of the wrong type', () => {
     const doc = new Model({ ownerId: 'u1', translation: { enabled: 'maybe' } });
     expect(doc.validateSync()?.errors['translation.enabled']).toBeDefined();
+  });
+
+  it('does not store the device-specific Picture-in-Picture and OBS settings', () => {
+    const doc = new Model({ ownerId: 'u1', translation: { ...clientPayload().translation, pipContent: 'split', obsFeed: 'translated' } });
+    const json = doc.toJSON() as unknown as { translation: Record<string, unknown> };
+    expect(json.translation['pipContent']).toBeUndefined();
+    expect(json.translation['obsFeed']).toBeUndefined();
+    expect(json.translation['targetLanguage']).toBe('fr');
+  });
+
+  describe('dialectByLanguage', () => {
+    const validate = (dialectByLanguage: unknown) =>
+      new Model({ ownerId: 'u1', translation: { ...clientPayload().translation, dialectByLanguage } }).validateSync();
+
+    it.each([[{ fr: 'fr-CA' }], [{}], [undefined]])('accepts %j', (value) => {
+      expect(validate(value)).toBeUndefined();
+    });
+
+    it.each([[{ fr: { invalid: true } }], [{ fr: 5 }], [['fr-CA']], ['fr-CA'], [5]])('rejects %j', (value) => {
+      expect(validate(value)?.errors['translation.dialectByLanguage']).toBeDefined();
+    });
+  });
+
+  describe('isStringRecord', () => {
+    it('is true for nothing, and for a plain object of strings', () => {
+      expect([undefined, null, {}, { a: 'b' }].every(isStringRecord)).toBe(true);
+    });
+    it('is false for arrays, primitives and non-string values', () => {
+      expect([[], 'x', 1, { a: 1 }, { a: null }, { a: {} }].some(isStringRecord)).toBe(false);
+    });
   });
 });

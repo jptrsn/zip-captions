@@ -17,8 +17,6 @@ export const clientPayload = () => ({
     targetLanguage: 'fr',
     splitOrientation: 'horizontal',
     paneOrder: 'translated-first',
-    pipContent: 'split',
-    obsFeed: 'translated',
     dialectByLanguage: { fr: 'fr-CA', es: 'es-US' },
   },
 });

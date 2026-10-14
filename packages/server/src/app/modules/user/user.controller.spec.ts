@@ -3,6 +3,7 @@ import { clientPayload } from './models/ui-settings.fixture';
 import { UiSettings, UiSettingsSchema } from './models/ui-settings.model';
 import { UiSettingsService } from './services/ui-settings.service';
 import { UserController } from './user.controller';
+import { HttpException } from '@nestjs/common';
 
 describe('UserController settings', () => {
   const TestModel = model<UiSettings>('UserControllerSpec', UiSettingsSchema);
@@ -27,6 +28,24 @@ describe('UserController settings', () => {
     expect(result).not.toHaveProperty('ownerId');
     expect(result).not.toHaveProperty('_id');
     expect(cache.set).toHaveBeenCalledWith(`${UserController.SETTINGS_CACHE_KEY}-u1`, result);
+  });
+
+  it('answers 400, not 500, when the settings fail validation, and caches nothing', async () => {
+    service.upsert = jest.fn(async (settings) => {
+      const doc = new TestModel(settings);
+      await doc.validate();
+      return doc;
+    });
+    const bad = { ...clientPayload(), translation: { ...clientPayload().translation, dialectByLanguage: { fr: { invalid: true } } } };
+    const error = await controller.saveSettings(req, { id: 'u1' }, { settings: bad }).catch((e) => e);
+    expect(error).toBeInstanceOf(HttpException);
+    expect(error.getStatus()).toBe(400);
+    expect(cache.set).not.toHaveBeenCalled();
+  });
+
+  it('lets other errors through', async () => {
+    service.upsert = jest.fn().mockRejectedValue(new Error('database down'));
+    await expect(controller.saveSettings(req, { id: 'u1' }, { settings: clientPayload() })).rejects.toThrow('database down');
   });
 
   it('returns transcription and translation on read', async () => {

@@ -1,3 +1,5 @@
+import { omitDeviceSettings } from '../../models/settings.model';
+
 type Plain = Record<string, unknown>;
 
 const isPlain = (value: unknown): value is Plain =>
@@ -27,16 +29,18 @@ function normalize(value: unknown): unknown {
  * - A key (or a key inside `transcription` / `translation`) missing from the saved copy counts as its default:
  *   accounts saved before those settings were stored match while the user hasn't changed them, and
  *   stop matching, so "Save current" is available, once they have.
+ * - Device-specific translation keys (`pipContent`, `obsFeed`) are ignored on both sides: they are not synced.
  * - Key order and `undefined` values don't matter.
  */
 export function settingsMatch(saved: object | undefined | null, current: object | undefined | null, defaults: object): boolean {
   if (!saved || !current) {
     return false;
   }
-  const savedValues = saved as Plain;
-  const defaultValues = defaults as Plain;
-  return (Object.keys(current) as string[]).every((key) => {
-    const currentValue = (current as Plain)[key];
+  const savedValues = omitDeviceSettings(saved) as Plain;
+  const defaultValues = omitDeviceSettings(defaults) as Plain;
+  const currentValues = omitDeviceSettings(current) as Plain;
+  return Object.keys(currentValues).every((key) => {
+    const currentValue = currentValues[key];
     const savedValue = savedValues[key];
     const withDefaults = isPlain(defaultValues[key]) && (savedValue === undefined || isPlain(savedValue))
       ? { ...(defaultValues[key] as Plain), ...(savedValue as Plain | undefined) }

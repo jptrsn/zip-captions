@@ -75,4 +75,18 @@ describe('settingsMatch', () => {
   ])('does not match when %s differs', (_name, build) => {
     expect(settingsMatch(build(), current(), defaults)).toBe(false);
   });
+
+  describe('device-specific translation settings', () => {
+    it('ignores a saved Picture-in-Picture or OBS value that differs from this device\'s', () => {
+      const saved = { ...savedAfterSave(), translation: { ...savedAfterSave().translation, pipContent: 'original', obsFeed: 'original' } };
+      expect(settingsMatch(saved, current(), defaults)).toBe(true);
+    });
+
+    it('ignores this device\'s own values when the saved copy has none', () => {
+      const saved = savedAfterSave() as Record<string, unknown>;
+      delete (saved['translation'] as Record<string, unknown>)['pipContent'];
+      delete (saved['translation'] as Record<string, unknown>)['obsFeed'];
+      expect(settingsMatch(saved, current(), defaults)).toBe(true);
+    });
+  });
 });

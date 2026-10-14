@@ -36,12 +36,11 @@ describe('UiSettingsService', () => {
 
   it('replaces nested values, and removes a nested key the new snapshot no longer has', async () => {
     stored({ ownerId: 'u1', translation: clientPayload().translation });
-    const { dialectByLanguage, obsFeed, ...rest } = clientPayload().translation;
+    const { dialectByLanguage, ...rest } = clientPayload().translation;
     const saved = await service.upsert({ ownerId: 'u1', translation: { ...rest, targetLanguage: 'es' } } as Partial<UiSettings>);
     const json = saved.toJSON();
     expect(json.translation.targetLanguage).toBe('es');
     expect(json.translation.dialectByLanguage).toBeUndefined();
-    expect(json.translation.obsFeed).toBeUndefined();
   });
 
   it('leaves stored transcription and translation alone when an older client saves without them', async () => {

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { AppState } from "../models/app.model";
-import { DefaultObsFeed, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
+import { omitDeviceSettings, DefaultObsFeed, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, RecognitionDialect, SettingsState, SyncableSettings } from "../modules/settings/models/settings.model";
 
 export const selectAppSettings = (state: AppState): SettingsState => state.settings;
 
@@ -8,7 +8,7 @@ export const selectSyncSettings = createSelector(
   selectAppSettings,
   (state) => {
     const { loading, ...transcription } = state.transcription ?? { enabled: false };
-    return { ...state, transcription };
+    return omitDeviceSettings({ ...state, transcription });
   }
 )
 
