@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 type Doc = Record<string, unknown>;
 type Filter = Record<string, unknown>;
@@ -6,18 +6,31 @@ type Filter = Record<string, unknown>;
 const isOperatorObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v) && !(v instanceof Date) && Object.keys(v).some((k) => k.startsWith('$'));
 
+/**
+ * Equality as a query sees it: Dates by their time, and an ObjectId against an equal ObjectId or its string form
+ * (Mongoose casts a string to an ObjectId for a query on an ObjectId field). Everything else by `===`.
+ */
+function sameValue(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+  if (a instanceof Types.ObjectId || b instanceof Types.ObjectId) return String(a) === String(b);
+  return false;
+}
+
 /** A small subset of Mongo's query matching: equality, array membership, `$in`, and missing/undefined */
 export function matches(doc: Doc, filter: Filter = {}): boolean {
   return Object.entries(filter).every(([key, wanted]) => {
     const actual = doc[key];
     if (isOperatorObject(wanted)) {
       const candidates = wanted['$in'] as unknown[] | undefined;
-      return candidates ? (Array.isArray(actual) ? actual.some((a) => candidates.includes(a)) : candidates.includes(actual)) : false;
+      if (!candidates) return false;
+      const isCandidate = (value: unknown) => candidates.some((candidate) => sameValue(value, candidate));
+      return Array.isArray(actual) ? actual.some(isCandidate) : isCandidate(actual);
     }
     if (wanted === undefined || wanted === null) return actual === undefined || actual === null;
-    if (Array.isArray(wanted)) return wanted.flat().includes(actual);
-    if (Array.isArray(actual)) return actual.includes(wanted);
-    return actual === wanted;
+    if (Array.isArray(wanted)) return wanted.flat().some((candidate) => sameValue(actual, candidate));
+    if (Array.isArray(actual)) return actual.some((value) => sameValue(value, wanted));
+    return sameValue(actual, wanted);
   });
 }
 
@@ -27,6 +40,7 @@ export function matches(doc: Doc, filter: Filter = {}): boolean {
  * `docs` holds plain objects; queries return fresh documents, so changes only stick when they are saved.
  *
  * This is a test double, not Mongo. Know what it does not do before relying on it:
+ * - Values are compared as a query would: Dates by time, and an ObjectId against an equal ObjectId or its string form.
  * - Filters: equality, membership in an array field, `$in`, and missing/`null`/`undefined` (all three match a
  *   missing or null field, as the driver does: it sends `undefined` to the server as `null`). Nothing else.
  * - An array filter VALUE (`{ roomId: [a, b] }`) matches by membership. Real Mongo reads that as array equality.

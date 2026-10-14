@@ -367,3 +367,9 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** constant-time signature comparison (exactly 32 hex characters, then `timingSafeEqual`) and a start-up warning when `PATREON_SUPPORTER_WEBHOOK_SECRET` is unset, each with tests that failed first and its own commit. A test-setup trap: in Jest 29.5.0 `restoreAllMocks` strips a wrapped `jest.fn`'s implementation (checked with a throwaway spec, despite the documentation saying only spies are restored), so the real `timingSafeEqual` is restored in `beforeEach`. Checked against the built server. Server: 165 tests.
 
 **Not verified:** with a real Patreon webhook delivery.
+
+## 2026-10-14 — CodeRabbit comment on the #152 test helper
+
+**Human:** reported feedback on #152.
+
+**AI actions:** one valid comment (ObjectIds compared by identity in the in-memory model's matcher). Fixed with a `sameValue` comparison (Dates by time, ObjectId by value or string form) and a new spec for the helper (14 tests; 7 failed first). Server: 13 of 13 suites, 179 tests; `tsc` and the build clean; the helper is not in the bundle.

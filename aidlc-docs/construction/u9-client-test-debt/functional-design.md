@@ -165,3 +165,5 @@ Nine inline comments and one outside the diff; all valid, all addressed.
 - Client: 123 of 123 suites, 837 tests. `tsc` and `ngc` clean.
 
 **Second review round (2026-10-14):** two more comments, both valid. A test was renamed to say what it covers. The room card's delete had no in-flight guard (`loading` was never set), so a fast double click sent two DELETE requests and the second could fail and show the error on a room that was already gone; `deleteRoom` now sets `loading` for the request, ignores further calls, and releases it on success and failure (4 tests, two of which failed before the fix).
+
+**CodeRabbit on #152 (2026-10-14, one comment):** the test double compared ObjectIds by identity, so `findOne({ _id: id.toString() })` found nothing where Mongoose casts the string and finds the document. `matches` now compares values as a query would: Dates by time, and an ObjectId against an equal ObjectId or its string form (also in `$in` and array fields). No current spec queries by `_id`; the fix keeps the helper honest for the next one. The helper now has its own spec. Server: 13 of 13 suites, 179 tests.
