@@ -297,3 +297,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** merged `develop` into `feature/fix-failing-client-tests-1` (documentation conflicts only: kept both sides of `audit.md` and `units-of-work.md`, kept this branch's U9 design). Fixed `user-saved-settings` (16 tests; 3 mutations caught). Full client run: 122 of 122 suites, 772 tests pass.
 
 **Not verified:** stability across repeated or CI runs; the components in a browser.
+
+## 2026-10-14 — U9 client findings fixed (on #151)
+
+**Human:** fix the client findings from earlier and include them in the tests PR.
+
+**AI actions:** six commits on `feature/fix-failing-client-tests-1`, each with a test that failed before the fix (see U9 design §12). Spanish locale: six strings regenerated with `translate.py` (three Portuguese, three Italian; my earlier count of four had one false positive). `AppComponent` storage key. Room card delete error and id locking. Shared `formatSessionId`. Removed the unused rooms-save code. The "Create button always shown" finding was wrong: the stream page already gates the form, so I added tests instead of changing code.
+
+**Not verified:** the join form paste behaviour in a browser; the regenerated Spanish by a native speaker.

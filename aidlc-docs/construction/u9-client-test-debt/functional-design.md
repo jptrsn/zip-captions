@@ -99,3 +99,16 @@ Branch-protection settings; whether any suite hangs only in CI; that fixed specs
 ## 10. Closing the client suite (2026-10-14)
 
 #150 merged into `develop`; `develop` was merged into the branch (documentation conflicts only). The last suite, `user-saved-settings`, is fixed (16 tests, including the in-sync rule and the device-specific keys from #150; three mutations of the component were all caught). **Full client run: 122 of 122 suites and 772 tests pass.** The U9 findings in §9 stand. Remaining for U9: the 8 server boilerplate suites and a CI test job.
+
+## 12. Client findings fixed (2026-10-14, on the client PR)
+
+The human asked for the client findings of §9 to be fixed in the same PR. Each fix has a test that failed first, and its own commit.
+
+| Finding (§9) | Outcome |
+|---|---|
+| Portuguese strings in `es.json` | Six Spanish strings were wrong, not four: three Portuguese (`transcriptEnabled`, `transcriptDisabled`, `transcriptTitlePattern`) and three Italian (`wakelockOn`, `wakelockOff`, `rememberSetting`). Regenerated with `translate.py --lang es --retranslate` (the Spark's Qwen). `requestTokens` was a false positive: "Solicitar tokens gratuitos" is valid Spanish that is also valid Portuguese. A scan for other strings shared between locales found nothing else. A native speaker should still review the six. |
+| `AppComponent` read `settings.language` | Now `settings.lang`. A user who had chosen German with a French browser no longer gets a French dialect. |
+| Room card: unhandled delete error, id re-enabled | The delete error is handled (logged; the room stays; the parent is not told to refresh); the id of an existing room stays locked after saving. There is no on-screen message for a failed delete (it would need a new translated string). |
+| Undashed session id mangled | New `formatSessionId` (`modules/peer/models/session-id.ts`): removes dashes and puts them back at 2 and 6. Used by the join form and the stream page. A pasted id and a typed one now give the same result. |
+| `saveUserRooms` / `getUserRoom` / `saveRooms` | Removed (unused, sent requests the server has no route for). Wiring them to the server's `POST /rooms` instead would hit the static-id validator bug from §11, so removal was the safer choice. |
+| Create button always shown | **Withdrawn, not a bug.** The stream page never renders the form on mobile (the tab list is just "view") and renders it disabled on an unsupported browser. Tests added to show it. |
