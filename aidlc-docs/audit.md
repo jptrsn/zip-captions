@@ -295,3 +295,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** tested the review's main claim against a real MongoDB (Mongoose 7.8.6; `endTime: undefined` matches only live broadcasts) and found it does not hold. Removed the dead branch, its user lookup and its test (server: 153 tests). Documented the `setId` limitation of the ownership check. The seven inline comments on #152 were unreadable (`@c1.md` to `@c7.md`); only the review body was read.
 
 **Not verified:** the content of the seven inline comments.
+
+## 2026-10-14 — The #152 inline comments
+
+**Human:** the inline comments on #152 were meant (not #153).
+
+**AI actions:** read the seven comments. Re-tested the `endTime: undefined` claim at the wire level (undefined is sent as null; with the ended broadcast first only the live one matches) and found the app sets no `ignoreUndefined`; noted that production appears to be Cosmos DB, which I did not test. Added the gateway rejection test, documented the helper's limits and moved it to `packages/server/test/` (not in the bundle). Extended the `setId` limitation with the `hostClientId` takeover. Left the webhook comparison and missing-secret warning for a decision.
+
+**Not verified:** the `undefined`/`null` behaviour on Cosmos DB.
