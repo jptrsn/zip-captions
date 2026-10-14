@@ -305,3 +305,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** six commits on `feature/fix-failing-client-tests-1`, each with a test that failed before the fix (see U9 design §12). Spanish locale: six strings regenerated with `translate.py` (three Portuguese, three Italian; my earlier count of four had one false positive). `AppComponent` storage key. Room card delete error and id locking. Shared `formatSessionId`. Removed the unused rooms-save code. The "Create button always shown" finding was wrong: the stream page already gates the form, so I added tests instead of changing code.
 
 **Not verified:** the join form paste behaviour in a browser; the regenerated Spanish by a native speaker.
+
+## 2026-10-14 — Response to the CodeRabbit review of #151
+
+**Human:** reported feedback (written as "PR 150"; #150 had none, #151 had a review).
+
+**AI actions:** addressed nine inline comments and one outside the diff. Found while auditing that four specs (login, provider, user-home, ui-settings) were still creation-only, contrary to what I had written in the PR text; wrote real specs for them and corrected the PR. Added the room card delete-failed message with one new string, generated in 10 locales with `translate.py`. Mutation-checked the changes. Full client suite 837 tests.
+
+**Not verified:** the new message in a browser; the 10 generated translations by a native speaker.

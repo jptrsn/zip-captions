@@ -112,3 +112,12 @@ The human asked for the client findings of §9 to be fixed in the same PR. Each 
 | Undashed session id mangled | New `formatSessionId` (`modules/peer/models/session-id.ts`): removes dashes and puts them back at 2 and 6. Used by the join form and the stream page. A pasted id and a typed one now give the same result. |
 | `saveUserRooms` / `getUserRoom` / `saveRooms` | Removed (unused, sent requests the server has no route for). Wiring them to the server's `POST /rooms` instead would hit the static-id validator bug from §11, so removal was the safer choice. |
 | Create button always shown | **Withdrawn, not a bug.** The stream page never renders the form on mobile (the tab list is just "view") and renders it disabled on an unsupported browser. Tests added to show it. |
+
+## 14. After the CodeRabbit review of #151 (2026-10-14)
+
+Nine inline comments and one outside the diff; all valid, all addressed.
+
+- **A correction to my own claim:** §9 and the PR description said every fixed suite tests behaviour. Four did not: `login`, `provider`, `user-home` and `ui-settings` were still `should create` with the stubs added. CodeRabbit flagged `login`; I audited the rest by counting tests per spec file and wrote real specs for all four (45 tests), mutation-checked.
+- **Test tightening (eight comments):** the combined negative app test is split with `it.each`; the transcription service tests hold the database open to show it is not initialised early and control the clock for segment start times; peer-home covers the peer-only case; start-broadcast covers the incompatible-browser warning; stream-captions asserts the sidebar inputs; broadcast-settings destroys its first fixture and asserts both groups; view-transcript restores `URL.createObjectURL`. I reintroduced each regression the comments described and the specs failed.
+- **Room card delete error (the one behaviour change):** a failed delete now shows a message beside the Delete button (`STREAM.ROOMCARD.deleteFailed`), keeps the room for another try, and clears on the next attempt or when the editor closes. This supersedes the "no on-screen message" note in §12. The new string was generated for the 10 other locales with `translate.py`; those are machine translations.
+- Client: 123 of 123 suites, 837 tests. `tsc` and `ngc` clean.
