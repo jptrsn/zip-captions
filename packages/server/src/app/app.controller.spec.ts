@@ -26,7 +26,9 @@ describe('AppController patreon webhook', () => {
   const called = () => Object.entries(service).filter(([, fn]) => fn.mock.calls.length).map(([name]) => name);
 
   beforeEach(() => {
-    // restoreAllMocks in afterEach removes the wrapper's implementation, so put the real one back
+    // In Jest 29.5, restoreAllMocks (afterEach) also strips the implementation of a jest.fn made in a jest.mock
+    // factory, although the documentation says it only restores spies (checked: the wrapper returns undefined in the
+    // next test), so put the real one back
     (timingSafeEqual as unknown as jest.Mock).mockImplementation(jest.requireActual('node:crypto').timingSafeEqual);
     service = { upsertMember: jest.fn(), markMemberDeleted: jest.fn(), createPledge: jest.fn(), updatePledge: jest.fn(), deletePledge: jest.fn() };
     process.env['PATREON_SUPPORTER_WEBHOOK_SECRET'] = secret;
