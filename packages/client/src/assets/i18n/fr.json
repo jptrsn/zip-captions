@@ -490,7 +490,8 @@
       "clickToCopy": "Cliquez pour copier",
       "copied": "Lien copié dans le presse-papier",
       "create": "Créer un nouveau",
-      "changeWarning": "L'ID de diffusion ne peut pas être modifié après l'enregistrement."
+      "changeWarning": "L'ID de diffusion ne peut pas être modifié après l'enregistrement.",
+      "deleteFailed": "La diffusion n'a pas pu être supprimée. Veuillez réessayer."
     },
     "fromBroadcaster": "Traduit par l'animateur",
     "translatedOnDevice": "Traduit sur cet appareil"

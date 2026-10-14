@@ -27,6 +27,8 @@ export class RoomCardComponent implements AfterViewInit {
   public showCopied: WritableSignal<boolean> = signal(false);
   public roomIdsList: WritableSignal<string[] | undefined> = signal(undefined);
   public loading: WritableSignal<boolean> = signal(false);
+  /** The last attempt to delete the room failed; the room is still there */
+  public deleteFailed: WritableSignal<boolean> = signal(false);
 
   constructor(private fb: FormBuilder,
               private userService: UserService) {
@@ -58,6 +60,7 @@ export class RoomCardComponent implements AfterViewInit {
 
   closeEditMode(): void {
     this.editMode.set(false);
+    this.deleteFailed.set(false);
     this.editClosed.next(false);
   }
 
@@ -65,9 +68,23 @@ export class RoomCardComponent implements AfterViewInit {
     if (this.room?.roomId !== roomId) {
       throw new Error('cannot delete room')
     }
-    this.userService.deleteUserRoom(roomId).subscribe(() => {
-      this.room = undefined;
-      this.editClosed.next(true);
+    if (this.loading()) {
+      return;
+    }
+    this.deleteFailed.set(false);
+    this.loading.set(true);
+    this.userService.deleteUserRoom(roomId).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.room = undefined;
+        this.editClosed.next(true);
+      },
+      // The room is still there, so leave the card as it is
+      error: (err) => {
+        console.error('Failed to delete room', err);
+        this.loading.set(false);
+        this.deleteFailed.set(true);
+      }
     })
   }
 
@@ -87,16 +104,24 @@ export class RoomCardComponent implements AfterViewInit {
             this.room = room;
           }
           this.loading.set(false);
-          this.roomFormGroup.enable();
+          this._unlockForm();
           this.closeEditMode();
         },
         error: () => {
           this.loading.set(false);
-          this.roomFormGroup.enable();
+          this._unlockForm();
         }
       })
     } else {
       this.roomFormGroup.markAllAsTouched();
+    }
+  }
+
+  /** Re-enables the form after saving; the id of an existing room can never be changed */
+  private _unlockForm(): void {
+    this.roomFormGroup.enable();
+    if (this.room) {
+      this.roomFormGroup.controls['roomId'].disable();
     }
   }
 
