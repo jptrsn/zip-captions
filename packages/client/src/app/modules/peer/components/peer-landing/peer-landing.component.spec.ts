@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
@@ -78,6 +79,19 @@ describe('PeerLandingComponent', () => {
     it('shows only the watch tab on a mobile device, which cannot broadcast', () => {
       create({ platform: AppPlatform.mobile });
       expect(component.tabNames).toEqual(['view']);
+    });
+
+    it('never shows the broadcast form on a mobile device, even when the URL asks for that tab', () => {
+      create({ platform: AppPlatform.mobile, tabIndex: '1' });
+      expect(has('app-start-broadcast')).toBe(false);
+    });
+
+    it('disables the broadcast form on an unsupported browser, and enables it otherwise', () => {
+      create({ platform: AppPlatform.unsupported, tabIndex: '1' });
+      expect(fixture.debugElement.query(By.css('app-start-broadcast')).properties['disabled']).toBe(true);
+      fixture.destroy();
+      create({ tabIndex: '1' });
+      expect(fixture.debugElement.query(By.css('app-start-broadcast')).properties['disabled']).toBe(false);
     });
 
     it('opens the broadcast tab from the tabIndex query parameter', () => {
