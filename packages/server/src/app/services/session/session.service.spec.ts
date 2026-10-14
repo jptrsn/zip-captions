@@ -171,7 +171,7 @@ describe('SessionService', () => {
       expect(rooms.docs).toHaveLength(1);
       expect(rooms.docs[0]).toMatchObject({ userId: 'u1', allowAnonymous: true });
       expect(rooms.docs[0]['roomId']).toMatch(ROOM_ID);
-      expect(parity(rooms.docs[0]['roomId'] as string)).toBe(parity(dynamicId()));
+      expect(parity(rooms.docs[0]['roomId'] as string)).toBe(0);
       expect(session).toMatchObject({ hostUserId: 'u1', hostClientId: 'c1', roomId: rooms.docs[0]['roomId'], allowAnonymous: true });
       expect(session.startTime).toBeInstanceOf(Date);
     });

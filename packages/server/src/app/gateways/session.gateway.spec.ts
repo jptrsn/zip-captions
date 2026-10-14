@@ -208,7 +208,6 @@ describe('SessionGateway', () => {
       const client = fakeClient('host');
       const endTime = new Date('2026-01-01T00:00:00Z');
       service.endBroadcastSession.mockResolvedValue({ hostUserId: 'u1', endTime });
-      service.getUserFromClientId.mockResolvedValue('u1');
       await gateway.handleEndBroadcast(client as never, { room: 'r1' });
       expect(inEmit).toHaveBeenCalledWith('endBroadcast');
       expect(client.emitToRoom).toHaveBeenCalledWith('message', { message: 'broadcast ended', expiredAt: endTime.getTime() });
@@ -219,14 +218,6 @@ describe('SessionGateway', () => {
       service.endBroadcastSession.mockResolvedValue(null);
       await expect(gateway.handleEndBroadcast(client as never, { room: 'r1' })).resolves.toBeUndefined();
       expect(inEmit).not.toHaveBeenCalled();
-      expect(client.broadcast.to).not.toHaveBeenCalled();
-    });
-
-    it('does not tell viewers when someone other than the host sends it', async () => {
-      const client = fakeClient('other');
-      service.endBroadcastSession.mockResolvedValue({ hostUserId: 'u1', endTime: new Date() });
-      service.getUserFromClientId.mockResolvedValue('u2');
-      await gateway.handleEndBroadcast(client as never, { room: 'r1' });
       expect(client.broadcast.to).not.toHaveBeenCalled();
     });
   });
