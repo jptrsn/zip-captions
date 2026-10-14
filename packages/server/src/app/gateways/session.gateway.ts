@@ -123,7 +123,7 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
     const broadcast = await this.sessionService.endBroadcastSession(client.id, payload);
     if (!broadcast) {
-      this.logger.warn(`endBroadcast for room ${payload.room} with no live broadcast, from client id ${client.id}`);
+      this.logger.warn(`endBroadcast for room ${payload.room} from client id ${client.id}: no live broadcast of theirs to end`);
       return;
     }
     const userId = await this.sessionService.getUserFromClientId(client.id);

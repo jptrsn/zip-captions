@@ -210,14 +210,26 @@ describe('SessionService', () => {
       expect(broadcasts.docs[0]['endTime']).toBeInstanceOf(Date);
     });
 
-    // SECURITY (found by this spec, not fixed): the broadcast is looked up by room only, so any client with a known user
-    // can end someone else's live broadcast by naming its room. The gateway notices a non-owner afterwards but the
-    // broadcast has already been ended. The fix is to look it up with hostUserId: userId as well.
-    it.failing('does not let a client that is not the host end the broadcast', async () => {
+    it('does not let a client that is not the host end the broadcast', async () => {
       cache.set('client_to_user_map_viewer', 'u2');
       broadcasts.add({ roomId: 'r1', hostUserId: 'u1', hostClientId: 'c1' });
-      await service.endBroadcastSession('viewer', { room: 'r1' });
+      await expect(service.endBroadcastSession('viewer', { room: 'r1' })).resolves.toBeNull();
       expect(broadcasts.docs[0]['endTime']).toBeUndefined();
+    });
+
+    it('lets any client of the host\'s user end it, such as the same account on another device', async () => {
+      cache.set('client_to_user_map_other-tab', 'u1');
+      broadcasts.add({ roomId: 'r1', hostUserId: 'u1', hostClientId: 'c1' });
+      const ended = await service.endBroadcastSession('other-tab', { room: 'r1' });
+      expect(ended?.endTime).toBeInstanceOf(Date);
+    });
+
+    it('only ends the host\'s own broadcast when several rooms are live', async () => {
+      broadcasts.add({ roomId: 'r1', hostUserId: 'u1', hostClientId: 'c1' });
+      broadcasts.add({ roomId: 'r2', hostUserId: 'u2', hostClientId: 'c2' });
+      await service.endBroadcastSession('c1', { room: 'r1' });
+      expect(broadcasts.docs.find((b) => b['roomId'] === 'r1')?.['endTime']).toBeInstanceOf(Date);
+      expect(broadcasts.docs.find((b) => b['roomId'] === 'r2')?.['endTime']).toBeUndefined();
     });
 
     it('ends nothing, and does not fail, when the room has no live broadcast', async () => {
