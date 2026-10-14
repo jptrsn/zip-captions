@@ -80,10 +80,7 @@ describe('SessionService', () => {
       await expect(service.getUserFromClientId('c1')).resolves.toBeUndefined();
     });
 
-    // BUG (found by this spec): getUserIdForNewClientConnection calls setUserId(userId), passing the user id where
-    // the client id belongs, so the client is never added to the user's connection. The gateway only calls it for
-    // brand-new socket ids, which are never known, so the path is not reached today.
-    it.failing('registers a new connection for a known user', async () => {
+    it('registers a new connection for a known user', async () => {
       sockets.add({ userId: 'u1', clientIds: ['old'] });
       cache.set('client_to_user_map_c1', 'u1');
       await expect(service.getUserIdForNewClientConnection('c1')).resolves.toBe('u1');

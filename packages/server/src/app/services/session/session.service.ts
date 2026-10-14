@@ -18,7 +18,7 @@ export class SessionService {
     this.logger.log(`client ${clientId} connected`)
     const userId = await this.getUserFromClientId(clientId);
     if (userId) {
-      await this.setUserId(userId);
+      await this.setUserId(clientId, userId);
     }
     return userId
   }
