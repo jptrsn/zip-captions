@@ -4,7 +4,7 @@ import * as path from 'path';
 const i18nDir = path.resolve(__dirname, '../../../assets/i18n');
 const locales = fs.readdirSync(i18nDir).filter((f) => f.endsWith('.json'));
 // The page lists its keys explicitly, so read them from the source
-const pageKeys = Array.from(fs.readFileSync(path.resolve(__dirname, 'privacy.component.ts'), 'utf8').matchAll(/'(PRIVACY\.[\w.]+)'/g), (m) => m[1]);
+const pageKeys = Array.from(fs.readFileSync(path.resolve(__dirname, 'privacy.component.ts'), 'utf8').matchAll(/['"](PRIVACY\.[\w.]+)['"]/g), (m) => m[1]);
 
 /** Locale files mix nesting with flat dotted keys ("PRIVACY": { "4.3": ... }); try every split, as ngx-translate does */
 const lookup = (obj: unknown, key: string): unknown => {
@@ -29,7 +29,7 @@ const lookup = (obj: unknown, key: string): unknown => {
 };
 
 describe('privacy page keys', () => {
-  it('lists keys', () => {
+  it('finds more than 50 PRIVACY keys in the page source (guards the extraction itself)', () => {
     expect(pageKeys.length).toBeGreaterThan(50);
   });
 
