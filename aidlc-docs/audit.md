@@ -236,3 +236,16 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - **Observed quirk (pre-existing, not fixed):** the live-line pipeline drops a line identical to the last one it saw (`distinctUntilChanged`), so a line that failed while the model was missing is not retried until the text changes. In practice the next word changes it. Noted, not fixed.
 - **Still not verified:** a real OBS (the mock implements only the handshake, `GetStreamStatus` and `SendStreamCaption`); that a streaming platform renders the CEA-608 track; the caption view, split panes, PiP and a two-browser broadcast in a running session; recognition itself.
 
+
+## 2026-10-13 — U9 client test debt, PR 1 (feature/fix-failing-client-tests-1)
+
+**Human:** approved the U9 design as recommended and asked to start PR 1.
+
+**AI actions:**
+- Design: `construction/u9-client-test-debt/functional-design.md` (notes in §8). Branch off `develop` @ `93fc76b`; only the U9 design doc was carried over from the #150 branch.
+- Fixed 19 client suites (groups A minus `user-saved-settings`, E, G): scaffold providers, shallow rendering for container components, stubbed `CaptionTranslationService` / `TranscriptionService`, and 73 behaviour tests. Rewrote the stale `start-broadcast` and `join-broadcast` specs.
+- Mutation-checked 14 components (one broken line each; all specs failed; restored).
+- Full client run vs the `develop` baseline, by suite name: 44 failing → 25, no newly failing suite. One worker crash (SIGSEGV) on `recognized-live-text` and a hang on the last suite (`language-selector`); both pass alone.
+- Product findings, not fixed: the join-id dash insertion bug and the always-rendered start button (see §8).
+
+**Not verified:** the components in a browser (these are specs); that the 19 suites stay stable across runs; the SIGSEGV cause.
