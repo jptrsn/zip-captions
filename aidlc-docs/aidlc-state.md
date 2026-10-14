@@ -26,3 +26,8 @@
 
 ### Operations
 - [ ] Release notes, i18n strings, feature flag rollout
+
+## Release blockers (set by the human, 2026-10-14)
+The on-device translation feature is not released until these are done:
+- **U10 — authenticated socket identity** (`construction/u10-socket-identity/functional-design.md`): a socket's user id must be proved with a server-verified credential, not asserted by the `setId` message; production must run with `SOCKET_AUTH_MODE=enforce`. Design awaiting approval.
+- **U11 — PeerJS server identity** (proposed, D8 of U10): the peer id is the user id and the peer server has no authentication. Needs the human's confirmation that it blocks the release.
