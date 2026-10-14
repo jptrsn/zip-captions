@@ -66,17 +66,17 @@ describe('UiSettingsSchema', () => {
       expect(validate(value)).toBeUndefined();
     });
 
-    it.each([[{ fr: { invalid: true } }], [{ fr: 5 }], [['fr-CA']], ['fr-CA'], [5]])('rejects %j', (value) => {
+    it.each([[{ fr: { invalid: true } }], [{ fr: 5 }], [['fr-CA']], ['fr-CA'], [5], [null]])('rejects %j', (value) => {
       expect(validate(value)?.errors['translation.dialectByLanguage']).toBeDefined();
     });
   });
 
   describe('isStringRecord', () => {
     it('is true for nothing, and for a plain object of strings', () => {
-      expect([undefined, null, {}, { a: 'b' }].every(isStringRecord)).toBe(true);
+      expect([undefined, {}, { a: 'b' }].every(isStringRecord)).toBe(true);
     });
     it('is false for arrays, primitives and non-string values', () => {
-      expect([[], 'x', 1, { a: 1 }, { a: null }, { a: {} }].some(isStringRecord)).toBe(false);
+      expect([null, [], 'x', 1, { a: 1 }, { a: null }, { a: {} }].some(isStringRecord)).toBe(false);
     });
   });
 });

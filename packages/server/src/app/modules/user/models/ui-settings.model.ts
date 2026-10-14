@@ -22,10 +22,11 @@ export const TranscriptionSettingsSchema = SchemaFactory.createForClass(Transcri
 
 /** Mixed performs no casting, so check the shape ourselves: a plain object with string values */
 export function isStringRecord(value: unknown): boolean {
-  if (value === undefined || value === null) {
+  // An omitted field is fine; an explicit null is not a record
+  if (value === undefined) {
     return true;
   }
-  return typeof value === 'object' && !Array.isArray(value) && Object.values(value).every((v) => typeof v === 'string');
+  return typeof value === 'object' && value !== null && !Array.isArray(value) && Object.values(value).every((v) => typeof v === 'string');
 }
 
 @Schema({ _id: false })
