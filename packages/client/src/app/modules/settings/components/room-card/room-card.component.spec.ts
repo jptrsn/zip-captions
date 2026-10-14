@@ -134,7 +134,7 @@ describe('RoomCardComponent', () => {
       error.mockRestore();
     });
 
-    it('clears the delete error on the next attempt, and when the editor is closed', async () => {
+    it('clears the delete error when the next attempt succeeds, and the room is gone', async () => {
       userService['deleteUserRoom'].mockReturnValueOnce(throwError(() => new Error('server error')));
       await create({ room: savedRoom });
       const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -164,6 +164,53 @@ describe('RoomCardComponent', () => {
       userService['saveUserRoom'].mockReturnValue(throwError(() => new Error('nope')));
       component.saveAndClose();
       expect(component.roomFormGroup.controls['roomId'].disabled).toBe(true);
+    });
+
+    describe('while a delete is in progress', () => {
+      const deleteButton = () => fixture.nativeElement.querySelector('button.btn-accent') as HTMLButtonElement | null;
+      let pending: Subject<void>;
+
+      beforeEach(async () => {
+        pending = new Subject<void>();
+        userService['deleteUserRoom'].mockReturnValue(pending);
+        await create({ room: savedRoom });
+        component.showEditMode();
+        fixture.detectChanges();
+      });
+
+      it('is busy, and the Delete button is disabled', () => {
+        component.deleteRoom('ab-1234-5678');
+        fixture.detectChanges();
+        expect(component.loading()).toBe(true);
+        expect(deleteButton()?.disabled).toBe(true);
+      });
+
+      it('sends only one request however many times Delete is triggered', () => {
+        component.deleteRoom('ab-1234-5678');
+        component.deleteRoom('ab-1234-5678');
+        component.deleteRoom('ab-1234-5678');
+        expect(userService['deleteUserRoom']).toHaveBeenCalledTimes(1);
+      });
+
+      it('is no longer busy once the room is deleted', () => {
+        component.deleteRoom('ab-1234-5678');
+        pending.next();
+        pending.complete();
+        expect(component.loading()).toBe(false);
+        expect(component.room).toBeUndefined();
+      });
+
+      it('is no longer busy when the delete fails, shows the error, and allows another try', () => {
+        const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+        component.deleteRoom('ab-1234-5678');
+        pending.error(new Error('server error'));
+        expect(component.loading()).toBe(false);
+        expect(component.deleteFailed()).toBe(true);
+        userService['deleteUserRoom'].mockReturnValue(of(undefined));
+        component.deleteRoom('ab-1234-5678');
+        expect(userService['deleteUserRoom']).toHaveBeenCalledTimes(2);
+        error.mockRestore();
+      });
     });
 
     it('refuses to delete a room other than its own', async () => {

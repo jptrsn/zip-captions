@@ -68,15 +68,21 @@ export class RoomCardComponent implements AfterViewInit {
     if (this.room?.roomId !== roomId) {
       throw new Error('cannot delete room')
     }
+    if (this.loading()) {
+      return;
+    }
     this.deleteFailed.set(false);
+    this.loading.set(true);
     this.userService.deleteUserRoom(roomId).subscribe({
       next: () => {
+        this.loading.set(false);
         this.room = undefined;
         this.editClosed.next(true);
       },
       // The room is still there, so leave the card as it is
       error: (err) => {
         console.error('Failed to delete room', err);
+        this.loading.set(false);
         this.deleteFailed.set(true);
       }
     })
