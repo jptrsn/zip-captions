@@ -303,3 +303,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** read the seven comments. Re-tested the `endTime: undefined` claim at the wire level (undefined is sent as null; with the ended broadcast first only the live one matches) and found the app sets no `ignoreUndefined`; noted that production appears to be Cosmos DB, which I did not test. Added the gateway rejection test, documented the helper's limits and moved it to `packages/server/test/` (not in the bundle). Extended the `setId` limitation with the `hostClientId` takeover. Left the webhook comparison and missing-secret warning for a decision.
 
 **Not verified:** the `undefined`/`null` behaviour on Cosmos DB.
+
+## 2026-10-14 — Webhook hardening (on #152)
+
+**Human:** yes to both webhook changes.
+
+**AI actions:** constant-time signature comparison (exactly 32 hex characters, then `timingSafeEqual`) and a start-up warning when `PATREON_SUPPORTER_WEBHOOK_SECRET` is unset, each with tests that failed first and its own commit. A test-setup trap: `restoreAllMocks` strips a wrapped `jest.fn`'s implementation, so the real `timingSafeEqual` is restored in `beforeEach`. Checked against the built server. Server: 165 tests.
+
+**Not verified:** with a real Patreon webhook delivery.
