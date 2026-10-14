@@ -57,6 +57,14 @@ describe('SessionService', () => {
       expect([...staticParities][0]).not.toBe([...dynamicParities][0]);
     });
 
+    // Rooms already in the database have ids made this way, so the convention must not change without a migration
+    it('give a static room an odd prefix and a dynamic room an even one', () => {
+      for (let i = 0; i < 100; i++) {
+        expect(parity(staticId())).toBe(1);
+        expect(parity(dynamicId())).toBe(0);
+      }
+    });
+
     it('come in tens, of the requested kind', () => {
       const list = service.getRoomIdsList(true);
       expect(list).toHaveLength(10);
@@ -257,29 +265,30 @@ describe('SessionService', () => {
         await expect(service.updateUserRooms('u1', [{ roomId: 'r1', isStatic: false, allowAnonymous: true }])).rejects.toMatchObject({ status: HttpStatus.CONFLICT });
       });
 
-      // BUG (found by this spec): generateRandomRoomId(true) makes ids whose prefix _validateRoomForUser then rejects
-      // for a static room (the generator and the validator read the parity the opposite way round). updateUserRooms is
-      // only reached from a client action that nothing dispatches, so this is not hit today.
-      it.failing('saves a static room with a generated static id', async () => {
-        const saved = await service.updateUserRooms('u1', [{ roomId: staticId(), isStatic: true, allowAnonymous: true }]);
-        expect(saved).toHaveLength(1);
+      it('saves a static room with a generated static id, and a dynamic room with a generated dynamic id', async () => {
+        const saved = await service.updateUserRooms('u1', [
+          { roomId: staticId(), isStatic: true, allowAnonymous: true },
+          { roomId: dynamicId(), isStatic: false, allowAnonymous: false },
+        ]);
+        expect(saved).toHaveLength(2);
       });
 
-      it('saves a static room whose id has the prefix the validator accepts', async () => {
-        // 'a' + 'a' = 194, even: a static room per _validateRoomForUser
-        const saved = await service.updateUserRooms('u1', [{ roomId: 'aa-cccc-dddd', isStatic: true, allowAnonymous: true }]);
-        expect(saved).toHaveLength(1);
-        expect(rooms.docs[0]).toMatchObject({ userId: 'u1', roomId: 'aa-cccc-dddd', isStatic: true });
+      it('accepts the ids with the prefix of their kind', async () => {
+        // 'a' + 'b' = 195 is odd (static); 'a' + 'a' = 194 is even (dynamic)
+        await expect(service.updateUserRooms('u1', [{ roomId: 'ab-cccc-dddd', isStatic: true, allowAnonymous: true }])).resolves.toHaveLength(1);
+        await expect(service.updateUserRooms('u1', [{ roomId: 'aa-cccc-dddd', isStatic: false, allowAnonymous: true }])).resolves.toHaveLength(1);
       });
 
-      it('saves a dynamic room whose id has the other prefix', async () => {
-        // 'a' + 'b' = 195, odd: a dynamic room per _validateRoomForUser
-        await expect(service.updateUserRooms('u1', [{ roomId: 'ab-cccc-dddd', isStatic: false, allowAnonymous: true }])).resolves.toHaveLength(1);
-      });
-
-      it('refuses a room whose id does not match its kind', async () => {
-        await expect(service.updateUserRooms('u1', [{ roomId: 'ab-cccc-dddd', isStatic: true, allowAnonymous: true }])).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
+      it('refuses a static room with a dynamic id, and a dynamic room with a static id', async () => {
+        // 'a' + 'a' = 194 is even (dynamic); 'a' + 'b' = 195 is odd (static)
+        await expect(service.updateUserRooms('u1', [{ roomId: 'aa-cccc-dddd', isStatic: true, allowAnonymous: true }])).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
+        await expect(service.updateUserRooms('u1', [{ roomId: 'ab-cccc-dddd', isStatic: false, allowAnonymous: true }])).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
         expect(rooms.docs).toHaveLength(0);
+      });
+
+      it('refuses a room that belongs to another user', async () => {
+        rooms.add({ userId: 'u2', roomId: 'ab-cccc-dddd', isStatic: true });
+        await expect(service.updateUserRooms('u1', [{ roomId: 'ab-cccc-dddd', isStatic: true, allowAnonymous: true }])).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
       });
     });
 

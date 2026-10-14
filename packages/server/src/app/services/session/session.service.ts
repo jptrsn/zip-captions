@@ -282,8 +282,7 @@ export class SessionService {
       // console.log(`room ${room.roomId} is not owned by ${userId}`);
       return false;
     }
-    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
-      // console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
+    if (this._prefixIndicatesStatic(room.roomId) !== !!room.isStatic) {
       return false;
     }
     return true;
@@ -296,11 +295,16 @@ export class SessionService {
       for (let i = 0; i < 2; i++) {
         outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
       }
-    } while (this._prefixIndicatesDynamic(outString) === !isStatic)
+    } while (this._prefixIndicatesStatic(outString) !== !!isStatic)
     return outString;
   }
 
-  private _prefixIndicatesDynamic(prefix: string): boolean {
+  /**
+   * The kind of a room is encoded in its first two characters: an odd sum of their character codes is a static
+   * room and an even sum a dynamic one. Rooms already stored have ids made this way, so do not change it
+   * without migrating them.
+   */
+  private _prefixIndicatesStatic(prefix: string): boolean {
     if (prefix.length < 2) {
       throw new Error("Incorrect session ID prefix")
     }
