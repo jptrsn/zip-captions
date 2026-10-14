@@ -76,7 +76,7 @@ Component specs for the Sync tab fail on existing setup gaps, so logic is in pur
 
 ## 8. Decisions
 
-Already made, not reopened: whole `translation` object synced (including `pipContent`, `obsFeed`); typed sub-documents without `_id`; server first, no migration, old clients ignore the new fields; one follow-up branch.
+Already made, not reopened (but see §11: the device-specific part was reversed after review): whole `translation` object synced (including `pipContent`, `obsFeed`); typed sub-documents without `_id`; server first, no migration, old clients ignore the new fields; one follow-up branch.
 
 1. **Field types: plain `String`, no `enum` validators.** *Recommend:* `mode`, `splitOrientation`, `paneOrder`, `pipContent`, `obsFeed` are `String` with no enum. An enum would make the whole save fail (HTTP 500 from a validation error) the day a newer client adds a value, and the old clients' selectors already fall back to defaults for unknown values. *Alternative:* enums for stricter data, at the cost of that failure mode.
 2. **`dialectByLanguage` as `Mixed`.** *Recommend:* `Mixed`, as in the backlog, because it is a `{ lang: dialect }` map. The cost is that its contents aren't type-checked server-side. *Alternative:* a Mongoose `Map` of String (checked values, but `toJSON` needs `flattenMaps` and the returned shape differs, one more thing to get wrong).
@@ -101,3 +101,16 @@ Real login and a second device; the Sync tab in a browser against a real account
 - **D3 helper:** `settingsMatch(saved, current, defaults)` takes loose `object` types because a real saved copy can lack keys the type says exist. Empty objects are treated like absent keys (Mongoose's `minimize` drops an empty `dialectByLanguage`).
 - **Privacy guard spec** reads `privacy.component.ts` as text; the locale files mix nesting with flat dotted keys (`PRIVACY` > `"4.3"`), so the lookup tries every split, as ngx-translate does.
 - **Privacy page:** `/privacy` is routed to `PrivacyComponent` **and** a resolver that does `window.location.replace('https://www.zipsolutions.org/privacy.html')`. So users are probably sent to the external page, and the in-app component is probably never seen. I did not confirm this in a browser (the dev server answered 404 for `/privacy` and the external URL answered 404 from here). The external policy page is not in this repo, so it could still have carried the payment paragraph. Checked afterwards by fetching `https://www.zipsolutions.org/privacy` (HTTP 200): it has no payment services paragraph or PSP wording, only a data-category row "payment information" marked NO. Only the text was searched, not the whole policy read.
+
+## 11. Changes after the #150 review (2026-10-14)
+
+CodeRabbit raised that `pipContent` and `obsFeed` describe one device's output, so syncing them lets another device's Picture-in-Picture and OBS choices overwrite this device's. The human reversed the earlier decision to sync the whole `translation` object. D2 and D5 stand otherwise.
+
+- **Device-specific keys are not synced.** `DeviceSpecificTranslationKeys` (`pipContent`, `obsFeed`) in `settings.model.ts`, with two pure helpers:
+  - `omitDeviceSettings`: used by `selectSyncSettings`, so "Save current" no longer sends them, and by `settingsMatch`, so a saved copy that has them (from an unpatched client) can't hold the Sync tab out of sync.
+  - `applySavedTranslation`: used by `applySettings$`. The saved settings win except for those two keys, which keep this device's value; a device that never set one gets the default, not the saved value.
+- **Server:** `pipContent` and `obsFeed` are removed from the `translation` sub-schema; strict mode drops them if a client still sends them (checked against a running server).
+- **`dialectByLanguage` validator (D2 follow-up):** the field stays `Mixed` (a `Map` serializes as `{}` through `toJSON` unless `flattenMaps` is set), with a validator that requires a plain object of strings. A failed validation is answered with HTTP 400 instead of a 500, and nothing is cached or stored.
+- **Declined review items:**
+  - `settingsMatch` should ignore saved nested keys the current state lacks: not done. If a saved key differs from the default the current state really differs, and applying the saved settings merges it in, so the tab is not stuck. (With the device keys now gone, the case CodeRabbit gave cannot happen.)
+- **Unverified:** the Sync tab and "apply" in a browser against a real account; two real devices.

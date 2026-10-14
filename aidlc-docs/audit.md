@@ -251,3 +251,15 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - **Display of dev env:** I printed `.env.serve.development` including its dev credentials to the terminal while looking for the Mongo settings (my redaction pattern was too narrow). They are local-development values already in the repo tree, but they are now in this session's transcript.
 
 **Not verified:** the real login flow and a second device; the Sync tab in a browser (it needs a login); the privacy page in a browser (`/privacy` redirects to `https://www.zipsolutions.org/privacy.html`, which I could not load from the browser tooling; checked afterwards by fetching it: HTTP 200, no payment services paragraph or PSP wording, only a data-category table row "payment information" marked NO. Only the text was searched, not the whole policy read); behaviour against the production MongoDB version.
+
+## 2026-10-14 — U8 follow-up after the #150 review
+
+**Human:** decided on the CodeRabbit feedback: keep `pipContent` and `obsFeed` local to each device on apply (reversing the earlier decision to sync the whole `translation` object); add a validator for `dialectByLanguage`; push and reply on the PR.
+
+**AI actions:**
+- **Client:** `omitDeviceSettings` and `applySavedTranslation` (pure, in `settings.model.ts`), used by the sync selector, the apply effect and `settingsMatch`. 11 new client tests, all failing against the old production code; the surrounding suites near the change pass or are among the 44 baseline failures (checked by name).
+- **Server:** the two keys removed from the schema; `dialectByLanguage` validator; validation errors answered with 400. 9 new tests, failing against the old code. Server run against a real server and local MongoDB: a snapshot with `pipContent`/`obsFeed` stores neither, a bad `dialectByLanguage` returns 400 and leaves the stored document unchanged. Test data removed.
+- **Slip:** a `git stash` command failed on a path variable (zsh does not split it), and the following `git stash pop` tried to pop one of the human's older stash entries. Git aborted it because it would overwrite local changes, so nothing was applied; the three older stash entries are intact. I switched to copy-and-checkout for the old-code runs.
+- Declined: `settingsMatch` ignoring saved nested keys the current state lacks (see U8 design §11).
+
+**Not verified:** the Sync tab and apply in a browser; two real devices.
