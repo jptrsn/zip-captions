@@ -25,6 +25,16 @@ export function matches(doc: Doc, filter: Filter = {}): boolean {
  * Backs a real Mongoose model with an array, so a service can be tested against its real schema without a
  * database: find / findOne / updateMany / deleteMany on the model, save / deleteOne on its documents.
  * `docs` holds plain objects; queries return fresh documents, so changes only stick when they are saved.
+ *
+ * This is a test double, not Mongo. Know what it does not do before relying on it:
+ * - Filters: equality, membership in an array field, `$in`, and missing/`null`/`undefined` (all three match a
+ *   missing or null field, as the driver does: it sends `undefined` to the server as `null`). Nothing else.
+ * - An array filter VALUE (`{ roomId: [a, b] }`) matches by membership. Real Mongo reads that as array equality.
+ *   It is kept because SessionService passes its room ids that way; do not copy the pattern.
+ * - `find().select()` does nothing, so a spec cannot see projections (SessionService.findUserRooms uses one).
+ * - `updateMany` supports top-level field assignment and `$pull` only.
+ * - `findOne` sorts by a single key; `find().sort()` accepts a key spec or a list of [key, direction] pairs.
+ * - It spies on the model in the constructor, so it only works inside Jest (call `restore()` in afterEach).
  */
 export class InMemoryCollection {
   public docs: Doc[] = [];

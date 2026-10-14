@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { model } from 'mongoose';
-import { InMemoryCollection } from '../../../testing/in-memory-model';
+import { InMemoryCollection } from '../../../../test/in-memory-model';
 import { BroadcastSession, BroadcastSessionSchema } from '../../models/broadcast-session.model';
 import { OwnerRoom, OwnerRoomSchema } from '../../models/owner-rooms.model';
 import { SocketConnection, SocketConnectionSchema } from '../../models/socket-connection.model';

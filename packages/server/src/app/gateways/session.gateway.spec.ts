@@ -220,5 +220,14 @@ describe('SessionGateway', () => {
       expect(inEmit).not.toHaveBeenCalled();
       expect(client.broadcast.to).not.toHaveBeenCalled();
     });
+
+    it('passes on the failure, and neither tells the room nor answers the client, for a client with no known user', async () => {
+      const client = fakeClient('stranger');
+      service.endBroadcastSession.mockRejectedValue(new Error('Cannot determine client user stranger'));
+      await expect(gateway.handleEndBroadcast(client as never, { room: 'r1' })).rejects.toThrow('Cannot determine client user');
+      expect(inEmit).not.toHaveBeenCalled();
+      expect(client.send).not.toHaveBeenCalled();
+      expect(client.broadcast.to).not.toHaveBeenCalled();
+    });
   });
 });
