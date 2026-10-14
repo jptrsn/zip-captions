@@ -59,6 +59,13 @@ describe('JoinBroadcastComponent', () => {
     expect(room().value).toBe('4N-A79E-F2GV');
   });
 
+  it('formats an id set in one go, such as a paste, the same way as one typed', () => {
+    create();
+    room().setValue('4NA79EF2GV');
+    expect(room().value).toBe('4N-A79E-F2GV');
+    expect(room().valid).toBe(true);
+  });
+
   it('navigates to the entered id, relative to the current route, when valid', () => {
     create();
     room().setValue('4N-A79E-F2GV');

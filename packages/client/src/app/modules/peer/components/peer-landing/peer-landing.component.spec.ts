@@ -189,6 +189,13 @@ describe('PeerLandingComponent', () => {
       expect(session().valid).toBe(true);
     });
 
+    it('formats a session id set in one go, such as a paste, the same way as one typed', () => {
+      create();
+      session().setValue('4NA79EF2GV');
+      expect(session().value).toBe('4N-A79E-F2GV');
+      expect(session().valid).toBe(true);
+    });
+
     it.each(['4N-A79E', '4N-A79E-F2GO', '12345'])('rejects the session id %s', (id) => {
       create();
       session().setValue(id);
