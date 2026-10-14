@@ -1,49 +1,61 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HomeComponent } from './home.component';
-import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
-import { WelcomeSplashComponent } from '../welcome-splash/welcome-splash.component';
-import { By } from '@angular/platform-browser';
-import { MockStore } from '@ngrx/store/testing';
-import { AppState } from '../../models/app.model';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { RecognitionActions } from '../../actions/recogntion.actions';
+import { MockStore } from '@ngrx/store/testing';
+import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
+import { RecognitionStatus } from '../../models/recognition.model';
+import { loadingSelector } from '../../selectors/app.selector';
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
-import { lastValueFrom } from 'rxjs';
+import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let store: MockStore<AppState>;
+  let store: MockStore;
+
+  const create = (status: RecognitionStatus, loading = false) => {
+    store.overrideSelector(recognitionStatusSelector, status);
+    store.overrideSelector(loadingSelector, loading);
+    store.refreshState();
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  };
+  const has = (tag: string) => !!fixture.nativeElement.querySelector(tag);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: TestingModuleImports,
-      declarations: [
-        HomeComponent,
-        WelcomeSplashComponent,
-      ],
-      providers: TestingModuleProviders
+      imports: [...TestingModuleImports],
+      providers: [...TestingModuleProviders],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [HomeComponent],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
-    store = TestBed.get<Store>(Store);
-    fixture.detectChanges();
+    store = TestBed.inject(Store) as MockStore;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('shows the welcome splash before recognition has ever started', () => {
+    create(RecognitionStatus.uninitialized);
+    expect(has('app-welcome-splash')).toBe(true);
+    expect(has('app-recognition-render')).toBe(false);
+    expect(component.hasResults()).toBe(false);
   });
 
-  it('should show the welcome splash screen', () => {
-    expect(fixture.debugElement.query(By.css('app-welcome-splash')).nativeElement).toBeDefined();
-    expect(fixture.debugElement.query(By.css('app-recognition-render'))).toBeNull();
+  it.each([RecognitionStatus.connected, RecognitionStatus.disconnected])('shows the captions once recognition is %s, so the last results stay visible', (status) => {
+    create(status);
+    expect(has('app-recognition-render')).toBe(true);
+    expect(has('app-welcome-splash')).toBe(false);
   });
 
-  it('should render recognized text when active', waitForAsync(async() => {
-    store.dispatch(RecognitionActions.connect({id: 'test'}));
-    await lastValueFrom(store.select(recognitionStatusSelector));
-    expect(fixture.debugElement.query(By.css('app-recognition-render')).nativeElement).toBeDefined();
-    expect(fixture.debugElement.query(By.css('app-welcome-splash'))).toBeNull();
-  }))
+  it('is recognising only while connected', () => {
+    create(RecognitionStatus.connected);
+    expect(component.isRecognizing()).toBe(true);
+    fixture.destroy();
+    create(RecognitionStatus.disconnected);
+    expect(component.isRecognizing()).toBe(false);
+  });
+
+  it('passes on the loading state from the store', () => {
+    create(RecognitionStatus.uninitialized, true);
+    expect(component.loading()).toBe(true);
+  });
 });
