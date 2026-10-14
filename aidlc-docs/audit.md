@@ -279,3 +279,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** three fixes, each with a test that failed first and its own commit: the wrong argument in `getUserIdForNewClientConnection`; the static room id check (validator changed to follow the generator, since stored ids come from the generator); `endBroadcastSession` returning null instead of throwing. Found while doing the third: any client can end another user's live broadcast (lookup by room only). Recorded as an `it.failing` test and **not changed**, because the fix changes who may end a broadcast. Server: 12 of 12 suites, 152 tests.
 
 **Not verified:** against a real database; the room id convention against production data (I reasoned from the generator, not from stored ids).
+
+## 2026-10-14 — Ownership check on ending a broadcast (on #152)
+
+**Human:** approved the fix and asked for a test.
+
+**AI actions:** `endBroadcastSession` now requires the broadcast's `hostUserId` to be the client's user (null otherwise); the `it.failing` test became a normal test, plus tests for another device of the same user and for several live rooms. The non-host test failed before the fix. Gateway log message updated.
+
+**Not verified:** with real clients, in particular the anonymised second tab.
