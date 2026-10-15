@@ -319,3 +319,57 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **Human:** reported more feedback on #151 (the Qwen review was cancelled because CodeRabbit finished first).
 
 **AI actions:** two comments, both valid: renamed a test; added an in-flight guard to the room card's delete (a real double-click bug). Tests failed before the fix; `tsc` and `ngc` clean.
+
+## 2026-10-14 — U9 server suites (feature/fix-failing-server-tests)
+
+**Human:** #150 merged; asked me to open the next PR and move on with the next fixes.
+
+**AI actions:** opened #151 (client suites, 122 of 122 passing). Started the server suites on `feature/fix-failing-server-tests` off `develop`: 8 failing suites replaced with behaviour specs, 12 of 12 passing (148 tests), mutation-checked, server builds. Two production fixes in their own commits (supporter `tiers` removal; `SupporterService` import). Two defects recorded as `it.failing`.
+
+**Not verified:** against a real MongoDB (the models are stubbed or in-memory); the webhook with a real Patreon payload.
+
+## 2026-10-14 — U9 server defects fixed (on #152)
+
+**Human:** the three server defects are next.
+
+**AI actions:** three fixes, each with a test that failed first and its own commit: the wrong argument in `getUserIdForNewClientConnection`; the static room id check (validator changed to follow the generator, since stored ids come from the generator); `endBroadcastSession` returning null instead of throwing. Found while doing the third: any client can end another user's live broadcast (lookup by room only). Recorded as an `it.failing` test and **not changed**, because the fix changes who may end a broadcast. Server: 12 of 12 suites, 152 tests.
+
+**Not verified:** against a real database; the room id convention against production data (I reasoned from the generator, not from stored ids).
+
+## 2026-10-14 — Ownership check on ending a broadcast (on #152)
+
+**Human:** approved the fix and asked for a test.
+
+**AI actions:** `endBroadcastSession` now requires the broadcast's `hostUserId` to be the client's user (null otherwise); the `it.failing` test became a normal test, plus tests for another device of the same user and for several live rooms. The non-host test failed before the fix. Gateway log message updated.
+
+**Not verified:** with real clients, in particular the anonymised second tab.
+
+## 2026-10-14 — Qwen review of #152
+
+**Human:** decided: remove the unreachable branch and its test; add the clarification; do the `toBe(0)` nit.
+
+**AI actions:** tested the review's main claim against a real MongoDB (Mongoose 7.8.6; `endTime: undefined` matches only live broadcasts) and found it does not hold. Removed the dead branch, its user lookup and its test (server: 153 tests). Documented the `setId` limitation of the ownership check. The seven inline comments on #152 were unreadable (`@c1.md` to `@c7.md`); only the review body was read.
+
+**Not verified:** the content of the seven inline comments.
+
+## 2026-10-14 — The #152 inline comments
+
+**Human:** the inline comments on #152 were meant (not #153).
+
+**AI actions:** read the seven comments. Re-tested the `endTime: undefined` claim at the wire level (undefined is sent as null; with the ended broadcast first only the live one matches) and found the app sets no `ignoreUndefined`; noted that production appears to be Cosmos DB, which I did not test. Added the gateway rejection test, documented the helper's limits and moved it to `packages/server/test/` (not in the bundle). Extended the `setId` limitation with the `hostClientId` takeover. Left the webhook comparison and missing-secret warning for a decision.
+
+**Not verified:** the `undefined`/`null` behaviour on Cosmos DB.
+
+## 2026-10-14 — Webhook hardening (on #152)
+
+**Human:** yes to both webhook changes.
+
+**AI actions:** constant-time signature comparison (exactly 32 hex characters, then `timingSafeEqual`) and a start-up warning when `PATREON_SUPPORTER_WEBHOOK_SECRET` is unset, each with tests that failed first and its own commit. A test-setup trap: in Jest 29.5.0 `restoreAllMocks` strips a wrapped `jest.fn`'s implementation (checked with a throwaway spec, despite the documentation saying only spies are restored), so the real `timingSafeEqual` is restored in `beforeEach`. Checked against the built server. Server: 165 tests.
+
+**Not verified:** with a real Patreon webhook delivery.
+
+## 2026-10-14 — CodeRabbit comment on the #152 test helper
+
+**Human:** reported feedback on #152.
+
+**AI actions:** one valid comment (ObjectIds compared by identity in the in-memory model's matcher). Fixed with a `sameValue` comparison (Dates by time, ObjectId by value or string form) and a new spec for the helper (14 tests; 7 failed first). Server: 13 of 13 suites, 179 tests; `tsc` and the build clean; the helper is not in the bundle.

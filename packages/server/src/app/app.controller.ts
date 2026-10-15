@@ -1,10 +1,17 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Headers, HttpCode, Post, RawBodyRequest, Req } from '@nestjs/common';
-import { createHmac } from 'node:crypto';
+import { BadRequestException, Body, Controller, ForbiddenException, Headers, HttpCode, Logger, Post, RawBodyRequest, Req } from '@nestjs/common';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { AppService } from './app.service';
 
 @Controller('app')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  private readonly logger = new Logger(AppController.name);
+
+  constructor(private readonly appService: AppService) {
+    if (!process.env.PATREON_SUPPORTER_WEBHOOK_SECRET) {
+      // Without the secret every webhook fails its check and is only logged, so supporters are never updated
+      this.logger.warn('PATREON_SUPPORTER_WEBHOOK_SECRET is not set: every Patreon webhook will be ignored');
+    }
+  }
 
   @Post('patreon-webhook')
   @HttpCode(200)
@@ -57,9 +64,13 @@ export class AppController {
   }
 
   private _verifySignature(body: Buffer, secret: string, signature: string): boolean {
-    const hasher = createHmac('md5', secret);
-    const hash = hasher.update(body).digest('hex');
-    return hash === signature;
+    // Exactly 32 hex characters: Buffer.from(..., 'hex') stops at the first bad character, which would
+    // otherwise let a correct signature followed by junk through
+    if (!/^[0-9a-f]{32}$/i.test(signature)) {
+      return false;
+    }
+    const expected = createHmac('md5', secret).update(body).digest();
+    return timingSafeEqual(Buffer.from(signature, 'hex'), expected);
   }
 
 }
