@@ -9,6 +9,7 @@ import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
 import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected, selectRoomId } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
+import { StorageService } from '../../../services/storage.service';
 import { selectUserId } from '../../../selectors/user.selector';
 import { dialectSelector, languageSelector } from '../../../selectors/settings.selector';
 import { WireSegment, parseLivePayload, parseSegmentPayload } from '../models/broadcast-payload';
@@ -30,6 +31,10 @@ export class PeerService {
   private hostLanguage: Signal<string>;
 
   private readonly CACHE_PERSIST_MINS = 60;
+  // The server signs an anonymous user's id for 7 days; the token is kept per tab, like the anonymous id it proves
+  private readonly ANONYMOUS_TOKEN_MINS = 7 * 24 * 60;
+  // The login token the current socket connected with; a different one later means the socket must reconnect
+  private handshakeLoginToken?: string;
 
   private readonly SOCKET_URL: string;
   private readonly PEER_PORT: number;
@@ -52,7 +57,8 @@ export class PeerService {
   private userId: Signal<string | undefined>;
   
   constructor(private store: Store<AppState>,
-              private cache: CacheService) { 
+              private cache: CacheService,
+              private storage: StorageService) {
     this.SOCKET_URL = process.env['ZIP_SOCKET_SERVER'] || 'localhost:3000';
     this.PEER_PORT = process.env['ZIP_PEER_PORT'] ? Number(process.env['ZIP_PEER_PORT']) : 3000;
     this.SOCKET_CONFIG = {
@@ -60,6 +66,8 @@ export class PeerService {
       options: {
         reconnectionAttempts: 10,
         reconnection: true,
+        // A function, so that every connection attempt (including a reconnect) presents the current credentials
+        auth: (cb: (data: object) => void) => cb(this.socketAuth()),
       }
     }
     this.PEER_URL = process.env['ZIP_PEER_SERVER'] || 'localhost';
@@ -99,8 +107,31 @@ export class PeerService {
         this.myId = this.userId();
         this.cache.save({key: 'userId', data: { id: this.myId }, expirationMins: this.CACHE_PERSIST_MINS})
       }
+      // Logging in or out changes who the socket is, and that is only decided when it connects
+      this.reconnectIfLoginChanged();
     })
 
+  }
+
+  /** What the server needs to know who this socket is: the login token, and the token for an anonymous id it issued */
+  private socketAuth(): { token?: string; anonymousToken?: string } {
+    this.handshakeLoginToken = this.loginToken();
+    return {
+      token: this.handshakeLoginToken,
+      anonymousToken: this.cache.load<{ token: string }>('anonymousToken')?.token,
+    };
+  }
+
+  private loginToken(): string | undefined {
+    const token = this.storage.get('token');
+    return typeof token === 'string' && token ? token : undefined;
+  }
+
+  private reconnectIfLoginChanged(): void {
+    if (this.socket?.ioSocket?.connected && this.loginToken() !== this.handshakeLoginToken) {
+      this.socket.disconnect();
+      this.socket.connect();
+    }
   }
 
   connectSocket(): Observable<string> {
@@ -145,7 +176,16 @@ export class PeerService {
           }
           break;
         }
+        case 'auth failed': {
+          // The login token was rejected (expired, or not ours). The server treats this socket as an anonymous
+          // user, so viewing still works; the session check at startup is what logs the user out.
+          console.warn('The server did not accept the login token; continuing as an anonymous user');
+          break;
+        }
         case 'set user id success': {
+          if (data.anonymousToken) {
+            this.cache.save({key: 'anonymousToken', data: { token: data.anonymousToken }, expirationMins: this.ANONYMOUS_TOKEN_MINS});
+          }
           if (data.id) {
             if (!this.userId() || data.id !== this.userId()) {
               this.myId = data.id;
