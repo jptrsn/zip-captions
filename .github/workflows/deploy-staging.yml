@@ -1,0 +1,193 @@
+name: Deploy staging
+
+# The ephemeral staging environment for a release candidate (aidlc-docs/construction/u12-release-and-staging).
+# The first push of a release branch creates everything; later pushes update it. teardown-staging.yml removes it.
+# Production is deployed by deploy.yml from main and is not touched by anything here.
+on:
+  push:
+    branches:
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      bind_domains:
+        description: 'Bind next.zipcaptions.app and next-api.zipcaptions.app (run this after their DNS records exist; see the run summary)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# One staging environment: deploys and teardown queue behind each other and are never cancelled half-way
+concurrency:
+  group: staging-environment
+  cancel-in-progress: false
+
+env:
+  CLIENT_HOSTNAME: next.zipcaptions.app
+  API_HOSTNAME: next-api.zipcaptions.app
+  ENVIRONMENT_NAME: zip-staging-env
+  IMAGE: educoder/zip-captions-server
+
+jobs:
+  tests:
+    name: Tests
+    uses: ./.github/workflows/test.yml
+
+  deploy:
+    name: Create or update staging
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Secrets and the variable below belong to this GitHub environment, which is separate from production's
+    environment: staging
+    env:
+      RESOURCE_GROUP: ${{ vars.STAGING_RESOURCE_GROUP || 'ZipCaptions-Staging' }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Refuse anything that is not the staging resource group
+        run: |
+          case "${RESOURCE_GROUP,,}" in
+            *staging*) ;;
+            *) echo "::error::'$RESOURCE_GROUP' is not a staging resource group; refusing to deploy into it"; exit 1 ;;
+          esac
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push the server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: prod_server
+          push: true
+          tags: ${{ env.IMAGE }}:staging-${{ github.sha }}
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create or update the environment
+        id: infra
+        env:
+          SEED: ${{ secrets.STAGING_SECRET_SEED }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
+          MICROSOFT_CLIENT_SECRET: ${{ secrets.MICROSOFT_CLIENT_SECRET }}
+          PATREON_CLIENT_ID: ${{ secrets.PATREON_CLIENT_ID }}
+          PATREON_CLIENT_SECRET: ${{ secrets.PATREON_CLIENT_SECRET }}
+          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
+        run: |
+          set -euo pipefail
+          for name in SEED GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET MICROSOFT_CLIENT_ID MICROSOFT_CLIENT_SECRET PATREON_CLIENT_ID PATREON_CLIENT_SECRET AZURE_SPEECH_KEY; do
+            if [ -z "${!name}" ]; then echo "::error::the staging environment secret for $name is not set"; exit 1; fi
+          done
+          # Stable across the candidate's rebuilds (so sessions and the database password survive an rc.2), unique to
+          # this seed. The Patreon webhook secret is made up: Patreon cannot sign with it, which leaves webhooks off.
+          derive() { printf '%s' "$1" | openssl dgst -sha256 -hmac "$SEED" -r | cut -d' ' -f1; }
+          MONGO_PASSWORD=$(derive mongo-password)
+          JWT_SECRET=$(derive jwt-secret)
+          SESSION_SECRET=$(derive session-secret)
+          WEBHOOK_SECRET=$(derive patreon-webhook-secret)
+          for v in "$MONGO_PASSWORD" "$JWT_SECRET" "$SESSION_SECRET" "$WEBHOOK_SECRET"; do echo "::add-mask::$v"; done
+
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "staging-${GITHUB_RUN_ID}" \
+            --template-file infra/staging/main.bicep \
+            --parameters \
+              serverImage="$IMAGE:staging-$GITHUB_SHA" \
+              appOrigin="https://$CLIENT_HOSTNAME" \
+              apiOrigin="https://$API_HOSTNAME" \
+              mongoPassword="$MONGO_PASSWORD" \
+              jwtSecret="$JWT_SECRET" \
+              sessionSecret="$SESSION_SECRET" \
+              patreonWebhookSecret="$WEBHOOK_SECRET" \
+              googleClientId="$GOOGLE_CLIENT_ID" \
+              googleClientSecret="$GOOGLE_CLIENT_SECRET" \
+              azureClientId="$MICROSOFT_CLIENT_ID" \
+              azureClientSecret="$MICROSOFT_CLIENT_SECRET" \
+              patreonClientId="$PATREON_CLIENT_ID" \
+              patreonClientSecret="$PATREON_CLIENT_SECRET" \
+              azureSpeechKey="$AZURE_SPEECH_KEY" \
+            --query properties.outputs -o json > outputs.json
+
+          {
+            echo "static_site=$(jq -r .staticSiteName.value outputs.json)"
+            echo "static_site_hostname=$(jq -r .staticSiteHostname.value outputs.json)"
+            echo "server_app=$(jq -r .serverAppName.value outputs.json)"
+            echo "server_hostname=$(jq -r .serverHostname.value outputs.json)"
+            echo "domain_verification_id=$(jq -r .domainVerificationId.value outputs.json)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # The staging configuration is the production build with the next-api URLs from packages/client/staging.env
+      - name: Build the client
+        run: npm run build:client:staging
+
+      - name: Get the deployment token of the new Static Web App
+        run: |
+          set -euo pipefail
+          TOKEN=$(az staticwebapp secrets list --name "${{ steps.infra.outputs.static_site }}" --resource-group "$RESOURCE_GROUP" --query properties.apiKey -o tsv)
+          echo "::add-mask::$TOKEN"
+          echo "SWA_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+
+      - name: Deploy the client
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.SWA_TOKEN }}
+          action: upload
+          app_location: /docs
+          skip_app_build: true
+
+      - name: Bind the custom domains
+        if: ${{ inputs.bind_domains }}
+        run: |
+          set -euo pipefail
+          az staticwebapp hostname set --name "${{ steps.infra.outputs.static_site }}" --resource-group "$RESOURCE_GROUP" --hostname "$CLIENT_HOSTNAME"
+          az containerapp hostname add --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME"
+          az containerapp hostname bind --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME" --environment "$ENVIRONMENT_NAME" --validation-method CNAME
+
+      - name: What to do next
+        run: |
+          {
+            echo "## Staging is up"
+            echo
+            echo "Image: \`$IMAGE:staging-$GITHUB_SHA\` (commit $GITHUB_SHA, ref $GITHUB_REF_NAME)"
+            echo
+            echo "| | Default hostname |"
+            echo "|---|---|"
+            echo "| Client | https://${{ steps.infra.outputs.static_site_hostname }} |"
+            echo "| Server | https://${{ steps.infra.outputs.server_hostname }} |"
+            echo
+            echo "### DNS records to create for this candidate (replace the ones from the last candidate)"
+            echo
+            echo "| Type | Name | Value |"
+            echo "|---|---|---|"
+            echo "| CNAME | $CLIENT_HOSTNAME | ${{ steps.infra.outputs.static_site_hostname }} |"
+            echo "| CNAME | $API_HOSTNAME | ${{ steps.infra.outputs.server_hostname }} |"
+            echo "| TXT | asuid.$API_HOSTNAME | ${{ steps.infra.outputs.domain_verification_id }} |"
+            echo
+            echo "When they resolve, run this workflow again by hand (Run workflow) on the release branch with **bind_domains** ticked."
+            echo "Login works only on the custom names: the OAuth redirect URIs registered with the providers are on $API_HOSTNAME."
+            echo
+            echo "**When the candidate is over**, delete those three DNS records as well as the environment: a CNAME left pointing at a deleted Azure hostname is a dangling record."
+          } >> "$GITHUB_STEP_SUMMARY"

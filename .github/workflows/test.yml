@@ -10,6 +10,8 @@ on:
       - 'aidlc-docs/**'
       - '**/*.md'
   workflow_dispatch:
+  # The staging deploy runs the same tests before it builds anything
+  workflow_call:
 
 permissions:
   contents: read
