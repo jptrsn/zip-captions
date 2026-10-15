@@ -490,7 +490,8 @@
       "clickToCopy": "Clique para copiar",
       "copied": "Link copiado para a área de transferência",
       "create": "Crie um novo",
-      "changeWarning": "O ID de transmissão não pode ser alterado após salvar."
+      "changeWarning": "O ID de transmissão não pode ser alterado após salvar.",
+      "deleteFailed": "A transmissão não pôde ser excluída. Tente novamente."
     },
     "fromBroadcaster": "Traduzido pelo transmissor",
     "translatedOnDevice": "Traduzido neste dispositivo"

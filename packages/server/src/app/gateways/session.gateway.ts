@@ -122,15 +122,14 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('endBroadcast')
   async handleEndBroadcast(client: Socket, payload: { room: string}): Promise<void> {
     const broadcast = await this.sessionService.endBroadcastSession(client.id, payload);
-    const userId = await this.sessionService.getUserFromClientId(client.id);
-    // this.logger.log(`end ${payload.room} broadcast`)
-    this.server.in(payload.room).emit('endBroadcast');
-    if (broadcast.hostUserId === userId) {
-      const expiredAt = broadcast.endTime.getTime();
-      client.broadcast.to(payload.room).emit('message', { message: 'broadcast ended', expiredAt});
-    } else {
-      this.logger.warn(`endBroadcast from non-owner client id ${client.id}`);
+    if (!broadcast) {
+      this.logger.warn(`endBroadcast for room ${payload.room} from client id ${client.id}: no live broadcast of theirs to end`);
+      return;
     }
+    // The service only returns the broadcast of the client's own user, so the client is its host
+    this.server.in(payload.room).emit('endBroadcast');
+    const expiredAt = broadcast.endTime.getTime();
+    client.broadcast.to(payload.room).emit('message', { message: 'broadcast ended', expiredAt});
   }
 
 }

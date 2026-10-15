@@ -18,7 +18,7 @@ export class SessionService {
     this.logger.log(`client ${clientId} connected`)
     const userId = await this.getUserFromClientId(clientId);
     if (userId) {
-      await this.setUserId(userId);
+      await this.setUserId(clientId, userId);
     }
     return userId
   }
@@ -104,12 +104,19 @@ export class SessionService {
     return broadcast.toObject();
   }
 
-  async endBroadcastSession(clientId: string, payload: { room: string}): Promise<BroadcastSession> {
+  /**
+   * Ends the live broadcast of a room, if it is this client's user's. Null when there is none to end: the room has
+   * no live broadcast (for example it was already ended), or the broadcast belongs to someone else.
+   */
+  async endBroadcastSession(clientId: string, payload: { room: string}): Promise<BroadcastSession | null> {
     const userId = await this._getClientUserId(clientId);
     if (!userId) {
       throw new Error(`Cannot determine client user ${clientId}`);
     }
-    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room, endTime: undefined });
+    const broadcast: BroadcastSessionDocument = await this.broadcasts.findOne({roomId: payload.room, hostUserId: userId, endTime: undefined });
+    if (!broadcast) {
+      return null;
+    }
     broadcast.endTime = new Date();
     await broadcast.save();
     return broadcast.toObject();
@@ -282,8 +289,7 @@ export class SessionService {
       // console.log(`room ${room.roomId} is not owned by ${userId}`);
       return false;
     }
-    if (this._prefixIndicatesDynamic(room.roomId) !== !room.isStatic) {
-      // console.log(`room ${room.roomId} prefix indicates ${this._prefixIndicatesDynamic(room.roomId) ? 'dynamic' : 'static'} but property isStatic is ${room.isStatic}`)
+    if (this._prefixIndicatesStatic(room.roomId) !== !!room.isStatic) {
       return false;
     }
     return true;
@@ -296,11 +302,16 @@ export class SessionService {
       for (let i = 0; i < 2; i++) {
         outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
       }
-    } while (this._prefixIndicatesDynamic(outString) === !isStatic)
+    } while (this._prefixIndicatesStatic(outString) !== !!isStatic)
     return outString;
   }
 
-  private _prefixIndicatesDynamic(prefix: string): boolean {
+  /**
+   * The kind of a room is encoded in its first two characters: an odd sum of their character codes is a static
+   * room and an even sum a dynamic one. Rooms already stored have ids made this way, so do not change it
+   * without migrating them.
+   */
+  private _prefixIndicatesStatic(prefix: string): boolean {
     if (prefix.length < 2) {
       throw new Error("Incorrect session ID prefix")
     }

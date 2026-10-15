@@ -492,7 +492,8 @@
       "clickToCopy": "Click to copy",
       "copied": "Link copied to clipboard",
       "create": "Create a new",
-      "changeWarning": "The broadcast ID cannot be changed after saving."
+      "changeWarning": "The broadcast ID cannot be changed after saving.",
+      "deleteFailed": "The broadcast could not be deleted. Please try again."
     }
   },
   "MODAL": {

@@ -263,3 +263,113 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 - Declined: `settingsMatch` ignoring saved nested keys the current state lacks (see U8 design §11).
 
 **Not verified:** the Sync tab and apply in a browser; two real devices.
+
+## 2026-10-13 — U9 client test debt, PR 1 (feature/fix-failing-client-tests-1)
+
+**Human:** approved the U9 design as recommended and asked to start PR 1.
+
+**AI actions:**
+- Design: `construction/u9-client-test-debt/functional-design.md` (notes in §8). Branch off `develop` @ `93fc76b`; only the U9 design doc was carried over from the #150 branch.
+- Fixed 19 client suites (groups A minus `user-saved-settings`, E, G): scaffold providers, shallow rendering for container components, stubbed `CaptionTranslationService` / `TranscriptionService`, and 73 behaviour tests. Rewrote the stale `start-broadcast` and `join-broadcast` specs.
+- Mutation-checked 14 components (one broken line each; all specs failed; restored).
+- Full client run vs the `develop` baseline, by suite name: 44 failing → 25, no newly failing suite. One worker crash (SIGSEGV) on `recognized-live-text` and a hang on the last suite (`language-selector`); both pass alone.
+- Product findings, not fixed: the join-id dash insertion bug and the always-rendered start button (see §8).
+
+**Not verified:** the components in a browser (these are specs); that the 19 suites stay stable across runs; the SIGSEGV cause.
+
+## 2026-10-14 — U9 client test debt, single PR (feature/fix-failing-client-tests-1)
+
+**Human:** pushed the branch, approved folding the remaining groups into the same PR with a stop at 80 counted files, and asked me to continue while waiting on review quota for #150.
+
+**AI actions:**
+- Fixed the remaining suites: the three services, the two OAuth components, the interceptor, guard and user reducer, the two confirmation dialogs and the engine select, `editable-string`, `transcript-enabled`, `end-broadcast`, `room-card`, `home`, `welcome-splash`, `settings`, `peer-landing`, `stream-captions`, `broadcast-room`, the control sidebar, `recognition-render` and `app.component`.
+- Every spec tests behaviour; mutation checks on the large components (restored afterwards).
+- Full client run vs the `develop` baseline by suite name: 43 fixed, none new, none missing; 119 of 120 passing, the 120th being `user-saved-settings` (waits for #150).
+- 43 files counted for CodeRabbit.
+- Findings (not fixed): Portuguese strings in `es.json`; client/server room route mismatch (dead code); `settings.language` vs `lang`; unhandled delete failure in the room card; id mangling when set in one go; always-visible Create button.
+
+**Not verified:** components in a browser (these are specs); that the specs stay stable across runs and CI (the earlier worker segfault and last-suite hang did not recur in this run).
+
+## 2026-10-14 — U9 closed for the client suite
+
+**Human:** #150 is merged; open the U9 PR and continue with the next fixes.
+
+**AI actions:** merged `develop` into `feature/fix-failing-client-tests-1` (documentation conflicts only: kept both sides of `audit.md` and `units-of-work.md`, kept this branch's U9 design). Fixed `user-saved-settings` (16 tests; 3 mutations caught). Full client run: 122 of 122 suites, 772 tests pass.
+
+**Not verified:** stability across repeated or CI runs; the components in a browser.
+
+## 2026-10-14 — U9 client findings fixed (on #151)
+
+**Human:** fix the client findings from earlier and include them in the tests PR.
+
+**AI actions:** six commits on `feature/fix-failing-client-tests-1`, each with a test that failed before the fix (see U9 design §12). Spanish locale: six strings regenerated with `translate.py` (three Portuguese, three Italian; my earlier count of four had one false positive). `AppComponent` storage key. Room card delete error and id locking. Shared `formatSessionId`. Removed the unused rooms-save code. The "Create button always shown" finding was wrong: the stream page already gates the form, so I added tests instead of changing code.
+
+**Not verified:** the join form paste behaviour in a browser; the regenerated Spanish by a native speaker.
+
+## 2026-10-14 — Response to the CodeRabbit review of #151
+
+**Human:** reported feedback (written as "PR 150"; #150 had none, #151 had a review).
+
+**AI actions:** addressed nine inline comments and one outside the diff. Found while auditing that four specs (login, provider, user-home, ui-settings) were still creation-only, contrary to what I had written in the PR text; wrote real specs for them and corrected the PR. Added the room card delete-failed message with one new string, generated in 10 locales with `translate.py`. Mutation-checked the changes. Full client suite 837 tests.
+
+**Not verified:** the new message in a browser; the 10 generated translations by a native speaker.
+
+## 2026-10-14 — Second CodeRabbit round on #151
+
+**Human:** reported more feedback on #151 (the Qwen review was cancelled because CodeRabbit finished first).
+
+**AI actions:** two comments, both valid: renamed a test; added an in-flight guard to the room card's delete (a real double-click bug). Tests failed before the fix; `tsc` and `ngc` clean.
+
+## 2026-10-14 — U9 server suites (feature/fix-failing-server-tests)
+
+**Human:** #150 merged; asked me to open the next PR and move on with the next fixes.
+
+**AI actions:** opened #151 (client suites, 122 of 122 passing). Started the server suites on `feature/fix-failing-server-tests` off `develop`: 8 failing suites replaced with behaviour specs, 12 of 12 passing (148 tests), mutation-checked, server builds. Two production fixes in their own commits (supporter `tiers` removal; `SupporterService` import). Two defects recorded as `it.failing`.
+
+**Not verified:** against a real MongoDB (the models are stubbed or in-memory); the webhook with a real Patreon payload.
+
+## 2026-10-14 — U9 server defects fixed (on #152)
+
+**Human:** the three server defects are next.
+
+**AI actions:** three fixes, each with a test that failed first and its own commit: the wrong argument in `getUserIdForNewClientConnection`; the static room id check (validator changed to follow the generator, since stored ids come from the generator); `endBroadcastSession` returning null instead of throwing. Found while doing the third: any client can end another user's live broadcast (lookup by room only). Recorded as an `it.failing` test and **not changed**, because the fix changes who may end a broadcast. Server: 12 of 12 suites, 152 tests.
+
+**Not verified:** against a real database; the room id convention against production data (I reasoned from the generator, not from stored ids).
+
+## 2026-10-14 — Ownership check on ending a broadcast (on #152)
+
+**Human:** approved the fix and asked for a test.
+
+**AI actions:** `endBroadcastSession` now requires the broadcast's `hostUserId` to be the client's user (null otherwise); the `it.failing` test became a normal test, plus tests for another device of the same user and for several live rooms. The non-host test failed before the fix. Gateway log message updated.
+
+**Not verified:** with real clients, in particular the anonymised second tab.
+
+## 2026-10-14 — Qwen review of #152
+
+**Human:** decided: remove the unreachable branch and its test; add the clarification; do the `toBe(0)` nit.
+
+**AI actions:** tested the review's main claim against a real MongoDB (Mongoose 7.8.6; `endTime: undefined` matches only live broadcasts) and found it does not hold. Removed the dead branch, its user lookup and its test (server: 153 tests). Documented the `setId` limitation of the ownership check. The seven inline comments on #152 were unreadable (`@c1.md` to `@c7.md`); only the review body was read.
+
+**Not verified:** the content of the seven inline comments.
+
+## 2026-10-14 — The #152 inline comments
+
+**Human:** the inline comments on #152 were meant (not #153).
+
+**AI actions:** read the seven comments. Re-tested the `endTime: undefined` claim at the wire level (undefined is sent as null; with the ended broadcast first only the live one matches) and found the app sets no `ignoreUndefined`; noted that production appears to be Cosmos DB, which I did not test. Added the gateway rejection test, documented the helper's limits and moved it to `packages/server/test/` (not in the bundle). Extended the `setId` limitation with the `hostClientId` takeover. Left the webhook comparison and missing-secret warning for a decision.
+
+**Not verified:** the `undefined`/`null` behaviour on Cosmos DB.
+
+## 2026-10-14 — Webhook hardening (on #152)
+
+**Human:** yes to both webhook changes.
+
+**AI actions:** constant-time signature comparison (exactly 32 hex characters, then `timingSafeEqual`) and a start-up warning when `PATREON_SUPPORTER_WEBHOOK_SECRET` is unset, each with tests that failed first and its own commit. A test-setup trap: in Jest 29.5.0 `restoreAllMocks` strips a wrapped `jest.fn`'s implementation (checked with a throwaway spec, despite the documentation saying only spies are restored), so the real `timingSafeEqual` is restored in `beforeEach`. Checked against the built server. Server: 165 tests.
+
+**Not verified:** with a real Patreon webhook delivery.
+
+## 2026-10-14 — CodeRabbit comment on the #152 test helper
+
+**Human:** reported feedback on #152.
+
+**AI actions:** one valid comment (ObjectIds compared by identity in the in-memory model's matcher). Fixed with a `sameValue` comparison (Dates by time, ObjectId by value or string form) and a new spec for the helper (14 tests; 7 failed first). Server: 13 of 13 suites, 179 tests; `tsc` and the build clean; the helper is not in the bundle.

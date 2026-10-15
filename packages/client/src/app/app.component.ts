@@ -45,7 +45,7 @@ export class AppComponent {
 			if (defaultDialect) {
 				const settings = this.storage.get('settings')
 				const setDialect = settings?.dialect;
-				const setLanguage = settings?.language;
+				const setLanguage = settings?.lang;
 				if (!setDialect && (!setLanguage || setLanguage === defaultLanguage)) {
 					this.store.dispatch(setDefaultDialect({dialect: defaultDialect}))
 				}
