@@ -394,3 +394,9 @@ Checked against a built server on port 3100 and the local MongoDB: in `enforce` 
 **AI actions:** workflow on pull requests with parallel client and server jobs; regenerated the lock file for npm 11 (the first run failed in `npm ci`), restored the dropped nested `@swc/helpers` entry after the Qwen review, bumped the actions to v7; each verified on GitHub with a throwaway branch (both suites green, Node 20 warning gone). After #152 merged, `develop` was merged into the branch with no conflicts.
 
 **Not verified:** that the check is required for merging (branch protection is the human's setting).
+
+## 2026-10-14 — CodeRabbit comments on #154 (U10)
+
+**Human:** reported feedback on #154.
+
+**AI actions:** two comments, both valid when checked against the code. (1) Logout: `clearProfile` leaves `user.id`, so the `PeerService` effect never re-ran and the socket kept its login identity; the effect now also reads the logged-in flag (test failed without it). (2) In `report` mode a claimant who named a connected user's id was sent that user's live room id in the second-tab reply; it is no longer (test failed without the change). Side effect: in `report` mode a legitimate old client's second tab no longer learns the live room from that reply; `enforce` is unaffected for credentialed clients. Server 15 suites / 229 tests; client `peer.service` spec 11 tests; `tsc` and `ngc` clean.
