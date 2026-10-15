@@ -374,6 +374,19 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 
 **AI actions:** one valid comment (ObjectIds compared by identity in the in-memory model's matcher). Fixed with a `sameValue` comparison (Dates by time, ObjectId by value or string form) and a new spec for the helper (14 tests; 7 failed first). Server: 13 of 13 suites, 179 tests; `tsc` and the build clean; the helper is not in the bundle.
 
+## 2026-10-14 — U10: authenticated socket identity
+
+**Human:** answered D1–D10 as recommended (D8: PeerJS server out of scope, tracked as U11); approved the design; decided that U11 blocks the release only if it is a regression compared to `main`, otherwise it is a follow-on issue.
+
+**AI actions:** wrote the attack as an integration test over a real socket.io server and client (host drops, a second client names the host's id) and confirmed 4 of its 5 tests failed on the old code. Added `SocketIdentityService` (login JWT, or an anonymous token signed with a key derived from `JWT_SECRET` with an audience claim, 7 days), a handshake middleware in the gateway, and a `setId` that registers the verified identity and ignores the payload id (honoured only in `report` mode, only without a valid token, and logged). Client: `auth` function on the socket, anonymous token kept per tab (sessionStorage via `CacheService`), reconnect when the login token changes while connected. Server 15 suites / 228 tests; client peer.service spec 10 tests.
+Checked against a built server on port 3100 and the local MongoDB: in `enforce` the attacker is not given the host's id and sees no rooms; the host keeps its id and rooms; an expired token connects as someone else and is told `auth failed`. In `report` the same attack still works, as designed, and each claim is logged. Test data removed afterwards.
+
+**Deviations from the design:** the client logs `auth failed` (it does not show a login prompt; the startup session check is what logs the user out). The anonymous token is stored per tab (sessionStorage) like the anonymous id, not in local storage. Anonymous tokens are not renewed (a 7-day lifetime from issue).
+
+**Findings:** in `report` mode a legacy claimant holds the claimed id, so the real host's next socket is treated as a second tab until it disconnects; that goes away in `enforce`. On the real server a websocket-only client is rejected (the PeerJS server's upgrade handling) while the default long-polling start works; this predates U10 and is why the live check uses the default transports.
+
+**Not verified:** Azure Cosmos DB; the real login flow (it cannot run from localhost); a browser end to end with the client dev server; behaviour with old clients in a real rollout.
+
 ## 2026-10-14 — CI job (#153)
 
 **Human:** opened #153 for the tests workflow; restore the removed lock entry; bump the actions to v7; then merged #151 and #152.
@@ -381,3 +394,9 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **AI actions:** workflow on pull requests with parallel client and server jobs; regenerated the lock file for npm 11 (the first run failed in `npm ci`), restored the dropped nested `@swc/helpers` entry after the Qwen review, bumped the actions to v7; each verified on GitHub with a throwaway branch (both suites green, Node 20 warning gone). After #152 merged, `develop` was merged into the branch with no conflicts.
 
 **Not verified:** that the check is required for merging (branch protection is the human's setting).
+
+## 2026-10-14 — CodeRabbit comments on #154 (U10)
+
+**Human:** reported feedback on #154.
+
+**AI actions:** two comments, both valid when checked against the code. (1) Logout: `clearProfile` leaves `user.id`, so the `PeerService` effect never re-ran and the socket kept its login identity; the effect now also reads the logged-in flag (test failed without it). (2) In `report` mode a claimant who named a connected user's id was sent that user's live room id in the second-tab reply; it is no longer (test failed without the change). Side effect: in `report` mode a legitimate old client's second tab no longer learns the live room from that reply; `enforce` is unaffected for credentialed clients. Server 15 suites / 229 tests; client `peer.service` spec 11 tests; `tsc` and `ngc` clean.

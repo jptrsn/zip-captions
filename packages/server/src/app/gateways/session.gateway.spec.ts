@@ -1,5 +1,6 @@
 import { SessionGateway } from './session.gateway';
 import { SessionService } from '../services/session/session.service';
+import { SocketIdentity, SocketIdentityService } from '../services/socket-identity/socket-identity.service';
 
 type Mock = jest.Mock;
 
@@ -9,16 +10,22 @@ interface FakeClient {
   join: Mock;
   broadcast: { to: Mock };
   emitToRoom: Mock;
+  data: { identity: SocketIdentity };
 }
 
-const fakeClient = (id: string): FakeClient => {
+/** By default a client that logged in as user `u1`, as the handshake middleware would have established */
+const fakeClient = (id: string, identity: Partial<SocketIdentity> = {}): FakeClient => {
   const emitToRoom = jest.fn();
-  return { id, send: jest.fn(), join: jest.fn(), broadcast: { to: jest.fn(() => ({ emit: emitToRoom })) }, emitToRoom };
+  return {
+    id, send: jest.fn(), join: jest.fn(), broadcast: { to: jest.fn(() => ({ emit: emitToRoom })) }, emitToRoom,
+    data: { identity: { userId: 'u1', kind: 'account', credentialed: true, ...identity } },
+  };
 };
 
 describe('SessionGateway', () => {
   let service: Record<'getUserIdForNewClientConnection' | 'handleClientDisconnected' | 'getUserFromClientId' | 'findUserRooms' | 'getBroadcastSession' | 'findClientIdsByUserId' | 'findBroadcastSessionsByClientId' | 'setUserId' | 'endBroadcastSession', Mock>;
   let gateway: SessionGateway;
+  let identityService: SocketIdentityService;
   let toEmit: Mock;
   let inEmit: Mock;
   let sockets: Map<string, { id: string; connected: boolean }>;
@@ -36,7 +43,10 @@ describe('SessionGateway', () => {
       setUserId: jest.fn(),
       endBroadcastSession: jest.fn(),
     };
-    gateway = new SessionGateway(service as unknown as SessionService);
+    delete process.env.SOCKET_AUTH_MODE;
+    identityService = new SocketIdentityService();
+    jest.spyOn(identityService['logger'], 'warn').mockImplementation(() => undefined);
+    gateway = new SessionGateway(service as unknown as SessionService, identityService);
     toEmit = jest.fn();
     inEmit = jest.fn();
     sockets = new Map();
@@ -200,6 +210,119 @@ describe('SessionGateway', () => {
       service.setUserId.mockResolvedValue('u1');
       await gateway.handleSetUserId(client as never, { id: 'u1' });
       expect(service.setUserId).toHaveBeenCalledWith('c2', 'u1');
+    });
+
+    describe('the id in the message', () => {
+      it('is ignored when the client is a verified user: the verified id is registered and echoed', async () => {
+        const client = fakeClient('c1', { userId: 'me' });
+        service.setUserId.mockResolvedValue('me');
+        await gateway.handleSetUserId(client as never, { id: 'someone-else' });
+        expect(service.setUserId).toHaveBeenCalledWith('c1', 'me');
+        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'me' });
+        expect(service.findUserRooms).not.toHaveBeenCalledWith('someone-else');
+      });
+
+      it('is ignored in report mode too when the client showed a valid token', async () => {
+        process.env.SOCKET_AUTH_MODE = 'report';
+        const client = fakeClient('c1', { userId: 'me' });
+        service.setUserId.mockResolvedValue('me');
+        await gateway.handleSetUserId(client as never, { id: 'someone-else' });
+        expect(service.setUserId).toHaveBeenCalledWith('c1', 'me');
+      });
+
+      describe('from a client with no valid token', () => {
+        const anonymous = { userId: 'issued', kind: 'anonymous' as const, credentialed: false, anonymousToken: 'tok' };
+
+        it('is ignored in enforce mode: the client gets the id and token the server issued', async () => {
+          process.env.SOCKET_AUTH_MODE = 'enforce';
+          const client = fakeClient('c1', anonymous);
+          service.setUserId.mockResolvedValue('issued');
+          await gateway.handleSetUserId(client as never, { id: 'victim' });
+          expect(service.setUserId).toHaveBeenCalledWith('c1', 'issued');
+          expect(service.findUserRooms).toHaveBeenCalledWith('issued');
+          expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'issued', anonymousToken: 'tok' });
+        });
+
+        it('is honoured and counted in report mode, with no token for an id the server did not issue', async () => {
+          process.env.SOCKET_AUTH_MODE = 'report';
+          const record = jest.spyOn(identityService, 'recordLegacyClaim');
+          const client = fakeClient('c1', anonymous);
+          service.setUserId.mockResolvedValue('legacy');
+          await gateway.handleSetUserId(client as never, { id: 'legacy' });
+          expect(record).toHaveBeenCalledWith('c1', 'legacy');
+          expect(service.setUserId).toHaveBeenCalledWith('c1', 'legacy');
+          expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'legacy' });
+        });
+
+        it('fails closed when the mode is not understood', async () => {
+          process.env.SOCKET_AUTH_MODE = 'enforced';
+          const client = fakeClient('c1', anonymous);
+          service.setUserId.mockResolvedValue('issued');
+          await gateway.handleSetUserId(client as never, { id: 'victim' });
+          expect(service.setUserId).toHaveBeenCalledWith('c1', 'issued');
+        });
+      });
+
+      it('does not register a client that has no established identity', async () => {
+        const client = fakeClient('c1');
+        (client as { data: unknown }).data = {};
+        await gateway.handleSetUserId(client as never, { id: 'u1' });
+        expect(service.setUserId).not.toHaveBeenCalled();
+        expect(client.send).not.toHaveBeenCalled();
+      });
+
+      it('does not tell a report-mode claimant which room the claimed user has live', async () => {
+        process.env.SOCKET_AUTH_MODE = 'report';
+        const client = fakeClient('c2', { userId: 'issued', kind: 'anonymous', credentialed: false });
+        service.findClientIdsByUserId.mockResolvedValue(['c1']);
+        sockets.set('c1', { id: 'c1', connected: true });
+        service.findBroadcastSessionsByClientId.mockResolvedValue({ roomId: 'live-room' });
+        service.setUserId.mockResolvedValue('anon-user');
+        await gateway.handleSetUserId(client as never, { id: 'victim' });
+        expect(service.findBroadcastSessionsByClientId).not.toHaveBeenCalled();
+        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: undefined });
+      });
+
+      it('does not hand a second tab a token, since its anonymous id lasts only as long as the socket', async () => {
+        const client = fakeClient('c2', { userId: 'u1', anonymousToken: 'tok' });
+        service.findClientIdsByUserId.mockResolvedValue(['c1']);
+        sockets.set('c1', { id: 'c1', connected: true });
+        service.setUserId.mockResolvedValue('anon-user');
+        await gateway.handleSetUserId(client as never, {});
+        expect(client.send).toHaveBeenCalledWith(expect.not.objectContaining({ anonymousToken: expect.anything() }));
+      });
+    });
+  });
+
+  describe('the handshake', () => {
+    it('establishes identity in a middleware, and refuses the connection only when identity cannot be established', () => {
+      let middleware!: (socket: unknown, next: (err?: Error) => void) => void;
+      gateway.afterInit({ use: (fn: typeof middleware) => { middleware = fn; } } as never);
+      jest.spyOn(identityService, 'resolve').mockReturnValueOnce({ userId: 'u1', kind: 'account', credentialed: true });
+      const socket = { id: 's1', data: {} as Record<string, unknown>, handshake: { auth: { token: 't' } } };
+      const next = jest.fn();
+      middleware(socket, next);
+      expect(identityService.resolve).toHaveBeenCalledWith({ token: 't' });
+      expect(socket.data['identity']).toMatchObject({ userId: 'u1' });
+      expect(next).toHaveBeenCalledWith();
+
+      jest.spyOn(gateway['logger'], 'error').mockImplementation(() => undefined);
+      jest.spyOn(identityService, 'resolve').mockImplementationOnce(() => { throw new Error('JWT_SECRET is not set'); });
+      const refused = jest.fn();
+      middleware({ id: 's2', data: {}, handshake: { auth: {} } }, refused);
+      expect(refused).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    it('tells a client whose token failed, once connected', async () => {
+      const client = fakeClient('c1', { credentialed: false, authFailed: true });
+      await gateway.handleConnection(client as never);
+      expect(client.send).toHaveBeenCalledWith({ message: 'auth failed' });
+    });
+
+    it('says nothing to a client that presented no token or a valid one', async () => {
+      const client = fakeClient('c1');
+      await gateway.handleConnection(client as never);
+      expect(client.send).not.toHaveBeenCalledWith({ message: 'auth failed' });
     });
   });
 
