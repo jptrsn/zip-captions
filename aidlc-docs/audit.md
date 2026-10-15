@@ -386,3 +386,11 @@ Checked against a built server on port 3100 and the local MongoDB: in `enforce` 
 **Findings:** in `report` mode a legacy claimant holds the claimed id, so the real host's next socket is treated as a second tab until it disconnects; that goes away in `enforce`. On the real server a websocket-only client is rejected (the PeerJS server's upgrade handling) while the default long-polling start works; this predates U10 and is why the live check uses the default transports.
 
 **Not verified:** Azure Cosmos DB; the real login flow (it cannot run from localhost); a browser end to end with the client dev server; behaviour with old clients in a real rollout.
+
+## 2026-10-14 — CI job (#153)
+
+**Human:** opened #153 for the tests workflow; restore the removed lock entry; bump the actions to v7; then merged #151 and #152.
+
+**AI actions:** workflow on pull requests with parallel client and server jobs; regenerated the lock file for npm 11 (the first run failed in `npm ci`), restored the dropped nested `@swc/helpers` entry after the Qwen review, bumped the actions to v7; each verified on GitHub with a throwaway branch (both suites green, Node 20 warning gone). After #152 merged, `develop` was merged into the branch with no conflicts.
+
+**Not verified:** that the check is required for merging (branch protection is the human's setting).
