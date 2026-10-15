@@ -35,7 +35,7 @@ jobs:
           esac
 
       - name: Log in to Azure
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 

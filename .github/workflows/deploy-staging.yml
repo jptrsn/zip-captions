@@ -29,8 +29,23 @@ env:
   IMAGE: educoder/zip-captions-server
 
 jobs:
+  # A manual run can be started on any branch; only a release branch may be put into staging
+  guard:
+    name: Release branch only
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse anything but a release branch
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          case "$REF_NAME" in
+            release/*) ;;
+            *) echo "::error::'$REF_NAME' is not a release branch; staging only runs release candidates"; exit 1 ;;
+          esac
+
   tests:
     name: Tests
+    needs: guard
     uses: ./.github/workflows/test.yml
 
   deploy:
@@ -44,7 +59,10 @@ jobs:
       RESOURCE_GROUP: ${{ vars.STAGING_RESOURCE_GROUP || 'ZipCaptions-Staging' }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # Nothing after this pushes to the repository, so the token need not stay in the git config
+          persist-credentials: false
 
       - name: Refuse anything that is not the staging resource group
         run: |
@@ -54,16 +72,16 @@ jobs:
           esac
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push the server image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           file: ./Dockerfile
@@ -72,7 +90,7 @@ jobs:
           tags: ${{ env.IMAGE }}:staging-${{ github.sha }}
 
       - name: Log in to Azure
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -131,7 +149,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: lts/*
           cache: npm
@@ -151,7 +169,7 @@ jobs:
           echo "SWA_TOKEN=$TOKEN" >> "$GITHUB_ENV"
 
       - name: Deploy the client
-        uses: Azure/static-web-apps-deploy@v1
+        uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1
         with:
           azure_static_web_apps_api_token: ${{ env.SWA_TOKEN }}
           action: upload
