@@ -33,3 +33,5 @@ The on-device translation feature is not released until **U10** (authenticated s
 U10 is merged (#154) but the default mode is still `report`, in which the original attack remains open by design. Moving production to `enforce` needs its own plan (signal, threshold, stragglers on old clients, rollback): `construction/backlog-socket-auth-enforce.md`.
 
 U11 is merged (#156) with `PEER_AUTH_MODE` defaulting to `report`. It is not a release blocker. Move it to `enforce` only after `SOCKET_AUTH_MODE=enforce` is live and the `legacy peer registration` log lines have stopped (the peer token travels in the socket reply, so the deploys are shared); see `construction/u11-peer-identity/functional-design.md` §5.1.
+
+U12 (release candidate and ephemeral Azure staging): design approved 2026-10-15; the staging pipeline is written on `feature/azure-staging` and has never run (no Azure access from the authoring session). The release candidate `release/v0.5.0` is cut only after that merges, since a workflow triggered by pushes to `release/**` must be on the release branch. See `construction/u12-release-and-staging/functional-design.md` and `infra/staging/README.md`.
