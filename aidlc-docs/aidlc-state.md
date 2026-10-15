@@ -29,3 +29,5 @@
 
 ### Release blockers (human, 2026-10-14)
 The on-device translation feature is not released until **U10** (authenticated socket identity) is done **and production runs with `SOCKET_AUTH_MODE=enforce`**. **U11** (PeerJS server has no authentication; the peer id is the user id) blocks the release only if it is a regression compared to `main`; the human decided on 2026-10-14 that otherwise it is a follow-on issue. Checked 2026-10-14: `peer-server.service.ts` is identical on `main` and `develop`, and `main` already creates the peer with the user id (`new Peer(this.myId, …)`), so U11 is **not** a regression: it is a follow-on issue and does not block the release.
+
+U10 is merged (#154) but the default mode is still `report`, in which the original attack remains open by design. Moving production to `enforce` needs its own plan (signal, threshold, stragglers on old clients, rollback): `construction/backlog-socket-auth-enforce.md`.
