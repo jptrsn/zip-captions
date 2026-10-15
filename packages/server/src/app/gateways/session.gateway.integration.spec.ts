@@ -1,9 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { model } from 'mongoose';
+import WebSocket from 'ws';
 import { io, Socket as ClientSocket } from 'socket.io-client';
 import { InMemoryCollection } from '../../../test/in-memory-model';
 import { BroadcastSession, BroadcastSessionSchema } from '../models/broadcast-session.model';
@@ -11,6 +13,8 @@ import { OwnerRoom, OwnerRoomSchema } from '../models/owner-rooms.model';
 import { SocketConnection, SocketConnectionSchema } from '../models/socket-connection.model';
 import { CacheService } from '../services/cache/cache.service';
 import { SessionService } from '../services/session/session.service';
+import { PeerIdentityService } from '../services/peer-identity/peer-identity.service';
+import { PeerServerService } from '../services/peer-server/peer-server.service';
 import { SocketIdentityService } from '../services/socket-identity/socket-identity.service';
 import { SessionGateway } from './session.gateway';
 
@@ -106,14 +110,19 @@ describe('SessionGateway over a real socket (integration)', () => {
         SessionGateway,
         SessionService,
         SocketIdentityService,
+        PeerIdentityService,
+        PeerServerService,
         { provide: CacheService, useValue: cacheService },
         { provide: getModelToken(SocketConnection.name), useValue: SocketModel },
         { provide: getModelToken(OwnerRoom.name), useValue: RoomModel },
         { provide: getModelToken(BroadcastSession.name), useValue: BroadcastModel },
       ],
     }).compile();
-    app = moduleRef.createNestApplication({ logger: false });
+    app = moduleRef.createNestApplication<NestExpressApplication>({ logger: false });
     app.useWebSocketAdapter(new IoAdapter(app));
+    // As main.ts does: the real peer server shares the http server with socket.io
+    moduleRef.get(PeerServerService).enablePeerServer(app as NestExpressApplication);
+    process.env.PEER_AUTH_MODE = 'enforce';
     await app.listen(0);
     url = `http://localhost:${app.getHttpServer().address().port}`;
     sessions = app.get(SessionService);
@@ -127,6 +136,39 @@ describe('SessionGateway over a real socket (integration)', () => {
     collections.forEach((c) => c.restore());
     jest.restoreAllMocks();
     process.env = { ...savedEnv };
+  });
+
+  /** Registers on the real peer server the way the PeerJS client does; resolves with the server's first message */
+  const registerPeer = (id: string, token: string): Promise<string> => new Promise((resolve) => {
+    const ws = new WebSocket(`${url.replace('http', 'ws')}/peer-server/peerjs?key=peerjs&id=${id}&token=${token}`);
+    ws.on('message', (data) => { resolve(JSON.parse(data.toString()).type); ws.close(); });
+    ws.on('unexpected-response', () => resolve('rejected'));
+    ws.on('error', () => resolve('rejected'));
+    ws.on('close', () => resolve('rejected'));
+  });
+
+  describe('peer identity, end to end', () => {
+    it('lets the verified host register its own peer id with the token the socket gave it', async () => {
+      const host = new TestClient({ token: accountToken(HOST) });
+      const reply = await host.setId(HOST);
+      expect(await registerPeer(HOST, reply.peerToken)).toBe('OPEN');
+    });
+
+    it('does not let another socket register the host\'s peer id, with or without a token of its own', async () => {
+      const attacker = new TestClient();
+      const reply = await attacker.setId(HOST);
+      expect(reply.id).not.toBe(HOST);
+      expect(await registerPeer(HOST, reply.peerToken)).toBe('rejected');
+      expect(await registerPeer(HOST, 'attacker-chosen-token')).toBe('rejected');
+    });
+
+    it('gives a refreshed token on request that registers as well', async () => {
+      const host = new TestClient({ token: accountToken(HOST) });
+      await host.setId(HOST);
+      host.socket.emit('peerToken');
+      const { peerToken } = await host.waitFor('peer token');
+      expect(await registerPeer(HOST, peerToken)).toBe('OPEN');
+    });
   });
 
   describe('a client that only knows the host\'s user id', () => {

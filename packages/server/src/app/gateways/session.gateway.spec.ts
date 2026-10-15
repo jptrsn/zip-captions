@@ -1,5 +1,6 @@
 import { SessionGateway } from './session.gateway';
 import { SessionService } from '../services/session/session.service';
+import { PeerIdentityService } from '../services/peer-identity/peer-identity.service';
 import { SocketIdentity, SocketIdentityService } from '../services/socket-identity/socket-identity.service';
 
 type Mock = jest.Mock;
@@ -26,6 +27,7 @@ describe('SessionGateway', () => {
   let service: Record<'getUserIdForNewClientConnection' | 'handleClientDisconnected' | 'getUserFromClientId' | 'findUserRooms' | 'getBroadcastSession' | 'findClientIdsByUserId' | 'findBroadcastSessionsByClientId' | 'setUserId' | 'endBroadcastSession', Mock>;
   let gateway: SessionGateway;
   let identityService: SocketIdentityService;
+  let peerIdentity: PeerIdentityService;
   let toEmit: Mock;
   let inEmit: Mock;
   let sockets: Map<string, { id: string; connected: boolean }>;
@@ -43,10 +45,12 @@ describe('SessionGateway', () => {
       setUserId: jest.fn(),
       endBroadcastSession: jest.fn(),
     };
+    process.env.JWT_SECRET = 'gateway-unit-secret';
     delete process.env.SOCKET_AUTH_MODE;
     identityService = new SocketIdentityService();
     jest.spyOn(identityService['logger'], 'warn').mockImplementation(() => undefined);
-    gateway = new SessionGateway(service as unknown as SessionService, identityService);
+    peerIdentity = new PeerIdentityService();
+    gateway = new SessionGateway(service as unknown as SessionService, identityService, peerIdentity);
     toEmit = jest.fn();
     inEmit = jest.fn();
     sockets = new Map();
@@ -180,7 +184,7 @@ describe('SessionGateway', () => {
       service.findUserRooms.mockResolvedValue([{ roomId: 'r1' }]);
       await gateway.handleSetUserId(client as never, { id: 'u1' });
       expect(service.setUserId).toHaveBeenCalledWith('c1', 'u1');
-      expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'u1' });
+      expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'u1', peerToken: expect.any(String) });
       expect(client.send).toHaveBeenCalledWith({ message: 'set rooms', rooms: [{ roomId: 'r1' }] });
     });
 
@@ -200,7 +204,7 @@ describe('SessionGateway', () => {
       await gateway.handleSetUserId(client as never, { id: 'u1' });
       expect(service.findBroadcastSessionsByClientId).toHaveBeenCalledWith('c1', true);
       expect(service.setUserId).toHaveBeenCalledWith('c2');
-      expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: 'live-room' });
+      expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: 'live-room', peerToken: expect.any(String) });
     });
 
     it('ignores the user\'s other clients that are no longer connected', async () => {
@@ -218,7 +222,7 @@ describe('SessionGateway', () => {
         service.setUserId.mockResolvedValue('me');
         await gateway.handleSetUserId(client as never, { id: 'someone-else' });
         expect(service.setUserId).toHaveBeenCalledWith('c1', 'me');
-        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'me' });
+        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'me', peerToken: expect.any(String) });
         expect(service.findUserRooms).not.toHaveBeenCalledWith('someone-else');
       });
 
@@ -240,7 +244,7 @@ describe('SessionGateway', () => {
           await gateway.handleSetUserId(client as never, { id: 'victim' });
           expect(service.setUserId).toHaveBeenCalledWith('c1', 'issued');
           expect(service.findUserRooms).toHaveBeenCalledWith('issued');
-          expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'issued', anonymousToken: 'tok' });
+          expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'issued', anonymousToken: 'tok', peerToken: expect.any(String) });
         });
 
         it('is honoured and counted in report mode, with no token for an id the server did not issue', async () => {
@@ -280,7 +284,35 @@ describe('SessionGateway', () => {
         service.setUserId.mockResolvedValue('anon-user');
         await gateway.handleSetUserId(client as never, { id: 'victim' });
         expect(service.findBroadcastSessionsByClientId).not.toHaveBeenCalled();
-        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: undefined });
+        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: undefined, peerToken: expect.any(String) });
+      });
+
+      describe('the peer token', () => {
+        it('vouches for the registered id, for a verified user', async () => {
+          const client = fakeClient('c1', { userId: 'me' });
+          service.setUserId.mockResolvedValue('me');
+          await gateway.handleSetUserId(client as never, {});
+          const sent = client.send.mock.calls.map(([m]) => m).find((m) => m.message === 'set user id success');
+          expect(peerIdentity.verify(sent.peerToken)).toBe('me');
+        });
+
+        it('vouches for the second tab\'s own fresh id, not the id the tab asked for', async () => {
+          const client = fakeClient('c2', { userId: 'u1' });
+          service.findClientIdsByUserId.mockResolvedValue(['c1']);
+          sockets.set('c1', { id: 'c1', connected: true });
+          service.setUserId.mockResolvedValue('anon-user');
+          await gateway.handleSetUserId(client as never, {});
+          const sent = client.send.mock.calls.map(([m]) => m).find((m) => m.message === 'set user id success');
+          expect(peerIdentity.verify(sent.peerToken)).toBe('anon-user');
+        });
+
+        it('is never issued for an id a report-mode client merely named', async () => {
+          process.env.SOCKET_AUTH_MODE = 'report';
+          const client = fakeClient('c1', { userId: 'issued', kind: 'anonymous', credentialed: false });
+          service.setUserId.mockResolvedValue('victim');
+          await gateway.handleSetUserId(client as never, { id: 'victim' });
+          expect(client.send).toHaveBeenCalledWith(expect.not.objectContaining({ peerToken: expect.anything() }));
+        });
       });
 
       it('does not hand a second tab a token, since its anonymous id lasts only as long as the socket', async () => {
@@ -291,6 +323,35 @@ describe('SessionGateway', () => {
         await gateway.handleSetUserId(client as never, {});
         expect(client.send).toHaveBeenCalledWith(expect.not.objectContaining({ anonymousToken: expect.anything() }));
       });
+    });
+  });
+
+  describe('peerToken', () => {
+    it('sends a fresh token for the id the socket is registered under', async () => {
+      const client = fakeClient('c1');
+      service.getUserFromClientId.mockResolvedValue('me');
+      await gateway.handlePeerToken(client as never);
+      const sent = client.send.mock.calls[0][0];
+      expect(sent.message).toBe('peer token');
+      expect(peerIdentity.verify(sent.peerToken)).toBe('me');
+    });
+
+    it('sends nothing to a socket that has no registered user', async () => {
+      const client = fakeClient('c1');
+      service.getUserFromClientId.mockResolvedValue(null);
+      await gateway.handlePeerToken(client as never);
+      expect(client.send).not.toHaveBeenCalled();
+    });
+
+    it('sends nothing to a report-mode client that was registered under an id it merely named', async () => {
+      process.env.SOCKET_AUTH_MODE = 'report';
+      const client = fakeClient('c1', { userId: 'issued', kind: 'anonymous', credentialed: false });
+      service.setUserId.mockResolvedValue('victim');
+      await gateway.handleSetUserId(client as never, { id: 'victim' });
+      client.send.mockClear();
+      service.getUserFromClientId.mockResolvedValue('victim');
+      await gateway.handlePeerToken(client as never);
+      expect(client.send).not.toHaveBeenCalled();
     });
   });
 
