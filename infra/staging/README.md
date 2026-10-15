@@ -23,7 +23,7 @@ Production (`deploy.yml`, from `main`) is separate and untouched. Nothing here c
    az ad sp create-for-rbac --name zip-captions-staging-ci --role Contributor \
      --scopes /subscriptions/<subscription id>/resourceGroups/ZipCaptions-Staging
    ```
-   Put its output into one JSON object for the secret `AZURE_CREDENTIALS`:
+   Put its output into one JSON object for the secret `STAGING_AZURE_CREDENTIALS` (not `AZURE_CREDENTIALS`: that is production's repository secret, and a job that lacks its own secret of the same name would silently use it):
    ```
    {"clientId": "<appId>", "clientSecret": "<password>", "subscriptionId": "<subscription id>", "tenantId": "<tenant>"}
    ```
@@ -31,7 +31,7 @@ Production (`deploy.yml`, from `main`) is separate and untouched. Nothing here c
 
    | Secret | What |
    |---|---|
-   | `AZURE_CREDENTIALS` | the JSON above |
+   | `STAGING_AZURE_CREDENTIALS` | the JSON above |
    | `STAGING_SECRET_SEED` | any long random string; the database password, `JWT_SECRET`, `SESSION_SECRET` and the Patreon webhook secret are derived from it. Changing it rotates all of them |
    | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | the staging Google app |
    | `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET` | the staging Microsoft (Azure) app |
