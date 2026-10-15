@@ -1,17 +1,37 @@
 import { Logger } from '@nestjs/common';
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from "socket.io";
 import { BroadcastSession } from '../models/broadcast-session.model';
 import { SessionService } from '../services/session/session.service';
+import { SocketIdentity, SocketIdentityService } from '../services/socket-identity/socket-identity.service';
 
 @WebSocketGateway({ cors: true })
-export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SessionGateway.name);
   @WebSocketServer() server: Server;
-  constructor(private sessionService: SessionService) { }
-  
+  constructor(private sessionService: SessionService, private socketIdentity: SocketIdentityService) { }
+
+  /**
+   * Who a socket is comes from the credentials in its handshake, checked here before any message is handled. The
+   * connection is never refused for a bad token: that client is an anonymous one (and is told, see handleConnection).
+   */
+  afterInit(server: Server): void {
+    server.use((socket, next) => {
+      try {
+        socket.data.identity = this.socketIdentity.resolve(socket.handshake.auth);
+        next();
+      } catch (err) {
+        this.logger.error(`cannot establish the identity of socket ${socket.id}: ${(err as Error).message}`);
+        next(new Error('identity unavailable'));
+      }
+    });
+  }
+
   // Gateway connection handler
   async handleConnection(client: Socket): Promise<void> {
+    if ((client.data?.identity as SocketIdentity | undefined)?.authFailed) {
+      client.send({message: 'auth failed'});
+    }
     const userId = await this.sessionService.getUserIdForNewClientConnection(client.id);
     if (userId) {
       client.send({message: 'set user id', id: userId})
@@ -92,28 +112,49 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
     client.send({user: clientUserId, message: 'room joined', room });
   }
 
+  /**
+   * Registers the socket as its verified user. The id in the payload is not an identity claim: it is honoured only
+   * in `report` mode, and only for a client that showed no valid credential (an old client during the rollout).
+   */
   @SubscribeMessage('setId')
   async handleSetUserId(client: Socket, payload: { id?: string }): Promise<void> {
-    console.log('set ID', payload.id)
-    const existingClientIds = await this.sessionService.findClientIdsByUserId(payload.id);
+    const identity: SocketIdentity | undefined = client.data?.identity;
+    if (!identity) {
+      this.logger.warn(`setId from client ${client.id}, which has no established identity`);
+      return;
+    }
+    let userId = identity.userId;
+    let claimed = false;
+    if (payload?.id && payload.id !== userId) {
+      if (!identity.credentialed && this.socketIdentity.mode() === 'report') {
+        this.socketIdentity.recordLegacyClaim(client.id, payload.id);
+        userId = payload.id;
+        claimed = true;
+      } else {
+        this.logger.warn(`client ${client.id} named user ${payload.id} but is ${userId}; ignored`);
+      }
+    }
+    const existingClientIds = await this.sessionService.findClientIdsByUserId(userId);
     if (existingClientIds.length) {
       // TODO: Prune disconnected client IDs from db document
-      console.log(`found ${existingClientIds.length} existing client IDs`);
       for (const id of existingClientIds) {
         const socket = this.server.sockets.sockets.get(id);
         if (socket?.connected) {
-          console.log(`socket ${id} is connected!`);
+          // This user already has a live client: this one (a second tab) gets its own anonymous id so that its
+          // PeerJS id is unique. It is not that user's, so it cannot end that user's broadcast.
           const broadcastSession = await this.sessionService.findBroadcastSessionsByClientId(id, true);
-          const userId = await this.sessionService.setUserId(client.id);
-          client.send({message: 'set user id success', id: userId, isAnonymized: true, roomId: broadcastSession?.roomId })
+          const anonymizedId = await this.sessionService.setUserId(client.id);
+          client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId })
           return;
         }
       }
     }
-    const userId = await this.sessionService.setUserId(client.id, payload.id);
-    client.send({message: 'set user id success', id: userId})
+    const registeredId = await this.sessionService.setUserId(client.id, userId);
+    // The token that keeps an id the server made up is handed over once, with that id
+    const anonymousToken = !claimed && registeredId === identity.userId ? identity.anonymousToken : undefined;
+    client.send({message: 'set user id success', id: registeredId, ...(anonymousToken && { anonymousToken })})
     
-    const userRooms = await this.sessionService.findUserRooms(userId);
+    const userRooms = await this.sessionService.findUserRooms(registeredId);
     if (userRooms.length) {
       client.send({message: 'set rooms', rooms: userRooms })
     }
