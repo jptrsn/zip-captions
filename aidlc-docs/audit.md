@@ -373,3 +373,11 @@ A throwaway obs-websocket v5 server (scratchpad only, not in the repo) on port 4
 **Human:** reported feedback on #152.
 
 **AI actions:** one valid comment (ObjectIds compared by identity in the in-memory model's matcher). Fixed with a `sameValue` comparison (Dates by time, ObjectId by value or string form) and a new spec for the helper (14 tests; 7 failed first). Server: 13 of 13 suites, 179 tests; `tsc` and the build clean; the helper is not in the bundle.
+
+## 2026-10-14 — CI job (#153)
+
+**Human:** opened #153 for the tests workflow; restore the removed lock entry; bump the actions to v7; then merged #151 and #152.
+
+**AI actions:** workflow on pull requests with parallel client and server jobs; regenerated the lock file for npm 11 (the first run failed in `npm ci`), restored the dropped nested `@swc/helpers` entry after the Qwen review, bumped the actions to v7; each verified on GitHub with a throwaway branch (both suites green, Node 20 warning gone). After #152 merged, `develop` was merged into the branch with no conflicts.
+
+**Not verified:** that the check is required for merging (branch protection is the human's setting).
