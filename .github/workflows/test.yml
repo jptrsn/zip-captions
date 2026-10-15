@@ -5,6 +5,10 @@ on:
     branches:
       - develop
       - main
+    # A change to nothing but these cannot break a test. (Not the repo's docs/ folder: that is the client's build output.)
+    paths-ignore:
+      - 'aidlc-docs/**'
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:
