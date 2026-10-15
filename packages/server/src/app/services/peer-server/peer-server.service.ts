@@ -29,7 +29,10 @@ export class PeerServerService {
       verifyClient: (info: { req: { url?: string } }) => this.mayRegister(info.req.url),
     });
     server.on('upgrade', (req, socket, head) => {
-      if (new URL(req.url ?? '', 'https://peerjs').pathname === path) {
+      const parsed = this.parse(req.url);
+      if (!parsed) {
+        socket.destroy();
+      } else if (parsed.pathname === path) {
         wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
       }
     });
@@ -38,7 +41,16 @@ export class PeerServerService {
 
   /** The PeerJS client puts the id and the token it was given in the query of its signalling WebSocket URL */
   private mayRegister(url: string | undefined): boolean {
-    const { searchParams } = new URL(url ?? '', 'https://peerjs');
-    return this.peerIdentity.allowRegistration(searchParams.get('id'), searchParams.get('token'));
+    const parsed = this.parse(url);
+    return !!parsed && this.peerIdentity.allowRegistration(parsed.searchParams.get('id'), parsed.searchParams.get('token'));
+  }
+
+  /** A request target such as `//` is not a URL, and must not throw inside an event handler of the http server */
+  private parse(url: string | undefined): URL | undefined {
+    try {
+      return new URL(url ?? '', 'https://peerjs');
+    } catch {
+      return undefined;
+    }
   }
 }

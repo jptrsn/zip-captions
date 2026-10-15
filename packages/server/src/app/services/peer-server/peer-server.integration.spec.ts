@@ -1,6 +1,6 @@
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
-import { AddressInfo } from 'net';
+import { AddressInfo, connect } from 'net';
 import WebSocket from 'ws';
 import { JwtService } from '@nestjs/jwt';
 import { deriveKey } from '../identity-keys';
@@ -94,6 +94,28 @@ describe('PeerServerService over a real WebSocket (integration)', () => {
 
     it('still lets an old client register without a token, as before', async () => {
       expect(await register('old-client-id', 'random-old-client-token')).toBe('OPEN');
+    });
+  });
+
+  describe('a request target that is not a path', () => {
+    /** An upgrade request whose target is `//`, which `new URL('//', base)` cannot parse */
+    const malformedUpgrade = () => new Promise<void>((resolve) => {
+      const socket = connect(port, '127.0.0.1', () => socket.write('GET // HTTP/1.1\r\nHost: peerjs\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n\r\n'));
+      socket.on('error', () => undefined);
+      socket.on('close', () => resolve());
+      setTimeout(() => { socket.destroy(); resolve(); }, 500);
+    });
+
+    it('does not take the server down, and registration still works afterwards', async () => {
+      const uncaught = jest.fn();
+      process.on('uncaughtException', uncaught);
+      try {
+        await malformedUpgrade();
+        expect(uncaught).not.toHaveBeenCalled();
+      } finally {
+        process.removeListener('uncaughtException', uncaught);
+      }
+      expect(await register('after-malformed', peerIdentity.issue('after-malformed'))).toBe('OPEN');
     });
   });
 });
