@@ -132,6 +132,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.socketIdentity.recordLegacyClaim(client.id, payload.id);
         userId = payload.id;
         claimed = true;
+        client.data.claimedUserIds = [...(client.data.claimedUserIds ?? []), payload.id];
       } else {
         this.logger.warn(`client ${client.id} named user ${payload.id} but is ${userId}; ignored`);
       }
@@ -147,7 +148,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
           // Not for a report-mode claimant, who has shown nothing that ties it to this user: the room id is theirs
           const broadcastSession = claimed ? null : await this.sessionService.findBroadcastSessionsByClientId(id, true);
           const anonymizedId = await this.sessionService.setUserId(client.id);
-          client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId, peerToken: this.peerIdentity.issue(anonymizedId) })
+          client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId, ...this.peerTokenFor(client, anonymizedId) })
           return;
         }
       }
@@ -155,10 +156,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     const registeredId = await this.sessionService.setUserId(client.id, userId);
     // The token that keeps an id the server made up is handed over once, with that id
     const anonymousToken = !claimed && registeredId === identity.userId ? identity.anonymousToken : undefined;
-    // A peer token lets the holder register this id as a PeerJS peer. Never for an id the client merely named.
-    client.data.peerTokenWithheld = claimed;
-    const peerToken = claimed ? undefined : this.peerIdentity.issue(registeredId);
-    client.send({message: 'set user id success', id: registeredId, ...(anonymousToken && { anonymousToken }), ...(peerToken && { peerToken })})
+    client.send({message: 'set user id success', id: registeredId, ...(anonymousToken && { anonymousToken }), ...this.peerTokenFor(client, registeredId)})
     
     const userRooms = await this.sessionService.findUserRooms(registeredId);
     if (userRooms.length) {
@@ -166,14 +164,25 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
   }
 
+  /**
+   * A peer token lets its holder register the id as a PeerJS peer, so it is never issued for an id this socket merely
+   * named (report mode), even when a later request is handed that id back.
+   */
+  private peerTokenFor(client: Socket, userId: string | undefined): { peerToken?: string } {
+    if (!userId || (client.data?.claimedUserIds as string[] | undefined)?.includes(userId)) {
+      return {};
+    }
+    return { peerToken: this.peerIdentity.issue(userId) };
+  }
+
   /** A fresh peer token for the id this socket is registered under, for a client whose last one is about to expire */
   @SubscribeMessage('peerToken')
   async handlePeerToken(client: Socket): Promise<void> {
     const userId = await this.sessionService.getUserFromClientId(client.id);
-    if (!userId || client.data?.peerTokenWithheld) {
-      return;
+    const { peerToken } = this.peerTokenFor(client, userId ?? undefined);
+    if (peerToken) {
+      client.send({message: 'peer token', peerToken});
     }
-    client.send({message: 'peer token', peerToken: this.peerIdentity.issue(userId)});
   }
 
   @SubscribeMessage('endBroadcast')

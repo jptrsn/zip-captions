@@ -315,6 +315,23 @@ describe('SessionGateway', () => {
         });
       });
 
+      it('is not issued when a report-mode claimant asks again and is handed the id it named', async () => {
+        process.env.SOCKET_AUTH_MODE = 'report';
+        const client = fakeClient('c1', { userId: 'issued', kind: 'anonymous', credentialed: false });
+        service.setUserId.mockResolvedValue('victim');
+        await gateway.handleSetUserId(client as never, { id: 'victim' });
+        // The second request finds the claimant's own socket registered under the id, so it is treated as a second tab,
+        // and the service hands back the id this socket already holds
+        service.findClientIdsByUserId.mockResolvedValue(['c1']);
+        sockets.set('c1', { id: 'c1', connected: true });
+        client.send.mockClear();
+        await gateway.handleSetUserId(client as never, {});
+        expect(client.send).toHaveBeenCalledWith(expect.not.objectContaining({ peerToken: expect.anything() }));
+        service.getUserFromClientId.mockResolvedValue('victim');
+        await gateway.handlePeerToken(client as never);
+        expect(client.send).not.toHaveBeenCalledWith(expect.objectContaining({ message: 'peer token' }));
+      });
+
       it('does not hand a second tab a token, since its anonymous id lasts only as long as the socket', async () => {
         const client = fakeClient('c2', { userId: 'u1', anonymousToken: 'tok' });
         service.findClientIdsByUserId.mockResolvedValue(['c1']);
