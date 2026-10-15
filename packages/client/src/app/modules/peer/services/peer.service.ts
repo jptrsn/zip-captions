@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, of, take, timeout } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, catchError, filter, of, take, timeout } from 'rxjs';
 import { PeerActions } from '../../../actions/peer.actions';
 import { AppState } from '../../../models/app.model';
 import { RecognitionStatus } from '../../../models/recognition.model';
@@ -37,6 +37,10 @@ export class PeerService {
   // The login token the current socket connected with; a different one later means the socket must reconnect
   private handshakeLoginToken?: string;
 
+  // Proves to the peer server that this client may register its peer id; issued by the socket server, valid for an hour
+  private peerToken?: string;
+  private readonly peerTokenReceived = new Subject<void>();
+
   private readonly SOCKET_URL: string;
   private readonly PEER_PORT: number;
   private readonly PEER_URL: string;
@@ -44,6 +48,8 @@ export class PeerService {
 
   private CONNECT_OPTS: PeerJSOption;
   private myBroadcast = false;
+  // The peer id of the room's host, as the server names it. A viewer takes captions from no other peer.
+  private hostPeerId?: string;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private roomIdSignal: Signal<string | undefined>;
@@ -167,6 +173,7 @@ export class PeerService {
       // console.log('socket message', data, this.allowAnonymous());
       switch (data.message) {
         case 'room joined': {
+          this.hostPeerId = this.myBroadcast ? undefined : data.hostUserId;
           if (data.room) {
             // console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
@@ -187,7 +194,12 @@ export class PeerService {
           console.warn('The server did not accept the login token; continuing as an anonymous user');
           break;
         }
+        case 'peer token': {
+          this.setPeerToken(data.peerToken);
+          break;
+        }
         case 'set user id success': {
+          this.setPeerToken(data.peerToken);
           if (data.anonymousToken) {
             this.cache.save({key: 'anonymousToken', data: { token: data.anonymousToken }, expirationMins: this.ANONYMOUS_TOKEN_MINS});
           }
@@ -326,7 +338,8 @@ export class PeerService {
     }
     const sub: ReplaySubject<string> = new ReplaySubject<string>();
     this.CONNECT_OPTS.config!.iceServers![0].username = this.myId;
-    this.peer = new Peer(this.myId, this.CONNECT_OPTS);
+    // A server that predates peer tokens sends none, and PeerJS then makes up its own, as before
+    this.peer = new Peer(this.myId, { ...this.CONNECT_OPTS, ...(this.peerToken && { token: this.peerToken }) });
     this.peer.addListener('open', () => {
       // console.log('peer server connection opened')
       this.store.dispatch(PeerActions.peerServerConnected());
@@ -425,6 +438,38 @@ export class PeerService {
     }
   }
 
+  private setPeerToken(token: unknown): void {
+    if (typeof token === 'string' && token) {
+      this.peerToken = token;
+      this.peerTokenReceived.next();
+    }
+  }
+
+  /** Asks the socket server for a fresh token and gives it to the live peer. Emits whether the peer now has it. */
+  private refreshPeerToken(): Observable<boolean> {
+    const result = new ReplaySubject<boolean>(1);
+    if (!this.socket?.ioSocket?.connected) {
+      // No way to get a new one: reconnect with what the peer has, which works until it expires
+      result.next(true);
+      return result.asObservable();
+    }
+    this.peerTokenReceived.pipe(take(1), timeout(3000), catchError(() => of(null))).subscribe(() => {
+      // PeerJS keeps the token it sends on (re)connect in a private option, and has no way to change it
+      const options = (this.peer as unknown as { _options?: { token?: string } } | undefined)?._options;
+      if (!this.peerToken) {
+        // A server that predates peer tokens: the peer has a token of its own making and keeps it
+        result.next(true);
+      } else if (options) {
+        options.token = this.peerToken;
+        result.next(true);
+      } else {
+        result.next(false);
+      }
+    });
+    this.socket.emit('peerToken');
+    return result.asObservable();
+  }
+
   private _reconnectPeerServer(tryNumber?: number): void {
     // console.log('reconnect peer server', tryNumber);
     let thisTry = tryNumber || 0;
@@ -437,7 +482,18 @@ export class PeerService {
           thisTry = 0;
           clearTimeout(timerId)
         })
-        this.peer?.reconnect();
+        // The token the peer was created with may have expired while it was connected
+        this.refreshPeerToken().subscribe((applied) => {
+          if (!this.peer?.disconnected) {
+            return;
+          }
+          if (applied) {
+            this.peer.reconnect();
+          } else {
+            // Cannot give the live peer a new token: make a new one
+            this.store.dispatch(PeerActions.connectPeerServer());
+          }
+        });
       } else if (thisTry < 5) {
         this._reconnectPeerServer(++thisTry);
       } else {
@@ -483,17 +539,30 @@ export class PeerService {
     return outString;
   }
 
+  /**
+   * Whether a viewer got this connection from someone other than the room's host. The peer server stamps each
+   * connection with the id its peer proved it owns, so `connection.peer` cannot be faked. Until the server has
+   * named the host (an old server, or the first moments in the room) nothing is refused, as before.
+   */
+  private _isNotTheHost(connection: DataConnection): boolean {
+    return !this.myBroadcast && !!this.hostPeerId && connection.peer !== this.hostPeerId;
+  }
+
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
       // console.log('connection closed');
-      if (!this.myBroadcast) {
+      if (!this.myBroadcast && !this._isNotTheHost(connection)) {
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       }
       connection.removeAllListeners();
     });
     
     connection.on('open', () => {
+      if (this._isNotTheHost(connection)) {
+        connection.close();
+        return;
+      }
       // console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
         // console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
@@ -503,6 +572,9 @@ export class PeerService {
     });
     
     connection.on('data', (data: any) => {
+      if (this._isNotTheHost(connection)) {
+        return;
+      }
       if (data?.request) {
         // console.log('connection data', data)
         switch (data.request) {

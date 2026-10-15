@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { createHmac, randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
+import { deriveKey, jwtSecret } from '../identity-keys';
 
 /** `report` still accepts a user id a client merely names in `setId`, and logs it; `enforce` never does */
 export type SocketAuthMode = 'report' | 'enforce';
@@ -97,14 +98,10 @@ export class SocketIdentityService {
   }
 
   private accountSecret(): string {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error('JWT_SECRET is not set; socket identities cannot be verified');
-    }
-    return secret;
+    return jwtSecret();
   }
 
   private anonymousSecret(): string {
-    return createHmac('sha256', this.accountSecret()).update(ANONYMOUS_KEY_LABEL).digest('hex');
+    return deriveKey(ANONYMOUS_KEY_LABEL);
   }
 }

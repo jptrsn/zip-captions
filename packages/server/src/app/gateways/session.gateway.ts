@@ -3,13 +3,14 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessa
 import { Server, Socket } from "socket.io";
 import { BroadcastSession } from '../models/broadcast-session.model';
 import { SessionService } from '../services/session/session.service';
+import { PeerIdentityService } from '../services/peer-identity/peer-identity.service';
 import { SocketIdentity, SocketIdentityService } from '../services/socket-identity/socket-identity.service';
 
 @WebSocketGateway({ cors: true })
 export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SessionGateway.name);
   @WebSocketServer() server: Server;
-  constructor(private sessionService: SessionService, private socketIdentity: SocketIdentityService) { }
+  constructor(private sessionService: SessionService, private socketIdentity: SocketIdentityService, private peerIdentity: PeerIdentityService) { }
 
   /**
    * Who a socket is comes from the credentials in its handshake, checked here before any message is handled. The
@@ -109,7 +110,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         client.broadcast.to(room).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false});
       }
     }
-    client.send({user: clientUserId, message: 'room joined', room });
+    // The viewer accepts captions only from this peer, which the peer server has verified to be the owner of its id
+    client.send({user: clientUserId, message: 'room joined', room, hostUserId: broadcast.hostUserId });
   }
 
   /**
@@ -130,6 +132,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.socketIdentity.recordLegacyClaim(client.id, payload.id);
         userId = payload.id;
         claimed = true;
+        client.data.claimedUserIds = [...(client.data.claimedUserIds ?? []), payload.id];
       } else {
         this.logger.warn(`client ${client.id} named user ${payload.id} but is ${userId}; ignored`);
       }
@@ -145,7 +148,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
           // Not for a report-mode claimant, who has shown nothing that ties it to this user: the room id is theirs
           const broadcastSession = claimed ? null : await this.sessionService.findBroadcastSessionsByClientId(id, true);
           const anonymizedId = await this.sessionService.setUserId(client.id);
-          client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId })
+          client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId, ...this.peerTokenFor(client, anonymizedId) })
           return;
         }
       }
@@ -153,11 +156,32 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     const registeredId = await this.sessionService.setUserId(client.id, userId);
     // The token that keeps an id the server made up is handed over once, with that id
     const anonymousToken = !claimed && registeredId === identity.userId ? identity.anonymousToken : undefined;
-    client.send({message: 'set user id success', id: registeredId, ...(anonymousToken && { anonymousToken })})
+    client.send({message: 'set user id success', id: registeredId, ...(anonymousToken && { anonymousToken }), ...this.peerTokenFor(client, registeredId)})
     
     const userRooms = await this.sessionService.findUserRooms(registeredId);
     if (userRooms.length) {
       client.send({message: 'set rooms', rooms: userRooms })
+    }
+  }
+
+  /**
+   * A peer token lets its holder register the id as a PeerJS peer, so it is never issued for an id this socket merely
+   * named (report mode), even when a later request is handed that id back.
+   */
+  private peerTokenFor(client: Socket, userId: string | undefined): { peerToken?: string } {
+    if (!userId || (client.data?.claimedUserIds as string[] | undefined)?.includes(userId)) {
+      return {};
+    }
+    return { peerToken: this.peerIdentity.issue(userId) };
+  }
+
+  /** A fresh peer token for the id this socket is registered under, for a client whose last one is about to expire */
+  @SubscribeMessage('peerToken')
+  async handlePeerToken(client: Socket): Promise<void> {
+    const userId = await this.sessionService.getUserFromClientId(client.id);
+    const { peerToken } = this.peerTokenFor(client, userId ?? undefined);
+    if (peerToken) {
+      client.send({message: 'peer token', peerToken});
     }
   }
 

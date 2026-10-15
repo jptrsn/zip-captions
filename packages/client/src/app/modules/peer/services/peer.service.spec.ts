@@ -24,6 +24,19 @@ class FakeSocket {
 }
 jest.mock('ngx-socket-io', () => ({ Socket: jest.fn().mockImplementation((config: any) => new FakeSocket(config)) }));
 
+// A peer that never reaches a server: it records how it was made, and lets a spec drive its state
+const fakePeers: FakePeer[] = [];
+class FakePeer {
+  disconnected = false;
+  _options: { token?: string };
+  reconnect = jest.fn();
+  constructor(public id: string, public options: { token?: string }) { this._options = { ...options }; fakePeers.push(this); }
+  addListener() { return this; }
+  once() { return this; }
+  on() { return this; }
+}
+jest.mock('peerjs', () => ({ __esModule: true, default: jest.fn().mockImplementation((id: string, options: any) => new FakePeer(id, options)) }));
+
 // Angular 16 has no way to flush effects by hand; change detection of any component does it
 @Component({ template: '' })
 class EffectsHostComponent {}
@@ -36,6 +49,7 @@ describe('PeerService', () => {
 
   beforeEach(() => {
     fakeSockets.length = 0;
+    fakePeers.length = 0;
     sessionStorage.clear();
     localStorage.clear();
     TestBed.configureTestingModule({
@@ -153,6 +167,148 @@ describe('PeerService', () => {
       storage.set('token', 'login-jwt');
       service['reconnectIfLoginChanged']();
       expect(socket.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('the peer token', () => {
+    const connect = () => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      return fakeSockets[fakeSockets.length - 1];
+    };
+
+    it('is what the peer registers with, so the peer server can tell this client owns its id', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'peer-jwt' });
+      service.connectPeerServer();
+      expect(fakePeers[0].id).toBe('me');
+      expect(fakePeers[0].options.token).toBe('peer-jwt');
+    });
+
+    it('is left to PeerJS to make up when a server that predates peer tokens sends none', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me' });
+      service.connectPeerServer();
+      expect('token' in fakePeers[0].options).toBe(false);
+    });
+
+    it('is replaced by a newer one from the server', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+      socket.receive({ message: 'peer token', peerToken: 'second' });
+      service.connectPeerServer();
+      expect(fakePeers[0].options.token).toBe('second');
+    });
+
+    it('is asked for again, and given to the live peer, before the peer reconnects', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+      service.connectPeerServer();
+      const peer = fakePeers[0];
+      const applied: boolean[] = [];
+      service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+      expect(socket.emitted).toContainEqual(['peerToken', undefined]);
+      expect(applied).toEqual([]);
+      socket.receive({ message: 'peer token', peerToken: 'fresh' });
+      expect(applied).toEqual([true]);
+      expect(peer._options.token).toBe('fresh');
+    });
+
+    it('still lets the peer reconnect when the socket server does not answer in time', () => {
+      jest.useFakeTimers();
+      try {
+        const socket = connect();
+        socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+        service.connectPeerServer();
+        const applied: boolean[] = [];
+        service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+        jest.advanceTimersByTime(3100);
+        expect(applied).toEqual([true]);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not wait for the socket server when the socket is down', () => {
+      const socket = connect();
+      socket.ioSocket.connected = false;
+      const applied: boolean[] = [];
+      service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+      expect(applied).toEqual([true]);
+      expect(socket.emitted.some(([event]) => event === 'peerToken')).toBe(false);
+    });
+
+    it('is not touched for a server that sends no tokens: the live peer keeps its own', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me' });
+      service.connectPeerServer();
+      fakePeers[0]._options.token = 'made-up-by-peerjs';
+      service['refreshPeerToken']().subscribe();
+      socket.receive({ message: 'peer token' });
+      expect(fakePeers[0]._options.token).toBe('made-up-by-peerjs');
+    });
+  });
+
+  describe('who a viewer takes captions from', () => {
+    // A connection that records its handlers, as PeerJS's DataConnection does
+    const fakeConnection = (peer: string) => {
+      const handlers = new Map<string, (data?: any) => void>();
+      return { peer, close: jest.fn(), send: jest.fn(), removeAllListeners: jest.fn(),
+               on: (event: string, handler: (data?: any) => void) => { handlers.set(event, handler); },
+               fire: (event: string, data?: any) => handlers.get(event)?.(data) };
+    };
+    const joinAsViewer = (hostUserId?: string) => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      service['myBroadcast'] = false;
+      fakeSockets[0].receive({ message: 'room joined', room: 'r1', hostUserId });
+    };
+    let dispatched: jest.SpyInstance;
+    beforeEach(() => { dispatched = jest.spyOn(TestBed.inject(MockStore), 'dispatch'); });
+    const hostStatuses = () => dispatched.mock.calls.map(([a]) => a).filter((a) => a.type === '[Peer] Set Host Status');
+
+    it('is only the host the server named', () => {
+      joinAsViewer('host-id');
+      const host = fakeConnection('host-id');
+      service['_handlePeerData'](host as never);
+      host.fire('data', { response: 'valid' });
+      expect(hostStatuses().length).toBe(1);
+    });
+
+    it('ignores data from any other peer, who may have registered an id of their own', () => {
+      joinAsViewer('host-id');
+      const stranger = fakeConnection('someone-else');
+      service['_handlePeerData'](stranger as never);
+      stranger.fire('data', { response: 'valid' });
+      stranger.fire('data', { request: 'hostOffline' });
+      expect(hostStatuses().length).toBe(0);
+    });
+
+    it('closes a connection from another peer when it opens, and its closing does not mark the host offline', () => {
+      joinAsViewer('host-id');
+      const stranger = fakeConnection('someone-else');
+      service['_handlePeerData'](stranger as never);
+      stranger.fire('open');
+      expect(stranger.close).toHaveBeenCalled();
+      stranger.fire('close');
+      expect(hostStatuses().length).toBe(0);
+    });
+
+    it('accepts any peer when the server named no host, as before', () => {
+      joinAsViewer(undefined);
+      const anyone = fakeConnection('whoever');
+      service['_handlePeerData'](anyone as never);
+      anyone.fire('data', { response: 'valid' });
+      expect(hostStatuses().length).toBe(1);
+    });
+
+    it('is not applied to a broadcaster, whose peers are its viewers', () => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      service['myBroadcast'] = true;
+      fakeSockets[0].receive({ message: 'room joined', room: 'r1', hostUserId: 'me' });
+      const viewer = fakeConnection('a-viewer');
+      service['_handlePeerData'](viewer as never);
+      viewer.fire('open');
+      expect(viewer.close).not.toHaveBeenCalled();
+      expect(viewer.send).toHaveBeenCalled();
     });
   });
 });
