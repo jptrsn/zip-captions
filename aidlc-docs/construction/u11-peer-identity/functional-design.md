@@ -1,6 +1,6 @@
 # U11 — Authenticated PeerJS Identity: Functional Design
 
-**Status:** v1 DRAFT, **not approved**. Decisions P1–P10 (§7) were answered on 2026-10-14: all recommendations accepted (P1 = A, P2 = viewer check in U11 after A, P3 = 1 hour + refresh, P4–P10 as recommended). The human has **not yet given explicit approval of the design as a whole**; no code until then.
+**Status:** v1, **approved 2026-10-14; implemented 2026-10-15** (see §11 for deviations). Decisions P1–P10 (§7) were answered on 2026-10-14: all recommendations accepted (P1 = A, P2 = viewer check in U11 after A, P3 = 1 hour + refresh, P4–P10 as recommended). The human approved the design as a whole before coding.
 **Branch:** `feature/authenticate-peer-identity`, off `feature/authenticate-socket-identity-impl` (U10, PR #154, is still open on 2026-10-14). U11 builds on U10's `SocketIdentityService` and handshake. Local only until the human asks for a PR; if #154 merges first, rebase onto `develop`.
 **Priority (human, 2026-10-14):** U11 is a **follow-on issue, not a release blocker**. It is identical on `main`: `peer-server.service.ts` is unchanged between `main` and `develop`, and `main` already does `new Peer(this.myId, …)`. There is no deadline, so this design favours care over speed.
 **Goal:** a PeerJS id can be registered only by the party that the socket server has verified as that user. **Not in scope:** token refresh/revocation beyond §3, rate limiting, hiding user ids, encrypting or authenticating the WebRTC data channels themselves (§2.3).
@@ -98,6 +98,11 @@ Mirrors U10. `PEER_AUTH_MODE` = `report` | `enforce`; unset → `report`; any ot
 
 Ordering rule: `SOCKET_AUTH_MODE=enforce` (the U10 release gate) is expected to be in place before `PEER_AUTH_MODE=enforce`. U11 itself is not release-blocking.
 
+### 5.1 Related work: sequencing with the socket rollout (note, added 2026-10-15; no approved decision changes)
+- U11 does **not** block the release (identical on `main`; the human decided that on 2026-10-14). The release gate is `SOCKET_AUTH_MODE=enforce` in production, whose transition is planned in `construction/backlog-socket-auth-enforce.md` (PR #155, docs only; not merged when this was written; read it with `git show origin/docs/socket-auth-enforce-backlog:aidlc-docs/construction/backlog-socket-auth-enforce.md`). Enforcing the socket does not close U11.
+- Both rollouts wait for old clients to disappear, and the peer token reaches clients inside `set user id success`, i.e. through the same server and client deploys. So: ship the U11 server and client **together with or after** the U10 token-sending client, keep `PEER_AUTH_MODE` at `report` while `SOCKET_AUTH_MODE` is still being moved to `enforce`, and move `PEER_AUTH_MODE` to `enforce` only after the socket is on `enforce` and the `legacy peer registration` log lines have stopped (the same signal-and-threshold questions as in that note: log source, in-memory per-instance counters reset on restart, stragglers, rollback = set back to `report` and restart).
+- In `report` socket mode a client with no credential can still be registered under a claimed id; U11 never issues a peer token for such an id (P6), so the socket `report` stage does not leak peer tokens.
+
 ## 6. Test plan (each new test is shown failing against the current code first)
 | Layer | Tests |
 |---|---|
@@ -135,3 +140,12 @@ Open item for the integration test: in U10 a websocket-only socket.io client was
 
 ## 10. Not yet verified
 Whether `createWebSocketServer`/`verifyClient` behave as read under the real Nest + socket.io 4.4 + engine.io upgrade ordering (§6 open item); the `_options.token` update path on a live `Peer`; behaviour behind the production proxy and on Azure Cosmos DB.
+
+## 11. As built, and deviations
+- The open item in §6 was real: a `ws` server given `{ server, path }` answers 400 to every upgrade that is not its own, ending socket.io's upgrade on the shared http server (the websocket-only rejection seen in U10; it exists on the code before U11 too). The peer signalling server is now a `noServer` `ws` server, and `PeerServerService` routes only the peer path to it. The gateway integration test mounts the real peer server and fails without that fix. Not in the design as a separate step.
+- Key derivation moved into `identity-keys.ts`, shared with `SocketIdentityService`.
+- A socket that registered under a report-mode claimed id is remembered (`peerTokenWithheld`), so the on-demand `peerToken` message cannot hand it a token either.
+- The client falls back to a new `Peer` only if PeerJS's private `_options` is missing; with a server that sends no tokens the live peer keeps its own.
+- The stale-registration window after a reload (P7a) is unchanged, as decided.
+- `ws` is imported by the server but still not declared in `package.json`; no dependency file was touched (P8a asked to tell the human first).
+- The TURN username line in `CONNECT_OPTS` is left as is (no effect).
