@@ -110,7 +110,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         client.broadcast.to(room).emit('message', {user: clientUserId, message: 'user joined room', room, isHost: false});
       }
     }
-    client.send({user: clientUserId, message: 'room joined', room });
+    // The viewer accepts captions only from this peer, which the peer server has verified to be the owner of its id
+    client.send({user: clientUserId, message: 'room joined', room, hostUserId: broadcast.hostUserId });
   }
 
   /**

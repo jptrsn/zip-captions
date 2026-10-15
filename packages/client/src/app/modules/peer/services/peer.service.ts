@@ -48,6 +48,8 @@ export class PeerService {
 
   private CONNECT_OPTS: PeerJSOption;
   private myBroadcast = false;
+  // The peer id of the room's host, as the server names it. A viewer takes captions from no other peer.
+  private hostPeerId?: string;
   private myId?: string;
   private roomId: ReplaySubject<string | undefined> = new ReplaySubject();
   private roomIdSignal: Signal<string | undefined>;
@@ -171,6 +173,7 @@ export class PeerService {
       // console.log('socket message', data, this.allowAnonymous());
       switch (data.message) {
         case 'room joined': {
+          this.hostPeerId = this.myBroadcast ? undefined : data.hostUserId;
           if (data.room) {
             // console.log('nexting room id', data.room);
             this.cache.save({key: 'roomId', data: { room: data.room, myBroadcast: this.myBroadcast }, expirationMins: this.CACHE_PERSIST_MINS});
@@ -536,17 +539,30 @@ export class PeerService {
     return outString;
   }
 
+  /**
+   * Whether a viewer got this connection from someone other than the room's host. The peer server stamps each
+   * connection with the id its peer proved it owns, so `connection.peer` cannot be faked. Until the server has
+   * named the host (an old server, or the first moments in the room) nothing is refused, as before.
+   */
+  private _isNotTheHost(connection: DataConnection): boolean {
+    return !this.myBroadcast && !!this.hostPeerId && connection.peer !== this.hostPeerId;
+  }
+
   private _handlePeerData(connection: DataConnection) {
     
     connection.on('close', () => {
       // console.log('connection closed');
-      if (!this.myBroadcast) {
+      if (!this.myBroadcast && !this._isNotTheHost(connection)) {
         this.store.dispatch(PeerActions.setHostStatus({hostOnline: false}));
       }
       connection.removeAllListeners();
     });
     
     connection.on('open', () => {
+      if (this._isNotTheHost(connection)) {
+        connection.close();
+        return;
+      }
       // console.log('peer connection opened', this.myBroadcast, this.sessionJoinCode());
       if (this.myBroadcast) {
         // console.log('must validate viewer connection', this.sessionJoinCode(), this.allowAnonymous());
@@ -556,6 +572,9 @@ export class PeerService {
     });
     
     connection.on('data', (data: any) => {
+      if (this._isNotTheHost(connection)) {
+        return;
+      }
       if (data?.request) {
         // console.log('connection data', data)
         switch (data.request) {

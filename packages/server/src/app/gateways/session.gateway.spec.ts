@@ -138,12 +138,12 @@ describe('SessionGateway', () => {
 
     it('lets a viewer join the room and tells the host', async () => {
       const client = fakeClient('viewer');
-      service.getBroadcastSession.mockResolvedValue({ roomId: 'r1', hostClientId: 'host' });
+      service.getBroadcastSession.mockResolvedValue({ roomId: 'r1', hostClientId: 'host', hostUserId: 'host-user' });
       service.getUserFromClientId.mockResolvedValue('viewer-user');
       await gateway.handleJoin(client as never, { room: 'r1' });
       expect(client.join).toHaveBeenCalledWith('r1');
       expect(toEmit).toHaveBeenCalledWith('message', { user: 'viewer-user', message: 'user joined room', room: 'r1', isHost: false });
-      expect(client.send).toHaveBeenCalledWith({ user: 'viewer-user', message: 'room joined', room: 'r1' });
+      expect(client.send).toHaveBeenCalledWith({ user: 'viewer-user', message: 'room joined', room: 'r1', hostUserId: 'host-user' });
     });
 
     it('announces a viewer to the whole room when the host is unknown', async () => {

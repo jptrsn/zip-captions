@@ -247,4 +247,68 @@ describe('PeerService', () => {
       expect(fakePeers[0]._options.token).toBe('made-up-by-peerjs');
     });
   });
+
+  describe('who a viewer takes captions from', () => {
+    // A connection that records its handlers, as PeerJS's DataConnection does
+    const fakeConnection = (peer: string) => {
+      const handlers = new Map<string, (data?: any) => void>();
+      return { peer, close: jest.fn(), send: jest.fn(), removeAllListeners: jest.fn(),
+               on: (event: string, handler: (data?: any) => void) => { handlers.set(event, handler); },
+               fire: (event: string, data?: any) => handlers.get(event)?.(data) };
+    };
+    const joinAsViewer = (hostUserId?: string) => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      service['myBroadcast'] = false;
+      fakeSockets[0].receive({ message: 'room joined', room: 'r1', hostUserId });
+    };
+    let dispatched: jest.SpyInstance;
+    beforeEach(() => { dispatched = jest.spyOn(TestBed.inject(MockStore), 'dispatch'); });
+    const hostStatuses = () => dispatched.mock.calls.map(([a]) => a).filter((a) => a.type === '[Peer] Set Host Status');
+
+    it('is only the host the server named', () => {
+      joinAsViewer('host-id');
+      const host = fakeConnection('host-id');
+      service['_handlePeerData'](host as never);
+      host.fire('data', { response: 'valid' });
+      expect(hostStatuses().length).toBe(1);
+    });
+
+    it('ignores data from any other peer, who may have registered an id of their own', () => {
+      joinAsViewer('host-id');
+      const stranger = fakeConnection('someone-else');
+      service['_handlePeerData'](stranger as never);
+      stranger.fire('data', { response: 'valid' });
+      stranger.fire('data', { request: 'hostOffline' });
+      expect(hostStatuses().length).toBe(0);
+    });
+
+    it('closes a connection from another peer when it opens, and its closing does not mark the host offline', () => {
+      joinAsViewer('host-id');
+      const stranger = fakeConnection('someone-else');
+      service['_handlePeerData'](stranger as never);
+      stranger.fire('open');
+      expect(stranger.close).toHaveBeenCalled();
+      stranger.fire('close');
+      expect(hostStatuses().length).toBe(0);
+    });
+
+    it('accepts any peer when the server named no host, as before', () => {
+      joinAsViewer(undefined);
+      const anyone = fakeConnection('whoever');
+      service['_handlePeerData'](anyone as never);
+      anyone.fire('data', { response: 'valid' });
+      expect(hostStatuses().length).toBe(1);
+    });
+
+    it('is not applied to a broadcaster, whose peers are its viewers', () => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      service['myBroadcast'] = true;
+      fakeSockets[0].receive({ message: 'room joined', room: 'r1', hostUserId: 'me' });
+      const viewer = fakeConnection('a-viewer');
+      service['_handlePeerData'](viewer as never);
+      viewer.fire('open');
+      expect(viewer.close).not.toHaveBeenCalled();
+      expect(viewer.send).toHaveBeenCalled();
+    });
+  });
 });
