@@ -24,6 +24,19 @@ class FakeSocket {
 }
 jest.mock('ngx-socket-io', () => ({ Socket: jest.fn().mockImplementation((config: any) => new FakeSocket(config)) }));
 
+// A peer that never reaches a server: it records how it was made, and lets a spec drive its state
+const fakePeers: FakePeer[] = [];
+class FakePeer {
+  disconnected = false;
+  _options: { token?: string };
+  reconnect = jest.fn();
+  constructor(public id: string, public options: { token?: string }) { this._options = { ...options }; fakePeers.push(this); }
+  addListener() { return this; }
+  once() { return this; }
+  on() { return this; }
+}
+jest.mock('peerjs', () => ({ __esModule: true, default: jest.fn().mockImplementation((id: string, options: any) => new FakePeer(id, options)) }));
+
 // Angular 16 has no way to flush effects by hand; change detection of any component does it
 @Component({ template: '' })
 class EffectsHostComponent {}
@@ -36,6 +49,7 @@ describe('PeerService', () => {
 
   beforeEach(() => {
     fakeSockets.length = 0;
+    fakePeers.length = 0;
     sessionStorage.clear();
     localStorage.clear();
     TestBed.configureTestingModule({
@@ -153,6 +167,84 @@ describe('PeerService', () => {
       storage.set('token', 'login-jwt');
       service['reconnectIfLoginChanged']();
       expect(socket.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('the peer token', () => {
+    const connect = () => {
+      service.connectSocket().subscribe({ error: () => undefined });
+      return fakeSockets[fakeSockets.length - 1];
+    };
+
+    it('is what the peer registers with, so the peer server can tell this client owns its id', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'peer-jwt' });
+      service.connectPeerServer();
+      expect(fakePeers[0].id).toBe('me');
+      expect(fakePeers[0].options.token).toBe('peer-jwt');
+    });
+
+    it('is left to PeerJS to make up when a server that predates peer tokens sends none', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me' });
+      service.connectPeerServer();
+      expect('token' in fakePeers[0].options).toBe(false);
+    });
+
+    it('is replaced by a newer one from the server', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+      socket.receive({ message: 'peer token', peerToken: 'second' });
+      service.connectPeerServer();
+      expect(fakePeers[0].options.token).toBe('second');
+    });
+
+    it('is asked for again, and given to the live peer, before the peer reconnects', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+      service.connectPeerServer();
+      const peer = fakePeers[0];
+      const applied: boolean[] = [];
+      service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+      expect(socket.emitted).toContainEqual(['peerToken', undefined]);
+      expect(applied).toEqual([]);
+      socket.receive({ message: 'peer token', peerToken: 'fresh' });
+      expect(applied).toEqual([true]);
+      expect(peer._options.token).toBe('fresh');
+    });
+
+    it('still lets the peer reconnect when the socket server does not answer in time', () => {
+      jest.useFakeTimers();
+      try {
+        const socket = connect();
+        socket.receive({ message: 'set user id success', id: 'me', peerToken: 'first' });
+        service.connectPeerServer();
+        const applied: boolean[] = [];
+        service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+        jest.advanceTimersByTime(3100);
+        expect(applied).toEqual([true]);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not wait for the socket server when the socket is down', () => {
+      const socket = connect();
+      socket.ioSocket.connected = false;
+      const applied: boolean[] = [];
+      service['refreshPeerToken']().subscribe((ok) => applied.push(ok));
+      expect(applied).toEqual([true]);
+      expect(socket.emitted.some(([event]) => event === 'peerToken')).toBe(false);
+    });
+
+    it('is not touched for a server that sends no tokens: the live peer keeps its own', () => {
+      const socket = connect();
+      socket.receive({ message: 'set user id success', id: 'me' });
+      service.connectPeerServer();
+      fakePeers[0]._options.token = 'made-up-by-peerjs';
+      service['refreshPeerToken']().subscribe();
+      socket.receive({ message: 'peer token' });
+      expect(fakePeers[0]._options.token).toBe('made-up-by-peerjs');
     });
   });
 });
