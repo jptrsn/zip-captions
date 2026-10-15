@@ -271,6 +271,18 @@ describe('SessionGateway', () => {
         expect(client.send).not.toHaveBeenCalled();
       });
 
+      it('does not tell a report-mode claimant which room the claimed user has live', async () => {
+        process.env.SOCKET_AUTH_MODE = 'report';
+        const client = fakeClient('c2', { userId: 'issued', kind: 'anonymous', credentialed: false });
+        service.findClientIdsByUserId.mockResolvedValue(['c1']);
+        sockets.set('c1', { id: 'c1', connected: true });
+        service.findBroadcastSessionsByClientId.mockResolvedValue({ roomId: 'live-room' });
+        service.setUserId.mockResolvedValue('anon-user');
+        await gateway.handleSetUserId(client as never, { id: 'victim' });
+        expect(service.findBroadcastSessionsByClientId).not.toHaveBeenCalled();
+        expect(client.send).toHaveBeenCalledWith({ message: 'set user id success', id: 'anon-user', isAnonymized: true, roomId: undefined });
+      });
+
       it('does not hand a second tab a token, since its anonymous id lasts only as long as the socket', async () => {
         const client = fakeClient('c2', { userId: 'u1', anonymousToken: 'tok' });
         service.findClientIdsByUserId.mockResolvedValue(['c1']);

@@ -142,7 +142,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         if (socket?.connected) {
           // This user already has a live client: this one (a second tab) gets its own anonymous id so that its
           // PeerJS id is unique. It is not that user's, so it cannot end that user's broadcast.
-          const broadcastSession = await this.sessionService.findBroadcastSessionsByClientId(id, true);
+          // Not for a report-mode claimant, who has shown nothing that ties it to this user: the room id is theirs
+          const broadcastSession = claimed ? null : await this.sessionService.findBroadcastSessionsByClientId(id, true);
           const anonymizedId = await this.sessionService.setUserId(client.id);
           client.send({message: 'set user id success', id: anonymizedId, isAnonymized: true, roomId: broadcastSession?.roomId })
           return;
