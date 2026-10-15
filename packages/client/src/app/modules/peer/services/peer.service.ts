@@ -10,6 +10,7 @@ import { RecognitionStatus } from '../../../models/recognition.model';
 import { selectAllowAnonymous, selectConnectedPeerCount, selectJoinCode, selectPeerServerConnected, selectRoomId } from '../../../selectors/peer.selectors';
 import { CacheService } from '../../../services/cache/cache.service';
 import { StorageService } from '../../../services/storage.service';
+import { selectUserLoggedIn } from '../../../selectors/auth.selectors';
 import { selectUserId } from '../../../selectors/user.selector';
 import { dialectSelector, languageSelector } from '../../../selectors/settings.selector';
 import { WireSegment, parseLivePayload, parseSegmentPayload } from '../models/broadcast-payload';
@@ -55,6 +56,7 @@ export class PeerService {
   private peerCount: Signal<number | undefined>;
 
   private userId: Signal<string | undefined>;
+  private userLoggedIn: Signal<boolean | undefined>;
   
   constructor(private store: Store<AppState>,
               private cache: CacheService,
@@ -93,6 +95,7 @@ export class PeerService {
     this.peerCount = toSignal(this.store.select(selectConnectedPeerCount));
     this.allowAnonymous = toSignal(this.store.select(selectAllowAnonymous));
     this.userId = toSignal(this.store.select(selectUserId));
+    this.userLoggedIn = toSignal(this.store.select(selectUserLoggedIn));
 
     const dialect = toSignal(this.store.select(dialectSelector));
     const lang = toSignal(this.store.select(languageSelector));
@@ -107,7 +110,9 @@ export class PeerService {
         this.myId = this.userId();
         this.cache.save({key: 'userId', data: { id: this.myId }, expirationMins: this.CACHE_PERSIST_MINS})
       }
-      // Logging in or out changes who the socket is, and that is only decided when it connects
+      // Logging in or out changes who the socket is, and that is only decided when it connects. Logging out leaves
+      // the user id in the store, so the logged-in flag is what this effect has to watch for it.
+      this.userLoggedIn();
       this.reconnectIfLoginChanged();
     })
 

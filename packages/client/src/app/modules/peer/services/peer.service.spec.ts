@@ -1,4 +1,8 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MockStore } from '@ngrx/store/testing';
+import { AppState } from '../../../models/app.model';
+import { defaultAppState } from '../../../reducers/app.reducer';
 import { TestingModuleProviders } from '../../../../testing/test-scaffold';
 import { CacheService } from '../../../services/cache/cache.service';
 import { StorageService } from '../../../services/storage.service';
@@ -19,6 +23,11 @@ class FakeSocket {
   receive(message: object) { this.handlers.get('message')?.(message); }
 }
 jest.mock('ngx-socket-io', () => ({ Socket: jest.fn().mockImplementation((config: any) => new FakeSocket(config)) }));
+
+// Angular 16 has no way to flush effects by hand; change detection of any component does it
+@Component({ template: '' })
+class EffectsHostComponent {}
+const effectsRun = async () => { TestBed.createComponent(EffectsHostComponent).detectChanges(); };
 
 describe('PeerService', () => {
   let service: PeerService;
@@ -106,6 +115,24 @@ describe('PeerService', () => {
       service['socketAuth']();
       storage.set('token', 'login-jwt');
       service['reconnectIfLoginChanged']();
+      expect(socket.disconnect).toHaveBeenCalled();
+      expect(socket.connect).toHaveBeenCalled();
+    });
+
+    it('notices a logout, which leaves the user id in the store and only flips the logged-in flag', async () => {
+      const store = TestBed.inject(MockStore);
+      const state: AppState = defaultAppState;
+      store.setState({ ...state, auth: { ...state.auth, loggedIn: true } });
+      storage.set('token', 'login-jwt');
+      service.connectSocket().subscribe({ error: () => undefined });
+      const socket = fakeSockets[0];
+      service['socketAuth']();
+      await effectsRun();
+      expect(socket.disconnect).not.toHaveBeenCalled();
+
+      storage.remove('token');
+      store.setState({ ...state, auth: { ...state.auth, loggedIn: false } });
+      await effectsRun();
       expect(socket.disconnect).toHaveBeenCalled();
       expect(socket.connect).toHaveBeenCalled();
     });
