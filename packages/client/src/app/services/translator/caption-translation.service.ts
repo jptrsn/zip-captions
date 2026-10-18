@@ -6,7 +6,7 @@ import { AppState } from '../../models/app.model';
 import { CaptionSegment } from '../../models/caption-segment.model';
 import { RecognitionService } from '../../modules/media/services/recognition.service';
 import { recognitionIdSelector } from '../../selectors/recognition.selector';
-import { dialectSelector, languageSelector, selectTranslationSettings } from '../../selectors/settings.selector';
+import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTranslationSettings } from '../../selectors/settings.selector';
 import { ChromeTranslatorService, LiveTranslationChannel } from './chrome-translator.service';
 import { SegmentTranslationSession } from './segment-translation-session';
 import { SegmentTranslation } from './segment-translations';
@@ -37,6 +37,8 @@ export class CaptionTranslationService {
   /** The spoken language: the dialect when set, else the language */
   public readonly sourceLanguage: Signal<string>;
 
+  /** How many of the newest segments are on screen, and so translated before the rest */
+  private readonly visibleCount: Signal<number>;
   private session: SegmentTranslationSession;
   /** This service's own live-line translator (see `createLiveChannel`) */
   private liveChannel: LiveTranslationChannel;
@@ -51,6 +53,11 @@ export class CaptionTranslationService {
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
     this.segments = computed(() => id() ? this.recognitionService.getRecognizedSegments()() : []);
     this.liveText = computed(() => id() ? this.recognitionService.getLiveOutput()() : '');
+
+    // The caption view shows the newest segments (the history setting); those are translated first.
+    // A margin covers a segment that wraps onto more than one line.
+    const renderHistory = toSignal(this.store.select(selectRenderHistoryLength));
+    this.visibleCount = computed(() => (renderHistory() ?? 15) + 5);
 
     const settings = toSignal(this.store.select(selectTranslationSettings));
     const dialect = toSignal(this.store.select(dialectSelector));
@@ -68,7 +75,7 @@ export class CaptionTranslationService {
       if (segments.length === 0) {
         this.session.reset();
       } else if (this.active()) {
-        this.session.update(segments, this.target());
+        this.session.update(segments, this.target(), false, this.visibleCount());
       }
     });
 
@@ -80,7 +87,7 @@ export class CaptionTranslationService {
         this.session.reset();
         this.translatedLive.set('');
       } else if (this.segments().length > 0) {
-        this.session.update(this.segments(), this.target(), true);
+        this.session.update(this.segments(), this.target(), true, this.visibleCount());
       }
     });
 
@@ -88,7 +95,7 @@ export class CaptionTranslationService {
     this.translatorService.modelReady$.subscribe(() => {
       if (!this.active()) return;
       if (this.segments().length > 0) {
-        this.session.update(this.segments(), this.target(), true);
+        this.session.update(this.segments(), this.target(), true, this.visibleCount());
       }
       const live = this.liveText();
       if (live) {

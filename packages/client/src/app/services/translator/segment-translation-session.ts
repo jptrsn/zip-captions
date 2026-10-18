@@ -40,8 +40,9 @@ export class SegmentTranslationSession {
   /**
    * Translates segments that have no translation yet (or whose language changed) into `target`.
    * `retranslateAll` starts over, for a changed target language or a model that has become ready.
+   * `visibleCount` is how many of the newest segments are on screen; those are translated before the others.
    */
-  public update(segments: CaptionSegment[], target: string, retranslateAll = false): void {
+  public update(segments: CaptionSegment[], target: string, retranslateAll = false, visibleCount = Infinity): void {
     this.latest = segments;
     if (retranslateAll) {
       const shown = this.translations();
@@ -55,29 +56,45 @@ export class SegmentTranslationSession {
       if (count >= SegmentTranslationSession.MAX_ATTEMPTS) skipped.add(id);
     });
     const groups = planTranslations(segments, this.current(), target, skipped);
+    // The newest segments are the ones on screen. After a language change the whole history is pending,
+    // and the translator works through requests in order, so the visible ones go first and the rest follow.
+    const visibleIds = new Set(segments.slice(-Math.max(1, Math.floor(visibleCount))).map((segment) => segment.id));
     groups.forEach(({ sourceLang, segments: pending, passThrough }) => {
       pending.forEach((segment) => this.requested.add(segment.id));
-      const texts = pending.map((segment) => segment.text);
-      const result = passThrough ? Promise.resolve<(string | null)[]>(texts) : this.translate(texts, sourceLang, target);
-      result.then((translated) => {
-        if (generation !== this.generation) return;
-        pending.forEach((segment) => this.requested.delete(segment.id));
-        const done = pending.filter((_, index) => typeof translated[index] === 'string');
-        const doneTexts = done.map((segment) => translated[pending.indexOf(segment)] as string);
-        done.forEach((segment) => this.attempts.delete(segment.id));
-        pending.filter((segment) => !done.includes(segment)).forEach((segment) => this.countFailure(segment.id));
-        this.current.update((map) => mergeTranslations(map, this.latest, done, doneTexts));
-        if (this.requested.size === 0) {
-          this.previous.set(new Map());
-        }
-      }).catch((err) => {
-        if (generation !== this.generation) return;
-        pending.forEach((segment) => {
-          this.requested.delete(segment.id);
-          this.countFailure(segment.id);
+      const first = passThrough ? pending : pending.filter((segment) => visibleIds.has(segment.id));
+      const later = passThrough ? [] : pending.filter((segment) => !visibleIds.has(segment.id));
+      const firstDone = this.translateBatch(first, sourceLang, passThrough, target, generation);
+      if (later.length) {
+        firstDone.then(() => {
+          // Skipped when the session started over meanwhile, which already forgot these segments
+          if (generation === this.generation) this.translateBatch(later, sourceLang, passThrough, target, generation);
         });
-        console.warn('Segment translation failed:', err);
+      }
+    });
+  }
+
+  private translateBatch(pending: CaptionSegment[], sourceLang: string, passThrough: boolean, target: string, generation: number): Promise<void> {
+    if (pending.length === 0) return Promise.resolve();
+    const texts = pending.map((segment) => segment.text);
+    const result = passThrough ? Promise.resolve<(string | null)[]>(texts) : this.translate(texts, sourceLang, target);
+    return result.then((translated) => {
+      if (generation !== this.generation) return;
+      pending.forEach((segment) => this.requested.delete(segment.id));
+      const done = pending.filter((_, index) => typeof translated[index] === 'string');
+      const doneTexts = done.map((segment) => translated[pending.indexOf(segment)] as string);
+      done.forEach((segment) => this.attempts.delete(segment.id));
+      pending.filter((segment) => !done.includes(segment)).forEach((segment) => this.countFailure(segment.id));
+      this.current.update((map) => mergeTranslations(map, this.latest, done, doneTexts));
+      if (this.requested.size === 0) {
+        this.previous.set(new Map());
+      }
+    }).catch((err) => {
+      if (generation !== this.generation) return;
+      pending.forEach((segment) => {
+        this.requested.delete(segment.id);
+        this.countFailure(segment.id);
       });
+      console.warn('Segment translation failed:', err);
     });
   }
 

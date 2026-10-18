@@ -73,6 +73,33 @@ describe('SegmentTranslationSession', () => {
     warn.mockRestore();
   });
 
+  it('translates the segments on screen before the older ones, and the older ones afterwards', async () => {
+    const { fn, calls } = manual();
+    const session = new SegmentTranslationSession(fn);
+    const segments = [seg('a', 'one'), seg('b', 'two'), seg('c', 'three'), seg('d', 'four')];
+    session.update(segments, 'fr', true, 2);
+    expect(calls.map((c) => c.texts)).toEqual([['three', 'four']]);
+
+    calls[0].resolve(['trois', 'quatre']);
+    await flush();
+    expect(session.translations().get('d')?.text).toBe('quatre');
+    expect(calls.map((c) => c.texts)).toEqual([['three', 'four'], ['one', 'two']]);
+
+    calls[1].resolve(['un', 'deux']);
+    await flush();
+    expect(session.translations().size).toBe(4);
+  });
+
+  it('does not start the older segments when the session started over while the visible ones were translating', async () => {
+    const { fn, calls } = manual();
+    const session = new SegmentTranslationSession(fn);
+    session.update([seg('a', 'one'), seg('b', 'two')], 'fr', true, 1);
+    session.update([seg('a', 'one'), seg('b', 'two')], 'es', true, 1);
+    calls[0].resolve(['deux']);
+    await flush();
+    expect(calls.map((c) => [c.texts, c.target])).toEqual([[['two'], 'fr'], [['two'], 'es']]);
+  });
+
   it('stops trying a segment after three failures, however many updates follow', async () => {
     const fn = jest.fn(() => Promise.resolve([null] as (string | null)[]));
     const session = new SegmentTranslationSession(fn);
