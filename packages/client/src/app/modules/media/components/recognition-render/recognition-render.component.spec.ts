@@ -21,6 +21,7 @@ interface Scenario {
   translation?: Partial<TranslationSettings>;
   lang?: 'en' | 'ar' | 'fr';
   dialect?: string;
+  provider?: 'web' | 'azure';
   textFlow?: 'top-down' | 'bottom-up';
   translatorSupported?: boolean;
   fullscreenAvailable?: boolean;
@@ -54,7 +55,7 @@ describe('RecognitionRenderComponent', () => {
     const base = defaultAppState;
     store.setState({
       ...base,
-      recognition: { ...base.recognition, status: s.status ?? RecognitionStatus.connected, id: s.id ?? 'default' },
+      recognition: { ...base.recognition, status: s.status ?? RecognitionStatus.connected, id: s.id ?? 'default', engine: { ...base.recognition.engine, provider: s.provider ?? 'web' } },
       settings: {
         ...base.settings,
         lang: s.lang ?? 'en',
@@ -267,6 +268,20 @@ describe('RecognitionRenderComponent', () => {
       expect(component.originalLanguageLabel()).toBe('FR');
       expect(component.originalLines().map((line) => line.text)).toEqual(['bonjour', 'bonjour (de hello)']);
       expect(component.translatedLines().map((line) => line.text)).toEqual(['hello (from bonjour)', 'hello']);
+    });
+  });
+
+  describe('the bilingual note', () => {
+    it('says either language is shown in its own, only while a bilingual Azure model is in use', () => {
+      create({ lang: 'fr', dialect: 'fr-CA', provider: 'azure' });
+      expect(byId('zc-caption-bilingual-note')).toBeTruthy();
+    });
+
+    it('is absent for another engine or a dialect that is not bilingual', () => {
+      create({ lang: 'fr', dialect: 'fr-CA', provider: 'web' });
+      expect(byId('zc-caption-bilingual-note')).toBeNull();
+      create({ lang: 'fr', dialect: 'fr-FR', provider: 'azure' });
+      expect(byId('zc-caption-bilingual-note')).toBeNull();
     });
   });
 

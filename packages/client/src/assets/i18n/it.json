@@ -394,7 +394,8 @@
       "acquire": "I nostri sostenitori di Patreon ricevono i token gratis automaticamente ogni mese.",
       "requestTokens": "Richiedi tokens gratuiti",
       "bilingualHint": "Questa variante riconosce anche l'inglese.",
-      "description": "Seleziona il provider di servizi che desideri utilizzare per elaborare in modo sicuro l'audio e restituire i risultati. I diversi motori variano in termini di velocità, qualità e costo. Facciamo del nostro meglio per offrirti la massima scelta possibile mantenendo i costi il più gratuiti possibile."
+      "description": "Seleziona il provider di servizi che desideri utilizzare per elaborare in modo sicuro l'audio e restituire i risultati. I diversi motori variano in termini di velocità, qualità e costo. Facciamo del nostro meglio per offrirti la massima scelta possibile mantenendo i costi il più gratuiti possibile.",
+      "bilingualLanguageHint": "La lingua parlata tra le due viene visualizzata in quella lingua nei sottotitoli in diretta."
     },
     "TRANSLATION": {
       "enable": "Traduzione dal vivo",

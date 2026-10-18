@@ -394,7 +394,8 @@
       "acquire": "Nasi zwolennicy Patreon otrzymują tokeny za darmo automatycznie każdego miesiąca.",
       "requestTokens": "Poproś o darmowe tokeny",
       "bilingualHint": "Ten dialekt rozpoznaje również język angielski.",
-      "description": "Wybierz dostawcę usługi, którego chcesz użyć do bezpiecznego przetwarzania audio i zwracania wyników. Różne silniki różnią się prędkością, jakością i kosztem. Staramy się dać Ci jak najwięcej możliwości, jednocześnie utrzymując wszystko w miarę możliwości za darmo."
+      "description": "Wybierz dostawcę usługi, którego chcesz użyć do bezpiecznego przetwarzania audio i zwracania wyników. Różne silniki różnią się prędkością, jakością i kosztem. Staramy się dać Ci jak najwięcej możliwości, jednocześnie utrzymując wszystko w miarę możliwości za darmo.",
+      "bilingualLanguageHint": "Język, który jest używany z dwóch, jest wyświetlany w tym języku w napisach na żywo."
     },
     "TRANSLATION": {
       "enable": "Tłumaczenie na żywo",

@@ -7,7 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { CaptionSegment } from '../../../../models/caption-segment.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
 import { windowControlsOverlaySelector } from '../../../../selectors/app.selector';
-import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
@@ -17,7 +17,7 @@ import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
 import { CaptionView, resolveCaptionView, showPipFeedSwitch, splitPaneOrder } from '../../../../services/translator/caption-view';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isBilingualDialect, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -68,6 +68,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public originalLanguageLabel: Signal<string>;
   /** The language the first pane shows: the spoken language, or a bilingual model's first language */
   public originalPaneLanguage: Signal<string>;
+  /** A bilingual Azure model is recognizing, so either of its two languages may be spoken */
+  public bilingualModel: Signal<boolean>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
   public translationFailing: Signal<boolean>;
@@ -150,6 +152,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
     // A bilingual model with the other language as the target: the first pane is that model's first language,
     // showing French as spoken and English translated, instead of "whatever was spoken"
+    const engineProvider = toSignal(this.store.select(selectRecognitionEngineProvider));
+    this.bilingualModel = computed(() => engineProvider() === 'azure' && isBilingualDialect(this.sourceLanguage()));
     const paneLanguages = this.captionTranslation.paneLanguages;
     this.originalPaneLanguage = computed(() => paneLanguages()?.first ?? this.sourceLanguage());
     this.originalLines = computed(() => paneLanguages()

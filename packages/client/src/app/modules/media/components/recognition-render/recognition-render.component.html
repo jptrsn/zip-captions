@@ -5,6 +5,12 @@
            is listened for here as well; otherwise the controls could not come back in the PiP window -->
       <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100"
            (mouseenter)="onUserActivity()" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
+        <!-- A bilingual model is recognizing: either language is shown in its own language -->
+        <div *ngIf="bilingualModel()" data-testid="zc-caption-bilingual-note" role="note"
+             class="absolute top-2 left-1/2 -translate-x-1/2 z-20 max-w-[80%] pointer-events-none transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0'">
+          <span class="badge badge-info h-auto py-1 text-center text-wrap shadow">{{ 'SETTINGS.PROVIDER.bilingualLanguageHint' | translate }}</span>
+        </div>
         <app-caption-panes
           [view]="captionView()"
           [orientation]="splitOrientation()"

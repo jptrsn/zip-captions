@@ -394,7 +394,8 @@
       "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
       "requestTokens": "Meminta Token Gratis",
       "bilingualHint": "Dialek ini juga mengenali bahasa Inggris.",
-      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya."
+      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya.",
+      "bilingualLanguageHint": "Bahasa mana pun dari dua bahasa yang diucapkan akan ditampilkan dalam bahasa tersebut di teks langsung."
     },
     "TRANSLATION": {
       "enable": "Terjemahan Langsung",

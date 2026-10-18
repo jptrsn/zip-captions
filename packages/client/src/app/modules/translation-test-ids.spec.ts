@@ -15,7 +15,7 @@ const REQUIRED: Record<string, string[]> = {
   ],
   'media/components/recognition-render/recognition-render.component.html': [
     'zc-caption-translated-controls', 'zc-caption-target-lang', 'zc-caption-download-model',
-    'zc-caption-download-progress', 'zc-caption-translate-failed', 'zc-caption-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
+    'zc-caption-download-progress', 'zc-caption-translate-failed', 'zc-caption-bilingual-note','zc-caption-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
     'zc-pip-feed-switch', 'zc-pip-feed-original', 'zc-pip-feed-translated', 'zc-pip-feed-split', 'zc-pip-return',
   ],
   'peer/components/broadcast-render/broadcast-render.component.html': [
