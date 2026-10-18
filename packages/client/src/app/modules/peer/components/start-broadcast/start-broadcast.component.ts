@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, effect, Input, OnChanges, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, Observable, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
@@ -29,7 +30,8 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
   private broadcastRooms$: Observable<UserRoom[] | undefined>;
   
   constructor(private store: Store<AppState>,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private route: ActivatedRoute) {
     this.broadcastRooms$ = this.store.select(selectMyBroadcastRooms);
     this.userRooms = toSignal(this.broadcastRooms$);
     this.formGroup = this.fb.group({
@@ -70,10 +72,12 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
       filter((rooms) => !!rooms),
       take(1))
     .subscribe((rooms) => {
-      const staticRoom = rooms?.find((r: UserRoom) => r.isStatic);
-      if (staticRoom) {
-        // console.log('updating form controls', staticRoom.roomId)
-        this.formGroup.controls['room'].setValue(staticRoom.roomId);
+      // A room chosen in the settings (its Start Broadcast button) wins over the default static room
+      const requested = this.route.snapshot.queryParams['room']?.toLowerCase();
+      const chosen = (requested && rooms?.find((r: UserRoom) => r.roomId.toLowerCase() === requested))
+        || rooms?.find((r: UserRoom) => r.isStatic);
+      if (chosen) {
+        this.formGroup.controls['room'].setValue(chosen.roomId);
       }
     });
   }

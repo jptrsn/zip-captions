@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { TimeagoModule } from 'ngx-timeago';
 import { Subject, from, of, throwError } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
@@ -73,6 +74,13 @@ describe('RoomCardComponent', () => {
     it('shows the id in upper case on the card', async () => {
       await create({ room: savedRoom });
       expect(fixture.nativeElement.textContent).toContain('AB-1234-5678');
+    });
+
+    it('opens the broadcast tab with this room chosen from its Start Broadcast button', async () => {
+      await create({ room: savedRoom });
+      const navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      fixture.nativeElement.querySelector('[data-testid="zc-room-start-broadcast"]').click();
+      expect(navigate).toHaveBeenCalledWith(['/stream'], { queryParams: { tabIndex: 1, room: savedRoom.roomId } });
     });
 
     it('links to the host the app runs on, not to production', async () => {

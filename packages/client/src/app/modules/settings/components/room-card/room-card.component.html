@@ -28,6 +28,10 @@
       <span>{{ room.expires | timeago }}</span>
     </div>
     <div class="flex flex-row justify-end items-center gap-1 mt-3">
+      <button class="btn btn-primary btn-sm" data-testid="zc-room-start-broadcast" (click)="startBroadcast()">
+        <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
+        <span translate>STREAM.createBroadcast</span>
+      </button>
       <button class="btn btn-secondary btn-sm" (click)="showEditMode()">
         <ng-icon name="heroPencilSquare"></ng-icon>
         <span translate>BUTTONS.edit</span>

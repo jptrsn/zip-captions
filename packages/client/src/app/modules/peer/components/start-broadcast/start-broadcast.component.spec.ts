@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { PeerActions } from '../../../../actions/peer.actions';
@@ -70,6 +71,20 @@ describe('StartBroadcastComponent', () => {
 
   it('preselects the static room once the rooms are known', () => {
     create([room('AB-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+  });
+
+  it('preselects the room chosen in the settings over the static room', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
+  it('falls back to the static room when the requested room is not one of the user\'s', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'zz-9999-9999' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
     expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
   });
 
