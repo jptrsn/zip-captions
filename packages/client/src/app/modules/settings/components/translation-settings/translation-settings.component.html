@@ -141,7 +141,7 @@
 
             <div *ngIf="modelStatus() === 'downloadable'" class="flex flex-col gap-2 mt-2">
               <p class="text-xs text-base-content/80" translate>SETTINGS.TRANSLATION.downloadPrompt</p>
-              <button type="button" class="btn btn-sm btn-primary w-full gap-2" (click)="downloadModel()">
+              <button type="button" class="btn btn-sm btn-primary w-full gap-2" [disabled]="!formGroup.get('enabled')?.value" (click)="downloadModel()">
                 <ng-icon name="heroArrowDownTray"></ng-icon>
                 <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
               </button>
