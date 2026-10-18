@@ -2,6 +2,12 @@
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
     <div class="flex flex-col flex-grow-0 h-full overflow-hidden bg-base-100 relative">
+      <!-- The broadcaster translates, but the viewer is looking at the original only -->
+      <button *ngIf="offeredTranslationHint() as code" type="button" data-testid="zc-viewer-show-translation"
+              class="btn btn-xs btn-primary gap-1 shadow absolute top-2 right-2 z-30" (click)="showOfferedTranslation()">
+        <ng-icon name="heroGlobeAlt"></ng-icon>
+        <span>{{ 'STREAM.showTranslation' | translate }}: {{ code }}</span>
+      </button>
       <app-caption-panes
         [view]="captionView()"
         [orientation]="splitOrientation()"

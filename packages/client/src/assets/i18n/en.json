@@ -476,6 +476,7 @@
     "authDescription": "Require viewers to enter join code",
     "countdown": "Time remaining",
     "fromBroadcaster": "Translated by the broadcaster",
+    "showTranslation": "Show translation",
     "translatedOnDevice": "Translated on this device",
     "ROOMCARD": {
       "broadcastId": "Broadcast ID",

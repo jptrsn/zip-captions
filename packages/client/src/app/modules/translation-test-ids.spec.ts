@@ -19,7 +19,7 @@ const REQUIRED: Record<string, string[]> = {
     'zc-pip-feed-switch', 'zc-pip-feed-original', 'zc-pip-feed-translated', 'zc-pip-feed-split', 'zc-pip-return',
   ],
   'peer/components/broadcast-render/broadcast-render.component.html': [
-    'zc-viewer-translated-controls', 'zc-viewer-target-lang', 'zc-viewer-download-model', 'zc-viewer-download-progress', 'zc-viewer-translate-failed',
+    'zc-viewer-translated-controls', 'zc-viewer-target-lang', 'zc-viewer-download-model', 'zc-viewer-download-progress', 'zc-viewer-translate-failed', 'zc-viewer-show-translation',
     'zc-viewer-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
   ],
   'media/components/recognition-control-sidebar/recognition-control-sidebar.component.html': [

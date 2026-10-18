@@ -4,7 +4,7 @@ import { Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { Subject, map, takeUntil } from 'rxjs';
+import { Subject, filter, map, take, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
@@ -56,6 +56,9 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
   public translationFailing: Signal<boolean>;
+  /** The language of a broadcaster's translation that is offered but not shown, for the "show translation" button */
+  public offeredTranslationHint!: Signal<string | undefined>;
+  private viewerChoseLanguage = false;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
 
@@ -194,6 +197,25 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       }
     });
 
+    // A broadcaster's translation is what a viewer starts on (no download, no waiting). Once per visit, and
+    // not once the viewer has picked a language themselves.
+    toObservable(this.offeredLanguages).pipe(
+      filter((offered) => offered.length > 0),
+      take(1),
+      takeUntil(this.onDestroy$)
+    ).subscribe((offered) => {
+      const offeredBase = offered.map((code) => code.split('-')[0].toLowerCase());
+      if (!this.viewerChoseLanguage && !offeredBase.includes(this.targetLanguage().split('-')[0].toLowerCase())) {
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: offeredBase[0] }));
+      }
+    });
+
+    // A translation exists but is not shown: the viewer needs something on screen that says so
+    this.offeredTranslationHint = computed(() => {
+      const offered = this.offeredLanguages();
+      return offered.length > 0 && this.translationMode() === 'off' ? offered[0].split('-')[0].toUpperCase() : undefined;
+    });
+
     // Check the model for the language pair this viewer would translate on their own device.
     // Created here, not in ngOnInit: toObservable needs an injection context (Angular 16).
     toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}`)).pipe(
@@ -289,7 +311,16 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     return this.translationSource() === 'local' && this.translationMode() !== 'off';
   }
 
+  /** Shows the translation the broadcaster offers, as a second pane */
+  public showOfferedTranslation(): void {
+    const offered = this.offeredLanguages()[0];
+    if (offered) {
+      this.setTargetLanguage(offered.split('-')[0].toLowerCase());
+    }
+  }
+
   public setTargetLanguage(targetLanguage: string): void {
+    this.viewerChoseLanguage = true;
     this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
     if (this.translationMode() === 'off') {
       this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
