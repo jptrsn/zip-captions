@@ -114,6 +114,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
+  /** A viewer joins a broadcast at /stream/<code> and never records, so the recognition buttons don't belong there */
+  isViewerRoute(): boolean {
+    return (this.router.url ?? '').split('?')[0].startsWith('/stream/');
+  }
+
   logout(): void {
     this.store.dispatch(AuthActions.logout());
     if (this.menuElement?.nativeElement) {

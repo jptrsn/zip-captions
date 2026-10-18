@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { lastValueFrom } from 'rxjs';
@@ -56,6 +57,21 @@ describe('HeaderComponent', () => {
   it('should render media capture when on desktop', () => {
     expect(fixture.debugElement.query(By.css('app-audio-input-enable'))).toBeNull();
     expect(fixture.debugElement.query(By.css('app-recognition-enable'))).toBeDefined();
+  });
+
+  it('treats /stream/<code> as a viewer route and hides the recognition buttons there', () => {
+    const router = TestBed.inject(Router);
+    jest.spyOn(router, 'url', 'get').mockReturnValue('/stream/abc123?tabIndex=1');
+    expect(component.isViewerRoute()).toBe(true);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('app-recognition-enable'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('app-audio-input-enable'))).toBeNull();
+  });
+
+  it('does not treat the start-broadcast route as a viewer route', () => {
+    const router = TestBed.inject(Router);
+    jest.spyOn(router, 'url', 'get').mockReturnValue('/stream');
+    expect(component.isViewerRoute()).toBe(false);
   });
 
   it('should render speech-only when on mobile', waitForAsync(async() => {
