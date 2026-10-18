@@ -75,6 +75,13 @@ describe('RoomCardComponent', () => {
       expect(fixture.nativeElement.textContent).toContain('AB-1234-5678');
     });
 
+    it('links to the host the app runs on, not to production', async () => {
+      await create({ room: savedRoom });
+      expect(component.directLink).toBe(`${window.location.origin}/stream/${savedRoom.roomId}`);
+      expect(fixture.nativeElement.textContent).toContain(`${window.location.origin}/stream/`);
+      expect(fixture.nativeElement.textContent).not.toContain('https://zipcaptions.app');
+    });
+
     it('opens the editor from the edit button or the showEdit input, and closing it reports no change', async () => {
       await create({ room: savedRoom });
       const closed: boolean[] = [];

@@ -54,6 +54,11 @@ export class RoomCardComponent implements AfterViewInit {
     }
   }
 
+  /** The link viewers open; it points at the host the app runs on, so staging does not link to production */
+  get directLink(): string {
+    return `${window.location.origin}/stream/${this.room?.roomId}`;
+  }
+
   showEditMode(): void {
     this.editMode.set(true);
   }
