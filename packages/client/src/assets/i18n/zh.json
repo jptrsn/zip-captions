@@ -436,7 +436,8 @@
       "pipContentOriginal": "仅原始",
       "pipContentTranslated": "仅翻译",
       "pipContentSplit": "原文和译文",
-      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。"
+      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。",
+      "translationFailing": "翻译当前无法正常工作。重新加载页面可能会解决问题。"
     }
   },
   "STREAM": {
@@ -494,7 +495,8 @@
       "deleteFailed": "无法删除广播。请重试。"
     },
     "fromBroadcaster": "由主播翻译",
-    "translatedOnDevice": "在此设备上翻译"
+    "translatedOnDevice": "在此设备上翻译",
+    "showTranslation": "显示翻译"
   },
   "MODAL": {
     "confirmEndBroadcast": "这将结束当前的广播,并将切断所有对手。",

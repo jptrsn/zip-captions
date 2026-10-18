@@ -436,7 +436,8 @@
       "pipContentOriginal": "Nur Original",
       "pipContentTranslated": "Nur übersetzt",
       "pipContentSplit": "Original und übersetzt",
-      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, sodass kein Übersetzungsdienst Ihren Text erhält."
+      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, sodass kein Übersetzungsdienst Ihren Text erhält.",
+      "translationFailing": "Die Übersetzung funktioniert gerade nicht. Ein Neuladen der Seite kann das Problem beheben."
     }
   },
   "STREAM": {
@@ -494,7 +495,8 @@
       "deleteFailed": "Die Übertragung konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
     },
     "fromBroadcaster": "Übersetzt von der Sendenden Person",
-    "translatedOnDevice": "Auf diesem Gerät übersetzt"
+    "translatedOnDevice": "Auf diesem Gerät übersetzt",
+    "showTranslation": "Übersetzung anzeigen"
   },
   "MODAL": {
     "confirmEndBroadcast": "Dadurch wird die aktuelle Übertragung beendet und die Verbindung zu allen Teilnehmern getrennt.",

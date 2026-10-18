@@ -436,7 +436,8 @@
       "pipContentOriginal": "Solo original",
       "pipContentTranslated": "Solo traducido",
       "pipContentSplit": "Original y traducido",
-      "privacyNotice": "La traducción se realiza por completo en tu dispositivo mediante los modelos de idioma integrados de Chrome, por lo que ningún servicio de traducción recibe tu texto."
+      "privacyNotice": "La traducción se realiza por completo en tu dispositivo mediante los modelos de idioma integrados de Chrome, por lo que ningún servicio de traducción recibe tu texto.",
+      "translationFailing": "La traducción no funciona en este momento. Recargar la página podría solucionarlo."
     }
   },
   "STREAM": {
@@ -494,7 +495,8 @@
       "deleteFailed": "No se pudo eliminar la transmisión. Inténtalo de nuevo."
     },
     "fromBroadcaster": "Traducido por el emisor",
-    "translatedOnDevice": "Traducido en este dispositivo"
+    "translatedOnDevice": "Traducido en este dispositivo",
+    "showTranslation": "Mostrar traducción"
   },
   "MODAL": {
     "confirmEndBroadcast": "Esto terminará la transmisión actual y desconectará a todos los pares",

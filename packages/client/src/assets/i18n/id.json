@@ -436,7 +436,8 @@
       "pipContentOriginal": "Hanya asli",
       "pipContentTranslated": "Hanya diterjemahkan",
       "pipContentSplit": "Asli dan terjemahan",
-      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda."
+      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda.",
+      "translationFailing": "Terjemahan tidak berfungsi saat ini. Memuat ulang halaman mungkin dapat memperbaikinya."
     }
   },
   "STREAM": {
@@ -494,7 +495,8 @@
       "deleteFailed": "Siaran tidak dapat dihapus. Silakan coba lagi."
     },
     "fromBroadcaster": "Diterjemahkan oleh penyiar",
-    "translatedOnDevice": "Diterjemahkan di perangkat ini"
+    "translatedOnDevice": "Diterjemahkan di perangkat ini",
+    "showTranslation": "Tampilkan terjemahan"
   },
   "MODAL": {
     "confirmEndBroadcast": "Ini akan mengakhiri siaran saat ini dan memutuskan semua rekan.",

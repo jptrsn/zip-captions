@@ -15,5 +15,7 @@
   "LABELS.spokenLanguage": "Setting name: the language the speaker talks in.",
   "LABELS.uiLanguage": "Setting name: the language of the app's own menus and buttons (the user interface).",
   "LABELS.sameAsSpoken": "An option in the interface-language dropdown. It must read naturally as 'Same as the spoken language' in a grammatically correct phrase.",
+  "STREAM.showTranslation": "Label of a small button on the viewer's screen, followed by a colon and a language code (for example 'Show translation: FR'). Pressing it shows the translated captions next to the original ones. Translation here means translated text, not interpretation.",
+  "SETTINGS.TRANSLATION.translationFailing": "Warning shown over the captions when the on-device translation stops working. The user can reload the web page to fix it.",
   "CONNECTIONS.connecting": "Status text while the app is in the middle of connecting; use a progressive form such as 'Connecting to OBS'."
 }
