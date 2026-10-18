@@ -48,7 +48,7 @@ Production (`deploy.yml`, from `main`) is separate and untouched. Nothing here c
    - `CNAME next.zipcaptions.app` → the Static Web App's default hostname
    - `CNAME next-api.zipcaptions.app` → the server's default hostname
    - `TXT asuid.next-api.zipcaptions.app` → the verification id
-3. **Run the workflow again by hand** on the release branch with **bind_domains** ticked, once the records resolve. It attaches the custom domains and the managed certificates (a few minutes). Until then login cannot work, because the OAuth redirect URIs are on `next-api.zipcaptions.app`.
+3. **Run the workflow again by hand** on the release branch with **bind_domains** ticked, once the records resolve. It attaches the custom domains and the managed certificates (a few minutes). Until then login cannot work, because the OAuth redirect URIs are on `next-api.zipcaptions.app`. Every later push redeploys the template, which removes the API's custom domain; the workflow's "Keep the API custom domain bound" step puts it back when the CNAME already points at the app, so no further dispatch is needed.
 4. **Test.** The server runs with `SOCKET_AUTH_MODE=enforce` and `PEER_AUTH_MODE=enforce`, one replica at most (the PeerJS realm and the socket registrations are in its memory), scaling to zero when idle. The MongoDB container is standalone with no volume: its data is lost if it restarts.
 5. **Finish the candidate.** `git flow release finish`, then delete the remote `release/…` branch: that runs the teardown. For an abandoned candidate, run **Tear down staging** by hand. **Delete the three DNS records yourself**: a CNAME left pointing at a deleted Azure hostname is a dangling record.
 
