@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
@@ -20,12 +20,14 @@ import { Subject, map, takeUntil } from 'rxjs';
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent implements OnDestroy {
+export class RecognitionControlSidebarComponent implements AfterViewInit, OnDestroy {
   @Input() showFullscreen = true;
   @Input() showTextFlow = true;
   @Input() showPip = true;
   @Input() showRecognitionToggle = true;
   @ViewChildren('details') subMenus!: HTMLElement[];
+  private host: ElementRef<HTMLElement> = inject(ElementRef);
+  private visibilityObserver?: IntersectionObserver;
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;
   public textSizeMin: Signal<boolean>;
@@ -242,7 +244,27 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     this.store.dispatch(RecognitionActions.resume());
   }
 
+  /**
+   * The menus are <details> pop-ups that open onto the page. Nothing closed them when the drawer slid away,
+   * leaving a pop-up that covered the drawer's trigger. The drawer is closed by a click on its overlay or by
+   * code, so watching for the sidebar leaving the viewport covers every host.
+   */
+  ngAfterViewInit(): void {
+    if (typeof IntersectionObserver === 'undefined') return;
+    this.visibilityObserver = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => !entry.isIntersecting)) this.closeMenus();
+    });
+    // The host element is inline, so its own box says nothing about where the drawer is
+    this.visibilityObserver.observe(this.host.nativeElement.firstElementChild ?? this.host.nativeElement);
+  }
+
+  public closeMenus(): void {
+    const open: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('details[open]'));
+    this.hideElements(open);
+  }
+
   ngOnDestroy(): void {
+    this.visibilityObserver?.disconnect();
     this.onDestroy$.next();
   }
 }
