@@ -73,6 +73,40 @@ describe('SegmentTranslationSession', () => {
     warn.mockRestore();
   });
 
+  it('stops trying a segment after three failures, however many updates follow', async () => {
+    const fn = jest.fn(() => Promise.resolve([null] as (string | null)[]));
+    const session = new SegmentTranslationSession(fn);
+    for (let i = 0; i < 10; i++) {
+      session.update([seg('a', 'one')], 'fr');
+      await flush();
+    }
+    expect(fn).toHaveBeenCalledTimes(3);
+  });
+
+  it('counts a rejected translation as a failed try too', async () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const fn = jest.fn(() => Promise.reject(new Error('boom')));
+    const session = new SegmentTranslationSession(fn);
+    for (let i = 0; i < 6; i++) {
+      session.update([seg('a', 'one')], 'fr');
+      await flush();
+    }
+    expect(fn).toHaveBeenCalledTimes(3);
+    warn.mockRestore();
+  });
+
+  it('tries a segment that gave up again when the session starts over (changed target or a ready model)', async () => {
+    const fn = jest.fn(() => Promise.resolve([null] as (string | null)[]));
+    const session = new SegmentTranslationSession(fn);
+    for (let i = 0; i < 4; i++) {
+      session.update([seg('a', 'one')], 'fr');
+      await flush();
+    }
+    session.update([seg('a', 'one')], 'fr', true);
+    await flush();
+    expect(fn).toHaveBeenCalledTimes(4);
+  });
+
   it('passes a segment already in the target language through without calling the translator', async () => {
     const fn = jest.fn(instant);
     const session = new SegmentTranslationSession(fn);

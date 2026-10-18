@@ -273,13 +273,13 @@ describe('ChromeTranslatorService', () => {
       expect(translator.translate).toHaveBeenCalledTimes(2);
     });
 
-    it('does not retain translations after the session cache is cleared, but keeps the translator', async () => {
+    it('does not retain translations or the translator after the session cache is cleared, so a session never inherits a broken one', async () => {
       await service.translateSegments(['one'], 'en', 'fr');
       service.clearSessionCache();
+      expect(translator.destroy).toHaveBeenCalledTimes(1);
       await service.translateSegments(['one'], 'en', 'fr');
       expect(translator.translate).toHaveBeenCalledTimes(2);
-      expect(adapter.create).toHaveBeenCalledTimes(1);
-      expect(translator.destroy).not.toHaveBeenCalled();
+      expect(adapter.create).toHaveBeenCalledTimes(2);
     });
 
     it('holds at most 500 translations, evicting the oldest', async () => {
@@ -339,6 +339,28 @@ describe('ChromeTranslatorService', () => {
     it('returns null for a segment whose translation throws, and still translates the others', async () => {
       translator.translate.mockImplementation((text: string) => text === 'bad' ? Promise.reject(new Error('boom')) : Promise.resolve(`fr:${text}`));
       await expect(service.translateSegmentsStrict(['good', 'bad'], 'en', 'fr')).resolves.toEqual(['fr:good', null]);
+    });
+
+    it('drops a Translator that threw, so the next attempt builds a new one, and says translation is failing until one works', async () => {
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+      translator.translate.mockRejectedValueOnce(new Error('UnknownError'));
+      await expect(service.translateSegmentsStrict(['one'], 'en', 'fr')).resolves.toEqual([null]);
+      expect(translator.destroy).toHaveBeenCalledTimes(1);
+      expect(service.translationFailing()).toBe(true);
+
+      await expect(service.translateSegmentsStrict(['two'], 'en', 'fr')).resolves.toEqual(['fr:two']);
+      expect(adapter.create).toHaveBeenCalledTimes(2);
+      expect(service.translationFailing()).toBe(false);
+      warn.mockRestore();
+    });
+
+    it('logs one warning for a run of failures, not one per segment', async () => {
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+      translator.translate.mockRejectedValue(new Error('UnknownError'));
+      await service.translateSegmentsStrict(['one', 'two', 'three'], 'en', 'fr');
+      await service.translateSegmentsStrict(['four'], 'en', 'fr');
+      expect(warn).toHaveBeenCalledTimes(1);
+      warn.mockRestore();
     });
 
     it('returns null for an empty translation result', async () => {

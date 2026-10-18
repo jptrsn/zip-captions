@@ -55,6 +55,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public originalLanguageLabel: Signal<string>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
+  public translationFailing: Signal<boolean>;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
 
@@ -92,6 +93,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.liveChannel = this.translatorService.createLiveChannel();
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.modelStatus = this.translatorService.modelStatus;
+    this.translationFailing = this.translatorService.translationFailing;
     this.downloadProgress = this.translatorService.downloadProgress;
     this.localSession = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
 

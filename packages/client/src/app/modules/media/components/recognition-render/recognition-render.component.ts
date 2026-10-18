@@ -68,6 +68,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public originalLanguageLabel: Signal<string>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
+  public translationFailing: Signal<boolean>;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
   public canSwap: Signal<boolean>;
@@ -169,6 +170,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
 
     this.modelStatus = this.translatorService.modelStatus;
+    this.translationFailing = this.translatorService.translationFailing;
     this.downloadProgress = this.translatorService.downloadProgress;
 
     // The translations themselves come from CaptionTranslationService; this component only keeps the

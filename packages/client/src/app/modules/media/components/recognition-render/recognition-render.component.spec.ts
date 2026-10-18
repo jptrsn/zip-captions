@@ -39,9 +39,10 @@ describe('RecognitionRenderComponent', () => {
   let segments: ReturnType<typeof signal<CaptionSegment[]>>;
   let translations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let modelStatus: ReturnType<typeof signal<TranslationModelStatus>>;
+  let translationFailing: ReturnType<typeof signal<boolean>>;
   let fullScreen: { isAvailable: boolean; isFullscreen: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock };
   let pip: { isSupported: boolean; isPipActive: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock; close: jest.Mock };
-  let translator: { isSupported: () => boolean; modelStatus: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; downloadModel: jest.Mock; normalizeLanguageCode: (c?: string) => string };
+  let translator: { isSupported: () => boolean; modelStatus: unknown; translationFailing: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; downloadModel: jest.Mock; normalizeLanguageCode: (c?: string) => string };
   let translatorSupported: boolean;
 
   const create = (s: Scenario = {}) => {
@@ -72,14 +73,16 @@ describe('RecognitionRenderComponent', () => {
     segments = signal<CaptionSegment[]>([]);
     translations = signal(new Map<string, SegmentTranslation>());
     modelStatus = signal<TranslationModelStatus>('ready');
+    translationFailing = signal(false);
     fullScreen = { isAvailable: false, isFullscreen: signal(false), registerElement: jest.fn(), deregisterElement: jest.fn() };
     pip = { isSupported: false, isPipActive: signal(false), registerElement: jest.fn(), deregisterElement: jest.fn(), close: jest.fn() };
     translator = {
       isSupported: () => translatorSupported,
       modelStatus,
+      translationFailing,
       downloadProgress: signal(40),
       checkModelStatus: jest.fn(),
-      downloadModel: jest.fn(),
+      downloadModel: jest.fn(() => Promise.resolve(true)),
       normalizeLanguageCode: (c?: string) => (c ?? '').split('-')[0].toLowerCase(),
     };
     await TestBed.configureTestingModule({
@@ -243,6 +246,19 @@ describe('RecognitionRenderComponent', () => {
       fixture.detectChanges();
       expect(byId('zc-caption-download-model')).toBeNull();
       expect(byId('zc-caption-download-progress')?.textContent).toContain('40%');
+    });
+  });
+
+  describe('a failing translator', () => {
+    it('tells the user when the device translator is failing, and only then', () => {
+      create();
+      expect(byId('zc-caption-translate-failed')).toBeNull();
+      translationFailing.set(true);
+      fixture.detectChanges();
+      expect(byId('zc-caption-translate-failed')).toBeTruthy();
+      translationFailing.set(false);
+      fixture.detectChanges();
+      expect(byId('zc-caption-translate-failed')).toBeNull();
     });
   });
 

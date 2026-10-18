@@ -34,6 +34,9 @@ export class ChromeTranslatorService {
   public modelStatus: WritableSignal<TranslationModelStatus> = signal('unavailable');
   public downloadProgress: WritableSignal<number> = signal(0);
   public lastError: WritableSignal<string | undefined> = signal(undefined);
+  /** The device translator threw while translating; cleared by the next translation that works */
+  public translationFailing: WritableSignal<boolean> = signal(false);
+  private warnedAboutFailure = false;
 
   // Emits when a model becomes ready to trigger re-translation of active captions
   private modelReadySubject = new Subject<{ sourceLang: string; targetLang: string }>();
@@ -353,17 +356,20 @@ export class ChromeTranslatorService {
       return text;
     }
 
+    let translator: BrowserTranslator | null = null;
     try {
-      const translator = await this.getOrCreateTranslator(s, t, false);
+      translator = await this.getOrCreateTranslator(s, t, false);
       if (translator && typeof translator.translate === 'function') {
         const result = await translator.translate(text);
         if (result && result.trim()) {
+          this.translationFailing.set(false);
+          this.warnedAboutFailure = false;
           return result;
         }
       }
       return text;
     } catch (err: any) {
-      console.warn('Translate execution failed:', err);
+      this.onTranslateFailure(pairKey, translator, err);
       return text;
     }
   }
@@ -465,8 +471,9 @@ export class ChromeTranslatorService {
       if (cached !== undefined) {
         return cached;
       }
+      let translator: BrowserTranslator | null = null;
       try {
-        const translator = await this.getOrCreateTranslator(s, t, false);
+        translator = await this.getOrCreateTranslator(s, t, false);
         if (!translator || typeof translator.translate !== 'function') {
           return null;
         }
@@ -477,12 +484,31 @@ export class ChromeTranslatorService {
         if (cacheResults) {
           this.cacheSegment(cacheKey, result);
         }
+        this.translationFailing.set(false);
+        this.warnedAboutFailure = false;
         return result;
       } catch (err: any) {
-        console.warn('Translate execution failed:', err);
+        this.onTranslateFailure(`${s}->${t}`, translator, err);
         return null;
       }
     }));
+  }
+
+  /**
+   * Chrome's Translator can fail (UnknownError) and then keep failing for the rest of the page's life.
+   * The failed instance is dropped, so the next attempt builds a new one, the failure is made visible, and
+   * the console gets one warning per run of failures instead of one per segment.
+   */
+  private onTranslateFailure(pairKey: string, translator: BrowserTranslator | null, err: any): void {
+    if (translator && this.translators.get(pairKey) === translator) {
+      this.translators.delete(pairKey);
+      this.destroyTranslator(translator);
+    }
+    this.translationFailing.set(true);
+    if (!this.warnedAboutFailure) {
+      this.warnedAboutFailure = true;
+      console.warn('Translate execution failed (further failures are not logged until a translation succeeds):', err);
+    }
   }
 
   private cacheSegment(cacheKey: string, translated: string): void {
@@ -495,10 +521,16 @@ export class ChromeTranslatorService {
   }
 
   /**
-   * Drops translated text from the ending session. Translators (downloaded models) are kept.
+   * Drops translated text from the ending session, and the Translator instances, so a session never
+   * inherits one that Chrome has left in a broken state (stopping and restarting fixed that). The
+   * downloaded models are the browser's and stay; the next translation builds a new instance.
    */
   public clearSessionCache(): void {
     this.segmentCache.clear();
+    this.translators.forEach((translator) => this.destroyTranslator(translator));
+    this.translators.clear();
+    this.translationFailing.set(false);
+    this.warnedAboutFailure = false;
   }
 
   public destroy(): void {

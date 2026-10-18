@@ -364,6 +364,7 @@
       "modelsTitle": "Translation models",
       "modelsPerPair": "Each language pair uses its own translation model, which Chrome downloads once the first time you use it.",
       "modelPerPairNotice": "One-time download for this language pair",
+      "translationFailing": "Translation is not working right now. Reloading the page may fix it.",
       "unsupportedHint": "The Chrome Translator API is only available in supported desktop Chromium browsers (Chrome 138+ / Edge). You may need to enable chrome://flags/#translation-api.",
       "experimental": "Experimental feature",
       "unsupportedMobileHint": "On-device translation is only available in desktop browsers (Chrome 138+ or Edge 148+) and is not supported on phones or tablets.",

@@ -58,6 +58,12 @@
               </div>
             </div>
 
+            <!-- The device translator is failing: say so, since the pane would just stay empty -->
+            <div *ngIf="translationFailing() && modelStatus() === 'ready'" data-testid="zc-caption-translate-failed" role="alert"
+                 class="absolute bottom-2 left-2 right-2 z-10 flex justify-center pointer-events-none">
+              <span class="badge badge-warning h-auto py-1 text-center text-wrap shadow">{{ 'SETTINGS.TRANSLATION.translationFailing' | translate }}</span>
+            </div>
+
             <!-- Download Progress if downloading -->
             <div *ngIf="modelStatus() === 'downloading'" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
               <div data-testid="zc-caption-download-progress" class="flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">

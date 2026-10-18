@@ -11,7 +11,8 @@ export type TranslateFn = (texts: string[], sourceLang: string, targetLang: stri
 /**
  * Translations for a list of caption segments, keyed by segment ID so a late result can never land on
  * the wrong caption. Each segment translates from its own language, and one that is already in the
- * target language passes through. A segment that fails stays pending (it has no translation).
+ * target language passes through. A segment that fails stays pending (it has no translation) and is
+ * tried again on later updates, up to three times in all.
  *
  * Plain TypeScript apart from the signals, so it can be driven by a component, a service, or a test.
  */
@@ -20,6 +21,9 @@ export class SegmentTranslationSession {
   // The previous target's translations, shown until the new ones land so a pane doesn't blank
   private previous: WritableSignal<Map<string, SegmentTranslation>> = signal(new Map());
   private requested = new Set<string>();
+  // Failed tries per segment ID; a segment that reaches MAX_ATTEMPTS is not tried again until the session starts over
+  private attempts = new Map<string, number>();
+  private static readonly MAX_ATTEMPTS = 3;
   private latest: CaptionSegment[] = [];
   // Incremented on every reset, so results still in flight for an older state are discarded
   private generation = 0;
@@ -45,7 +49,12 @@ export class SegmentTranslationSession {
       this.previous.set(shown);
     }
     const generation = this.generation;
-    const groups = planTranslations(segments, this.current(), target, this.requested);
+    // A segment that failed too often is left alone, or every recognition update would try it again forever
+    const skipped = new Set(this.requested);
+    this.attempts.forEach((count, id) => {
+      if (count >= SegmentTranslationSession.MAX_ATTEMPTS) skipped.add(id);
+    });
+    const groups = planTranslations(segments, this.current(), target, skipped);
     groups.forEach(({ sourceLang, segments: pending, passThrough }) => {
       pending.forEach((segment) => this.requested.add(segment.id));
       const texts = pending.map((segment) => segment.text);
@@ -55,16 +64,25 @@ export class SegmentTranslationSession {
         pending.forEach((segment) => this.requested.delete(segment.id));
         const done = pending.filter((_, index) => typeof translated[index] === 'string');
         const doneTexts = done.map((segment) => translated[pending.indexOf(segment)] as string);
+        done.forEach((segment) => this.attempts.delete(segment.id));
+        pending.filter((segment) => !done.includes(segment)).forEach((segment) => this.countFailure(segment.id));
         this.current.update((map) => mergeTranslations(map, this.latest, done, doneTexts));
         if (this.requested.size === 0) {
           this.previous.set(new Map());
         }
       }).catch((err) => {
         if (generation !== this.generation) return;
-        pending.forEach((segment) => this.requested.delete(segment.id));
+        pending.forEach((segment) => {
+          this.requested.delete(segment.id);
+          this.countFailure(segment.id);
+        });
         console.warn('Segment translation failed:', err);
       });
     });
+  }
+
+  private countFailure(id: string): void {
+    this.attempts.set(id, (this.attempts.get(id) ?? 0) + 1);
   }
 
   /** Forgets every translation, including those shown while waiting for new ones */
@@ -76,6 +94,7 @@ export class SegmentTranslationSession {
   private clear(): void {
     this.generation++;
     this.requested.clear();
+    this.attempts.clear();
     this.current.set(new Map());
   }
 }
