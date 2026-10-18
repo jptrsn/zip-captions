@@ -153,52 +153,76 @@ export class ChromeTranslatorService {
    * Checks model status for a pair and updates the modelStatus signal
    */
   public async checkModelStatus(sourceLang: string, targetLang: string): Promise<TranslationModelStatus> {
+    const status = await this.pairStatus(sourceLang, targetLang);
+    this.safeSetSignal(this.modelStatus, status);
+    return status;
+  }
+
+  /**
+   * Status for a bilingual pair, where translation runs both ways (each pane shows its own language):
+   * ready only when both directions are, downloadable when either needs a download.
+   */
+  public async checkModelStatusBoth(langA: string, langB: string): Promise<TranslationModelStatus> {
+    const [forward, back] = await Promise.all([this.pairStatus(langA, langB), this.pairStatus(langB, langA)]);
+    const status = forward === 'ready' && back === 'ready' ? 'ready'
+      : [forward, back].includes('unavailable') ? 'unavailable'
+      : [forward, back].includes('error') ? 'error'
+      : 'downloadable';
+    this.safeSetSignal(this.modelStatus, status);
+    return status;
+  }
+
+  private async pairStatus(sourceLang: string, targetLang: string): Promise<TranslationModelStatus> {
     const s = this.normalizeLanguageCode(sourceLang);
     const t = this.normalizeLanguageCode(targetLang);
-    if (s === t) {
-      this.safeSetSignal(this.modelStatus, 'ready');
-      return 'ready';
-    }
-
-    if (!this.isSupported()) {
-      this.safeSetSignal(this.modelStatus, 'unavailable');
-      return 'unavailable';
-    }
-
+    if (s === t) return 'ready';
+    if (!this.isSupported()) return 'unavailable';
     const cap = await this.canTranslate(s, t);
-    if (cap.status === 'readily') {
-      this.safeSetSignal(this.modelStatus, 'ready');
-      return 'ready';
-    } else if (cap.status === 'after-download') {
-      this.safeSetSignal(this.modelStatus, 'downloadable');
-      return 'downloadable';
-    } else {
-      this.safeSetSignal(this.modelStatus, 'error');
-      return 'error';
-    }
+    if (cap.status === 'readily') return 'ready';
+    return cap.status === 'after-download' ? 'downloadable' : 'error';
   }
 
   /**
    * Directly downloads and warms up the translation model using a user gesture
    */
   public async downloadModel(sourceLang: string, targetLang: string): Promise<boolean> {
-    const s = this.normalizeLanguageCode(sourceLang);
-    const t = this.normalizeLanguageCode(targetLang);
-    const pairKey = `${s}->${t}`;
+    return this.downloadModels([[sourceLang, targetLang]]);
+  }
 
+  /**
+   * Downloads both directions of a bilingual pair from one click. Both requests are made at once, so both
+   * start inside the user's gesture, which a download needs.
+   */
+  public async downloadModelBoth(langA: string, langB: string): Promise<boolean> {
+    return this.downloadModels([[langA, langB], [langB, langA]]);
+  }
+
+  private async downloadModels(pairs: [string, string][]): Promise<boolean> {
     if (!this.isSupported()) return false;
 
     this.safeSetSignal(this.modelStatus, 'downloading');
     this.safeSetSignal(this.downloadProgress, 0);
 
+    const results = await Promise.all(pairs.map(([source, target]) => this.createModel(source, target)));
+    if (results.every((ok) => ok)) {
+      this.safeSetSignal(this.modelStatus, 'ready');
+      this.safeSetSignal(this.downloadProgress, 100);
+      this.safeSetSignal(this.lastError, undefined);
+      return true;
+    }
+    return false;
+  }
+
+  /** Creates (downloading if need be) and caches the Translator for one direction; false on failure */
+  private async createModel(sourceLang: string, targetLang: string): Promise<boolean> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+    const pairKey = `${s}->${t}`;
     try {
       const translator = this.cachedTranslator(pairKey) ?? await this.translatorApi.create(this.createOptions(s, t));
 
       if (translator) {
         this.cacheTranslator(pairKey, translator);
-        this.safeSetSignal(this.modelStatus, 'ready');
-        this.safeSetSignal(this.downloadProgress, 100);
-        this.safeSetSignal(this.lastError, undefined);
         this.modelReadySubject.next({ sourceLang: s, targetLang: t });
         return true;
       }

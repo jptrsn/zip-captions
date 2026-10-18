@@ -153,6 +153,35 @@ describe('ChromeTranslatorService', () => {
       expect(ready).toHaveBeenCalledWith({ sourceLang: 'en', targetLang: 'fr' });
     });
 
+    it('downloads both directions of a bilingual pair at once, and is ready only when both are', async () => {
+      const finish: Record<string, (t: BrowserTranslator) => void> = {};
+      adapter.create.mockImplementation((options) => new Promise<BrowserTranslator>((resolve) => (finish[`${options.sourceLanguage}->${options.targetLanguage}`] = resolve)));
+      const created = service.downloadModelBoth('fr', 'en');
+      expect(Object.keys(finish).sort()).toEqual(['en->fr', 'fr->en']);
+
+      finish['fr->en'](translator);
+      await flushMicrotasks();
+      expect(service.modelStatus()).toBe('downloading');
+      finish['en->fr'](translator);
+      await expect(created).resolves.toBe(true);
+      await flushMicrotasks();
+      expect(service.modelStatus()).toBe('ready');
+    });
+
+    it('reports an error when one direction of the pair fails', async () => {
+      adapter.create.mockImplementation((options) => options.sourceLanguage === 'en' ? Promise.reject(new Error('no space')) : Promise.resolve(translator));
+      await expect(service.downloadModelBoth('fr', 'en')).resolves.toBe(false);
+      await flushMicrotasks();
+      expect(service.modelStatus()).toBe('error');
+    });
+
+    it('checks the status of both directions: downloadable when either needs a download', async () => {
+      adapter.availability.mockImplementation((source: string) => Promise.resolve<TranslatorAvailability>(source === 'en' ? 'downloadable' : 'available'));
+      await expect(service.checkModelStatusBoth('fr', 'en')).resolves.toBe('downloadable');
+      adapter.availability.mockResolvedValue('available');
+      await expect(service.checkModelStatusBoth('fr', 'en')).resolves.toBe('ready');
+    });
+
     it('does nothing on ineligible devices', async () => {
       TestBed.resetTestingModule();
       platform.IOS = true;

@@ -183,13 +183,9 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
 
     // The translations themselves come from CaptionTranslationService; this component only keeps the
     // model status (for the download button) up to date when the languages change
-    toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}`)).pipe(
+    toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}|${paneLanguages()?.first ?? ''}`)).pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe(() => {
-      if (this.translatorService.isSupported()) {
-        this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
-      }
-    });
+    ).subscribe(() => this.checkModels());
 
     if (this.fullScreen.isAvailable) {
       effect(() => {
@@ -217,7 +213,16 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     if (this.fullScreen.isAvailable) {
       this.fullScreen.registerElement(this.el);
     }
-    if (this.translatorService.isSupported()) {
+    this.checkModels();
+  }
+
+  /** The model status for what is shown: both directions when the panes are a bilingual model's two languages */
+  private checkModels(): void {
+    if (!this.translatorService.isSupported()) return;
+    const panes = this.captionTranslation.paneLanguages();
+    if (panes) {
+      this.translatorService.checkModelStatusBoth(panes.first, panes.second);
+    } else {
       this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
     }
   }
@@ -278,9 +283,11 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public downloadModel(): void {
     if (this.downloadRequested()) return;
     this.downloadRequested.set(true);
-    const src = this.sourceLanguage();
-    const tgt = this.targetLanguage();
-    this.translatorService.downloadModel(src, tgt).finally(() => this.downloadRequested.set(false));
+    const panes = this.captionTranslation.paneLanguages();
+    const download = panes
+      ? this.translatorService.downloadModelBoth(panes.first, panes.second)
+      : this.translatorService.downloadModel(this.sourceLanguage(), this.targetLanguage());
+    download.finally(() => this.downloadRequested.set(false));
   }
 
   ngAfterViewInit(): void {

@@ -44,7 +44,7 @@ describe('RecognitionRenderComponent', () => {
   let firstTranslations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let fullScreen: { isAvailable: boolean; isFullscreen: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock };
   let pip: { isSupported: boolean; isPipActive: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock; close: jest.Mock };
-  let translator: { isSupported: () => boolean; modelStatus: unknown; translationFailing: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; downloadModel: jest.Mock; normalizeLanguageCode: (c?: string) => string };
+  let translator: { isSupported: () => boolean; modelStatus: unknown; translationFailing: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; checkModelStatusBoth: jest.Mock; downloadModel: jest.Mock; downloadModelBoth: jest.Mock; normalizeLanguageCode: (c?: string) => string };
   let translatorSupported: boolean;
 
   const create = (s: Scenario = {}) => {
@@ -86,7 +86,9 @@ describe('RecognitionRenderComponent', () => {
       translationFailing,
       downloadProgress: signal(40),
       checkModelStatus: jest.fn(),
+      checkModelStatusBoth: jest.fn(),
       downloadModel: jest.fn(() => Promise.resolve(true)),
+      downloadModelBoth: jest.fn(() => Promise.resolve(true)),
       normalizeLanguageCode: (c?: string) => (c ?? '').split('-')[0].toLowerCase(),
     };
     await TestBed.configureTestingModule({
@@ -261,6 +263,7 @@ describe('RecognitionRenderComponent', () => {
       paneLanguages.set({ first: 'fr', second: 'en' });
       create({ lang: 'fr', dialect: 'fr-CA', translation: { targetLanguage: 'en' } });
 
+      expect(translator.checkModelStatusBoth).toHaveBeenCalledWith('fr', 'en');
       expect(component.originalLanguageLabel()).toBe('FR');
       expect(component.originalLines().map((line) => line.text)).toEqual(['bonjour', 'bonjour (de hello)']);
       expect(component.translatedLines().map((line) => line.text)).toEqual(['hello (from bonjour)', 'hello']);
