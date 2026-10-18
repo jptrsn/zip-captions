@@ -6,7 +6,7 @@ import { CaptionSegment } from '../../models/caption-segment.model';
 import { RecognitionService } from '../../modules/media/services/recognition.service';
 import { TranslationSettings } from '../../modules/settings/models/settings.model';
 import { defaultAppState } from '../../reducers/app.reducer';
-import { recognitionIdSelector } from '../../selectors/recognition.selector';
+import { recognitionIdSelector, selectRecognitionEngineProvider } from '../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../selectors/settings.selector';
 import { CaptionTranslationService } from './caption-translation.service';
 import { ChromeTranslatorService } from './chrome-translator.service';
@@ -105,6 +105,48 @@ describe('CaptionTranslationService', () => {
     await flush();
     expect(translator.translateSegmentsStrict).not.toHaveBeenCalled();
     expect(service.translations().get('a')?.text).toBe('bonjour');
+  });
+
+  describe('a bilingual Azure locale translating into its other language', () => {
+    const bilingual = (provider: 'azure' | 'web' = 'azure', target = 'en') => {
+      const service = setup({ targetLanguage: target });
+      store.overrideSelector(dialectSelector, 'fr-CA');
+      store.overrideSelector(languageSelector, 'fr');
+      store.overrideSelector(selectRecognitionEngineProvider, provider);
+      store.refreshState();
+      return service;
+    };
+
+    it('makes the two languages the panes, each segment shown in both: as spoken in its own, translated in the other', async () => {
+      const service = bilingual();
+      segments.set([seg('a', 'bonjour', 'fr-CA'), seg('b', 'hello', 'en')]);
+      await flush();
+      expect(service.paneLanguages()).toEqual({ first: 'fr', second: 'en' });
+      // second pane (English): the French segment translated, the English one as spoken
+      expect(service.translations().get('a')?.text).toBe('en:bonjour');
+      expect(service.translations().get('b')?.text).toBe('hello');
+      // first pane (French): the French segment as spoken, the English one translated
+      expect(service.firstTranslations().get('a')?.text).toBe('bonjour');
+      expect(service.firstTranslations().get('b')?.text).toBe('fr:hello');
+      expect(translator.translateSegmentsStrict).toHaveBeenCalledWith(['bonjour'], 'fr', 'en');
+      expect(translator.translateSegmentsStrict).toHaveBeenCalledWith(['hello'], 'en', 'fr');
+    });
+
+    it('keeps the ordinary spoken and translated panes for another engine, or a target outside the pair', async () => {
+      const web = bilingual('web');
+      segments.set([seg('a', 'hello', 'en')]);
+      await flush();
+      expect(web.paneLanguages()).toBeUndefined();
+      expect(web.firstTranslations().size).toBe(0);
+    });
+
+    it('does not use language panes when the target is a third language', async () => {
+      const service = bilingual('azure', 'de');
+      segments.set([seg('a', 'hello', 'en')]);
+      await flush();
+      expect(service.paneLanguages()).toBeUndefined();
+      expect(service.translations().get('a')?.text).toBe('de:hello');
+    });
   });
 
   it('forgets translations when the segments are cleared', async () => {

@@ -5,7 +5,8 @@ import { distinctUntilChanged } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { CaptionSegment } from '../../models/caption-segment.model';
 import { RecognitionService } from '../../modules/media/services/recognition.service';
-import { recognitionIdSelector } from '../../selectors/recognition.selector';
+import { BilingualDialects, RecognitionDialect } from '../../modules/settings/models/settings.model';
+import { recognitionIdSelector, selectRecognitionEngineProvider } from '../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTranslationSettings } from '../../selectors/settings.selector';
 import { ChromeTranslatorService, LiveTranslationChannel } from './chrome-translator.service';
 import { SegmentTranslationSession } from './segment-translation-session';
@@ -39,7 +40,15 @@ export class CaptionTranslationService {
 
   /** How many of the newest segments are on screen, and so translated before the rest */
   private readonly visibleCount: Signal<number>;
+  /**
+   * The two languages shown as panes, first then second, when a bilingual model is recognizing and the
+   * translation target is its other language; otherwise undefined and the panes are spoken and translated
+   */
+  public readonly paneLanguages: Signal<{ first: string; second: string } | undefined>;
+  /** Translations into the first pane's language by segment ID; empty unless `paneLanguages` is set */
+  public readonly firstTranslations: Signal<Map<string, SegmentTranslation>>;
   private session: SegmentTranslationSession;
+  private firstSession: SegmentTranslationSession;
   /** This service's own live-line translator (see `createLiveChannel`) */
   private liveChannel: LiveTranslationChannel;
 
@@ -49,6 +58,8 @@ export class CaptionTranslationService {
     this.liveChannel = this.translatorService.createLiveChannel();
     this.session = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
     this.translations = this.session.translations;
+    this.firstSession = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
+    this.firstTranslations = this.firstSession.translations;
 
     const id: Signal<string | undefined> = toSignal(this.store.select(recognitionIdSelector));
     this.segments = computed(() => id() ? this.recognitionService.getRecognizedSegments()() : []);
@@ -70,18 +81,30 @@ export class CaptionTranslationService {
       return d && d !== 'unspecified' ? d : (lang() || 'en');
     });
 
+    // A bilingual Azure model recognizes two languages, and each segment is tagged with the one spoken.
+    // When the target is the pair's other language, the panes are those two languages, not "spoken" and
+    // "translated": each shows its own language as spoken and the other's segments translated.
+    const provider = toSignal(this.store.select(selectRecognitionEngineProvider));
+    this.paneLanguages = computed(() => {
+      const pair = provider() === 'azure' && this.active() ? BilingualDialects[this.sourceLanguage() as RecognitionDialect] : undefined;
+      if (!pair || pair.length < 2) return undefined;
+      return pair[1] === this.target().split('-')[0].toLowerCase() ? { first: pair[0], second: pair[1] } : undefined;
+    });
+
     // New or changed segments
     toObservable(this.segments).subscribe((segments) => {
       if (segments.length === 0) {
         this.session.reset();
+        this.firstSession.reset();
       } else if (this.active()) {
         this.session.update(segments, this.target(), false, this.visibleCount());
+        this.updateFirstSession(segments, false);
       }
     });
 
     // Turning translation on or off, or changing its language. Layout settings share the same object,
     // so only these values are watched.
-    const translationKey = computed(() => `${this.active()}|${this.target()}`);
+    const translationKey = computed(() => `${this.active()}|${this.target()}|${this.paneLanguages()?.first ?? ''}`);
     toObservable(translationKey).subscribe(() => {
       if (!this.active()) {
         this.session.reset();
@@ -89,6 +112,7 @@ export class CaptionTranslationService {
       } else if (this.segments().length > 0) {
         this.session.update(this.segments(), this.target(), true, this.visibleCount());
       }
+      this.updateFirstSession(this.segments(), true);
     });
 
     // A model that has just finished downloading: translate what was waiting
@@ -96,6 +120,7 @@ export class CaptionTranslationService {
       if (!this.active()) return;
       if (this.segments().length > 0) {
         this.session.update(this.segments(), this.target(), true, this.visibleCount());
+        this.updateFirstSession(this.segments(), true);
       }
       const live = this.liveText();
       if (live) {
@@ -125,5 +150,15 @@ export class CaptionTranslationService {
       }
     });
     this.liveChannel.output$.subscribe((translated) => this.translatedLive.set(translated));
+  }
+
+  /** Translations into the first pane's language, only while the panes are the pair's two languages */
+  private updateFirstSession(segments: CaptionSegment[], retranslateAll: boolean): void {
+    const panes = this.paneLanguages();
+    if (!panes) {
+      this.firstSession.reset();
+    } else if (segments.length > 0) {
+      this.firstSession.update(segments, panes.first, retranslateAll, this.visibleCount());
+    }
   }
 }
