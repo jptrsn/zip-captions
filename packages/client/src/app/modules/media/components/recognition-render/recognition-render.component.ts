@@ -66,6 +66,8 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public translatedTextOutput: Signal<string[]>;
   public hasTranslatedResults: Signal<boolean>;
   public originalLanguageLabel: Signal<string>;
+  /** The language the first pane shows: the spoken language, or a bilingual model's first language */
+  public originalPaneLanguage: Signal<string>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
   public translationFailing: Signal<boolean>;
@@ -146,14 +148,20 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       return false;
     });
 
-    this.originalLines = computed(() => buildOriginalLines(this.segments(), this.sourceLanguage()));
+    // A bilingual model with the other language as the target: the first pane is that model's first language,
+    // showing French as spoken and English translated, instead of "whatever was spoken"
+    const paneLanguages = this.captionTranslation.paneLanguages;
+    this.originalPaneLanguage = computed(() => paneLanguages()?.first ?? this.sourceLanguage());
+    this.originalLines = computed(() => paneLanguages()
+      ? buildTranslatedLines(this.segments(), this.captionTranslation.firstTranslations(), paneLanguages()!.first)
+      : buildOriginalLines(this.segments(), this.sourceLanguage()));
     this.translatedLines = computed(() => buildTranslatedLines(this.segments(), this.captionTranslation.translations(), this.targetLanguage()));
 
-    this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
+    this.originalTextDir = computed(() => textDirection(this.originalPaneLanguage()));
     this.translatedTextDir = computed(() => textDirection(this.targetLanguage()));
 
     this.originalLanguageLabel = computed(() => {
-      const s = this.sourceLanguage();
+      const s = this.originalPaneLanguage();
       return (s ? s.split('-')[0] : 'EN').toUpperCase();
     });
 

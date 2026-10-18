@@ -40,6 +40,8 @@ describe('RecognitionRenderComponent', () => {
   let translations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let modelStatus: ReturnType<typeof signal<TranslationModelStatus>>;
   let translationFailing: ReturnType<typeof signal<boolean>>;
+  let paneLanguages: ReturnType<typeof signal<{ first: string; second: string } | undefined>>;
+  let firstTranslations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let fullScreen: { isAvailable: boolean; isFullscreen: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock };
   let pip: { isSupported: boolean; isPipActive: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock; close: jest.Mock };
   let translator: { isSupported: () => boolean; modelStatus: unknown; translationFailing: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; downloadModel: jest.Mock; normalizeLanguageCode: (c?: string) => string };
@@ -72,6 +74,8 @@ describe('RecognitionRenderComponent', () => {
     finals = signal<string[]>([]);
     segments = signal<CaptionSegment[]>([]);
     translations = signal(new Map<string, SegmentTranslation>());
+    paneLanguages = signal<{ first: string; second: string } | undefined>(undefined);
+    firstTranslations = signal(new Map<string, SegmentTranslation>());
     modelStatus = signal<TranslationModelStatus>('ready');
     translationFailing = signal(false);
     fullScreen = { isAvailable: false, isFullscreen: signal(false), registerElement: jest.fn(), deregisterElement: jest.fn() };
@@ -93,7 +97,7 @@ describe('RecognitionRenderComponent', () => {
         { provide: DocumentPipService, useValue: pip },
         { provide: RecognitionService, useValue: { getLiveOutput: () => live, getRecognizedText: () => finals } },
         { provide: ChromeTranslatorService, useValue: translator },
-        { provide: CaptionTranslationService, useValue: { segments, translatedLive: signal(''), translations } },
+        { provide: CaptionTranslationService, useValue: { segments, translatedLive: signal(''), translations, paneLanguages, firstTranslations } },
       ],
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [RecognitionRenderComponent],
@@ -246,6 +250,20 @@ describe('RecognitionRenderComponent', () => {
       fixture.detectChanges();
       expect(byId('zc-caption-download-model')).toBeNull();
       expect(byId('zc-caption-download-progress')?.textContent).toContain('40%');
+    });
+  });
+
+  describe('the panes of a bilingual model', () => {
+    it('labels the first pane with the model\'s first language and fills it with that language as spoken and the other translated', () => {
+      segments.set([{ id: 'a', text: 'bonjour', lang: 'fr-CA' }, { id: 'b', text: 'hello', lang: 'en' }]);
+      firstTranslations.set(new Map([['a', { lang: 'fr-CA', text: 'bonjour' }], ['b', { lang: 'en', text: 'bonjour (de hello)' }]]));
+      translations.set(new Map([['a', { lang: 'fr-CA', text: 'hello (from bonjour)' }], ['b', { lang: 'en', text: 'hello' }]]));
+      paneLanguages.set({ first: 'fr', second: 'en' });
+      create({ lang: 'fr', dialect: 'fr-CA', translation: { targetLanguage: 'en' } });
+
+      expect(component.originalLanguageLabel()).toBe('FR');
+      expect(component.originalLines().map((line) => line.text)).toEqual(['bonjour', 'bonjour (de hello)']);
+      expect(component.translatedLines().map((line) => line.text)).toEqual(['hello (from bonjour)', 'hello']);
     });
   });
 
