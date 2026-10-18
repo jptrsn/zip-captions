@@ -141,14 +141,18 @@
 
             <div *ngIf="modelStatus() === 'downloadable'" class="flex flex-col gap-2 mt-2">
               <p class="text-xs text-base-content/80" translate>SETTINGS.TRANSLATION.downloadPrompt</p>
-              <button type="button" class="btn btn-sm btn-primary w-full gap-2" [disabled]="!formGroup.get('enabled')?.value" (click)="downloadModel()">
-                <ng-icon name="heroArrowDownTray"></ng-icon>
+              <button type="button" class="btn btn-sm btn-primary w-full gap-2" [disabled]="!formGroup.get('enabled')?.value || downloadRequested()" (click)="downloadModel()">
+                <span *ngIf="downloadRequested(); else downloadIcon" class="loading loading-spinner loading-xs"></span>
+                <ng-template #downloadIcon><ng-icon name="heroArrowDownTray"></ng-icon></ng-template>
                 <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
               </button>
             </div>
 
             <div *ngIf="modelStatus() === 'downloading'" class="flex flex-col gap-2 mt-2">
-              <span class="text-xs" translate>SETTINGS.TRANSLATION.downloadingModel</span>
+              <span class="flex items-center gap-2 text-xs">
+                <span class="loading loading-spinner loading-xs"></span>
+                <span translate>SETTINGS.TRANSLATION.downloadingModel</span>
+              </span>
               <progress class="progress progress-primary w-full" [value]="downloadProgress()" max="100"></progress>
               <span class="text-xs text-end">{{ downloadProgress() }}%</span>
             </div>

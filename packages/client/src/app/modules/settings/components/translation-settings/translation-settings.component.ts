@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -196,9 +196,14 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
+  /** Set synchronously by the click, so the button shows it was received before the service reports progress */
+  public downloadRequested: WritableSignal<boolean> = signal(false);
+
   public downloadModel(): void {
+    if (this.downloadRequested()) return;
+    this.downloadRequested.set(true);
     const formVal = this.formGroup.value;
-    this.translatorService.downloadModel(this.formSource(), formVal.targetLanguage);
+    this.translatorService.downloadModel(this.formSource(), formVal.targetLanguage).finally(() => this.downloadRequested.set(false));
   }
 
   saveSettings(): void {

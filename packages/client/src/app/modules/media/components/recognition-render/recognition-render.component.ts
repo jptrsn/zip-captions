@@ -262,10 +262,15 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.store.dispatch(SettingsActions.setPipContent({ content }));
   }
 
+  /** Set synchronously by the click, so the button shows it was received before the service reports progress */
+  public downloadRequested: WritableSignal<boolean> = signal(false);
+
   public downloadModel(): void {
+    if (this.downloadRequested()) return;
+    this.downloadRequested.set(true);
     const src = this.sourceLanguage();
     const tgt = this.targetLanguage();
-    this.translatorService.downloadModel(src, tgt);
+    this.translatorService.downloadModel(src, tgt).finally(() => this.downloadRequested.set(false));
   }
 
   ngAfterViewInit(): void {
