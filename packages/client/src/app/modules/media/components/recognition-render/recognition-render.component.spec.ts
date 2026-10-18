@@ -332,24 +332,24 @@ describe('RecognitionRenderComponent', () => {
   describe('controls fade', () => {
     beforeEach(() => jest.useFakeTimers());
 
-    it('hides the controls after 3.5 seconds without activity, and brings them back on activity', () => {
+    it('hides the controls after 1 second without activity, and brings them back on activity', () => {
       create();
       expect(component.controlsVisible()).toBe(true);
-      jest.advanceTimersByTime(3499);
+      jest.advanceTimersByTime(999);
       expect(component.controlsVisible()).toBe(true);
       jest.advanceTimersByTime(1);
       expect(component.controlsVisible()).toBe(false);
       component.onUserActivity();
       expect(component.controlsVisible()).toBe(true);
-      jest.advanceTimersByTime(3500);
+      jest.advanceTimersByTime(1000);
       expect(component.controlsVisible()).toBe(false);
     });
 
     it('restarts the countdown on each activity', () => {
       create();
-      jest.advanceTimersByTime(3000);
+      jest.advanceTimersByTime(800);
       component.onUserActivity();
-      jest.advanceTimersByTime(3000);
+      jest.advanceTimersByTime(800);
       expect(component.controlsVisible()).toBe(true);
     });
 
@@ -359,7 +359,7 @@ describe('RecognitionRenderComponent', () => {
       jest.advanceTimersByTime(10000);
       expect(component.controlsVisible()).toBe(true);
       component.onUserActivity();
-      jest.advanceTimersByTime(3500);
+      jest.advanceTimersByTime(1000);
       expect(component.controlsVisible()).toBe(false);
     });
 

@@ -78,7 +78,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   private onDestroy$: Subject<void> = new Subject<void>();
   private segments: Signal<CaptionSegment[]>;
   private idleTimeoutId: any = null;
-  private readonly IDLE_TIMEOUT_MS = 3500;
+  private readonly IDLE_TIMEOUT_MS = 1000;
 
   constructor(private store: Store<AppState>,
               private el: ElementRef,

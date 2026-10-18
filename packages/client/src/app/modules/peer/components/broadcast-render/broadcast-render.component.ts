@@ -76,7 +76,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<void> = new Subject<void>();
   private idleTimeoutId: any = null;
-  private readonly IDLE_TIMEOUT_MS = 3500;
+  private readonly IDLE_TIMEOUT_MS = 1000;
   // Translates on this device, for languages the broadcaster doesn't send
   private localSession: SegmentTranslationSession;
   private localLiveText: WritableSignal<string> = signal('');
