@@ -181,7 +181,28 @@ jobs:
         if: ${{ inputs.bind_domains }}
         run: |
           set -euo pipefail
-          az staticwebapp hostname set --name "${{ steps.infra.outputs.static_site }}" --resource-group "$RESOURCE_GROUP" --hostname "$CLIENT_HOSTNAME"
+          SITE="${{ steps.infra.outputs.static_site }}"
+          hostname_status() {
+            az staticwebapp hostname list --name "$SITE" --resource-group "$RESOURCE_GROUP" \
+              --query "[?name=='$CLIENT_HOSTNAME'] | [0].status" -o tsv
+          }
+          # The CLI's own wait polls an operation status at subscription scope, which the staging credential
+          # (Contributor on one resource group) may not read. So ask for the hostname without waiting and poll the
+          # hostname list, which is inside the group. A hostname already listed (a re-run) is not asked for again.
+          if [ -z "$(hostname_status)" ]; then
+            az staticwebapp hostname set --name "$SITE" --resource-group "$RESOURCE_GROUP" --hostname "$CLIENT_HOSTNAME" --no-wait
+          fi
+          status=""
+          for _ in $(seq 1 30); do
+            status=$(hostname_status)
+            echo "$CLIENT_HOSTNAME: ${status:-not listed yet}"
+            case "$status" in
+              Ready) break ;;
+              Failed) echo "::error::Azure could not validate $CLIENT_HOSTNAME (is its CNAME pointing at the Static Web App?)"; exit 1 ;;
+            esac
+            sleep 20
+          done
+          if [ "$status" != "Ready" ]; then echo "::error::$CLIENT_HOSTNAME is still '${status:-not listed}' after 10 minutes"; exit 1; fi
           az containerapp hostname add --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME"
           az containerapp hostname bind --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME" --environment "$ENVIRONMENT_NAME" --validation-method CNAME
 
