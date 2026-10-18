@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { DocumentPipService } from '../../services/document-pip/document-pip.service';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { lastValueFrom } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../testing/test-scaffold';
 import '../../../testing/matchMedia.mock';
 import { AppPlatform, AppState } from '../../models/app.model';
+import { RecognitionStatus } from '../../models/recognition.model';
 import { RecognitionActions } from '../../actions/recogntion.actions';
 import { RecognitionEnableComponent } from '../../modules/media/components/recognition-enable/recognition-enable.component';
 import { RecognitionRenderComponent } from '../../modules/media/components/recognition-render/recognition-render.component';
@@ -66,6 +68,30 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('app-recognition-enable'))).toBeNull();
     expect(fixture.debugElement.query(By.css('app-audio-input-enable'))).toBeNull();
+  });
+
+  describe('the pop-out button', () => {
+    it('is hidden when Picture-in-Picture is unsupported or no caption screen is on view', () => {
+      expect(component.showPip()).toBe(false);
+      expect(fixture.debugElement.query(By.css('[data-testid="zc-header-pip"]'))).toBeNull();
+    });
+
+    it('shows while a caption screen is on view in a supporting browser, and toggles Picture-in-Picture', () => {
+      const pip = TestBed.inject(DocumentPipService);
+      // isSupported is a plain property read when the header is built, so build it after setting it
+      (pip as { isSupported: boolean }).isSupported = true;
+      const toggle = jest.spyOn(pip, 'toggle').mockResolvedValue();
+      pip.hasElement.set(true);
+      store.overrideSelector(recognitionStatusSelector, RecognitionStatus.connected);
+      fixture = TestBed.createComponent(HeaderComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      expect(component.isActive()).toBe(true);
+      const button = fixture.debugElement.query(By.css('[data-testid="zc-header-pip"]'));
+      expect(button).not.toBeNull();
+      button.nativeElement.click();
+      expect(toggle).toHaveBeenCalled();
+    });
   });
 
   it('does not treat the start-broadcast route as a viewer route', () => {

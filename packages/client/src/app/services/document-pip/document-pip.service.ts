@@ -29,6 +29,8 @@ declare global {
 export class DocumentPipService {
   public readonly isSupported: boolean;
   public readonly isPipActive: WritableSignal<boolean> = signal(false);
+  /** A caption screen is on view and can be moved into the window; other screens have nothing to pop out */
+  public readonly hasElement: WritableSignal<boolean> = signal(false);
 
   private el?: ElementRef<HTMLElement>;
   private placeholder?: Comment;
@@ -54,6 +56,7 @@ export class DocumentPipService {
 
   public registerElement(el: ElementRef<HTMLElement>): void {
     this.el = el;
+    this.hasElement.set(true);
   }
 
   public deregisterElement(): void {
@@ -61,6 +64,7 @@ export class DocumentPipService {
       this.close();
     }
     this.el = undefined;
+    this.hasElement.set(false);
   }
 
   public async toggle(): Promise<void> {
