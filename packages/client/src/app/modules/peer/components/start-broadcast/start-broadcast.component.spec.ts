@@ -94,6 +94,31 @@ describe('StartBroadcastComponent', () => {
     expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
   });
 
+  it('preselects the requested room when an empty list arrives first and the real one after it', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([]);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('preselects the static room when the list arrives after an empty one, and leaves a room the user picked alone', () => {
+    create([]);
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+
+    component.formGroup.controls['room'].setValue('ab-1234-5678');
+    component.formGroup.controls['room'].markAsDirty();
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true }), room('cd-0000-1111')]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
   it('falls back to the static room when the requested room is not one of the user\'s', () => {
     const route = TestBed.inject(ActivatedRoute);
     route.snapshot.queryParams = { room: 'zz-9999-9999' };

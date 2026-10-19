@@ -68,10 +68,13 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
+    // The first list can be empty (nothing has come back from the server yet), so wait for one with rooms in it;
+    // taking the first list of any kind left the room unselected, and a room the user picks meanwhile is theirs
     this.broadcastRooms$.pipe(
-      filter((rooms) => !!rooms),
+      filter((rooms) => !!rooms && rooms.length > 0),
       take(1))
     .subscribe((rooms) => {
+      if (this.formGroup.controls['room'].dirty) return;
       // A room chosen in the settings (its Start Broadcast button) wins over the default static room
       const requested = this.route.snapshot.queryParams['room']?.toLowerCase();
       const chosen = (requested && rooms?.find((r: UserRoom) => r.roomId.toLowerCase() === requested))
