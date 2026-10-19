@@ -89,8 +89,19 @@ describe('HeaderComponent', () => {
       expect(component.isActive()).toBe(true);
       const button = fixture.debugElement.query(By.css('[data-testid="zc-header-pip"]'));
       expect(button).not.toBeNull();
+      // sized down like the mic button while recognition runs, and the pop-out icon until PiP is open
+      expect(button.nativeElement.classList).toContain('btn-xs');
+      // dev-mode reflection of the [name] binding
+      const iconName = () => button.nativeElement.querySelector('ng-icon').getAttribute('ng-reflect-name');
+      expect(iconName()).toBe('heroArrowTopRightOnSquare');
       button.nativeElement.click();
       expect(toggle).toHaveBeenCalled();
+
+      // with the window open the icon is the pop-back-in one, and the button says it is pressed
+      pip.isPipActive.set(true);
+      fixture.detectChanges();
+      expect(iconName()).toBe('heroArrowBottomLeftIntoSquare');
+      expect(button.nativeElement.getAttribute('aria-pressed')).toBe('true');
     });
   });
 

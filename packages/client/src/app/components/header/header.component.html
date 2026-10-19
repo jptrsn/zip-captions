@@ -43,11 +43,12 @@
 
   <!-- Pop the captions out into a Picture-in-Picture window -->
   <button *ngIf="showPip() && !isViewerRoute()" data-testid="zc-header-pip"
-    class="btn btn-circle tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay(), 'btn-ghost': !isPip(), 'btn-secondary': isPip()}"
+    class="btn btn-circle tooltip tooltip-bottom" [ngClass]="{'btn-xs': isActive() || isPip(), 'btn-sm': windowControlsOverlay(), 'btn-ghost': !isPip(), 'btn-secondary': isPip()}"
     [attr.data-tip]="(isPip() ? 'LABELS.documentPipExit' : 'LABELS.documentPip') | translate"
     [attr.aria-label]="(isPip() ? 'LABELS.documentPipExit' : 'LABELS.documentPip') | translate"
+    [attr.aria-pressed]="isPip()"
     (click)="togglePip()">
-    <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+    <ng-icon [name]="isPip() ? 'heroArrowBottomLeftIntoSquare' : 'heroArrowTopRightOnSquare'"></ng-icon>
   </button>
 
   <!-- Broadcast Banner -->
