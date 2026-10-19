@@ -213,7 +213,8 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     // A translation exists but is not shown: the viewer needs something on screen that says so
     this.offeredTranslationHint = computed(() => {
       const offered = this.offeredLanguages();
-      return offered.length > 0 && this.translationMode() === 'off' ? offered[0].split('-')[0].toUpperCase() : undefined;
+      const hidden = this.translationMode() === 'off' || this.translationMode() === 'original-only';
+      return offered.length > 0 && hidden ? offered[0].split('-')[0].toUpperCase() : undefined;
     });
 
     // Check the model for the language pair this viewer would translate on their own device.

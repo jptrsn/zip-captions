@@ -439,7 +439,9 @@
       "pipContentSplit": "原文和译文",
       "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。",
       "translationFailing": "翻译当前无法正常工作。重新加载页面可能会解决问题。",
-      "resetBySpokenLanguage": "您更改了口语语言，因此翻译已关闭。请重新开启以选择新的翻译语言。"
+      "resetBySpokenLanguage": "您更改了口语语言，因此翻译已关闭。请重新开启以选择新的翻译语言。",
+      "modeOriginalOnly": "仅原文",
+      "modeOriginalOnlyDesc": "此屏幕仅显示源语言字幕。观看直播的观众仍会收到翻译。"
     }
   },
   "STREAM": {

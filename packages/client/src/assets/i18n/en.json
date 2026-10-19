@@ -350,6 +350,8 @@
       "modeSplitDesc": "Original and translated captions in two panes",
       "modeTranslatedOnly": "Translated Only",
       "modeTranslatedOnlyDesc": "Display only the translated captions",
+      "modeOriginalOnly": "Original only",
+      "modeOriginalOnlyDesc": "Show only the spoken language on this screen. Viewers of a broadcast still receive the translation.",
       "statusTitle": "Chrome On-Device AI Status",
       "statusReady": "Model Ready (On-Device)",
       "statusDownloadable": "Download Required",

@@ -439,7 +439,9 @@
       "pipContentSplit": "Oryginał i tłumaczenie",
       "privacyNotice": "Tłumaczenie jest wykonywane w całości na Twoim urządzeniu za pomocą wbudowanych modeli językowych Chrome, więc żadna usługa tłumaczeniowa nie otrzymuje Twojego tekstu.",
       "translationFailing": "Tłumaczenie nie działa w tej chwili. Odświeżenie strony może to naprawić.",
-      "resetBySpokenLanguage": "Zmieniono język mowy, więc tłumaczenie zostało wyłączone. Włącz je ponownie, aby wybrać nowy język tłumaczenia."
+      "resetBySpokenLanguage": "Zmieniono język mowy, więc tłumaczenie zostało wyłączone. Włącz je ponownie, aby wybrać nowy język tłumaczenia.",
+      "modeOriginalOnly": "Tylko oryginalne",
+      "modeOriginalOnlyDesc": "Pokaż tylko język mówiony na tym ekranie. Odbiorcy transmisji nadal otrzymują tłumaczenie."
     }
   },
   "STREAM": {

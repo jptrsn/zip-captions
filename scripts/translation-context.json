@@ -18,5 +18,7 @@
   "STREAM.showTranslation": "Label of a small button on the viewer's screen, followed by a colon and a language code (for example 'Show translation: FR'). Pressing it shows the translated captions next to the original ones. Translation here means translated text, not interpretation.",
   "SETTINGS.TRANSLATION.translationFailing": "Warning shown over the captions when the on-device translation stops working. The user can reload the web page to fix it.",
   "SETTINGS.TRANSLATION.resetBySpokenLanguage": "Notice shown briefly on screen after the user changes the language they speak. Translation of the live captions was switched off because its language pair no longer applies; the user can switch it on again and choose a new translation language.",
+  "SETTINGS.TRANSLATION.modeOriginalOnly": "Option for what the caption screen shows while translation is on: only the original, spoken-language captions, without the translated ones. Short label, like 'Split' and 'Translated only' next to it.",
+  "SETTINGS.TRANSLATION.modeOriginalOnlyDesc": "Description of the 'Original only' display option: this screen shows only the spoken-language captions, while people watching a broadcast of the session still get the translated captions.",
   "CONNECTIONS.connecting": "Status text while the app is in the middle of connecting; use a progressive form such as 'Connecting to OBS'."
 }

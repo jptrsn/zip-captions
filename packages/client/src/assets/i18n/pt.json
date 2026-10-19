@@ -439,7 +439,9 @@
       "pipContentSplit": "Original e traduzido",
       "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem incorporados do Chrome, portanto, nenhum serviço de tradução recebe o seu texto.",
       "translationFailing": "A tradução não está funcionando no momento. Recarregar a página pode resolver o problema.",
-      "resetBySpokenLanguage": "Você alterou o idioma falado, portanto a tradução foi desativada. Ative-a novamente para escolher um novo idioma de tradução."
+      "resetBySpokenLanguage": "Você alterou o idioma falado, portanto a tradução foi desativada. Ative-a novamente para escolher um novo idioma de tradução.",
+      "modeOriginalOnly": "Somente original",
+      "modeOriginalOnlyDesc": "Exibir apenas o idioma falado nesta tela. Os espectadores de uma transmissão ainda recebem a tradução."
     }
   },
   "STREAM": {

@@ -28,6 +28,7 @@ interface Scenario {
   lang?: string;
   dialect?: string;
   drawer?: boolean;
+  broadcasting?: boolean;
 }
 
 describe('RecognitionControlSidebarComponent', () => {
@@ -50,7 +51,7 @@ describe('RecognitionControlSidebarComponent', () => {
     store.overrideSelector(selectLineHeight, (s.lineHeight ?? 'lineHeight-normal') as never);
     store.overrideSelector(selectRenderHistoryLength, s.history ?? 5);
     store.overrideSelector(recognitionConnectedSelector, s.active ?? true);
-    store.overrideSelector(selectIsBroadcasting, false);
+    store.overrideSelector(selectIsBroadcasting, s.broadcasting ?? false);
     store.overrideSelector(selectObsConnected, ObsConnectionState.disconnected);
     store.overrideSelector(selectTranslationSettings, ('translation' in s ? s.translation : settings()) as TranslationSettings);
     store.overrideSelector(languageSelector, (s.lang ?? 'en') as never);
@@ -326,10 +327,47 @@ describe('RecognitionControlSidebarComponent', () => {
       ]);
     });
 
-    it.each([['off', 'split'], ['split', 'translated-only'], ['translated-only', 'off']] as const)('cycles from %s to %s', (from, to) => {
+    it.each([['off', 'split'], ['split', 'translated-only'], ['translated-only', 'split']] as const)('cycles from %s to %s outside a broadcast, where turning translation off is the switch', (from, to) => {
       create({ translation: settings({ mode: from }) });
       component.cycleTranslationMode();
       expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: to }));
+    });
+
+    it('cycles on to original only while broadcasting, and back to split', () => {
+      create({ translation: settings({ mode: 'translated-only' }), broadcasting: true });
+      component.cycleTranslationMode();
+      expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: 'original-only' }));
+      dispatch.mockClear();
+      fixture.destroy();
+      create({ translation: settings({ mode: 'original-only' }), broadcasting: true });
+      component.cycleTranslationMode();
+      expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: 'split' }));
+    });
+
+    describe('the display choices', () => {
+      const originalOnly = () => fixture.nativeElement.querySelector('[data-testid="zc-sidebar-original-only"]') as HTMLElement | null;
+
+      it('are split and translated only for a single session, with no "off" among them', () => {
+        create({ translation: settings({ mode: 'split' }) });
+        expect(originalOnly()).toBeNull();
+        const modes = (Array.from(fixture.nativeElement.querySelectorAll('[data-testid^="zc-sidebar-mode-"], [data-testid="zc-sidebar-original-only"]')) as HTMLElement[]).map((el) => el.dataset['testid']);
+        expect(modes).toEqual(['zc-sidebar-mode-split', 'zc-sidebar-mode-translated']);
+      });
+
+      it('add original only while broadcasting, which keeps translating for viewers', () => {
+        create({ translation: settings({ mode: 'split' }), broadcasting: true });
+        expect(originalOnly()).not.toBeNull();
+        originalOnly()!.click();
+        expect(dispatched()).toEqual([
+          SettingsActions.setTranslationMode({ mode: 'original-only' }),
+          SettingsActions.setTranslationEnabled({ enabled: true }),
+        ]);
+      });
+
+      it('still show original only where it is already the saved mode, so it can be seen and left', () => {
+        create({ translation: settings({ mode: 'original-only' }) });
+        expect(originalOnly()).not.toBeNull();
+      });
     });
 
     it('choosing a language while translation is off turns it on in split view', () => {

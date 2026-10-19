@@ -6,11 +6,12 @@ export type CaptionView = 'original' | 'translated' | 'split';
 /**
  * Resolves the view from the display mode. While Picture-in-Picture is active and translation is on,
  * the PiP content setting decides. With translation off there is nothing to translate, so the
- * original is shown everywhere.
+ * original is shown everywhere; `original-only` shows it on purpose while translation keeps running.
  */
 export function resolveCaptionView(mode: TranslationDisplayMode, pipActive: boolean, pipContent: PipContent): CaptionView {
   if (mode === 'off') return 'original';
   if (pipActive) return pipContent;
+  if (mode === 'original-only') return 'original';
   return mode === 'split' ? 'split' : 'translated';
 }
 

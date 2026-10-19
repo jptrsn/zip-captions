@@ -37,6 +37,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   public lineHeightMax: Signal<boolean>;
 
   public isBroadcasting: Signal<boolean | undefined>;
+  public showOriginalOnly: Signal<boolean>;
   public isObsStreaming: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
 
@@ -124,6 +125,8 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     this.lineHeightMin = computed(() => this.lineHeight() === this.availableLineHeights[0]);
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    // Original only is a choice for the host of a broadcast; it also shows where it is already the saved mode
+    this.showOriginalOnly = computed(() => !!this.isBroadcasting() || this.translationMode() === 'original-only');
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
 
     this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
@@ -174,12 +177,12 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     }
   }
 
+  /** Steps through the choices the menu offers; turning translation off is the switch, not a step */
   cycleTranslationMode(): void {
     const current = this.translationMode();
     let next: TranslationDisplayMode = 'split';
     if (current === 'split') next = 'translated-only';
-    else if (current === 'translated-only') next = 'off';
-    else next = 'split';
+    else if (current === 'translated-only') next = this.showOriginalOnly() ? 'original-only' : 'split';
     this.setTranslationMode(next);
   }
 

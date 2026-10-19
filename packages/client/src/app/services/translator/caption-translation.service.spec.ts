@@ -73,6 +73,14 @@ describe('CaptionTranslationService', () => {
     expect(service.translations().get('b')?.text).toBe('fr:two');
   });
 
+  it('keeps translating in original-only mode, so a broadcast can still offer the translation to viewers', async () => {
+    const service = setup({ mode: 'original-only' });
+    segments.set([seg('a', 'one')]);
+    await flush();
+    expect(service.active()).toBe(true);
+    expect(service.translations().get('a')?.text).toBe('fr:one');
+  });
+
   it('does not translate when the display mode is off', async () => {
     const service = setup({ mode: 'off', enabled: false });
     segments.set([seg('a', 'one')]);

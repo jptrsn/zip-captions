@@ -17,6 +17,17 @@ describe('showPipFeedSwitch', () => {
   });
 });
 
+describe('original-only mode', () => {
+  it('shows the original, while translation stays on', () => {
+    expect(resolveCaptionView('original-only', false, 'split')).toBe('original');
+  });
+
+  it('still lets the PiP content setting decide inside the PiP window', () => {
+    expect(resolveCaptionView('original-only', true, 'translated')).toBe('translated');
+    expect(showPipFeedSwitch('original-only', true)).toBe(true);
+  });
+});
+
 describe('resolveCaptionView', () => {
   it('shows the original whenever translation is off, even in Picture-in-Picture', () => {
     expect(resolveCaptionView('off', false, 'translated')).toBe('original');

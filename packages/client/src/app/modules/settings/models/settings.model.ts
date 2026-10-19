@@ -272,7 +272,11 @@ export interface TranscriptionSettings {
   titlePattern?: string;
 }
 
-export type TranslationDisplayMode = 'off' | 'split' | 'translated-only';
+/**
+ * What this device shows. `original-only` keeps translating, so a broadcast still offers the translation to
+ * viewers (for example on a phone, which cannot translate), while this screen shows the spoken language alone.
+ */
+export type TranslationDisplayMode = 'off' | 'split' | 'translated-only' | 'original-only';
 
 /** vertical = stacked panes, horizontal = side by side (FR-D2) */
 export type SplitOrientation = 'vertical' | 'horizontal';
