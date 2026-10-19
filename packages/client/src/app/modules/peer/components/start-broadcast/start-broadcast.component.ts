@@ -67,6 +67,14 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
       })
   }
 
+  /**
+   * The server sends the whole list again on every refresh, as new objects. Without a key per room the options
+   * are rebuilt each time, and the select forgets which one is chosen while the form still holds it.
+   */
+  public trackRoom(_index: number, room: UserRoom): string {
+    return room.roomId;
+  }
+
   ngAfterViewInit(): void {
     // The first list can be empty (nothing has come back from the server yet), so wait for one with rooms in it;
     // taking the first list of any kind left the room unselected, and a room the user picks meanwhile is theirs

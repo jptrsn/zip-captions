@@ -119,6 +119,23 @@ describe('StartBroadcastComponent', () => {
     expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
   });
 
+  it('keeps the room shown in the select when the server sends the list again, as new objects', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    const rooms = () => [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })];
+    create(rooms());
+    const select = () => fixture.nativeElement.querySelector('[data-testid="zc-share-start"]') as HTMLSelectElement;
+    expect(select().value).toBe('ab-1234-5678');
+
+    for (let i = 0; i < 2; i++) {
+      store.overrideSelector(selectMyBroadcastRooms, rooms());
+      store.refreshState();
+      fixture.detectChanges();
+      expect(select().value).toBe('ab-1234-5678');
+    }
+    expect(component.trackRoom(0, room('ab-1234-5678'))).toBe('ab-1234-5678');
+  });
+
   it('falls back to the static room when the requested room is not one of the user\'s', () => {
     const route = TestBed.inject(ActivatedRoute);
     route.snapshot.queryParams = { room: 'zz-9999-9999' };
