@@ -33,6 +33,7 @@ Found while testing `release/v0.5.0` on the ephemeral Azure staging (`next.zipca
 | 10 | After the click: status "Downloading Model...", one spinner and a progress bar; the instant state before the service reports could not be seen (the DOM updates after the script's tick). The download stayed at 0% in Puppeteer's browser (model download not possible there), not judged | partly checked |
 | 9 | Cold start through the real name: 28.9 s for the first request | see finding 9 |
 | 22 | API custom domain bound after a push | passes (see finding 22) |
+| 5 | Local dev build (`localhost:4200`), guest, rooms fed to the store with the real `[Peer] Set Broadcast Rooms` action, an empty list first and the real one after, change detection run by hand because the dispatch came from outside Angular's zone: `/stream?tabIndex=1&room=ab-cdef-ghjk` selects that room and its join code box follows the room (anonymous room: unchecked); `/stream?tabIndex=1` selects the static room with the box checked | passes (a signed-in click-through is still the user's) |
 
 Not checkable with Puppeteer (needs a host with a microphone, a signed-in user, or Chrome's models): 2 (placement), 5, 6, 8, 3, 11, 12, 14, 15, 16, 19, 20, 21, and the Firefox (7) and Safari parts.
 
