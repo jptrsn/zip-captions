@@ -4,6 +4,12 @@ Found while testing `release/v0.5.0` on the ephemeral Azure staging (`next.zipca
 
 **Status values:** open · fixing · fixed in rc.N · wontfix (reason) · moved to backlog (file)
 
+## Findings added during the rc.3 manual QA
+
+| # | Found in | What happened | Status |
+|---|---|---|---|
+| 23 | rc.3 | Not signed in, with settings saved on the device from an earlier session (engine Azure, recognition language fr-CA, translation into English), the app fell back to the Chrome engine. The tester changed the recognition language to English in the settings, and the translation target silently became Spanish (`setLanguage` moves a target that equals the new spoken language). **Requirement (reporter, 2026-10-19): when translation is on and the spoken language changes, turn translation off and show a toast saying that translation was reset because the spoken language changed.** | fixed on `release/v0.5.0`, not yet on staging: the settings reducer turns translation off (`enabled` false, mode `off`) when the base spoken language changes through `setLanguage` or `setDialect` (another dialect of the same language does not count; a colliding target still moves); a new `app-translation-reset-notice` toast (`zc-translation-reset-notice`, 8 s, dismissible) in the app shell watches the settled settings, so saving a new spoken language together with translation from the Translation tab (which dispatches both) is not reported as a reset; new text `SETTINGS.TRANSLATION.resetBySpokenLanguage`. Not changed: the app falling back to the Chrome engine for a signed-out user with a saved Azure engine |
+
 ## Tested
 
 | What | Result | Candidate |
