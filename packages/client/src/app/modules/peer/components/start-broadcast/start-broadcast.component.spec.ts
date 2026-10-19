@@ -81,6 +81,19 @@ describe('StartBroadcastComponent', () => {
     expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
   });
 
+  it('preselects the requested room, and its join code setting, when the rooms arrive after the screen has loaded', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create(undefined);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    // an anonymous room does not require the join code
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+  });
+
   it('falls back to the static room when the requested room is not one of the user\'s', () => {
     const route = TestBed.inject(ActivatedRoute);
     route.snapshot.queryParams = { room: 'zz-9999-9999' };
