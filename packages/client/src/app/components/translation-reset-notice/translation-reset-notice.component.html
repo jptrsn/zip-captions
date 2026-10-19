@@ -1,0 +1,6 @@
+<div class="toast toast-center toast-top z-30" *ngIf="show()" data-testid="zc-translation-reset-notice" role="status">
+  <div class="alert alert-info text-sm flex items-center gap-3">
+    <span class="whitespace-normal text-left">{{ 'SETTINGS.TRANSLATION.resetBySpokenLanguage' | translate }}</span>
+    <button type="button" class="btn btn-xs" data-testid="zc-translation-reset-dismiss" (click)="dismiss()" translate>BUTTONS.ok</button>
+  </div>
+</div>

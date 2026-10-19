@@ -438,7 +438,8 @@
       "pipContentTranslated": "Hanya diterjemahkan",
       "pipContentSplit": "Asli dan terjemahan",
       "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda.",
-      "translationFailing": "Terjemahan tidak berfungsi saat ini. Memuat ulang halaman mungkin dapat memperbaikinya."
+      "translationFailing": "Terjemahan tidak berfungsi saat ini. Memuat ulang halaman mungkin dapat memperbaikinya.",
+      "resetBySpokenLanguage": "Anda telah mengubah bahasa yang diucapkan, sehingga terjemahan dimatikan. Nyalakan kembali untuk memilih bahasa terjemahan baru."
     }
   },
   "STREAM": {

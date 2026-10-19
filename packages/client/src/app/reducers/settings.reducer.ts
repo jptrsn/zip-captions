@@ -27,31 +27,42 @@ export const defaultSettingsState: SettingsState = {
 
 const dialectLanguage = (dialect: RecognitionDialect): string => dialect.split('-')[0].toLowerCase();
 
+/** The language being spoken (base code): the dialect's when one is set, else the language's */
+const spokenLanguage = (lang: string, dialect: string): string => (dialect && dialect !== 'unspecified' ? dialect : lang).split('-')[0].toLowerCase();
+
+/**
+ * Translation settings after the spoken language is set to `langCode`. The target can't be the spoken
+ * language, so a colliding target moves. A different spoken language also turns translation off: the pair the
+ * user chose no longer exists, and the app tells them (see the translation reset notice).
+ */
+const translationAfterSpokenChange = (state: SettingsState, langCode: string, changed: boolean): TranslationSettings => {
+  let target = state.translation.targetLanguage;
+  if (target === langCode) {
+    target = langCode === 'es' ? 'en' : 'es';
+  }
+  const reset = changed && state.translation.enabled;
+  return {
+    ...state.translation,
+    targetLanguage: target,
+    ...(reset ? { enabled: false, mode: 'off' as TranslationDisplayMode } : {})
+  };
+};
+
 export const settingsReducers = createReducer(
   defaultSettingsState,
   on(SettingsActions.setTheme, (state: SettingsState, action: { theme: AppTheme }) => ({...state, theme: action.theme })),
   on(SettingsActions.setLanguage, (state: SettingsState, action: { language: InterfaceLanguage}) => {
     const langCode = action.language.split('-')[0].toLowerCase();
-    let target = state.translation.targetLanguage;
-    if (target === langCode) {
-      target = langCode === 'es' ? 'en' : 'es';
-    }
+    const dialect = state.lang === action.language ? state.dialect : 'unspecified';
     return {
       ...state,
       lang: action.language,
-      dialect: state.lang === action.language ? state.dialect : 'unspecified',
-      translation: {
-        ...state.translation,
-        targetLanguage: target
-      }
+      dialect,
+      translation: translationAfterSpokenChange(state, langCode, spokenLanguage(state.lang, state.dialect) !== langCode)
     };
   }),
 	on(SettingsActions.setDialect, (state: SettingsState, action: { dialect: RecognitionDialect }) => {
-    const langCode = (action.dialect !== 'unspecified' ? action.dialect : state.lang).split('-')[0].toLowerCase();
-    let target = state.translation.targetLanguage;
-    if (target === langCode) {
-      target = langCode === 'es' ? 'en' : 'es';
-    }
+    const langCode = spokenLanguage(state.lang, action.dialect);
     const dialectByLanguage = action.dialect !== 'unspecified'
       ? { ...state.translation.dialectByLanguage, [dialectLanguage(action.dialect)]: action.dialect }
       : state.translation.dialectByLanguage;
@@ -59,8 +70,7 @@ export const settingsReducers = createReducer(
       ...state,
       dialect: action.dialect,
       translation: {
-        ...state.translation,
-        targetLanguage: target,
+        ...translationAfterSpokenChange(state, langCode, spokenLanguage(state.lang, state.dialect) !== langCode),
         dialectByLanguage
       }
     };

@@ -121,6 +121,44 @@ describe('Settings Reducer', () => {
     });
   });
 
+  describe('changing the spoken language while translating', () => {
+    // Spoken French (Canada), translating into English, as saved by an earlier session
+    const translatingFrench = () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      state = settingsReducers(state, SettingsActions.setDialect({ dialect: 'fr-CA' }));
+      state = settingsReducers(state, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'en' }));
+      return settingsReducers(state, SettingsActions.setTranslationMode({ mode: 'split' }));
+    };
+
+    it('turns translation off when the spoken language changes', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'en' }));
+      expect(state.translation.enabled).toBe(false);
+      expect(state.translation.mode).toBe('off');
+    });
+
+    it('does not turn translation off for another dialect of the same language', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setDialect({ dialect: 'fr-FR' }));
+      expect(state.translation.enabled).toBe(true);
+      expect(state.translation.mode).toBe('split');
+    });
+
+    it('does not turn translation off when the same language is chosen again', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'fr' }));
+      expect(state.translation.enabled).toBe(true);
+    });
+
+    it('leaves translation off when it was already off', () => {
+      const state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      expect(state.translation.enabled).toBe(false);
+      expect(state.translation.mode).toBe('off');
+    });
+
+    it('still moves a target that collides with the new spoken language', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'en' }));
+      expect(state.translation.targetLanguage).toBe('es');
+    });
+  });
+
   describe('setDialect', () => {
     it('remembers the dialect for its own language', () => {
       const state = settingsReducers(defaultSettingsState, SettingsActions.setDialect({ dialect: 'es-US' }));

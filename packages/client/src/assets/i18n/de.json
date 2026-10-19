@@ -438,7 +438,8 @@
       "pipContentTranslated": "Nur übersetzt",
       "pipContentSplit": "Original und übersetzt",
       "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, sodass kein Übersetzungsdienst Ihren Text erhält.",
-      "translationFailing": "Die Übersetzung funktioniert gerade nicht. Ein Neuladen der Seite kann das Problem beheben."
+      "translationFailing": "Die Übersetzung funktioniert gerade nicht. Ein Neuladen der Seite kann das Problem beheben.",
+      "resetBySpokenLanguage": "Sie haben die gesprochene Sprache geändert, daher wurde die Übersetzung deaktiviert. Aktivieren Sie sie erneut, um eine neue Zielsprache auszuwählen."
     }
   },
   "STREAM": {
