@@ -23,7 +23,7 @@ const REQUIRED: Record<string, string[]> = {
     'zc-viewer-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
   ],
   'media/components/recognition-control-sidebar/recognition-control-sidebar.component.html': [
-    'zc-sidebar-target-lang', 'zc-sidebar-layout', 'zc-sidebar-swap-panes',
+    'zc-sidebar-translation-enable', 'zc-sidebar-target-lang','zc-sidebar-layout', 'zc-sidebar-swap-panes',
     'zc-sidebar-orientation-vertical', 'zc-sidebar-orientation-horizontal',
     'zc-sidebar-pip-original', 'zc-sidebar-pip-translated', 'zc-sidebar-pip-split',
   ],

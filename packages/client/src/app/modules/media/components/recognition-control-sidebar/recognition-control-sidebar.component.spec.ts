@@ -284,6 +284,35 @@ describe('RecognitionControlSidebarComponent', () => {
     });
   });
 
+  describe('the translation switch', () => {
+    const toggle = () => fixture.nativeElement.querySelector('[data-testid="zc-sidebar-translation-enable"]') as HTMLInputElement | null;
+
+    it('shows on while translating and off otherwise', () => {
+      create({ translation: settings({ mode: 'translated-only' }) });
+      expect(toggle()?.checked).toBe(true);
+      fixture.destroy();
+      create({ translation: settings({ mode: 'off', enabled: false }) });
+      expect(toggle()?.checked).toBe(false);
+    });
+
+    it('switches translation on and off through the settings, as the Translation tab does', () => {
+      create({ translation: settings({ mode: 'off', enabled: false }) });
+      toggle()!.click();
+      expect(dispatched()).toEqual([SettingsActions.setTranslationEnabled({ enabled: true })]);
+
+      dispatch.mockClear();
+      fixture.destroy();
+      create({ translation: settings({ mode: 'split' }) });
+      toggle()!.click();
+      expect(dispatched()).toEqual([SettingsActions.setTranslationEnabled({ enabled: false })]);
+    });
+
+    it('is not there when translation is not available at all', () => {
+      create({ translatorSupported: false, offered: [] });
+      expect(toggle()).toBeNull();
+    });
+  });
+
   describe('translation controls', () => {
     it('setting a mode also switches translation on or off', () => {
       create();

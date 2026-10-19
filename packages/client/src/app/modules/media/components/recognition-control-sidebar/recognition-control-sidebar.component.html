@@ -74,6 +74,14 @@
       </summary>
       <div class="dropdown-content">
         <div class="bg-secondary rounded-s-xl p-3 min-w-[220px] text-xs flex flex-col gap-2 shadow-xl border border-base-content/10">
+          <label class="flex flex-row items-center justify-between gap-3 cursor-pointer">
+            <span class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
+              {{ 'SETTINGS.TRANSLATION.enable' | translate }}
+            </span>
+            <input type="checkbox" class="toggle toggle-primary toggle-sm" data-testid="zc-sidebar-translation-enable"
+                   [checked]="translationMode() !== 'off'" (change)="setTranslationEnabled($any($event.target).checked)"
+                   [attr.aria-label]="(translationMode() !== 'off' ? 'SETTINGS.TRANSLATION.on' : 'SETTINGS.TRANSLATION.off') | translate" />
+          </label>
           <div class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
             {{ 'SETTINGS.TRANSLATION.displayMode' | translate }}
           </div>

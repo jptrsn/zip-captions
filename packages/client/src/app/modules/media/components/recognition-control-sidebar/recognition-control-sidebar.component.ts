@@ -138,6 +138,11 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: mode !== 'off' }));
   }
 
+  /** Switches translation on (back to split view when it was off) or off, as the switch on the Translation settings tab does */
+  setTranslationEnabled(enabled: boolean): void {
+    this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled }));
+  }
+
   swapLanguages(): void {
     this.store.dispatch(SettingsActions.swapTranslationLanguages());
   }
