@@ -119,6 +119,32 @@ describe('StartBroadcastComponent', () => {
     expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
   });
 
+  it('follows an edit of the room\'s join code setting when the refreshed list arrives after the screen started with the old one', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    // the copy of the list left from the last visit still has the old setting: anonymous viewers allowed
+    create([room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+
+    // the room was edited to require the join code; the refresh from the server says so
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('does not override the join code choice the user made on this screen when the list is refreshed', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678', { allowAnonymous: true })]);
+    component.formGroup.controls['useAuthentication'].setValue(true);
+    component.formGroup.controls['useAuthentication'].markAsDirty();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
   it('keeps the room shown in the select when the server sends the list again, as new objects', () => {
     const route = TestBed.inject(ActivatedRoute);
     route.snapshot.queryParams = { room: 'ab-1234-5678' };

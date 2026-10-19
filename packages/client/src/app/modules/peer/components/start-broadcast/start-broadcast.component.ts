@@ -65,6 +65,18 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
           }
         }
       })
+
+    // The screen starts with the copy of the list left from the last visit, and the server's refresh follows. The
+    // room's join code setting may have been edited in between, so a refreshed list updates the checkbox too,
+    // unless the user has chosen for themselves on this screen.
+    this.broadcastRooms$.pipe(takeUntilDestroyed()).subscribe((rooms) => {
+      const roomId = this.formGroup.controls['room'].value?.toLowerCase();
+      const room = roomId ? rooms?.find((r) => r.roomId.toLowerCase() === roomId) : undefined;
+      const requireCode = this.formGroup.controls['useAuthentication'];
+      if (room && !requireCode.dirty) {
+        requireCode.setValue(!room.allowAnonymous);
+      }
+    });
   }
 
   /**
