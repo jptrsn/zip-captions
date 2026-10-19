@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Subject, startWith, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { DefaultPipContent, DefaultSplitOrientation, InterfaceLanguage, RecognitionDialect, SettingsActions, isSpokenLanguage, swapLanguagePair } from '../../models/settings.model';
-import { AvailableTranslationLanguages, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings } from '../../models/settings.model';
+import { AvailableTranslationLanguages, DefaultTranslationTarget, SupportedTranslationLanguage, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget } from '../../models/settings.model';
 import { dialectSelector, languageSelector, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { ChromeTranslatorService, TranslationModelStatus, TranslationUnsupportedReason } from '../../../../services/translator/chrome-translator.service';
 
@@ -55,7 +55,7 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
     const settings = this.currentSettings();
     const storedDialect = this.sourceDialect();
     const srcCode = this.translatorService.normalizeLanguageCode(storedDialect && storedDialect !== 'unspecified' ? storedDialect : sourceLang());
-    let initialTarget = settings?.targetLanguage || (srcCode === 'es' ? 'en' : 'es');
+    let initialTarget = settings?.targetLanguage || fallbackTranslationTarget(srcCode);
     initialTarget = this.ensureDifferentTargetLanguage(srcCode, initialTarget);
 
     this.formGroup = this.fb.group({
@@ -138,18 +138,13 @@ export class TranslationSettingsComponent implements OnInit, OnDestroy {
   }
 
   private ensureDifferentTargetLanguage(src: string, currentTgt: string): string {
-    if (src !== currentTgt) return currentTgt;
-    const alt = src === 'es' ? 'en' : 'es';
-    const exists = AvailableTranslationLanguages.some((l) => l.code === alt && l.code !== src);
-    if (exists) return alt;
-    const firstOther = AvailableTranslationLanguages.find((l) => l.code !== src);
-    return firstOther ? firstOther.code : 'es';
+    return src !== currentTgt ? currentTgt : fallbackTranslationTarget(src);
   }
 
   ngOnInit(): void {
     const settings = this.currentSettings();
     const srcCode = this.sourceLanguageCode();
-    let target = settings?.targetLanguage || this.formGroup.get('targetLanguage')?.value || 'es';
+    let target = settings?.targetLanguage || this.formGroup.get('targetLanguage')?.value || DefaultTranslationTarget;
     target = this.ensureDifferentTargetLanguage(srcCode, target);
 
     if (settings) {

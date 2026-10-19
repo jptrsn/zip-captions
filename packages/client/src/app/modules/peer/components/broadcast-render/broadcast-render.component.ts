@@ -17,7 +17,7 @@ import { SegmentTranslation } from '../../../../services/translator/segment-tran
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ViewerLanguageOptions, ViewerTranslationSource, coerceViewerTarget, resolveViewerTranslation, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
 import { ChromeTranslatorService, LiveTranslationChannel, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultSplitOrientation, PaneOrder, SettingsActions, SplitOrientation, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultSplitOrientation, DefaultTranslationTarget, PaneOrder, SettingsActions, SplitOrientation, TextFlow, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -101,7 +101,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.localSession = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
 
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
+    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? DefaultTranslationTarget);
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
     this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
 
@@ -277,8 +277,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
       const tgtCode = this.translatorService.normalizeLanguageCode(this.targetLanguage());
       if (srcCode && tgtCode && srcCode === tgtCode) {
-        const alt = srcCode === 'es' ? 'en' : 'es';
-        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(srcCode) }));
       }
     });
 

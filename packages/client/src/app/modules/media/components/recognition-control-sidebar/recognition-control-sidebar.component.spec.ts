@@ -254,12 +254,12 @@ describe('RecognitionControlSidebarComponent', () => {
       expect(component.availableLanguages().map((l) => l.code)).not.toContain('de');
     });
 
-    it('defaults the target to Spanish, or English when Spanish is spoken, when none is stored', () => {
+    it('defaults the target to French, the first language listed, or the next one when French is spoken, when none is stored', () => {
       create({ translation: undefined, lang: 'en' });
-      expect(component.targetLanguage()).toBe('es');
+      expect(component.targetLanguage()).toBe('fr');
       fixture.destroy();
-      create({ translation: undefined, lang: 'es' });
-      expect(component.targetLanguage()).toBe('en');
+      create({ translation: undefined, lang: 'fr' });
+      expect(component.targetLanguage()).toBe('es');
     });
 
     it('switches the target away from the spoken language when they become the same', () => {
@@ -269,7 +269,7 @@ describe('RecognitionControlSidebarComponent', () => {
       store.overrideSelector(selectTranslationSettings, settings({ targetLanguage: 'es' }));
       store.refreshState();
       fixture.detectChanges();
-      expect(dispatched()).toContainEqual(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'en' }));
+      expect(dispatched()).toContainEqual(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'fr' }));
     });
 
     it('lets a speaker swap languages only when the target can also be spoken, and a viewer never', () => {

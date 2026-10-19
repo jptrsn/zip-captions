@@ -5,7 +5,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { AppState } from '../../models/app.model';
 import { CaptionSegment } from '../../models/caption-segment.model';
 import { RecognitionService } from '../../modules/media/services/recognition.service';
-import { BilingualDialects, RecognitionDialect } from '../../modules/settings/models/settings.model';
+import { BilingualDialects, DefaultTranslationTarget, RecognitionDialect } from '../../modules/settings/models/settings.model';
 import { recognitionIdSelector, selectRecognitionEngineProvider } from '../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTranslationSettings } from '../../selectors/settings.selector';
 import { ChromeTranslatorService, LiveTranslationChannel } from './chrome-translator.service';
@@ -74,7 +74,7 @@ export class CaptionTranslationService {
     const dialect = toSignal(this.store.select(dialectSelector));
     const lang = toSignal(this.store.select(languageSelector));
     const supported = this.translatorService.isSupported();
-    this.target = computed(() => settings()?.targetLanguage ?? 'es');
+    this.target = computed(() => settings()?.targetLanguage ?? DefaultTranslationTarget);
     this.active = computed(() => supported && (settings()?.mode ?? 'off') !== 'off');
     this.sourceLanguage = computed(() => {
       const d = dialect();

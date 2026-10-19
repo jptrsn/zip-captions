@@ -8,13 +8,13 @@ import { defaultSettingsState } from '../../../../reducers/settings.reducer';
 import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 import { selectSyncSettings } from '../../../../selectors/settings.selector';
 import { selectUserId, selectUserSavedSettings, selectUserSettingsSync } from '../../../../selectors/user.selector';
-import { SettingsActions, SettingsState } from '../../models/settings.model';
+import { DefaultTranslationTarget, SettingsActions, SettingsState } from '../../models/settings.model';
 import { UserSavedSettingsComponent } from './user-saved-settings.component';
 
 // What "Save current" posts: the settings without the device-specific translation keys
 const current = (changes: Partial<SettingsState> = {}): SettingsState => ({
   ...defaultSettingsState,
-  translation: { enabled: false, mode: 'off', targetLanguage: 'es', splitOrientation: 'vertical', paneOrder: 'original-first' },
+  translation: { enabled: false, mode: 'off', targetLanguage: DefaultTranslationTarget, splitOrientation: 'vertical', paneOrder: 'original-first' },
   ...changes,
 });
 

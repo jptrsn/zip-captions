@@ -348,9 +348,9 @@ export interface SupportedTranslationLanguage {
 }
 
 export const AvailableTranslationLanguages: SupportedTranslationLanguage[] = [
+  { code: 'fr', name: 'French (Français)' },
   { code: 'es', name: 'Spanish (Español)' },
   { code: 'en', name: 'English' },
-  { code: 'fr', name: 'French (Français)' },
   { code: 'de', name: 'German (Deutsch)' },
   { code: 'it', name: 'Italian (Italiano)' },
   { code: 'pt', name: 'Portuguese (Português)' },
@@ -366,6 +366,15 @@ export const AvailableTranslationLanguages: SupportedTranslationLanguage[] = [
   { code: 'pl', name: 'Polish (Polski)' },
   { code: 'tr', name: 'Turkish (Türkçe)' }
 ];
+
+/** The language translation targets until the user chooses one: the first in the list */
+export const DefaultTranslationTarget = AvailableTranslationLanguages[0].code;
+
+/** The first translation language that is not the one being spoken, for when the chosen target would collide with it */
+export function fallbackTranslationTarget(spoken: string | null | undefined): string {
+  const spokenBase = (spoken || '').split('-')[0].toLowerCase();
+  return (AvailableTranslationLanguages.find((lang) => lang.code !== spokenBase) ?? AvailableTranslationLanguages[0]).code;
+}
 
 export interface SettingsState extends SyncableSettings {
   transcription: TranscriptionSettings;

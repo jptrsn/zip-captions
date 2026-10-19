@@ -117,7 +117,7 @@ describe('Settings Reducer', () => {
       }));
       expect(state.translation.splitOrientation).toBe('horizontal');
       expect(state.translation.pipContent).toBe('split');
-      expect(state.translation.targetLanguage).toBe('es');
+      expect(state.translation.targetLanguage).toBe('fr');
     });
   });
 
@@ -155,7 +155,14 @@ describe('Settings Reducer', () => {
 
     it('still moves a target that collides with the new spoken language', () => {
       const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'en' }));
+      expect(state.translation.targetLanguage).toBe('fr');
+    });
+
+    it('moves a colliding target to the first language that is not the spoken one', () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
       expect(state.translation.targetLanguage).toBe('es');
+      state = settingsReducers(state, SettingsActions.setLanguage({ language: 'es' }));
+      expect(state.translation.targetLanguage).toBe('fr');
     });
   });
 

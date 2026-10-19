@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
@@ -96,7 +96,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     this.languageOptions = computed(() => viewerLanguageOptions(AvailableTranslationLanguages, this.offeredLanguages(), sourceLanguageCode(), this.isTranslatorSupported));
 
     this.targetLanguage = computed(() => {
-      return this.translationSettings()?.targetLanguage ?? (sourceLanguageCode() === 'es' ? 'en' : 'es');
+      return this.translationSettings()?.targetLanguage ?? fallbackTranslationTarget(sourceLanguageCode());
     });
 
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
@@ -111,8 +111,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     ).subscribe((src) => {
       const currentTgt = this.translationSettings()?.targetLanguage;
       if (currentTgt === src) {
-        const alt = src === 'es' ? 'en' : 'es';
-        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(src) }));
       }
     });
 

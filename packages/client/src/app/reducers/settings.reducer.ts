@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, SplitOrientation, PipContent, ObsFeed } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, DefaultTranslationTarget, fallbackTranslationTarget, SplitOrientation, PipContent, ObsFeed } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -18,7 +18,7 @@ export const defaultSettingsState: SettingsState = {
   translation: {
     enabled: false,
     mode: 'off',
-    targetLanguage: 'es',
+    targetLanguage: DefaultTranslationTarget,
     splitOrientation: DefaultSplitOrientation,
     paneOrder: DefaultPaneOrder,
     pipContent: DefaultPipContent
@@ -38,7 +38,7 @@ const spokenLanguage = (lang: string, dialect: string): string => (dialect && di
 const translationAfterSpokenChange = (state: SettingsState, langCode: string, changed: boolean): TranslationSettings => {
   let target = state.translation.targetLanguage;
   if (target === langCode) {
-    target = langCode === 'es' ? 'en' : 'es';
+    target = fallbackTranslationTarget(langCode);
   }
   const reset = changed && state.translation.enabled;
   return {

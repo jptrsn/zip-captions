@@ -17,7 +17,7 @@ import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
 import { CaptionView, resolveCaptionView, showPipFeedSwitch, splitPaneOrder } from '../../../../services/translator/caption-view';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isBilingualDialect, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, DefaultTranslationTarget, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isBilingualDialect, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -132,7 +132,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
     this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
     this.panes = computed(() => splitPaneOrder(this.paneOrder()));
-    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
+    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? DefaultTranslationTarget);
 
     const dialect = toSignal(this.store.select(dialectSelector));
     const lang = toSignal(this.store.select(languageSelector));
