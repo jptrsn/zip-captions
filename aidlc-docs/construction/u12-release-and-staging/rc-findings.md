@@ -13,6 +13,20 @@ Found while testing `release/v0.5.0` on the ephemeral Azure staging (`next.zipca
 | Host a session / join as guest | not yet | |
 | On-device translation | in progress | |
 
+**Puppeteer MCP checks on rc.3 staging (2026-10-18/19), guest, no sign-in, no microphone, no model download:**
+
+| Finding | Check | Result |
+|---|---|---|
+| 18 | `/stream/<code>` header has no `zc-recog-audio-enable`; the home page, as a control, has it | passes |
+| 1 | Settings, Translation tab, translation off: "Download Translation Model" is disabled | passes |
+| 13 | No `zc-translation-swap` or `zc-translation-swap-unavailable` in the Translation tab (with translation off and on) | passes |
+| 1 | Translation switched on: the button is enabled and the language pickers appear | passes |
+| 10 | After the click: status "Downloading Model...", one spinner and a progress bar; the instant state before the service reports could not be seen (the DOM updates after the script's tick). The download stayed at 0% in Puppeteer's browser (model download not possible there), not judged | partly checked |
+| 9 | Cold start through the real name: 28.9 s for the first request | see finding 9 |
+| 22 | API custom domain bound after a push | passes (see finding 22) |
+
+Not checkable with Puppeteer (needs a host with a microphone, a signed-in user, or Chrome's models): 2 (placement), 5, 6, 8, 3, 11, 12, 14, 15, 16, 19, 20, 21, and the Firefox (7) and Safari parts.
+
 Patreon sign-in is not tested: the client has no Patreon button (the server route `patreon-redirect` exists).
 
 ## Findings
