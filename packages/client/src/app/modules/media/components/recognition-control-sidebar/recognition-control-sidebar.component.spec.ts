@@ -27,9 +27,11 @@ interface Scenario {
   hostLang?: string;
   lang?: string;
   dialect?: string;
+  drawer?: boolean;
 }
 
 describe('RecognitionControlSidebarComponent', () => {
+  let drawerToggle: HTMLInputElement;
   let component: RecognitionControlSidebarComponent;
   let fixture: ComponentFixture<RecognitionControlSidebarComponent>;
   let store: MockStore;
@@ -56,6 +58,16 @@ describe('RecognitionControlSidebarComponent', () => {
     store.refreshState();
     fixture = TestBed.createComponent(RecognitionControlSidebarComponent);
     component = fixture.componentInstance;
+    if (s.drawer) {
+      // The sidebar sits in a daisyUI drawer, whose checkbox opens and closes it
+      const drawer = document.createElement('div');
+      drawer.className = 'drawer';
+      drawerToggle = document.createElement('input');
+      drawerToggle.type = 'checkbox';
+      drawerToggle.className = 'drawer-toggle';
+      drawer.append(drawerToggle, fixture.nativeElement);
+      document.body.append(drawer);
+    }
     fixture.detectChanges();
     dispatch.mockClear();
   };
@@ -77,6 +89,39 @@ describe('RecognitionControlSidebarComponent', () => {
     }).compileComponents();
     store = TestBed.inject(Store) as MockStore;
     dispatch = jest.spyOn(store, 'dispatch');
+  });
+
+  describe('closing the drawer', () => {
+    const openMenus = () => fixture.nativeElement.querySelectorAll('details[open]').length;
+    const changeDrawer = (checked: boolean) => {
+      drawerToggle.checked = checked;
+      drawerToggle.dispatchEvent(new Event('change'));
+    };
+
+    afterEach(() => document.querySelectorAll('.drawer').forEach((el) => el.remove()));
+
+    it('closes the open menus when the drawer is closed, so no pop-up is left covering its trigger', () => {
+      create({ drawer: true });
+      changeDrawer(true);
+      fixture.nativeElement.querySelectorAll('details').forEach((el: HTMLElement) => el.setAttribute('open', ''));
+      expect(openMenus()).toBeGreaterThan(1);
+
+      changeDrawer(false);
+      expect(openMenus()).toBe(0);
+    });
+
+    it('leaves the menus alone while the drawer is open', () => {
+      create({ drawer: true });
+      fixture.nativeElement.querySelector('details').setAttribute('open', '');
+      changeDrawer(true);
+      expect(openMenus()).toBe(1);
+    });
+
+    it('stops listening once the sidebar is destroyed', () => {
+      create({ drawer: true });
+      fixture.destroy();
+      expect(() => changeDrawer(false)).not.toThrow();
+    });
   });
 
   describe('text size', () => {

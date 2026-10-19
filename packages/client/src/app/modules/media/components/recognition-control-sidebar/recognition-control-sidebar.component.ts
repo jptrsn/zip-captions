@@ -27,7 +27,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   @Input() showRecognitionToggle = true;
   @ViewChildren('details') subMenus!: HTMLElement[];
   private host: ElementRef<HTMLElement> = inject(ElementRef);
-  private visibilityObserver?: IntersectionObserver;
+  private drawerToggle?: HTMLInputElement;
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;
   public textSizeMin: Signal<boolean>;
@@ -246,17 +246,19 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
 
   /**
    * The menus are <details> pop-ups that open onto the page. Nothing closed them when the drawer slid away,
-   * leaving a pop-up that covered the drawer's trigger. The drawer is closed by a click on its overlay or by
-   * code, so watching for the sidebar leaving the viewport covers every host.
+   * leaving a pop-up that covered the drawer's trigger. The drawer is the checkbox of the enclosing daisyUI
+   * `.drawer`, and a click on the overlay or the trigger label changes it, so its `change` event is the moment
+   * to close them. (A browser reports a box that only touches the viewport edge as still intersecting, which
+   * is why watching the sidebar leave the screen did not work.)
    */
   ngAfterViewInit(): void {
-    if (typeof IntersectionObserver === 'undefined') return;
-    this.visibilityObserver = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => !entry.isIntersecting)) this.closeMenus();
-    });
-    // The host element is inline, so its own box says nothing about where the drawer is
-    this.visibilityObserver.observe(this.host.nativeElement.firstElementChild ?? this.host.nativeElement);
+    this.drawerToggle = this.host.nativeElement.closest('.drawer')?.querySelector<HTMLInputElement>('input.drawer-toggle') ?? undefined;
+    this.drawerToggle?.addEventListener('change', this.onDrawerChange);
   }
+
+  private onDrawerChange = (): void => {
+    if (this.drawerToggle && !this.drawerToggle.checked) this.closeMenus();
+  };
 
   public closeMenus(): void {
     const open: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('details[open]'));
@@ -264,7 +266,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   }
 
   ngOnDestroy(): void {
-    this.visibilityObserver?.disconnect();
+    this.drawerToggle?.removeEventListener('change', this.onDrawerChange);
     this.onDestroy$.next();
   }
 }

@@ -194,7 +194,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     if (this.fullScreen.isAvailable) {
       effect(() => {
         if (this.fullScreen.isFullscreen()) {
-          this.sidebarCheckbox.nativeElement.checked = false;
+          this.closeDrawer();
         }
       })
     }
@@ -202,7 +202,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     if (this.documentPip.isSupported) {
       effect(() => {
         if (this.documentPip.isPipActive()) {
-          this.sidebarCheckbox.nativeElement.checked = false;
+          this.closeDrawer();
         }
       })
     }
@@ -279,6 +279,13 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   /** Chooses what the Picture-in-Picture window shows; the sidebar isn't reachable from inside it */
   public setPipContent(content: PipContent): void {
     this.store.dispatch(SettingsActions.setPipContent({ content }));
+  }
+
+  /** Closes the sidebar drawer from code; setting `checked` raises no event, so the sidebar is told as a click would */
+  private closeDrawer(): void {
+    const toggle = this.sidebarCheckbox.nativeElement;
+    toggle.checked = false;
+    toggle.dispatchEvent(new Event('change'));
   }
 
   /** Set synchronously by the click, so the button shows it was received before the service reports progress */
