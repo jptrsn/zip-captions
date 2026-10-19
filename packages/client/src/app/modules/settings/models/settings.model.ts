@@ -349,8 +349,8 @@ export interface SupportedTranslationLanguage {
 
 export const AvailableTranslationLanguages: SupportedTranslationLanguage[] = [
   { code: 'fr', name: 'French (Français)' },
-  { code: 'es', name: 'Spanish (Español)' },
   { code: 'en', name: 'English' },
+  { code: 'es', name: 'Spanish (Español)' },
   { code: 'de', name: 'German (Deutsch)' },
   { code: 'it', name: 'Italian (Italiano)' },
   { code: 'pt', name: 'Portuguese (Português)' },

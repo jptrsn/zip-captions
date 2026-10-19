@@ -254,12 +254,12 @@ describe('RecognitionControlSidebarComponent', () => {
       expect(component.availableLanguages().map((l) => l.code)).not.toContain('de');
     });
 
-    it('defaults the target to French, the first language listed, or the next one when French is spoken, when none is stored', () => {
+    it('defaults the target to French, the first language listed, or English when French is spoken, when none is stored', () => {
       create({ translation: undefined, lang: 'en' });
       expect(component.targetLanguage()).toBe('fr');
       fixture.destroy();
       create({ translation: undefined, lang: 'fr' });
-      expect(component.targetLanguage()).toBe('es');
+      expect(component.targetLanguage()).toBe('en');
     });
 
     it('switches the target away from the spoken language when they become the same', () => {

@@ -160,7 +160,8 @@ describe('Settings Reducer', () => {
 
     it('moves a colliding target to the first language that is not the spoken one', () => {
       let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
-      expect(state.translation.targetLanguage).toBe('es');
+      expect(state.translation.targetLanguage).toBe('en');
+      state = settingsReducers(state, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'es' }));
       state = settingsReducers(state, SettingsActions.setLanguage({ language: 'es' }));
       expect(state.translation.targetLanguage).toBe('fr');
     });
