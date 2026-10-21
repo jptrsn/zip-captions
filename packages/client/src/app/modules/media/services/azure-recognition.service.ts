@@ -8,8 +8,9 @@ import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
 import { CaptionSegment, CaptionSegmentHistory } from "../../../models/caption-segment.model";
 import { selectProfanityFilterEnabled } from "../../../selectors/recognition.selector";
-import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
-import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
+import { selectTranscriptionEnabled, selectTranslationSettings } from "../../../selectors/settings.selector";
+import { SegmentLanguageService } from "../../../services/translator/segment-language.service";
+import { BilingualDialects, InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
 import { UserActions } from "../../../actions/user.actions";
 
 @Injectable({
@@ -30,9 +31,17 @@ export class AzureRecognitionService {
 	private readonly STT_CREDITS_PER_MINUTE = 60;
   private tokenRefreshTimerId?: number;
 
+	// Final segments of a bilingual model are tagged by detection one at a time, in order
+	private appendQueue: Promise<void> = Promise.resolve();
+	private pendingAppends = 0;
+	private lastSegmentLang?: string;
+	private translationOn: Signal<boolean>;
+
 	constructor(private store: Store<AppState>,
-							private http: HttpClient
+							private http: HttpClient,
+							private segmentLanguage: SegmentLanguageService
 	) {
+		this.translationOn = toSignal(this.store.select(selectTranslationSettings).pipe(map((t) => (t?.mode ?? 'off') !== 'off')), { initialValue: false });
 		const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
 		this.azureSttEndpoint = `${baseUrl}/${apiVersion}/azure-stt`;
@@ -47,6 +56,7 @@ export class AzureRecognitionService {
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
 			speechConfig.speechRecognitionLanguage = language;
 			this.recognitionLang = language;
+			this.lastSegmentLang = undefined;
 
 			if (this.profanityFilterEnabled() === false) {
 				speechConfig.setProfanity(sdk.ProfanityOption.Raw);
@@ -81,6 +91,9 @@ export class AzureRecognitionService {
 	}
 
 	public connectToStream(language: InterfaceLanguage | RecognitionDialect): void {
+		// Starting follows the user's click, which is when the detector's model may be downloaded
+		const pair = this._bilingualPair(language);
+		if (pair) void this.segmentLanguage.prepare(pair);
 		this.initialize(language).pipe(take(1)).subscribe({
 			next: (result) => {
 				this.isStreaming = true;
@@ -157,6 +170,27 @@ export class AzureRecognitionService {
       })
   }
 
+	/** The two languages of the locale when it is a bilingual model and translation is on; otherwise nothing is detected */
+	private _bilingualPair(locale: string): readonly string[] | undefined {
+		if (!this.translationOn()) return undefined;
+		const pair = BilingualDialects[locale as RecognitionDialect];
+		return pair && pair.length > 1 ? pair : undefined;
+	}
+
+	private async _appendDetected(text: string, pair: readonly string[] | undefined, start: Date | undefined): Promise<void> {
+		const configured = this.recognitionLang;
+		let lang = configured;
+		if (pair) {
+			const configuredBase = configured.split('-')[0].toLowerCase();
+			void this.segmentLanguage.prepare(pair);
+			const base = await this.segmentLanguage.detect(text, pair, this.lastSegmentLang, configuredBase);
+			this.lastSegmentLang = base;
+			// The configured locale keeps its region (fr-CA); the other language is tagged by its base code
+			lang = base === configuredBase ? configured : base;
+		}
+		this.recognizedSegments.update((current: CaptionSegment[]) => this.segmentHistory.append(current, text, lang, start));
+	}
+
 	private _addEventListeners(): void {
 		if (this.recognizer) {
 			let segmentStart: Date | undefined;
@@ -179,10 +213,22 @@ export class AzureRecognitionService {
 				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();
 				if (hasSpeech) {
 					// Respect the language Azure reports for the result, when it provides one
-					const lang = event.result.language || this.recognitionLang;
-					this.recognizedSegments.update((current: CaptionSegment[]) => {
-						return this.segmentHistory.append(current, text, lang, segmentStart);
-					});
+					const reported = event.result.language;
+					const start = segmentStart;
+					const pair = reported ? undefined : this._bilingualPair(this.recognitionLang);
+					if (pair || this.pendingAppends > 0) {
+						// Azure does not say which of a bilingual model's languages was spoken; this device works it out
+						// from the text. Appends stay in order, so a segment never overtakes one still being checked.
+						this.pendingAppends++;
+						this.appendQueue = this.appendQueue
+							.then(() => this._appendDetected(text, pair, start))
+							.finally(() => this.pendingAppends--);
+					} else {
+						const lang = reported || this.recognitionLang;
+						this.recognizedSegments.update((current: CaptionSegment[]) => {
+							return this.segmentHistory.append(current, text, lang, start);
+						});
+					}
 				}
 				this.liveOutput.set('');
 				if (hasSpeech && this.transcriptionEnabled()) {

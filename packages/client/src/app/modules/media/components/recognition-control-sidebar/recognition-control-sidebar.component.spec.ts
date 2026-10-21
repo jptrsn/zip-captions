@@ -27,9 +27,12 @@ interface Scenario {
   hostLang?: string;
   lang?: string;
   dialect?: string;
+  drawer?: boolean;
+  broadcasting?: boolean;
 }
 
 describe('RecognitionControlSidebarComponent', () => {
+  let drawerToggle: HTMLInputElement;
   let component: RecognitionControlSidebarComponent;
   let fixture: ComponentFixture<RecognitionControlSidebarComponent>;
   let store: MockStore;
@@ -48,7 +51,7 @@ describe('RecognitionControlSidebarComponent', () => {
     store.overrideSelector(selectLineHeight, (s.lineHeight ?? 'lineHeight-normal') as never);
     store.overrideSelector(selectRenderHistoryLength, s.history ?? 5);
     store.overrideSelector(recognitionConnectedSelector, s.active ?? true);
-    store.overrideSelector(selectIsBroadcasting, false);
+    store.overrideSelector(selectIsBroadcasting, s.broadcasting ?? false);
     store.overrideSelector(selectObsConnected, ObsConnectionState.disconnected);
     store.overrideSelector(selectTranslationSettings, ('translation' in s ? s.translation : settings()) as TranslationSettings);
     store.overrideSelector(languageSelector, (s.lang ?? 'en') as never);
@@ -56,6 +59,16 @@ describe('RecognitionControlSidebarComponent', () => {
     store.refreshState();
     fixture = TestBed.createComponent(RecognitionControlSidebarComponent);
     component = fixture.componentInstance;
+    if (s.drawer) {
+      // The sidebar sits in a daisyUI drawer, whose checkbox opens and closes it
+      const drawer = document.createElement('div');
+      drawer.className = 'drawer';
+      drawerToggle = document.createElement('input');
+      drawerToggle.type = 'checkbox';
+      drawerToggle.className = 'drawer-toggle';
+      drawer.append(drawerToggle, fixture.nativeElement);
+      document.body.append(drawer);
+    }
     fixture.detectChanges();
     dispatch.mockClear();
   };
@@ -77,6 +90,39 @@ describe('RecognitionControlSidebarComponent', () => {
     }).compileComponents();
     store = TestBed.inject(Store) as MockStore;
     dispatch = jest.spyOn(store, 'dispatch');
+  });
+
+  describe('closing the drawer', () => {
+    const openMenus = () => fixture.nativeElement.querySelectorAll('details[open]').length;
+    const changeDrawer = (checked: boolean) => {
+      drawerToggle.checked = checked;
+      drawerToggle.dispatchEvent(new Event('change'));
+    };
+
+    afterEach(() => document.querySelectorAll('.drawer').forEach((el) => el.remove()));
+
+    it('closes the open menus when the drawer is closed, so no pop-up is left covering its trigger', () => {
+      create({ drawer: true });
+      changeDrawer(true);
+      fixture.nativeElement.querySelectorAll('details').forEach((el: HTMLElement) => el.setAttribute('open', ''));
+      expect(openMenus()).toBeGreaterThan(1);
+
+      changeDrawer(false);
+      expect(openMenus()).toBe(0);
+    });
+
+    it('leaves the menus alone while the drawer is open', () => {
+      create({ drawer: true });
+      fixture.nativeElement.querySelector('details').setAttribute('open', '');
+      changeDrawer(true);
+      expect(openMenus()).toBe(1);
+    });
+
+    it('stops listening once the sidebar is destroyed', () => {
+      create({ drawer: true });
+      fixture.destroy();
+      expect(() => changeDrawer(false)).not.toThrow();
+    });
   });
 
   describe('text size', () => {
@@ -208,11 +254,11 @@ describe('RecognitionControlSidebarComponent', () => {
       expect(component.availableLanguages().map((l) => l.code)).not.toContain('de');
     });
 
-    it('defaults the target to Spanish, or English when Spanish is spoken, when none is stored', () => {
+    it('defaults the target to French, the first language listed, or English when French is spoken, when none is stored', () => {
       create({ translation: undefined, lang: 'en' });
-      expect(component.targetLanguage()).toBe('es');
+      expect(component.targetLanguage()).toBe('fr');
       fixture.destroy();
-      create({ translation: undefined, lang: 'es' });
+      create({ translation: undefined, lang: 'fr' });
       expect(component.targetLanguage()).toBe('en');
     });
 
@@ -223,7 +269,7 @@ describe('RecognitionControlSidebarComponent', () => {
       store.overrideSelector(selectTranslationSettings, settings({ targetLanguage: 'es' }));
       store.refreshState();
       fixture.detectChanges();
-      expect(dispatched()).toContainEqual(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'en' }));
+      expect(dispatched()).toContainEqual(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'fr' }));
     });
 
     it('lets a speaker swap languages only when the target can also be spoken, and a viewer never', () => {
@@ -236,6 +282,35 @@ describe('RecognitionControlSidebarComponent', () => {
       fixture.destroy();
       create({ hostLang: 'en' });
       expect(component.showSwap()).toBe(false);
+    });
+  });
+
+  describe('the translation switch', () => {
+    const toggle = () => fixture.nativeElement.querySelector('[data-testid="zc-sidebar-translation-enable"]') as HTMLInputElement | null;
+
+    it('shows on while translating and off otherwise', () => {
+      create({ translation: settings({ mode: 'translated-only' }) });
+      expect(toggle()?.checked).toBe(true);
+      fixture.destroy();
+      create({ translation: settings({ mode: 'off', enabled: false }) });
+      expect(toggle()?.checked).toBe(false);
+    });
+
+    it('switches translation on and off through the settings, as the Translation tab does', () => {
+      create({ translation: settings({ mode: 'off', enabled: false }) });
+      toggle()!.click();
+      expect(dispatched()).toEqual([SettingsActions.setTranslationEnabled({ enabled: true })]);
+
+      dispatch.mockClear();
+      fixture.destroy();
+      create({ translation: settings({ mode: 'split' }) });
+      toggle()!.click();
+      expect(dispatched()).toEqual([SettingsActions.setTranslationEnabled({ enabled: false })]);
+    });
+
+    it('is not there when translation is not available at all', () => {
+      create({ translatorSupported: false, offered: [] });
+      expect(toggle()).toBeNull();
     });
   });
 
@@ -252,10 +327,47 @@ describe('RecognitionControlSidebarComponent', () => {
       ]);
     });
 
-    it.each([['off', 'split'], ['split', 'translated-only'], ['translated-only', 'off']] as const)('cycles from %s to %s', (from, to) => {
+    it.each([['off', 'split'], ['split', 'translated-only'], ['translated-only', 'split']] as const)('cycles from %s to %s outside a broadcast, where turning translation off is the switch', (from, to) => {
       create({ translation: settings({ mode: from }) });
       component.cycleTranslationMode();
       expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: to }));
+    });
+
+    it('cycles on to original only while broadcasting, and back to split', () => {
+      create({ translation: settings({ mode: 'translated-only' }), broadcasting: true });
+      component.cycleTranslationMode();
+      expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: 'original-only' }));
+      dispatch.mockClear();
+      fixture.destroy();
+      create({ translation: settings({ mode: 'original-only' }), broadcasting: true });
+      component.cycleTranslationMode();
+      expect(dispatched()[0]).toEqual(SettingsActions.setTranslationMode({ mode: 'split' }));
+    });
+
+    describe('the display choices', () => {
+      const originalOnly = () => fixture.nativeElement.querySelector('[data-testid="zc-sidebar-original-only"]') as HTMLElement | null;
+
+      it('are split and translated only for a single session, with no "off" among them', () => {
+        create({ translation: settings({ mode: 'split' }) });
+        expect(originalOnly()).toBeNull();
+        const modes = (Array.from(fixture.nativeElement.querySelectorAll('[data-testid^="zc-sidebar-mode-"], [data-testid="zc-sidebar-original-only"]')) as HTMLElement[]).map((el) => el.dataset['testid']);
+        expect(modes).toEqual(['zc-sidebar-mode-split', 'zc-sidebar-mode-translated']);
+      });
+
+      it('add original only while broadcasting, which keeps translating for viewers', () => {
+        create({ translation: settings({ mode: 'split' }), broadcasting: true });
+        expect(originalOnly()).not.toBeNull();
+        originalOnly()!.click();
+        expect(dispatched()).toEqual([
+          SettingsActions.setTranslationMode({ mode: 'original-only' }),
+          SettingsActions.setTranslationEnabled({ enabled: true }),
+        ]);
+      });
+
+      it('still show original only where it is already the saved mode, so it can be seen and left', () => {
+        create({ translation: settings({ mode: 'original-only' }) });
+        expect(originalOnly()).not.toBeNull();
+      });
     });
 
     it('choosing a language while translation is off turns it on in split view', () => {

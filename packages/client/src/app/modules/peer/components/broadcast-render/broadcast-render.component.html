@@ -2,6 +2,12 @@
   <input #enable id="drawer-enable" type="checkbox" class="drawer-toggle" (change)="updateDom()" />
   <div class="drawer-content absolute top-0 bottom-0 left-0 right-0">
     <div class="flex flex-col flex-grow-0 h-full overflow-hidden bg-base-100 relative">
+      <!-- The broadcaster translates, but the viewer is looking at the original only -->
+      <button *ngIf="offeredTranslationHint() as code" type="button" data-testid="zc-viewer-show-translation"
+              class="btn btn-xs btn-primary gap-1 shadow absolute top-2 right-2 z-30" (click)="showOfferedTranslation()">
+        <ng-icon name="heroGlobeAlt"></ng-icon>
+        <span>{{ 'STREAM.showTranslation' | translate }}: {{ code }}</span>
+      </button>
       <app-caption-panes
         [view]="captionView()"
         [orientation]="splitOrientation()"
@@ -59,18 +65,30 @@
           </div>
 
           <!-- Download Button if this device translates and the model is downloadable -->
-          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
-            <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-viewer-download-model" (click)="downloadModel()">
-              <ng-icon name="heroArrowDownTray"></ng-icon>
-              <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
-            </button>
-            <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloadable'" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div class="flex flex-col items-center gap-1 pointer-events-auto">
+              <button type="button" class="btn btn-sm btn-primary gap-2 shadow" data-testid="zc-viewer-download-model" [disabled]="downloadRequested()" (click)="downloadModel()">
+                <span *ngIf="downloadRequested(); else downloadIcon" class="loading loading-spinner loading-xs"></span>
+                <ng-template #downloadIcon><ng-icon name="heroArrowDownTray"></ng-icon></ng-template>
+                <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
+              </button>
+              <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+            </div>
+          </div>
+
+          <!-- The device translator is failing: say so, since the pane would just stay empty -->
+          <div *ngIf="translationSource() === 'local' && translationFailing() && modelStatus() === 'ready'" data-testid="zc-viewer-translate-failed" role="alert"
+               class="absolute bottom-2 left-2 right-2 z-10 flex justify-center pointer-events-none">
+            <span class="badge badge-warning h-auto py-1 text-center text-wrap shadow">{{ 'SETTINGS.TRANSLATION.translationFailing' | translate }}</span>
           </div>
 
           <!-- Download Progress if downloading -->
-          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloading'" data-testid="zc-viewer-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
-            <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
-            <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+          <div *ngIf="translationSource() === 'local' && modelStatus() === 'downloading'" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div data-testid="zc-viewer-download-progress" class="flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+              <span class="loading loading-spinner loading-xs text-info"></span>
+              <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
+              <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+            </div>
           </div>
         </div>
 

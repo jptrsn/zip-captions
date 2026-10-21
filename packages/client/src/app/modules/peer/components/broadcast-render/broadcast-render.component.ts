@@ -4,7 +4,7 @@ import { Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { fadeInOnEnterAnimation, slideInRightOnEnterAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { Subject, map, takeUntil } from 'rxjs';
+import { Subject, filter, map, take, takeUntil } from 'rxjs';
 import { AppState } from '../../../../models/app.model';
 import { selectBroadcastPaused, selectHostOnline, selectPeerServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionErrorSelector } from '../../../../selectors/recognition.selector';
@@ -17,7 +17,7 @@ import { SegmentTranslation } from '../../../../services/translator/segment-tran
 import { textDirection } from '../../../../services/translator/text-direction';
 import { ViewerLanguageOptions, ViewerTranslationSource, coerceViewerTarget, resolveViewerTranslation, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
 import { ChromeTranslatorService, LiveTranslationChannel, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultSplitOrientation, PaneOrder, SettingsActions, SplitOrientation, TextFlow, TranslationDisplayMode, TranslationSettings } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultSplitOrientation, DefaultTranslationTarget, PaneOrder, SettingsActions, SplitOrientation, TextFlow, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget } from '../../../settings/models/settings.model';
 
 @Component({
   selector: 'app-broadcast-render',
@@ -55,6 +55,10 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
   public originalLanguageLabel: Signal<string>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
+  public translationFailing: Signal<boolean>;
+  /** The language of a broadcaster's translation that is offered but not shown, for the "show translation" button */
+  public offeredTranslationHint!: Signal<string | undefined>;
+  private viewerChoseLanguage = false;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
 
@@ -76,7 +80,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<void> = new Subject<void>();
   private idleTimeoutId: any = null;
-  private readonly IDLE_TIMEOUT_MS = 3500;
+  private readonly IDLE_TIMEOUT_MS = 1000;
   // Translates on this device, for languages the broadcaster doesn't send
   private localSession: SegmentTranslationSession;
   private localLiveText: WritableSignal<string> = signal('');
@@ -92,11 +96,12 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.liveChannel = this.translatorService.createLiveChannel();
     this.isTranslatorSupported = this.translatorService.isSupported();
     this.modelStatus = this.translatorService.modelStatus;
+    this.translationFailing = this.translatorService.translationFailing;
     this.downloadProgress = this.translatorService.downloadProgress;
     this.localSession = new SegmentTranslationSession((texts, source, target) => this.translatorService.translateSegmentsStrict(texts, source, target));
 
     this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
-    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
+    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? DefaultTranslationTarget);
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
     this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
 
@@ -192,6 +197,26 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       }
     });
 
+    // A broadcaster's translation is what a viewer starts on (no download, no waiting). Once per visit, and
+    // not once the viewer has picked a language themselves.
+    toObservable(this.offeredLanguages).pipe(
+      filter((offered) => offered.length > 0),
+      take(1),
+      takeUntil(this.onDestroy$)
+    ).subscribe((offered) => {
+      const offeredBase = offered.map((code) => code.split('-')[0].toLowerCase());
+      if (!this.viewerChoseLanguage && !offeredBase.includes(this.targetLanguage().split('-')[0].toLowerCase())) {
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: offeredBase[0] }));
+      }
+    });
+
+    // A translation exists but is not shown: the viewer needs something on screen that says so
+    this.offeredTranslationHint = computed(() => {
+      const offered = this.offeredLanguages();
+      const hidden = this.translationMode() === 'off' || this.translationMode() === 'original-only';
+      return offered.length > 0 && hidden ? offered[0].split('-')[0].toUpperCase() : undefined;
+    });
+
     // Check the model for the language pair this viewer would translate on their own device.
     // Created here, not in ngOnInit: toObservable needs an injection context (Angular 16).
     toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}`)).pipe(
@@ -252,8 +277,7 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
       const srcCode = this.translatorService.normalizeLanguageCode(this.sourceLanguage());
       const tgtCode = this.translatorService.normalizeLanguageCode(this.targetLanguage());
       if (srcCode && tgtCode && srcCode === tgtCode) {
-        const alt = srcCode === 'es' ? 'en' : 'es';
-        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(srcCode) }));
       }
     });
 
@@ -287,7 +311,16 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     return this.translationSource() === 'local' && this.translationMode() !== 'off';
   }
 
+  /** Shows the translation the broadcaster offers, as a second pane */
+  public showOfferedTranslation(): void {
+    const offered = this.offeredLanguages()[0];
+    if (offered) {
+      this.setTargetLanguage(offered.split('-')[0].toLowerCase());
+    }
+  }
+
   public setTargetLanguage(targetLanguage: string): void {
+    this.viewerChoseLanguage = true;
     this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
     if (this.translationMode() === 'off') {
       this.store.dispatch(SettingsActions.setTranslationMode({ mode: 'split' }));
@@ -326,10 +359,15 @@ export class BroadcastRenderComponent implements OnInit, OnDestroy {
     this.controlsVisible.set(true);
   }
 
+  /** Set synchronously by the click, so the button shows it was received before the service reports progress */
+  public downloadRequested: WritableSignal<boolean> = signal(false);
+
   public downloadModel(): void {
+    if (this.downloadRequested()) return;
+    this.downloadRequested.set(true);
     const src = this.sourceLanguage();
     const tgt = this.targetLanguage();
-    this.translatorService.downloadModel(src, tgt);
+    this.translatorService.downloadModel(src, tgt).finally(() => this.downloadRequested.set(false));
   }
 
   ngOnDestroy(): void {

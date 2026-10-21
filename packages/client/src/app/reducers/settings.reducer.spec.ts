@@ -117,7 +117,53 @@ describe('Settings Reducer', () => {
       }));
       expect(state.translation.splitOrientation).toBe('horizontal');
       expect(state.translation.pipContent).toBe('split');
-      expect(state.translation.targetLanguage).toBe('es');
+      expect(state.translation.targetLanguage).toBe('fr');
+    });
+  });
+
+  describe('changing the spoken language while translating', () => {
+    // Spoken French (Canada), translating into English, as saved by an earlier session
+    const translatingFrench = () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      state = settingsReducers(state, SettingsActions.setDialect({ dialect: 'fr-CA' }));
+      state = settingsReducers(state, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'en' }));
+      return settingsReducers(state, SettingsActions.setTranslationMode({ mode: 'split' }));
+    };
+
+    it('turns translation off when the spoken language changes', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'en' }));
+      expect(state.translation.enabled).toBe(false);
+      expect(state.translation.mode).toBe('off');
+    });
+
+    it('does not turn translation off for another dialect of the same language', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setDialect({ dialect: 'fr-FR' }));
+      expect(state.translation.enabled).toBe(true);
+      expect(state.translation.mode).toBe('split');
+    });
+
+    it('does not turn translation off when the same language is chosen again', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'fr' }));
+      expect(state.translation.enabled).toBe(true);
+    });
+
+    it('leaves translation off when it was already off', () => {
+      const state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      expect(state.translation.enabled).toBe(false);
+      expect(state.translation.mode).toBe('off');
+    });
+
+    it('still moves a target that collides with the new spoken language', () => {
+      const state = settingsReducers(translatingFrench(), SettingsActions.setLanguage({ language: 'en' }));
+      expect(state.translation.targetLanguage).toBe('fr');
+    });
+
+    it('moves a colliding target to the first language that is not the spoken one', () => {
+      let state = settingsReducers(defaultSettingsState, SettingsActions.setLanguage({ language: 'fr' }));
+      expect(state.translation.targetLanguage).toBe('en');
+      state = settingsReducers(state, SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'es' }));
+      state = settingsReducers(state, SettingsActions.setLanguage({ language: 'es' }));
+      expect(state.translation.targetLanguage).toBe('fr');
     });
   });
 

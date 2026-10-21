@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { PeerActions } from '../../../../actions/peer.actions';
@@ -70,6 +71,101 @@ describe('StartBroadcastComponent', () => {
 
   it('preselects the static room once the rooms are known', () => {
     create([room('AB-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+  });
+
+  it('preselects the room chosen in the settings over the static room', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
+  it('preselects the requested room, and its join code setting, when the rooms arrive after the screen has loaded', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create(undefined);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    // an anonymous room does not require the join code
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+  });
+
+  it('preselects the requested room when an empty list arrives first and the real one after it', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([]);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('preselects the static room when the list arrives after an empty one, and leaves a room the user picked alone', () => {
+    create([]);
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+
+    component.formGroup.controls['room'].setValue('ab-1234-5678');
+    component.formGroup.controls['room'].markAsDirty();
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true }), room('cd-0000-1111')]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
+  it('follows an edit of the room\'s join code setting when the refreshed list arrives after the screen started with the old one', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    // the copy of the list left from the last visit still has the old setting: anonymous viewers allowed
+    create([room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+
+    // the room was edited to require the join code; the refresh from the server says so
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('does not override the join code choice the user made on this screen when the list is refreshed', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678', { allowAnonymous: true })]);
+    component.formGroup.controls['useAuthentication'].setValue(true);
+    component.formGroup.controls['useAuthentication'].markAsDirty();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('keeps the room shown in the select when the server sends the list again, as new objects', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    const rooms = () => [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })];
+    create(rooms());
+    const select = () => fixture.nativeElement.querySelector('[data-testid="zc-share-start"]') as HTMLSelectElement;
+    expect(select().value).toBe('ab-1234-5678');
+
+    for (let i = 0; i < 2; i++) {
+      store.overrideSelector(selectMyBroadcastRooms, rooms());
+      store.refreshState();
+      fixture.detectChanges();
+      expect(select().value).toBe('ab-1234-5678');
+    }
+    expect(component.trackRoom(0, room('ab-1234-5678'))).toBe('ab-1234-5678');
+  });
+
+  it('falls back to the static room when the requested room is not one of the user\'s', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'zz-9999-9999' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
     expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
   });
 

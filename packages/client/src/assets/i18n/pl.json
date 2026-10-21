@@ -394,7 +394,8 @@
       "acquire": "Nasi zwolennicy Patreon otrzymują tokeny za darmo automatycznie każdego miesiąca.",
       "requestTokens": "Poproś o darmowe tokeny",
       "bilingualHint": "Ten dialekt rozpoznaje również język angielski.",
-      "description": "Wybierz dostawcę usługi, którego chcesz użyć do bezpiecznego przetwarzania audio i zwracania wyników. Różne silniki różnią się prędkością, jakością i kosztem. Staramy się dać Ci jak najwięcej możliwości, jednocześnie utrzymując wszystko w miarę możliwości za darmo."
+      "description": "Wybierz dostawcę usługi, którego chcesz użyć do bezpiecznego przetwarzania audio i zwracania wyników. Różne silniki różnią się prędkością, jakością i kosztem. Staramy się dać Ci jak najwięcej możliwości, jednocześnie utrzymując wszystko w miarę możliwości za darmo.",
+      "bilingualLanguageHint": "Język, który jest używany z dwóch, jest wyświetlany w tym języku w napisach na żywo."
     },
     "TRANSLATION": {
       "enable": "Tłumaczenie na żywo",
@@ -436,7 +437,11 @@
       "pipContentOriginal": "Tylko oryginał",
       "pipContentTranslated": "Tylko przetłumaczone",
       "pipContentSplit": "Oryginał i tłumaczenie",
-      "privacyNotice": "Tłumaczenie jest wykonywane w całości na Twoim urządzeniu za pomocą wbudowanych modeli językowych Chrome, więc żadna usługa tłumaczeniowa nie otrzymuje Twojego tekstu."
+      "privacyNotice": "Tłumaczenie jest wykonywane w całości na Twoim urządzeniu za pomocą wbudowanych modeli językowych Chrome, więc żadna usługa tłumaczeniowa nie otrzymuje Twojego tekstu.",
+      "translationFailing": "Tłumaczenie nie działa w tej chwili. Odświeżenie strony może to naprawić.",
+      "resetBySpokenLanguage": "Zmieniono język mowy, więc tłumaczenie zostało wyłączone. Włącz je ponownie, aby wybrać nowy język tłumaczenia.",
+      "modeOriginalOnly": "Tylko oryginalne",
+      "modeOriginalOnlyDesc": "Pokaż tylko język mówiony na tym ekranie. Odbiorcy transmisji nadal otrzymują tłumaczenie."
     }
   },
   "STREAM": {
@@ -494,7 +499,8 @@
       "deleteFailed": "Nie udało się usunąć transmisji. Spróbuj ponownie."
     },
     "fromBroadcaster": "Tłumaczenie przez nadawcę",
-    "translatedOnDevice": "Tłumaczone na tym urządzeniu"
+    "translatedOnDevice": "Tłumaczone na tym urządzeniu",
+    "showTranslation": "Pokaż tłumaczenie"
   },
   "MODAL": {
     "confirmEndBroadcast": "To zakończy aktualną transmisję i odłączy wszystkich rówieśników.",

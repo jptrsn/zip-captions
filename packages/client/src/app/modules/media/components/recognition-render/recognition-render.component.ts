@@ -7,7 +7,7 @@ import { AppState } from '../../../../models/app.model';
 import { CaptionSegment } from '../../../../models/caption-segment.model';
 import { RecognitionState, RecognitionStatus } from '../../../../models/recognition.model';
 import { windowControlsOverlaySelector } from '../../../../selectors/app.selector';
-import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionErrorSelector, recognitionIdSelector, recognitionPausedSelector, selectRecognition, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectRenderHistoryLength, selectTextFlow, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
@@ -17,7 +17,7 @@ import { textDirection } from '../../../../services/translator/text-direction';
 import { ChromeTranslatorService, TranslationModelStatus } from '../../../../services/translator/chrome-translator.service';
 import { CaptionLine, buildOriginalLines, buildTranslatedLines } from '../../../../services/translator/caption-lines';
 import { CaptionView, resolveCaptionView, showPipFeedSwitch, splitPaneOrder } from '../../../../services/translator/caption-view';
-import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableTranslationLanguages, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, DefaultTranslationTarget, PaneOrder, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextFlow, TranslationDisplayMode, TranslationSettings, isBilingualDialect, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { RecognitionService } from '../../services/recognition.service';
 
 @Component({
@@ -66,8 +66,13 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   public translatedTextOutput: Signal<string[]>;
   public hasTranslatedResults: Signal<boolean>;
   public originalLanguageLabel: Signal<string>;
+  /** The language the first pane shows: the spoken language, or a bilingual model's first language */
+  public originalPaneLanguage: Signal<string>;
+  /** A bilingual Azure model is recognizing, so either of its two languages may be spoken */
+  public bilingualModel: Signal<boolean>;
   public targetLanguageLabel: Signal<string>;
   public modelStatus: Signal<TranslationModelStatus>;
+  public translationFailing: Signal<boolean>;
   public downloadProgress: Signal<number>;
   public controlsVisible: WritableSignal<boolean> = signal(true);
   public canSwap: Signal<boolean>;
@@ -78,7 +83,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
   private onDestroy$: Subject<void> = new Subject<void>();
   private segments: Signal<CaptionSegment[]>;
   private idleTimeoutId: any = null;
-  private readonly IDLE_TIMEOUT_MS = 3500;
+  private readonly IDLE_TIMEOUT_MS = 1000;
 
   constructor(private store: Store<AppState>,
               private el: ElementRef,
@@ -127,7 +132,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
     this.paneOrder = computed(() => this.translationSettings()?.paneOrder ?? DefaultPaneOrder);
     this.panes = computed(() => splitPaneOrder(this.paneOrder()));
-    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? 'es');
+    this.targetLanguage = computed(() => this.translationSettings()?.targetLanguage ?? DefaultTranslationTarget);
 
     const dialect = toSignal(this.store.select(dialectSelector));
     const lang = toSignal(this.store.select(languageSelector));
@@ -145,14 +150,22 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
       return false;
     });
 
-    this.originalLines = computed(() => buildOriginalLines(this.segments(), this.sourceLanguage()));
+    // A bilingual model with the other language as the target: the first pane is that model's first language,
+    // showing French as spoken and English translated, instead of "whatever was spoken"
+    const engineProvider = toSignal(this.store.select(selectRecognitionEngineProvider));
+    this.bilingualModel = computed(() => engineProvider() === 'azure' && isBilingualDialect(this.sourceLanguage()));
+    const paneLanguages = this.captionTranslation.paneLanguages;
+    this.originalPaneLanguage = computed(() => paneLanguages()?.first ?? this.sourceLanguage());
+    this.originalLines = computed(() => paneLanguages()
+      ? buildTranslatedLines(this.segments(), this.captionTranslation.firstTranslations(), paneLanguages()!.first)
+      : buildOriginalLines(this.segments(), this.sourceLanguage()));
     this.translatedLines = computed(() => buildTranslatedLines(this.segments(), this.captionTranslation.translations(), this.targetLanguage()));
 
-    this.originalTextDir = computed(() => textDirection(this.sourceLanguage()));
+    this.originalTextDir = computed(() => textDirection(this.originalPaneLanguage()));
     this.translatedTextDir = computed(() => textDirection(this.targetLanguage()));
 
     this.originalLanguageLabel = computed(() => {
-      const s = this.sourceLanguage();
+      const s = this.originalPaneLanguage();
       return (s ? s.split('-')[0] : 'EN').toUpperCase();
     });
 
@@ -169,22 +182,19 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
 
     this.modelStatus = this.translatorService.modelStatus;
+    this.translationFailing = this.translatorService.translationFailing;
     this.downloadProgress = this.translatorService.downloadProgress;
 
     // The translations themselves come from CaptionTranslationService; this component only keeps the
     // model status (for the download button) up to date when the languages change
-    toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}`)).pipe(
+    toObservable(computed(() => `${this.sourceLanguage()}|${this.targetLanguage()}|${paneLanguages()?.first ?? ''}`)).pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe(() => {
-      if (this.translatorService.isSupported()) {
-        this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
-      }
-    });
+    ).subscribe(() => this.checkModels());
 
     if (this.fullScreen.isAvailable) {
       effect(() => {
         if (this.fullScreen.isFullscreen()) {
-          this.sidebarCheckbox.nativeElement.checked = false;
+          this.closeDrawer();
         }
       })
     }
@@ -192,7 +202,7 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     if (this.documentPip.isSupported) {
       effect(() => {
         if (this.documentPip.isPipActive()) {
-          this.sidebarCheckbox.nativeElement.checked = false;
+          this.closeDrawer();
         }
       })
     }
@@ -207,7 +217,16 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     if (this.fullScreen.isAvailable) {
       this.fullScreen.registerElement(this.el);
     }
-    if (this.translatorService.isSupported()) {
+    this.checkModels();
+  }
+
+  /** The model status for what is shown: both directions when the panes are a bilingual model's two languages */
+  private checkModels(): void {
+    if (!this.translatorService.isSupported()) return;
+    const panes = this.captionTranslation.paneLanguages();
+    if (panes) {
+      this.translatorService.checkModelStatusBoth(panes.first, panes.second);
+    } else {
       this.translatorService.checkModelStatus(this.sourceLanguage(), this.targetLanguage());
     }
   }
@@ -262,10 +281,24 @@ export class RecognitionRenderComponent implements OnInit, AfterViewInit, OnDest
     this.store.dispatch(SettingsActions.setPipContent({ content }));
   }
 
+  /** Closes the sidebar drawer from code; setting `checked` raises no event, so the sidebar is told as a click would */
+  private closeDrawer(): void {
+    const toggle = this.sidebarCheckbox.nativeElement;
+    toggle.checked = false;
+    toggle.dispatchEvent(new Event('change'));
+  }
+
+  /** Set synchronously by the click, so the button shows it was received before the service reports progress */
+  public downloadRequested: WritableSignal<boolean> = signal(false);
+
   public downloadModel(): void {
-    const src = this.sourceLanguage();
-    const tgt = this.targetLanguage();
-    this.translatorService.downloadModel(src, tgt);
+    if (this.downloadRequested()) return;
+    this.downloadRequested.set(true);
+    const panes = this.captionTranslation.paneLanguages();
+    const download = panes
+      ? this.translatorService.downloadModelBoth(panes.first, panes.second)
+      : this.translatorService.downloadModel(this.sourceLanguage(), this.targetLanguage());
+    download.finally(() => this.downloadRequested.set(false));
   }
 
   ngAfterViewInit(): void {

@@ -5,6 +5,12 @@
            is listened for here as well; otherwise the controls could not come back in the PiP window -->
       <div #captionContainer class="flex flex-col absolute top-0 bottom-0 left-0 right-0 bg-base-100"
            (mouseenter)="onUserActivity()" (mousemove)="onUserActivity()" (touchstart)="onUserActivity()">
+        <!-- A bilingual model is recognizing: either language is shown in its own language -->
+        <div *ngIf="bilingualModel()" data-testid="zc-caption-bilingual-note" role="note"
+             class="absolute top-2 left-1/2 -translate-x-1/2 z-20 max-w-[80%] pointer-events-none transition-opacity duration-500"
+             [ngClass]="controlsVisible() ? 'opacity-90' : 'opacity-0'">
+          <span class="badge badge-info h-auto py-1 text-center text-wrap shadow">{{ 'SETTINGS.PROVIDER.bilingualLanguageHint' | translate }}</span>
+        </div>
         <app-caption-panes
           [view]="captionView()"
           [orientation]="splitOrientation()"
@@ -12,7 +18,7 @@
           [controlsVisible]="controlsVisible()"
           [textFlowDown]="textFlowDown()"
           [originalLabel]="originalLanguageLabel()"
-          [originalLang]="sourceLanguage()"
+          [originalLang]="originalPaneLanguage()"
           [originalDir]="originalTextDir()"
           [translatedLang]="targetLanguage()"
           [translatedDir]="translatedTextDir()"
@@ -44,28 +50,33 @@
                   {{ lang.code.toUpperCase() }} - {{ lang.name }}
                 </option>
               </select>
-              <button type="button" class="btn btn-xs btn-circle btn-primary shadow" data-testid="zc-caption-swap"
-                      [disabled]="!canSwap()" (click)="swapLanguages()"
-                      (focus)="onControlsFocus()" (blur)="onUserActivity()"
-                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
-                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
-                <ng-icon name="heroArrowsRightLeft"></ng-icon>
-              </button>
             </div>
 
             <!-- Download Button if model is downloadable -->
-            <div *ngIf="modelStatus() === 'downloadable'" class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
-              <button type="button" class="btn btn-xs btn-primary gap-1 shadow" data-testid="zc-caption-download-model" (click)="downloadModel()">
-                <ng-icon name="heroArrowDownTray"></ng-icon>
-                <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
-              </button>
-              <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+            <div *ngIf="modelStatus() === 'downloadable'" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+              <div class="flex flex-col items-center gap-1 pointer-events-auto">
+                <button type="button" class="btn btn-sm btn-primary gap-2 shadow" data-testid="zc-caption-download-model" [disabled]="downloadRequested()" (click)="downloadModel()">
+                  <span *ngIf="downloadRequested(); else downloadIcon" class="loading loading-spinner loading-xs"></span>
+                  <ng-template #downloadIcon><ng-icon name="heroArrowDownTray"></ng-icon></ng-template>
+                  <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
+                </button>
+                <span class="badge badge-ghost badge-xs font-normal shadow" translate>SETTINGS.TRANSLATION.modelPerPairNotice</span>
+              </div>
+            </div>
+
+            <!-- The device translator is failing: say so, since the pane would just stay empty -->
+            <div *ngIf="translationFailing() && modelStatus() === 'ready'" data-testid="zc-caption-translate-failed" role="alert"
+                 class="absolute bottom-2 left-2 right-2 z-10 flex justify-center pointer-events-none">
+              <span class="badge badge-warning h-auto py-1 text-center text-wrap shadow">{{ 'SETTINGS.TRANSLATION.translationFailing' | translate }}</span>
             </div>
 
             <!-- Download Progress if downloading -->
-            <div *ngIf="modelStatus() === 'downloading'" data-testid="zc-caption-download-progress" class="absolute top-2 right-2 z-10 flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
-              <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
-              <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+            <div *ngIf="modelStatus() === 'downloading'" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+              <div data-testid="zc-caption-download-progress" class="flex items-center gap-2 bg-base-100/90 px-3 py-1 rounded-full shadow border border-base-300">
+                <span class="loading loading-spinner loading-xs text-info"></span>
+                <span class="text-xs text-info font-medium">{{ 'SETTINGS.TRANSLATION.statusDownloading' | translate }} {{ downloadProgress() }}%</span>
+                <progress class="progress progress-primary w-20" [value]="downloadProgress()" max="100"></progress>
+              </div>
             </div>
           </div>
 

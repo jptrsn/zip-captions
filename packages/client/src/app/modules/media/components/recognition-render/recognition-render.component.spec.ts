@@ -21,6 +21,7 @@ interface Scenario {
   translation?: Partial<TranslationSettings>;
   lang?: 'en' | 'ar' | 'fr';
   dialect?: string;
+  provider?: 'web' | 'azure';
   textFlow?: 'top-down' | 'bottom-up';
   translatorSupported?: boolean;
   fullscreenAvailable?: boolean;
@@ -39,9 +40,12 @@ describe('RecognitionRenderComponent', () => {
   let segments: ReturnType<typeof signal<CaptionSegment[]>>;
   let translations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let modelStatus: ReturnType<typeof signal<TranslationModelStatus>>;
+  let translationFailing: ReturnType<typeof signal<boolean>>;
+  let paneLanguages: ReturnType<typeof signal<{ first: string; second: string } | undefined>>;
+  let firstTranslations: ReturnType<typeof signal<Map<string, SegmentTranslation>>>;
   let fullScreen: { isAvailable: boolean; isFullscreen: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock };
   let pip: { isSupported: boolean; isPipActive: ReturnType<typeof signal<boolean>>; registerElement: jest.Mock; deregisterElement: jest.Mock; close: jest.Mock };
-  let translator: { isSupported: () => boolean; modelStatus: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; downloadModel: jest.Mock; normalizeLanguageCode: (c?: string) => string };
+  let translator: { isSupported: () => boolean; modelStatus: unknown; translationFailing: unknown; downloadProgress: unknown; checkModelStatus: jest.Mock; checkModelStatusBoth: jest.Mock; downloadModel: jest.Mock; downloadModelBoth: jest.Mock; normalizeLanguageCode: (c?: string) => string };
   let translatorSupported: boolean;
 
   const create = (s: Scenario = {}) => {
@@ -51,7 +55,7 @@ describe('RecognitionRenderComponent', () => {
     const base = defaultAppState;
     store.setState({
       ...base,
-      recognition: { ...base.recognition, status: s.status ?? RecognitionStatus.connected, id: s.id ?? 'default' },
+      recognition: { ...base.recognition, status: s.status ?? RecognitionStatus.connected, id: s.id ?? 'default', engine: { ...base.recognition.engine, provider: s.provider ?? 'web' } },
       settings: {
         ...base.settings,
         lang: s.lang ?? 'en',
@@ -71,15 +75,21 @@ describe('RecognitionRenderComponent', () => {
     finals = signal<string[]>([]);
     segments = signal<CaptionSegment[]>([]);
     translations = signal(new Map<string, SegmentTranslation>());
+    paneLanguages = signal<{ first: string; second: string } | undefined>(undefined);
+    firstTranslations = signal(new Map<string, SegmentTranslation>());
     modelStatus = signal<TranslationModelStatus>('ready');
+    translationFailing = signal(false);
     fullScreen = { isAvailable: false, isFullscreen: signal(false), registerElement: jest.fn(), deregisterElement: jest.fn() };
     pip = { isSupported: false, isPipActive: signal(false), registerElement: jest.fn(), deregisterElement: jest.fn(), close: jest.fn() };
     translator = {
       isSupported: () => translatorSupported,
       modelStatus,
+      translationFailing,
       downloadProgress: signal(40),
       checkModelStatus: jest.fn(),
-      downloadModel: jest.fn(),
+      checkModelStatusBoth: jest.fn(),
+      downloadModel: jest.fn(() => Promise.resolve(true)),
+      downloadModelBoth: jest.fn(() => Promise.resolve(true)),
       normalizeLanguageCode: (c?: string) => (c ?? '').split('-')[0].toLowerCase(),
     };
     await TestBed.configureTestingModule({
@@ -90,7 +100,7 @@ describe('RecognitionRenderComponent', () => {
         { provide: DocumentPipService, useValue: pip },
         { provide: RecognitionService, useValue: { getLiveOutput: () => live, getRecognizedText: () => finals } },
         { provide: ChromeTranslatorService, useValue: translator },
-        { provide: CaptionTranslationService, useValue: { segments, translatedLive: signal(''), translations } },
+        { provide: CaptionTranslationService, useValue: { segments, translatedLive: signal(''), translations, paneLanguages, firstTranslations } },
       ],
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [RecognitionRenderComponent],
@@ -246,6 +256,48 @@ describe('RecognitionRenderComponent', () => {
     });
   });
 
+  describe('the panes of a bilingual model', () => {
+    it('labels the first pane with the model\'s first language and fills it with that language as spoken and the other translated', () => {
+      segments.set([{ id: 'a', text: 'bonjour', lang: 'fr-CA' }, { id: 'b', text: 'hello', lang: 'en' }]);
+      firstTranslations.set(new Map([['a', { lang: 'fr-CA', text: 'bonjour' }], ['b', { lang: 'en', text: 'bonjour (de hello)' }]]));
+      translations.set(new Map([['a', { lang: 'fr-CA', text: 'hello (from bonjour)' }], ['b', { lang: 'en', text: 'hello' }]]));
+      paneLanguages.set({ first: 'fr', second: 'en' });
+      create({ lang: 'fr', dialect: 'fr-CA', translation: { targetLanguage: 'en' } });
+
+      expect(translator.checkModelStatusBoth).toHaveBeenCalledWith('fr', 'en');
+      expect(component.originalLanguageLabel()).toBe('FR');
+      expect(component.originalLines().map((line) => line.text)).toEqual(['bonjour', 'bonjour (de hello)']);
+      expect(component.translatedLines().map((line) => line.text)).toEqual(['hello (from bonjour)', 'hello']);
+    });
+  });
+
+  describe('the bilingual note', () => {
+    it('says either language is shown in its own, only while a bilingual Azure model is in use', () => {
+      create({ lang: 'fr', dialect: 'fr-CA', provider: 'azure' });
+      expect(byId('zc-caption-bilingual-note')).toBeTruthy();
+    });
+
+    it('is absent for another engine or a dialect that is not bilingual', () => {
+      create({ lang: 'fr', dialect: 'fr-CA', provider: 'web' });
+      expect(byId('zc-caption-bilingual-note')).toBeNull();
+      create({ lang: 'fr', dialect: 'fr-FR', provider: 'azure' });
+      expect(byId('zc-caption-bilingual-note')).toBeNull();
+    });
+  });
+
+  describe('a failing translator', () => {
+    it('tells the user when the device translator is failing, and only then', () => {
+      create();
+      expect(byId('zc-caption-translate-failed')).toBeNull();
+      translationFailing.set(true);
+      fixture.detectChanges();
+      expect(byId('zc-caption-translate-failed')).toBeTruthy();
+      translationFailing.set(false);
+      fixture.detectChanges();
+      expect(byId('zc-caption-translate-failed')).toBeNull();
+    });
+  });
+
   describe('model status', () => {
     it('checks the model for the language pair when it starts', () => {
       create();
@@ -332,24 +384,24 @@ describe('RecognitionRenderComponent', () => {
   describe('controls fade', () => {
     beforeEach(() => jest.useFakeTimers());
 
-    it('hides the controls after 3.5 seconds without activity, and brings them back on activity', () => {
+    it('hides the controls after 1 second without activity, and brings them back on activity', () => {
       create();
       expect(component.controlsVisible()).toBe(true);
-      jest.advanceTimersByTime(3499);
+      jest.advanceTimersByTime(999);
       expect(component.controlsVisible()).toBe(true);
       jest.advanceTimersByTime(1);
       expect(component.controlsVisible()).toBe(false);
       component.onUserActivity();
       expect(component.controlsVisible()).toBe(true);
-      jest.advanceTimersByTime(3500);
+      jest.advanceTimersByTime(1000);
       expect(component.controlsVisible()).toBe(false);
     });
 
     it('restarts the countdown on each activity', () => {
       create();
-      jest.advanceTimersByTime(3000);
+      jest.advanceTimersByTime(800);
       component.onUserActivity();
-      jest.advanceTimersByTime(3000);
+      jest.advanceTimersByTime(800);
       expect(component.controlsVisible()).toBe(true);
     });
 
@@ -359,7 +411,7 @@ describe('RecognitionRenderComponent', () => {
       jest.advanceTimersByTime(10000);
       expect(component.controlsVisible()).toBe(true);
       component.onUserActivity();
-      jest.advanceTimersByTime(3500);
+      jest.advanceTimersByTime(1000);
       expect(component.controlsVisible()).toBe(false);
     });
 

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, Output, WritableSignal, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserRoom } from '../../../../reducers/user.reducer';
 import { UserService } from '../../../user/services/user.service';
 import { IClipboardResponse } from 'ngx-clipboard';
@@ -31,7 +32,8 @@ export class RoomCardComponent implements AfterViewInit {
   public deleteFailed: WritableSignal<boolean> = signal(false);
 
   constructor(private fb: FormBuilder,
-              private userService: UserService) {
+              private userService: UserService,
+              private router: Router) {
     this.roomFormGroup = this.fb.group({
       roomId: this.fb.control(this.room?.roomId, [Validators.required]),
       allowAnonymous: this.fb.control<boolean | undefined>(false),
@@ -52,6 +54,18 @@ export class RoomCardComponent implements AfterViewInit {
       this.roomFormGroup.controls['roomId'].disable();
       this.isStatic = this.room.isStatic;
     }
+  }
+
+  /** The link viewers open; it points at the host the app runs on, so staging does not link to production */
+  get directLink(): string {
+    return `${window.location.origin}/stream/${this.room?.roomId}`;
+  }
+
+  /** Opens the broadcast screen with this room chosen, so the user can start broadcasting to it at once */
+  startBroadcast(): void {
+    if (!this.room) return;
+    // The broadcast tab is the second one ('view' comes first)
+    this.router.navigate(['/stream'], { queryParams: { tabIndex: 1, room: this.room.roomId } });
   }
 
   showEditMode(): void {

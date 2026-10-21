@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, filter, map, of, switchMap, take } from 'rxjs';
 import { PeerActions } from '../actions/peer.actions';
+import { AppState } from '../models/app.model';
 import { PeerService } from '../modules/peer/services/peer.service';
+import { selectSocketServerConnected } from '../selectors/peer.selectors';
 
 
 @Injectable()
 export class PeerEffects {
   constructor(private actions$: Actions,
+              private store: Store<AppState>,
               private peerService: PeerService) {}
 
   connectSocketServer$ = createEffect(() => 
@@ -83,6 +87,8 @@ export class PeerEffects {
   getBroadcastRooms$ = createEffect(() => 
     this.actions$.pipe(
       ofType(PeerActions.getBroadcastRooms),
+      // On a page load that starts on the broadcast screen the request comes before the socket exists
+      switchMap(() => this.store.select(selectSocketServerConnected).pipe(filter(Boolean), take(1))),
       map(() => this.peerService.refreshUserRooms()),
       map(() => PeerActions.getBroadcastRoomsRequested())
     )

@@ -70,22 +70,32 @@
     <details #translationMenu class="dropdown dropdown-left" *ngIf="translationAvailable()">
       <summary class="btn btn-md btn-primary flex flex-col items-center" [ngClass]="{'bg-secondary': translationMenu.hasAttribute('open'), 'tooltip tooltip-left tooltip-info': !translationMenu.hasAttribute('open')}" role="button" [attr.data-tip]="'SETTINGS.TABS.translation' | translate" (click)="hideElements([fontSizeMenu, lineSpacingMenu, renderHistoryMenu])">
         <ng-icon name="heroGlobeAlt"></ng-icon>
-        <div class="text-[10px] text-base-100 uppercase" *ngIf="translationMenu.hasAttribute('open')">{{ translationMode() === 'split' ? 'SPLIT' : (translationMode() === 'translated-only' ? 'TRANS' : 'OFF') }}</div>
+        <div class="text-[10px] text-base-100 uppercase" *ngIf="translationMenu.hasAttribute('open')">{{ translationMode() === 'split' ? 'SPLIT' : (translationMode() === 'translated-only' ? 'TRANS' : (translationMode() === 'original-only' ? 'ORIG' : 'OFF')) }}</div>
       </summary>
       <div class="dropdown-content">
         <div class="bg-secondary rounded-s-xl p-3 min-w-[220px] text-xs flex flex-col gap-2 shadow-xl border border-base-content/10">
+          <label class="flex flex-row items-center justify-between gap-3 cursor-pointer">
+            <span class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
+              {{ 'SETTINGS.TRANSLATION.enable' | translate }}
+            </span>
+            <input type="checkbox" class="toggle toggle-primary toggle-sm" data-testid="zc-sidebar-translation-enable"
+                   [checked]="translationMode() !== 'off'" (change)="setTranslationEnabled($any($event.target).checked)"
+                   [attr.aria-label]="(translationMode() !== 'off' ? 'SETTINGS.TRANSLATION.on' : 'SETTINGS.TRANSLATION.off') | translate" />
+          </label>
           <div class="font-semibold text-base-100 text-[11px] uppercase tracking-wider">
             {{ 'SETTINGS.TRANSLATION.displayMode' | translate }}
           </div>
-          <div class="grid grid-cols-3 gap-1">
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'split', 'btn-ghost text-base-100': translationMode() !== 'split'}" (click)="setTranslationMode('split')">
+          <!-- Turning translation off is the switch above. While broadcasting there is a third choice: translate for
+               the viewers but show only the spoken language here (a phone viewer cannot translate on its own). -->
+          <div class="grid gap-1" [ngClass]="showOriginalOnly() ? 'grid-cols-3' : 'grid-cols-2'">
+            <button class="btn btn-xs" data-testid="zc-sidebar-mode-split" [ngClass]="{'btn-primary': translationMode() === 'split', 'btn-ghost text-base-100': translationMode() !== 'split'}" (click)="setTranslationMode('split')">
               {{ 'SETTINGS.TRANSLATION.modeSplit' | translate }}
             </button>
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'translated-only', 'btn-ghost text-base-100': translationMode() !== 'translated-only'}" (click)="setTranslationMode('translated-only')">
+            <button class="btn btn-xs" data-testid="zc-sidebar-mode-translated" [ngClass]="{'btn-primary': translationMode() === 'translated-only', 'btn-ghost text-base-100': translationMode() !== 'translated-only'}" (click)="setTranslationMode('translated-only')">
               {{ 'SETTINGS.TRANSLATION.modeTranslatedOnly' | translate }}
             </button>
-            <button class="btn btn-xs" [ngClass]="{'btn-primary': translationMode() === 'off', 'btn-ghost text-base-100': translationMode() !== 'off'}" (click)="setTranslationMode('off')">
-              {{ 'SETTINGS.TRANSLATION.off' | translate }}
+            <button *ngIf="showOriginalOnly()" class="btn btn-xs" data-testid="zc-sidebar-original-only" [ngClass]="{'btn-primary': translationMode() === 'original-only', 'btn-ghost text-base-100': translationMode() !== 'original-only'}" (click)="setTranslationMode('original-only')">
+              {{ 'SETTINGS.TRANSLATION.modeOriginalOnly' | translate }}
             </button>
           </div>
 
@@ -153,12 +163,6 @@
                   </option>
                 </ng-template>
               </select>
-              <button *ngIf="showSwap()" type="button" class="btn btn-xs btn-square" data-testid="zc-sidebar-swap"
-                      [disabled]="!canSwap()" (click)="swapLanguages()"
-                      [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
-                      [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
-                <ng-icon name="heroArrowsRightLeft"></ng-icon>
-              </button>
             </div>
           </div>
         </div>

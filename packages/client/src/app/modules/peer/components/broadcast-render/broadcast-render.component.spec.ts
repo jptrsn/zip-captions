@@ -120,6 +120,34 @@ describe('BroadcastRenderComponent', () => {
       expect(lines().map((el) => el.textContent?.trim())).toEqual(['hello', 'world']);
     });
 
+    it('starts a new viewer on the broadcaster\'s language', async () => {
+      await create({ enabled: false, mode: 'off', targetLanguage: 'es' });
+      const dispatch = jest.spyOn(store, 'dispatch');
+      receive(buildSegmentPayload(english, 'en-US', ['fr'], []));
+      expect(dispatch).toHaveBeenCalledWith(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'fr' }));
+    });
+
+    it('shows a "show translation" button while a translation is offered but hidden, and turns it on when clicked', async () => {
+      await create({ enabled: false, mode: 'off', targetLanguage: 'fr' });
+      const button = () => fixture.nativeElement.querySelector('[data-testid="zc-viewer-show-translation"]') as HTMLElement | null;
+      expect(button()).toBeNull();
+
+      receive(buildSegmentPayload(english, 'en-US', ['fr'], [{ id: 'a', text: 'bonjour', lang: 'fr' }]));
+      expect(button()).not.toBeNull();
+      expect(button()?.textContent).toContain('FR');
+
+      const dispatch = jest.spyOn(store, 'dispatch');
+      button()!.click();
+      expect(dispatch).toHaveBeenCalledWith(SettingsActions.setTranslationTargetLanguage({ targetLanguage: 'fr' }));
+      expect(dispatch).toHaveBeenCalledWith(SettingsActions.setTranslationMode({ mode: 'split' }));
+    });
+
+    it('has no "show translation" button when the broadcaster is not translating, or the translation is already shown', async () => {
+      await create({ enabled: true, mode: 'split', targetLanguage: 'fr' });
+      receive(buildSegmentPayload(english, 'en-US', ['fr'], [{ id: 'a', text: 'bonjour', lang: 'fr' }]));
+      expect(fixture.nativeElement.querySelector('[data-testid="zc-viewer-show-translation"]')).toBeNull();
+    });
+
     it('still works with a broadcaster that predates the new payload', async () => {
       await create({ enabled: true, mode: 'split', targetLanguage: 'fr' });
       receive({ type: 'segment', recognition: ['hello', 'world'], lang: 'en-US' });

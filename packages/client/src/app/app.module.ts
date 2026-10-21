@@ -31,6 +31,7 @@ import { ObsConnectionStatusComponent } from './components/obs-connection-status
 import { OfflineWarningComponent } from './components/offline-warning/offline-warning.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { ServiceWorkerUpdateComponent } from './components/service-worker-update/service-worker-update.component';
+import { TranslationResetNoticeComponent } from './components/translation-reset-notice/translation-reset-notice.component';
 import { SupporterRenderComponent } from './components/supporter-render/supporter-render.component';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 import { WelcomeSplashComponent } from './components/welcome-splash/welcome-splash.component';
@@ -69,6 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PrivacyComponent,
     TermsAndConditionsComponent,
     ServiceWorkerUpdateComponent,
+    TranslationResetNoticeComponent,
     OfflineWarningComponent,
     DetectPwaInstallComponent,
     ObsConnectionStatusComponent,

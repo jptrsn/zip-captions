@@ -394,7 +394,8 @@
       "acquire": "Nossos patrocinadores Patreon recebem tokens gratuitos automaticamente todos os meses.",
       "requestTokens": "Solicitar tokens gratuitos",
       "bilingualHint": "Este dialeto também reconhece o inglês.",
-      "description": "Selecione o provedor de serviço que deseja usar para processar o áudio com segurança e retornar os resultados. Diferentes motores variam em velocidade, qualidade e custo. Fazemos o nosso melhor para lhe oferecer o máximo de escolha possível, mantendo as coisas o mais gratuitas que podemos."
+      "description": "Selecione o provedor de serviço que deseja usar para processar o áudio com segurança e retornar os resultados. Diferentes motores variam em velocidade, qualidade e custo. Fazemos o nosso melhor para lhe oferecer o máximo de escolha possível, mantendo as coisas o mais gratuitas que podemos.",
+      "bilingualLanguageHint": "Qualquer que seja o idioma dos dois que for falado, é exibido nesse idioma nas legendas ao vivo."
     },
     "TRANSLATION": {
       "enable": "Tradução ao vivo",
@@ -436,7 +437,11 @@
       "pipContentOriginal": "Somente o original",
       "pipContentTranslated": "Somente traduzido",
       "pipContentSplit": "Original e traduzido",
-      "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem incorporados do Chrome, portanto, nenhum serviço de tradução recebe o seu texto."
+      "privacyNotice": "A tradução é executada inteiramente no seu dispositivo usando os modelos de linguagem incorporados do Chrome, portanto, nenhum serviço de tradução recebe o seu texto.",
+      "translationFailing": "A tradução não está funcionando no momento. Recarregar a página pode resolver o problema.",
+      "resetBySpokenLanguage": "Você alterou o idioma falado, portanto a tradução foi desativada. Ative-a novamente para escolher um novo idioma de tradução.",
+      "modeOriginalOnly": "Somente original",
+      "modeOriginalOnlyDesc": "Exibir apenas o idioma falado nesta tela. Os espectadores de uma transmissão ainda recebem a tradução."
     }
   },
   "STREAM": {
@@ -494,7 +499,8 @@
       "deleteFailed": "A transmissão não pôde ser excluída. Tente novamente."
     },
     "fromBroadcaster": "Traduzido pelo transmissor",
-    "translatedOnDevice": "Traduzido neste dispositivo"
+    "translatedOnDevice": "Traduzido neste dispositivo",
+    "showTranslation": "Mostrar tradução"
   },
   "MODAL": {
     "confirmEndBroadcast": "Isso terminará a transmissão atual e desconectará todos os colegas",

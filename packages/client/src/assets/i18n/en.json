@@ -350,6 +350,8 @@
       "modeSplitDesc": "Original and translated captions in two panes",
       "modeTranslatedOnly": "Translated Only",
       "modeTranslatedOnlyDesc": "Display only the translated captions",
+      "modeOriginalOnly": "Original only",
+      "modeOriginalOnlyDesc": "Show only the spoken language on this screen. Viewers of a broadcast still receive the translation.",
       "statusTitle": "Chrome On-Device AI Status",
       "statusReady": "Model Ready (On-Device)",
       "statusDownloadable": "Download Required",
@@ -364,6 +366,8 @@
       "modelsTitle": "Translation models",
       "modelsPerPair": "Each language pair uses its own translation model, which Chrome downloads once the first time you use it.",
       "modelPerPairNotice": "One-time download for this language pair",
+      "translationFailing": "Translation is not working right now. Reloading the page may fix it.",
+      "resetBySpokenLanguage": "You changed the spoken language, so translation was turned off. Turn it on again to choose a new translation language.",
       "unsupportedHint": "The Chrome Translator API is only available in supported desktop Chromium browsers (Chrome 138+ / Edge). You may need to enable chrome://flags/#translation-api.",
       "experimental": "Experimental feature",
       "unsupportedMobileHint": "On-device translation is only available in desktop browsers (Chrome 138+ or Edge 148+) and is not supported on phones or tablets.",
@@ -436,7 +440,8 @@
         "description": "Using the Azure Cognitive Services provider, Zip Captions will send audio data from your device directly to Microsoft's API using a secure web socket. This provider requires a specified dialect, please ensure the setting is correct.",
         "cost": "Rate: 60 tokens per minute"
       },
-      "bilingualHint": "This dialect also recognizes English."
+      "bilingualHint": "This dialect also recognizes English.",
+      "bilingualLanguageHint": "Whichever of the two languages is spoken is shown in that language in the live captions."
     }
   },
   "STREAM": {
@@ -475,6 +480,7 @@
     "authDescription": "Require viewers to enter join code",
     "countdown": "Time remaining",
     "fromBroadcaster": "Translated by the broadcaster",
+    "showTranslation": "Show translation",
     "translatedOnDevice": "Translated on this device",
     "ROOMCARD": {
       "broadcastId": "Broadcast ID",

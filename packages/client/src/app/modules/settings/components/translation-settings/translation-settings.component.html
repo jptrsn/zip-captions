@@ -24,16 +24,6 @@
         <app-language-selector [group]="formGroup" controlName="spokenLanguage" testId="zc-translation-spoken-lang"></app-language-selector>
         <app-dialect-selector [group]="formGroup" controlName="dialect" languageControlName="spokenLanguage"></app-dialect-selector>
 
-        <div class="flex justify-center">
-          <button type="button" class="btn btn-sm btn-ghost gap-2" data-testid="zc-translation-swap"
-                  [disabled]="!canSwap()" (click)="swapLanguages()"
-                  [attr.aria-label]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate"
-                  [title]="(canSwap() ? 'SETTINGS.TRANSLATION.swapLanguages' : 'SETTINGS.TRANSLATION.swapUnavailable') | translate">
-            <ng-icon name="heroArrowsRightLeft"></ng-icon>
-            <span translate>SETTINGS.TRANSLATION.swapLanguages</span>
-          </button>
-        </div>
-
         <label class="form-control">
           <span class="text-accent label" translate>SETTINGS.TRANSLATION.targetLang</span>
           <select class="select select-lg mt-1 w-full bg-base-100" formControlName="targetLanguage" data-testid="zc-translation-target-lang">
@@ -41,7 +31,6 @@
               {{ lang.name }}
             </option>
           </select>
-          <span *ngIf="!canSwap()" data-testid="zc-translation-swap-unavailable" class="label-text-alt text-base-content/70 mt-1" translate>SETTINGS.TRANSLATION.swapUnavailable</span>
         </label>
       </ng-container>
 
@@ -64,6 +53,14 @@
               <span class="text-xs text-base-content/70" translate>SETTINGS.TRANSLATION.modeTranslatedOnlyDesc</span>
             </div>
             <input type="radio" value="translated-only" class="radio radio-primary" formControlName="mode" />
+          </label>
+
+          <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-semibold text-sm" translate>SETTINGS.TRANSLATION.modeOriginalOnly</span>
+              <span class="text-xs text-base-content/70" translate>SETTINGS.TRANSLATION.modeOriginalOnlyDesc</span>
+            </div>
+            <input type="radio" value="original-only" class="radio radio-primary" formControlName="mode" data-testid="zc-translation-mode-original-only" />
           </label>
 
         </div>
@@ -141,14 +138,18 @@
 
             <div *ngIf="modelStatus() === 'downloadable'" class="flex flex-col gap-2 mt-2">
               <p class="text-xs text-base-content/80" translate>SETTINGS.TRANSLATION.downloadPrompt</p>
-              <button type="button" class="btn btn-sm btn-primary w-full gap-2" (click)="downloadModel()">
-                <ng-icon name="heroArrowDownTray"></ng-icon>
+              <button type="button" class="btn btn-sm btn-primary w-full gap-2" [disabled]="!formGroup.get('enabled')?.value || downloadRequested()" (click)="downloadModel()">
+                <span *ngIf="downloadRequested(); else downloadIcon" class="loading loading-spinner loading-xs"></span>
+                <ng-template #downloadIcon><ng-icon name="heroArrowDownTray"></ng-icon></ng-template>
                 <span>{{ 'SETTINGS.TRANSLATION.downloadButton' | translate }}</span>
               </button>
             </div>
 
             <div *ngIf="modelStatus() === 'downloading'" class="flex flex-col gap-2 mt-2">
-              <span class="text-xs" translate>SETTINGS.TRANSLATION.downloadingModel</span>
+              <span class="flex items-center gap-2 text-xs">
+                <span class="loading loading-spinner loading-xs"></span>
+                <span translate>SETTINGS.TRANSLATION.downloadingModel</span>
+              </span>
               <progress class="progress progress-primary w-full" [value]="downloadProgress()" max="100"></progress>
               <span class="text-xs text-end">{{ downloadProgress() }}%</span>
             </div>

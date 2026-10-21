@@ -394,7 +394,8 @@
       "acquire": "Nos supporters de Patreon reçoivent automatiquement des tokens gratuits chaque mois.",
       "requestTokens": "Demander des tokens gratuits",
       "bilingualHint": "Ce dialecte reconnaît également l'anglais.",
-      "description": "Sélectionnez le fournisseur de services que vous souhaitez utiliser pour traiter l’audio de manière sécurisée et renvoyer les résultats. Les différents moteurs varient en termes de vitesse, de qualité et de coût. Nous faisons de notre mieux pour vous offrir le plus de choix possible tout en gardant les choses aussi gratuites que nous le pouvons."
+      "description": "Sélectionnez le fournisseur de services que vous souhaitez utiliser pour traiter l’audio de manière sécurisée et renvoyer les résultats. Les différents moteurs varient en termes de vitesse, de qualité et de coût. Nous faisons de notre mieux pour vous offrir le plus de choix possible tout en gardant les choses aussi gratuites que nous le pouvons.",
+      "bilingualLanguageHint": "La langue parlée parmi les deux est affichée dans cette langue dans les sous-titres en direct."
     },
     "TRANSLATION": {
       "enable": "Traduction en direct",
@@ -436,7 +437,11 @@
       "pipContentOriginal": "Original uniquement",
       "pipContentTranslated": "Traduit uniquement",
       "pipContentSplit": "Original et traduit",
-      "privacyNotice": "La traduction s’exécute entièrement sur votre appareil grâce aux modèles de langage intégrés de Chrome, de sorte qu’aucun service de traduction ne reçoit votre texte."
+      "privacyNotice": "La traduction s’exécute entièrement sur votre appareil grâce aux modèles de langage intégrés de Chrome, de sorte qu’aucun service de traduction ne reçoit votre texte.",
+      "translationFailing": "La traduction ne fonctionne pas actuellement. Recharger la page peut résoudre le problème.",
+      "resetBySpokenLanguage": "Vous avez changé la langue parlée, la traduction a donc été désactivée. Réactivez-la pour choisir une nouvelle langue de traduction.",
+      "modeOriginalOnly": "Original uniquement",
+      "modeOriginalOnlyDesc": "Afficher uniquement la langue parlée sur cet écran. Les spectateurs de la diffusion reçoivent toujours la traduction."
     }
   },
   "STREAM": {
@@ -494,7 +499,8 @@
       "deleteFailed": "La diffusion n'a pas pu être supprimée. Veuillez réessayer."
     },
     "fromBroadcaster": "Traduit par l'animateur",
-    "translatedOnDevice": "Traduit sur cet appareil"
+    "translatedOnDevice": "Traduit sur cet appareil",
+    "showTranslation": "Afficher la traduction"
   },
   "MODAL": {
     "confirmEndBroadcast": "Cette opération met fin à la diffusion en cours et déconnecte tous les pairs.",

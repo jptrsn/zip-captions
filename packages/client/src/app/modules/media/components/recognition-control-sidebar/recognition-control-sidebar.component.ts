@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
 import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
@@ -20,12 +20,14 @@ import { Subject, map, takeUntil } from 'rxjs';
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent implements OnDestroy {
+export class RecognitionControlSidebarComponent implements AfterViewInit, OnDestroy {
   @Input() showFullscreen = true;
   @Input() showTextFlow = true;
   @Input() showPip = true;
   @Input() showRecognitionToggle = true;
   @ViewChildren('details') subMenus!: HTMLElement[];
+  private host: ElementRef<HTMLElement> = inject(ElementRef);
+  private drawerToggle?: HTMLInputElement;
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;
   public textSizeMin: Signal<boolean>;
@@ -35,6 +37,7 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   public lineHeightMax: Signal<boolean>;
 
   public isBroadcasting: Signal<boolean | undefined>;
+  public showOriginalOnly: Signal<boolean>;
   public isObsStreaming: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
 
@@ -93,7 +96,7 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     this.languageOptions = computed(() => viewerLanguageOptions(AvailableTranslationLanguages, this.offeredLanguages(), sourceLanguageCode(), this.isTranslatorSupported));
 
     this.targetLanguage = computed(() => {
-      return this.translationSettings()?.targetLanguage ?? (sourceLanguageCode() === 'es' ? 'en' : 'es');
+      return this.translationSettings()?.targetLanguage ?? fallbackTranslationTarget(sourceLanguageCode());
     });
 
     this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
@@ -108,8 +111,7 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     ).subscribe((src) => {
       const currentTgt = this.translationSettings()?.targetLanguage;
       if (currentTgt === src) {
-        const alt = src === 'es' ? 'en' : 'es';
-        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: alt }));
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(src) }));
       }
     });
 
@@ -122,6 +124,8 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     this.lineHeightMin = computed(() => this.lineHeight() === this.availableLineHeights[0]);
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    // Original only is a choice for the host of a broadcast; it also shows where it is already the saved mode
+    this.showOriginalOnly = computed(() => !!this.isBroadcasting() || this.translationMode() === 'original-only');
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
 
     this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
@@ -134,6 +138,11 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
   setTranslationMode(mode: TranslationDisplayMode): void {
     this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
     this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: mode !== 'off' }));
+  }
+
+  /** Switches translation on (back to split view when it was off) or off, as the switch on the Translation settings tab does */
+  setTranslationEnabled(enabled: boolean): void {
+    this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled }));
   }
 
   swapLanguages(): void {
@@ -167,12 +176,12 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     }
   }
 
+  /** Steps through the choices the menu offers; turning translation off is the switch, not a step */
   cycleTranslationMode(): void {
     const current = this.translationMode();
     let next: TranslationDisplayMode = 'split';
     if (current === 'split') next = 'translated-only';
-    else if (current === 'translated-only') next = 'off';
-    else next = 'split';
+    else if (current === 'translated-only') next = this.showOriginalOnly() ? 'original-only' : 'split';
     this.setTranslationMode(next);
   }
 
@@ -242,7 +251,29 @@ export class RecognitionControlSidebarComponent implements OnDestroy {
     this.store.dispatch(RecognitionActions.resume());
   }
 
+  /**
+   * The menus are <details> pop-ups that open onto the page. Nothing closed them when the drawer slid away,
+   * leaving a pop-up that covered the drawer's trigger. The drawer is the checkbox of the enclosing daisyUI
+   * `.drawer`, and a click on the overlay or the trigger label changes it, so its `change` event is the moment
+   * to close them. (A browser reports a box that only touches the viewport edge as still intersecting, which
+   * is why watching the sidebar leave the screen did not work.)
+   */
+  ngAfterViewInit(): void {
+    this.drawerToggle = this.host.nativeElement.closest('.drawer')?.querySelector<HTMLInputElement>('input.drawer-toggle') ?? undefined;
+    this.drawerToggle?.addEventListener('change', this.onDrawerChange);
+  }
+
+  private onDrawerChange = (): void => {
+    if (this.drawerToggle && !this.drawerToggle.checked) this.closeMenus();
+  };
+
+  public closeMenus(): void {
+    const open: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('details[open]'));
+    this.hideElements(open);
+  }
+
   ngOnDestroy(): void {
+    this.drawerToggle?.removeEventListener('change', this.onDrawerChange);
     this.onDestroy$.next();
   }
 }

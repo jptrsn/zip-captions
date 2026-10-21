@@ -394,7 +394,8 @@
       "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
       "requestTokens": "请求免费代币",
       "bilingualHint": "该方言也能识别英语。",
-      "description": "选择您希望用于安全处理音频并返回结果的服务提供商。不同的引擎在速度、质量和成本方面会有所不同。我们尽力在尽可能保持免费的同时，为您提供尽可能多的选择。"
+      "description": "选择您希望用于安全处理音频并返回结果的服务提供商。不同的引擎在速度、质量和成本方面会有所不同。我们尽力在尽可能保持免费的同时，为您提供尽可能多的选择。",
+      "bilingualLanguageHint": "在实时字幕中，以正在使用的两种语言之一显示。"
     },
     "TRANSLATION": {
       "enable": "实时翻译",
@@ -436,7 +437,11 @@
       "pipContentOriginal": "仅原始",
       "pipContentTranslated": "仅翻译",
       "pipContentSplit": "原文和译文",
-      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。"
+      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。",
+      "translationFailing": "翻译当前无法正常工作。重新加载页面可能会解决问题。",
+      "resetBySpokenLanguage": "您更改了口语语言，因此翻译已关闭。请重新开启以选择新的翻译语言。",
+      "modeOriginalOnly": "仅原文",
+      "modeOriginalOnlyDesc": "此屏幕仅显示源语言字幕。观看直播的观众仍会收到翻译。"
     }
   },
   "STREAM": {
@@ -494,7 +499,8 @@
       "deleteFailed": "无法删除广播。请重试。"
     },
     "fromBroadcaster": "由主播翻译",
-    "translatedOnDevice": "在此设备上翻译"
+    "translatedOnDevice": "在此设备上翻译",
+    "showTranslation": "显示翻译"
   },
   "MODAL": {
     "confirmEndBroadcast": "这将结束当前的广播,并将切断所有对手。",

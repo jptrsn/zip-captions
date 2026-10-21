@@ -28,11 +28,13 @@ describe('WebRecognitionService', () => {
   let recog: FakeSpeechRecognition;
   let store: MockStore;
 
-  const setup = (transcriptionEnabled = false) => {
-    (globalThis as any).webkitSpeechRecognition = jest.fn(() => {
-      recog = new FakeSpeechRecognition();
-      return recog;
-    });
+  const setup = (transcriptionEnabled = false, hasSpeechApi = true) => {
+    if (hasSpeechApi) {
+      (globalThis as any).webkitSpeechRecognition = jest.fn(() => {
+        recog = new FakeSpeechRecognition();
+        return recog;
+      });
+    }
     TestBed.configureTestingModule({
       providers: [provideMockStore({ initialState: defaultAppState })]
     });
@@ -54,6 +56,15 @@ describe('WebRecognitionService', () => {
   afterEach(() => {
     delete (globalThis as any).webkitSpeechRecognition;
     jest.useRealTimers();
+  });
+
+  it('can be built where the browser has no speech recognition (Firefox), so a viewer is not broken by it', () => {
+    expect(() => setup(false, false)).not.toThrow();
+    expect(() => {
+      service.setLanguage('en-US');
+      service.connectToStream();
+      service.disconnectFromStream();
+    }).not.toThrow();
   });
 
   it('appends a segment on the end path, tagged with the language captured at start', () => {

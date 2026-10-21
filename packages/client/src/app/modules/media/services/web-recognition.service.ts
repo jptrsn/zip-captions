@@ -44,7 +44,11 @@ export class WebRecognitionService {
     this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled))
     this.segmentHistory = new CaptionSegmentHistory('w', this.MAX_RECOGNITION_LENGTH);
 
-		this.recog = new webkitSpeechRecognition();
+		// Firefox has no speech recognition. This root service is built by anything that injects RecognitionService,
+		// including the screens a viewer sees, so it must not throw; hosting is gated by the browser check instead.
+		this.recog = typeof webkitSpeechRecognition === 'undefined'
+			? ({ lang: '', start: () => undefined, stop: () => undefined, abort: () => undefined, addEventListener: () => undefined } as unknown as SpeechRecognition)
+			: new webkitSpeechRecognition();
 		this.recog.interimResults = true;
 		this.recog.continuous = true;
 		this._addEventListeners();

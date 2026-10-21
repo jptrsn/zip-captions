@@ -4,7 +4,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { defaultAppState } from '../../../reducers/app.reducer';
 import { selectProfanityFilterEnabled } from '../../../selectors/recognition.selector';
-import { selectTranscriptionEnabled } from '../../../selectors/settings.selector';
+import { selectTranscriptionEnabled, selectTranslationSettings } from '../../../selectors/settings.selector';
+import { SegmentLanguageService } from '../../../services/translator/segment-language.service';
 import { AzureRecognitionService } from './azure-recognition.service';
 
 const mockSpeechConfigs: any[] = [];
@@ -161,6 +162,76 @@ describe('AzureRecognitionService', () => {
     recognize(recognizer, 'Hello everyone.', RECOGNIZED_SPEECH, 'en-US');
     recognize(recognizer, 'Bonjour tout le monde.', RECOGNIZED_SPEECH, '');
     expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['en-US', 'fr-CA']);
+  });
+
+  describe('a bilingual locale with translation on', () => {
+    const detected: Record<string, string> = {};
+    let detect: jest.Mock;
+    let prepare: jest.Mock;
+
+    const setupBilingual = (mode: 'split' | 'off' = 'split') => {
+      detect = jest.fn((text: string, _pair: readonly string[], _previous: string | undefined, fallback: string) => Promise.resolve(detected[text] ?? fallback));
+      prepare = jest.fn(() => Promise.resolve(true));
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [
+          provideMockStore({ initialState: defaultAppState }),
+          { provide: SegmentLanguageService, useValue: { detect, prepare } },
+        ]
+      });
+      store = TestBed.inject(MockStore);
+      store.overrideSelector(selectTranscriptionEnabled, false);
+      store.overrideSelector(selectProfanityFilterEnabled, true);
+      store.overrideSelector(selectTranslationSettings, { ...defaultAppState.settings.translation, mode } as any);
+      jest.spyOn(store, 'dispatch');
+      http = TestBed.inject(HttpTestingController);
+      service = TestBed.inject(AzureRecognitionService);
+    };
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    it('tags each segment with the language it was detected in, in order, and keeps the locale\'s region', async () => {
+      setupBilingual();
+      Object.assign(detected, { 'Bonjour tout le monde.': 'fr', 'Hello everyone.': 'en', 'Merci beaucoup.': 'fr' });
+      const recognizer = initialize('fr-CA');
+      recognize(recognizer, 'Bonjour tout le monde.');
+      recognize(recognizer, 'Hello everyone.');
+      recognize(recognizer, 'Merci beaucoup.');
+      await settle();
+      expect(service.getRecognizedSegments()().map((segment) => [segment.text, segment.lang])).toEqual([
+        ['Bonjour tout le monde.', 'fr-CA'],
+        ['Hello everyone.', 'en'],
+        ['Merci beaucoup.', 'fr-CA'],
+      ]);
+      expect(detect).toHaveBeenNthCalledWith(2, 'Hello everyone.', ['fr', 'en'], 'fr', 'fr');
+    });
+
+    it('asks for the detector when recognition starts, with the locale\'s pair', () => {
+      setupBilingual();
+      connect('es-US');
+      expect(prepare).toHaveBeenCalledWith(['es', 'en']);
+    });
+
+    it('keeps the configured locale tag when nothing can be detected', async () => {
+      setupBilingual();
+      const recognizer = initialize('fr-CA');
+      recognize(recognizer, 'Something unrecognized');
+      await settle();
+      expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-CA']);
+    });
+
+    it('does not detect with translation off, or for a locale that is not bilingual', async () => {
+      setupBilingual('off');
+      recognize(initialize('fr-CA'), 'Hello everyone.');
+      expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-CA']);
+      expect(detect).not.toHaveBeenCalled();
+    });
+
+    it('does not detect for a locale that is not bilingual', () => {
+      setupBilingual();
+      recognize(initialize('fr-FR'), 'Hello everyone.');
+      expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-FR']);
+      expect(detect).not.toHaveBeenCalled();
+    });
   });
 
   describe('changing language mid-session', () => {

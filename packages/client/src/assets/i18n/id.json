@@ -394,7 +394,8 @@
       "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
       "requestTokens": "Meminta Token Gratis",
       "bilingualHint": "Dialek ini juga mengenali bahasa Inggris.",
-      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya."
+      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya.",
+      "bilingualLanguageHint": "Bahasa mana pun dari dua bahasa yang diucapkan akan ditampilkan dalam bahasa tersebut di teks langsung."
     },
     "TRANSLATION": {
       "enable": "Terjemahan Langsung",
@@ -436,7 +437,11 @@
       "pipContentOriginal": "Hanya asli",
       "pipContentTranslated": "Hanya diterjemahkan",
       "pipContentSplit": "Asli dan terjemahan",
-      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda."
+      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda.",
+      "translationFailing": "Terjemahan tidak berfungsi saat ini. Memuat ulang halaman mungkin dapat memperbaikinya.",
+      "resetBySpokenLanguage": "Anda telah mengubah bahasa yang diucapkan, sehingga terjemahan dimatikan. Nyalakan kembali untuk memilih bahasa terjemahan baru.",
+      "modeOriginalOnly": "Hanya asli",
+      "modeOriginalOnlyDesc": "Tampilkan hanya bahasa yang diucapkan di layar ini. Penonton siaran masih menerima terjemahan."
     }
   },
   "STREAM": {
@@ -494,7 +499,8 @@
       "deleteFailed": "Siaran tidak dapat dihapus. Silakan coba lagi."
     },
     "fromBroadcaster": "Diterjemahkan oleh penyiar",
-    "translatedOnDevice": "Diterjemahkan di perangkat ini"
+    "translatedOnDevice": "Diterjemahkan di perangkat ini",
+    "showTranslation": "Tampilkan terjemahan"
   },
   "MODAL": {
     "confirmEndBroadcast": "Ini akan mengakhiri siaran saat ini dan memutuskan semua rekan.",

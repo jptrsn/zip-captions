@@ -14,16 +14,16 @@ const REQUIRED: Record<string, string[]> = {
     'zc-caption-line', 'zc-line-lang', 'zc-line-pending',
   ],
   'media/components/recognition-render/recognition-render.component.html': [
-    'zc-caption-translated-controls', 'zc-caption-target-lang', 'zc-caption-swap', 'zc-caption-download-model',
-    'zc-caption-download-progress', 'zc-caption-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
+    'zc-caption-translated-controls', 'zc-caption-target-lang', 'zc-caption-download-model',
+    'zc-caption-download-progress', 'zc-caption-translate-failed', 'zc-caption-bilingual-note','zc-caption-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
     'zc-pip-feed-switch', 'zc-pip-feed-original', 'zc-pip-feed-translated', 'zc-pip-feed-split', 'zc-pip-return',
   ],
   'peer/components/broadcast-render/broadcast-render.component.html': [
-    'zc-viewer-translated-controls', 'zc-viewer-target-lang', 'zc-viewer-download-model', 'zc-viewer-download-progress',
+    'zc-viewer-translated-controls', 'zc-viewer-target-lang', 'zc-viewer-download-model', 'zc-viewer-download-progress', 'zc-viewer-translate-failed', 'zc-viewer-show-translation',
     'zc-viewer-divider-controls', 'zc-caption-orientation', 'zc-caption-swap-panes',
   ],
   'media/components/recognition-control-sidebar/recognition-control-sidebar.component.html': [
-    'zc-sidebar-target-lang', 'zc-sidebar-layout', 'zc-sidebar-swap', 'zc-sidebar-swap-panes',
+    'zc-sidebar-translation-enable', 'zc-sidebar-mode-split', 'zc-sidebar-mode-translated', 'zc-sidebar-original-only','zc-sidebar-target-lang','zc-sidebar-layout', 'zc-sidebar-swap-panes',
     'zc-sidebar-orientation-vertical', 'zc-sidebar-orientation-horizontal',
     'zc-sidebar-pip-original', 'zc-sidebar-pip-translated', 'zc-sidebar-pip-split',
   ],
@@ -32,8 +32,8 @@ const REQUIRED: Record<string, string[]> = {
     'zc-obs-feed-fallback-hint', 'zc-obs-feed-language-hint',
   ],
   'settings/components/translation-settings/translation-settings.component.html': [
-    'zc-translation-enable', 'zc-translation-spoken-lang', 'zc-translation-target-lang', 'zc-translation-swap',
-    'zc-translation-swap-unavailable', 'zc-translation-orientation', 'zc-translation-orientation-vertical',
+    'zc-translation-enable', 'zc-translation-spoken-lang', 'zc-translation-target-lang',
+    'zc-translation-orientation', 'zc-translation-orientation-vertical',
     'zc-translation-orientation-horizontal', 'zc-translation-pip-content', 'zc-translation-pip-original',
     'zc-translation-pip-translated', 'zc-translation-pip-split', 'zc-translation-models-link',
     'zc-translation-unsupported-reason',

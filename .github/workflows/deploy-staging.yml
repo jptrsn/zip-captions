@@ -181,9 +181,51 @@ jobs:
         if: ${{ inputs.bind_domains }}
         run: |
           set -euo pipefail
-          az staticwebapp hostname set --name "${{ steps.infra.outputs.static_site }}" --resource-group "$RESOURCE_GROUP" --hostname "$CLIENT_HOSTNAME"
+          SITE="${{ steps.infra.outputs.static_site }}"
+          hostname_status() {
+            az staticwebapp hostname list --name "$SITE" --resource-group "$RESOURCE_GROUP" \
+              --query "[?name=='$CLIENT_HOSTNAME'] | [0].status" -o tsv
+          }
+          # The CLI's own wait polls an operation status at subscription scope, which the staging credential
+          # (Contributor on one resource group) may not read. So ask for the hostname without waiting and poll the
+          # hostname list, which is inside the group. A hostname already listed (a re-run) is not asked for again.
+          if [ -z "$(hostname_status)" ]; then
+            az staticwebapp hostname set --name "$SITE" --resource-group "$RESOURCE_GROUP" --hostname "$CLIENT_HOSTNAME" --no-wait
+          fi
+          status=""
+          for _ in $(seq 1 30); do
+            status=$(hostname_status)
+            echo "$CLIENT_HOSTNAME: ${status:-not listed yet}"
+            case "$status" in
+              Ready) break ;;
+              Failed) echo "::error::Azure could not validate $CLIENT_HOSTNAME (is its CNAME pointing at the Static Web App?)"; exit 1 ;;
+            esac
+            sleep 20
+          done
+          if [ "$status" != "Ready" ]; then echo "::error::$CLIENT_HOSTNAME is still '${status:-not listed}' after 10 minutes"; exit 1; fi
           az containerapp hostname add --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME"
           az containerapp hostname bind --name "${{ steps.infra.outputs.server_app }}" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME" --environment "$ENVIRONMENT_NAME" --validation-method CNAME
+
+      # Deploying the template resets the container app's ingress, which removes a custom domain bound by an earlier run,
+      # and the API would then refuse TLS for its own name. So every run that did not just bind (above) puts the API
+      # domain back when it was lost, provided its DNS record already points at the app. Without that record (the first
+      # deploy of a candidate) there is nothing to bind yet, and that is not an error.
+      - name: Keep the API custom domain bound
+        if: ${{ !inputs.bind_domains }}
+        run: |
+          set -euo pipefail
+          APP="${{ steps.infra.outputs.server_app }}"
+          bound=$(az containerapp show --name "$APP" --resource-group "$RESOURCE_GROUP" \
+            --query "properties.configuration.ingress.customDomains[?name=='$API_HOSTNAME'] | [0].name" -o tsv)
+          if [ -n "$bound" ]; then echo "$API_HOSTNAME is already bound"; exit 0; fi
+          if ! command -v dig >/dev/null; then sudo apt-get install -y --no-install-recommends dnsutils >/dev/null; fi
+          cname=$(dig +short CNAME "$API_HOSTNAME" | head -n 1 | sed 's/\.$//')
+          if [ "$cname" != "${{ steps.infra.outputs.server_hostname }}" ]; then
+            echo "::notice::$API_HOSTNAME is not bound and its CNAME ('${cname:-none}') does not point at the app yet; bind it with bind_domains once the DNS records exist"
+            exit 0
+          fi
+          az containerapp hostname add --name "$APP" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME"
+          az containerapp hostname bind --name "$APP" --resource-group "$RESOURCE_GROUP" --hostname "$API_HOSTNAME" --environment "$ENVIRONMENT_NAME" --validation-method CNAME
 
       - name: What to do next
         run: |
@@ -206,6 +248,7 @@ jobs:
             echo "| TXT | asuid.$API_HOSTNAME | ${{ steps.infra.outputs.domain_verification_id }} |"
             echo
             echo "When they resolve, run this workflow again by hand (Run workflow) on the release branch with **bind_domains** ticked."
+            echo "After that, every push re-binds $API_HOSTNAME by itself (a deploy removes the binding); the client name needs no re-bind."
             echo "Login works only on the custom names: the OAuth redirect URIs registered with the providers are on $API_HOSTNAME."
             echo
             echo "**When the candidate is over**, delete those three DNS records as well as the environment: a CNAME left pointing at a deleted Azure hostname is a dangling record."

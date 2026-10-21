@@ -11,7 +11,7 @@
     </label>
     <select data-testid="zc-share-start" class="select select-lg select-bordered" formControlName="room">
       <option [value]="null" translate>STREAM.createAnonymousBroadcast</option>
-      <option *ngFor="let room of userRooms()" [value]="room.roomId">
+      <option *ngFor="let room of userRooms(); trackBy: trackRoom" [value]="room.roomId">
         <span>{{room.roomId | uppercase }} {{ (room.isStatic ? '&nbsp;(static)' : '') | translate}}</span>
       </option>
     </select>
