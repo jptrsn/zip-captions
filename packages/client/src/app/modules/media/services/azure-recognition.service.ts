@@ -1,39 +1,53 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, Signal, signal, WritableSignal } from "@angular/core";
+import { computed, Injectable, Signal, signal, WritableSignal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Store } from "@ngrx/store";
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { map, Observable, take } from "rxjs";
 import { RecognitionActions } from "../../../actions/recogntion.actions";
 import { AppState } from "../../../models/app.model";
+import { CaptionSegment, CaptionSegmentHistory } from "../../../models/caption-segment.model";
 import { selectProfanityFilterEnabled } from "../../../selectors/recognition.selector";
-import { selectTranscriptionEnabled } from "../../../selectors/settings.selector";
-import { InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
+import { selectTranscriptionEnabled, selectTranslationSettings } from "../../../selectors/settings.selector";
+import { SegmentLanguageService } from "../../../services/translator/segment-language.service";
+import { BilingualDialects, InterfaceLanguage, RecognitionDialect } from "../../settings/models/settings.model";
 import { UserActions } from "../../../actions/user.actions";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AzureRecognitionService {
-	private recognizedText: WritableSignal<string[]> = signal([]);
+	private recognizedSegments: WritableSignal<CaptionSegment[]> = signal([]);
+	private recognizedText: Signal<string[]> = computed(() => this.recognizedSegments().map((segment) => segment.text));
 	private liveOutput: WritableSignal<string> = signal('');
 	private isStreaming = false;
 	private recognizer?: sdk.SpeechRecognizer;
 	private azureSttEndpoint: string;
 	private readonly MAX_RECOGNITION_LENGTH = 15;
+	private segmentHistory: CaptionSegmentHistory;
+	private recognitionLang = '';
 	private transcriptionEnabled: Signal<boolean | undefined>;
 	private profanityFilterEnabled: Signal<boolean | undefined>;
 	private readonly STT_CREDITS_PER_MINUTE = 60;
   private tokenRefreshTimerId?: number;
 
+	// Final segments of a bilingual model are tagged by detection one at a time, in order
+	private appendQueue: Promise<void> = Promise.resolve();
+	private pendingAppends = 0;
+	private lastSegmentLang?: string;
+	private translationOn: Signal<boolean>;
+
 	constructor(private store: Store<AppState>,
-							private http: HttpClient
+							private http: HttpClient,
+							private segmentLanguage: SegmentLanguageService
 	) {
+		this.translationOn = toSignal(this.store.select(selectTranslationSettings).pipe(map((t) => (t?.mode ?? 'off') !== 'off')), { initialValue: false });
 		const baseUrl = process.env['ZIP_AUTH_API_URL'] || 'http://localhost:3000'
     const apiVersion = process.env['ZIP_AUTH_API_VERSION'] || 'v1';
 		this.azureSttEndpoint = `${baseUrl}/${apiVersion}/azure-stt`;
 		this.transcriptionEnabled = toSignal(this.store.select(selectTranscriptionEnabled));
 		this.profanityFilterEnabled = toSignal(this.store.select(selectProfanityFilterEnabled));
+		this.segmentHistory = new CaptionSegmentHistory('a', this.MAX_RECOGNITION_LENGTH);
 	}
 
 	public initialize(language: InterfaceLanguage | RecognitionDialect): Observable<{token: string; region: string}> {
@@ -41,6 +55,8 @@ export class AzureRecognitionService {
 			if (!auth) throw new Error('Azure Recognition Service missing token');
 			const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
 			speechConfig.speechRecognitionLanguage = language;
+			this.recognitionLang = language;
+			this.lastSegmentLang = undefined;
 
 			if (this.profanityFilterEnabled() === false) {
 				speechConfig.setProfanity(sdk.ProfanityOption.Raw);
@@ -58,18 +74,32 @@ export class AzureRecognitionService {
 	public setLanguage(language: InterfaceLanguage | RecognitionDialect): void {
 		if (this.recognizer) {
 			if (this.recognizer.speechRecognitionLanguage !== language) {
-				this.recognizer.close();
-				this.initialize(language).pipe(take(1)).subscribe()
+				const previous = this.recognizer;
+				const wasStreaming = this.isStreaming;
+				if (wasStreaming) {
+					previous.stopContinuousRecognitionAsync();
+				}
+				previous.close();
+				// Same configuration as a fresh connection; only the locale differs
+				if (wasStreaming) {
+					this.connectToStream(language);
+				} else {
+					this.initialize(language).pipe(take(1)).subscribe();
+				}
 			}
 		}
 	}
 
 	public connectToStream(language: InterfaceLanguage | RecognitionDialect): void {
+		// Starting follows the user's click, which is when the detector's model may be downloaded
+		const pair = this._bilingualPair(language);
+		if (pair) void this.segmentLanguage.prepare(pair);
 		this.initialize(language).pipe(take(1)).subscribe({
 			next: (result) => {
 				this.isStreaming = true;
 				this.recognizer?.startContinuousRecognitionAsync(
 					() => {
+            window.clearInterval(this.tokenRefreshTimerId);
             this.tokenRefreshTimerId = window.setInterval(() => {
               this._refreshToken()
             }, (8 * 60 * 1000));
@@ -123,6 +153,10 @@ export class AzureRecognitionService {
 		return this.liveOutput;
 	}
 
+	public getRecognizedSegments(): Signal<CaptionSegment[]> {
+		return this.recognizedSegments;
+	}
+
 	public getRecognizedText(): Signal<string[]> {
 		return this.recognizedText;
 	}
@@ -135,6 +169,27 @@ export class AzureRecognitionService {
         }
       })
   }
+
+	/** The two languages of the locale when it is a bilingual model and translation is on; otherwise nothing is detected */
+	private _bilingualPair(locale: string): readonly string[] | undefined {
+		if (!this.translationOn()) return undefined;
+		const pair = BilingualDialects[locale as RecognitionDialect];
+		return pair && pair.length > 1 ? pair : undefined;
+	}
+
+	private async _appendDetected(text: string, pair: readonly string[] | undefined, start: Date | undefined): Promise<void> {
+		const configured = this.recognitionLang;
+		let lang = configured;
+		if (pair) {
+			const configuredBase = configured.split('-')[0].toLowerCase();
+			void this.segmentLanguage.prepare(pair);
+			const base = await this.segmentLanguage.detect(text, pair, this.lastSegmentLang, configuredBase);
+			this.lastSegmentLang = base;
+			// The configured locale keeps its region (fr-CA); the other language is tagged by its base code
+			lang = base === configuredBase ? configured : base;
+		}
+		this.recognizedSegments.update((current: CaptionSegment[]) => this.segmentHistory.append(current, text, lang, start));
+	}
 
 	private _addEventListeners(): void {
 		if (this.recognizer) {
@@ -153,13 +208,31 @@ export class AzureRecognitionService {
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
-				this.recognizedText.update((current: string[]) => {
-					current.push(event.result.text);
-					return current;
-				});
+				// NoMatch results arrive with empty text; they are not captions
+				const text = event.result.text;
+				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();
+				if (hasSpeech) {
+					// Respect the language Azure reports for the result, when it provides one
+					const reported = event.result.language;
+					const start = segmentStart;
+					const pair = reported ? undefined : this._bilingualPair(this.recognitionLang);
+					if (pair || this.pendingAppends > 0) {
+						// Azure does not say which of a bilingual model's languages was spoken; this device works it out
+						// from the text. Appends stay in order, so a segment never overtakes one still being checked.
+						this.pendingAppends++;
+						this.appendQueue = this.appendQueue
+							.then(() => this._appendDetected(text, pair, start))
+							.finally(() => this.pendingAppends--);
+					} else {
+						const lang = reported || this.recognitionLang;
+						this.recognizedSegments.update((current: CaptionSegment[]) => {
+							return this.segmentHistory.append(current, text, lang, start);
+						});
+					}
+				}
 				this.liveOutput.set('');
-				if (this.transcriptionEnabled()) {
-					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: event.result.text, start: segmentStart }))
+				if (hasSpeech && this.transcriptionEnabled()) {
+					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text, start: segmentStart }))
 				}
 				segmentStart = undefined;
 			}

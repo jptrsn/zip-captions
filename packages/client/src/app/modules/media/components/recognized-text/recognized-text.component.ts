@@ -10,6 +10,7 @@ import { FontFamilyClassMap, LineHeight, TextSize } from '../../../settings/mode
 import { map } from 'rxjs';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { RecognitionEngineState } from '../../../../models/recognition.model';
+import { CaptionLine, linesFromText } from '../../../../services/translator/caption-lines';
 
 @Component({
   selector: 'app-recognized-text',
@@ -23,14 +24,17 @@ import { RecognitionEngineState } from '../../../../models/recognition.model';
 export class RecognizedTextComponent {
   @Input({ required: true}) connected!: Signal<boolean | undefined>;
   @Input({ required: true}) hasLiveResults!: Signal<boolean>;
-  @Input({ required: true}) textOutput!: Signal<string[]>;
+  /** Plain text lines, without languages or placeholders (broadcast viewer) */
+  @Input() textOutput?: Signal<string[]>;
+  /** Lines with per-line lang/dir and placeholders; takes precedence over textOutput */
+  @Input() lines?: Signal<CaptionLine[]>;
   @Input({ required: true}) error!: Signal<string | undefined>;
   @Input({ required: true}) renderHistory!: Signal<number | undefined>;
   @Input() hintText = 'HINTS.beginSpeaking';
 
   public classList: Signal<string>;
   public isPaused: Signal<boolean | undefined>;
-  public renderedResults: Signal<string[]>;
+  public renderedResults: Signal<CaptionLine[]>;
   public recognitionPaused: Signal<boolean | undefined>;
 	public provider: Signal<RecognitionEngineState['provider'] | undefined>;
 
@@ -49,13 +53,17 @@ export class RecognizedTextComponent {
 		this.provider = toSignal(this.store.select(selectRecognitionEngineProvider))
 
     this.renderedResults = computed(() => {
-      const textArray = this.textOutput();
+      const textArray = this.lines ? this.lines() : linesFromText(this.textOutput ? this.textOutput() : []);
       const count = this.renderHistory();
       if (!count || textArray.length <= count) {
         return textArray;
       }
       return textArray.slice(count * -1);
     });
+  }
+
+  public trackLine(_index: number, line: CaptionLine): string {
+    return line.id;
   }
 
   resume(): void {

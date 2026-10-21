@@ -65,8 +65,7 @@ export class PrivacyComponent {
         },
         { text: 'PRIVACY.4.3' },
         { text: 'PRIVACY.4.4' },
-        { text: 'PRIVACY.4.5' },
-        { text: 'PRIVACY.4.6' }
+        { text: 'PRIVACY.4.5' }
       ],
     },
     {

@@ -82,24 +82,8 @@ export class UserService {
     return this.http.get<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`)
   }
 
-  saveUserRooms(rooms: UserRoom[], upsert?: boolean): Observable<UserRoom[]> {
-    const id = this.userId();
-    if (!id) {
-      throw new Error('No user ID set');
-    }
-    return this.http.patch<UserRoom[]>(`${this.userEndpoint}/profile/${id}/rooms`, { rooms, upsert })
-  }
-
   getCandidateRoomIdList(isStatic?: boolean): Observable<string[]> {
     return this.http.get<string[]>(`${this.userEndpoint}/rooms/ids?isStatic=${isStatic}`)
-  }
-
-  getUserRoom(roomId: string): Observable<UserRoom> {
-    const id = this.userId();
-    if (!id) {
-      throw new Error('No user ID set');
-    }
-    return this.http.get<UserRoom>(`${this.userEndpoint}/profile/${id}/rooms/${roomId}`)
   }
 
   saveUserRoom(room: Partial<UserRoom>): Observable<UserRoom> {

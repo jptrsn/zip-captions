@@ -1,0 +1,565 @@
+import { Platform } from '@angular/cdk/platform';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Observable, Subject, from, of, timer } from 'rxjs';
+import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { BrowserTranslator, TranslatorApiAdapter, TranslatorCreateOptions } from './translator-api.adapter';
+
+export type TranslationUnsupportedReason = 'mobile' | 'browser';
+
+export type TranslationModelStatus = 'ready' | 'downloadable' | 'downloading' | 'unavailable' | 'error';
+
+export interface TranslationCapability {
+  available: boolean;
+  status: 'readily' | 'after-download' | 'no';
+}
+
+/** One consumer's live-line translation: queue lines in, translations (or '') out */
+export interface LiveTranslationChannel {
+  /**
+   * Translate a live line. A line identical to the previous one (same languages) is ignored unless `retry`
+   * is set, which is for a line that could not be translated before: a model has just finished downloading,
+   * or the languages changed.
+   */
+  queue: (text: string, sourceLang: string, targetLang: string, retry?: boolean) => void;
+  /** Drops pending and in-flight work and forgets the last line, because the line ended or its languages changed. Emits ''. */
+  cancel: () => void;
+  output$: Observable<string>;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChromeTranslatorService {
+
+  public modelStatus: WritableSignal<TranslationModelStatus> = signal('unavailable');
+  public downloadProgress: WritableSignal<number> = signal(0);
+  public lastError: WritableSignal<string | undefined> = signal(undefined);
+  /** The device translator threw while translating; cleared by the next translation that works */
+  public translationFailing: WritableSignal<boolean> = signal(false);
+  private warnedAboutFailure = false;
+
+  // Emits when a model becomes ready to trigger re-translation of active captions
+  private modelReadySubject = new Subject<{ sourceLang: string; targetLang: string }>();
+  public modelReady$: Observable<{ sourceLang: string; targetLang: string }> = this.modelReadySubject.asObservable();
+
+  // One live translator per language pair; Map insertion order is least-recently-used first
+  private translators: Map<string, BrowserTranslator> = new Map();
+  private readonly MAX_TRANSLATORS = 4;
+
+  // Prevent duplicate concurrent initialization requests to Chrome, per pair
+  private pendingInits: Map<string, { promise: Promise<BrowserTranslator | null>; userInitiated: boolean }> = new Map();
+
+  // Track language pairs that Chrome explicitly reported as unsupported
+  private unsupportedPairs: Set<string> = new Set();
+
+  // Translated segments for the current recognition session only; cleared by clearSessionCache()
+  private segmentCache: Map<string, string> = new Map();
+  private readonly MAX_CACHED_SEGMENTS = 500;
+
+
+  constructor(private translatorApi: TranslatorApiAdapter,
+              private platform: Platform) {
+    this.checkInitialSupport();
+
+  }
+
+  /**
+   * Safely updates a signal asynchronously to avoid NG0600 inside reactive contexts
+   */
+  public safeSetSignal<T>(sig: WritableSignal<T>, value: T): void {
+    Promise.resolve().then(() => sig.set(value));
+  }
+
+  public safeSetModelStatus(status: TranslationModelStatus): void {
+    this.safeSetSignal(this.modelStatus, status);
+  }
+
+  /**
+   * Returns true if on-device translation can be used here: the browser exposes the
+   * Translator API and the device is not mobile (the API is desktop-only).
+   */
+  public isSupported(): boolean {
+    return this.unsupportedReason() === undefined;
+  }
+
+  /**
+   * Why on-device translation is unavailable, or undefined when it is supported.
+   */
+  public unsupportedReason(): TranslationUnsupportedReason | undefined {
+    if (this.platform.ANDROID || this.platform.IOS) return 'mobile';
+    if (!this.translatorApi.isAvailable()) return 'browser';
+    return undefined;
+  }
+
+  private checkInitialSupport(): void {
+    if (this.isSupported()) {
+      this.safeSetSignal(this.modelStatus, 'ready');
+    } else {
+      this.safeSetSignal(this.modelStatus, 'unavailable');
+    }
+  }
+
+  public normalizeLanguageCode(lang: string | undefined): string {
+    if (!lang || lang === 'unspecified') return 'en';
+    return lang.split('-')[0].toLowerCase();
+  }
+
+  public async canTranslate(sourceLang: string, targetLang: string): Promise<TranslationCapability> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+
+    if (s === t) {
+      return { available: true, status: 'readily' };
+    }
+
+    if (!this.isSupported()) {
+      return { available: false, status: 'no' };
+    }
+
+    const pairKey = `${s}->${t}`;
+    if (this.unsupportedPairs.has(pairKey)) {
+      return { available: false, status: 'no' };
+    }
+
+    try {
+      const result = await this.translatorApi.availability(s, t);
+
+      // Check for available / readily
+      const isReadily = result === 'available';
+      // Check for downloadable / after-download
+      const isAfterDownload = result === 'downloadable' || result === 'downloading';
+
+      if (isReadily) {
+        return { available: true, status: 'readily' };
+      }
+      if (isAfterDownload) {
+        return { available: true, status: 'after-download' };
+      }
+      if (result === 'unavailable') {
+        this.unsupportedPairs.add(pairKey);
+        return { available: false, status: 'no' };
+      }
+
+      return { available: true, status: 'readily' };
+    } catch (err: any) {
+      if (err?.name === 'NotSupportedError') {
+        this.unsupportedPairs.add(pairKey);
+      }
+      return { available: false, status: 'no' };
+    }
+  }
+
+  /**
+   * Checks model status for a pair and updates the modelStatus signal
+   */
+  public async checkModelStatus(sourceLang: string, targetLang: string): Promise<TranslationModelStatus> {
+    const status = await this.pairStatus(sourceLang, targetLang);
+    this.safeSetSignal(this.modelStatus, status);
+    return status;
+  }
+
+  /**
+   * Status for a bilingual pair, where translation runs both ways (each pane shows its own language):
+   * ready only when both directions are, downloadable when either needs a download.
+   */
+  public async checkModelStatusBoth(langA: string, langB: string): Promise<TranslationModelStatus> {
+    const [forward, back] = await Promise.all([this.pairStatus(langA, langB), this.pairStatus(langB, langA)]);
+    const status = forward === 'ready' && back === 'ready' ? 'ready'
+      : [forward, back].includes('unavailable') ? 'unavailable'
+      : [forward, back].includes('error') ? 'error'
+      : 'downloadable';
+    this.safeSetSignal(this.modelStatus, status);
+    return status;
+  }
+
+  private async pairStatus(sourceLang: string, targetLang: string): Promise<TranslationModelStatus> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+    if (s === t) return 'ready';
+    if (!this.isSupported()) return 'unavailable';
+    const cap = await this.canTranslate(s, t);
+    if (cap.status === 'readily') return 'ready';
+    return cap.status === 'after-download' ? 'downloadable' : 'error';
+  }
+
+  /**
+   * Directly downloads and warms up the translation model using a user gesture
+   */
+  public async downloadModel(sourceLang: string, targetLang: string): Promise<boolean> {
+    return this.downloadModels([[sourceLang, targetLang]]);
+  }
+
+  /**
+   * Downloads both directions of a bilingual pair from one click. Both requests are made at once, so both
+   * start inside the user's gesture, which a download needs.
+   */
+  public async downloadModelBoth(langA: string, langB: string): Promise<boolean> {
+    return this.downloadModels([[langA, langB], [langB, langA]]);
+  }
+
+  private async downloadModels(pairs: [string, string][]): Promise<boolean> {
+    if (!this.isSupported()) return false;
+
+    this.safeSetSignal(this.modelStatus, 'downloading');
+    this.safeSetSignal(this.downloadProgress, 0);
+
+    const results = await Promise.all(pairs.map(([source, target]) => this.createModel(source, target)));
+    if (results.every((ok) => ok)) {
+      this.safeSetSignal(this.modelStatus, 'ready');
+      this.safeSetSignal(this.downloadProgress, 100);
+      this.safeSetSignal(this.lastError, undefined);
+      return true;
+    }
+    return false;
+  }
+
+  /** Creates (downloading if need be) and caches the Translator for one direction; false on failure */
+  private async createModel(sourceLang: string, targetLang: string): Promise<boolean> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+    const pairKey = `${s}->${t}`;
+    try {
+      const translator = this.cachedTranslator(pairKey) ?? await this.translatorApi.create(this.createOptions(s, t));
+
+      if (translator) {
+        this.cacheTranslator(pairKey, translator);
+        this.modelReadySubject.next({ sourceLang: s, targetLang: t });
+        return true;
+      }
+      return false;
+    } catch (err: any) {
+      const msg = err?.message || String(err);
+      this.safeSetSignal(this.modelStatus, 'error');
+      this.safeSetSignal(this.lastError, msg);
+      return false;
+    }
+  }
+
+  /**
+   * Initializes or re-uses a Translator instance for the specified language pair.
+   * If userInitiated is false and the model requires download, returns null to avoid NotAllowedError.
+   */
+  public async getOrCreateTranslator(sourceLang: string, targetLang: string, userInitiated = false): Promise<BrowserTranslator | null> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+    const pairKey = `${s}->${t}`;
+
+    const cached = this.cachedTranslator(pairKey);
+    if (cached) {
+      return cached;
+    }
+
+    if (this.unsupportedPairs.has(pairKey)) {
+      return null;
+    }
+
+    // Reuse pending initialization if one is already running for this pair. A user-initiated
+    // request must not join a background one, which would skip a needed download.
+    const pending = this.pendingInits.get(pairKey);
+    if (pending && (pending.userInitiated || !userInitiated)) {
+      return pending.promise;
+    }
+
+    if (!this.isSupported()) {
+      this.safeSetSignal(this.modelStatus, 'unavailable');
+      return null;
+    }
+
+    // Registered before the first await so concurrent callers share one creation
+    const entry: { promise: Promise<BrowserTranslator | null>; userInitiated: boolean } = { promise: Promise.resolve(null), userInitiated };
+    entry.promise = (async () => {
+      try {
+        const capability = await this.canTranslate(s, t);
+        if (!capability.available || capability.status === 'no') {
+          this.safeSetSignal(this.modelStatus, 'error');
+          this.safeSetSignal(this.lastError, `Translation pair ${s.toUpperCase()} -> ${t.toUpperCase()} is not supported by Chrome AI.`);
+          return null;
+        }
+
+        // If download is needed and this is not user-initiated, do not trigger background creation
+        if (capability.status === 'after-download') {
+          if (!userInitiated) {
+            this.safeSetSignal(this.modelStatus, 'downloadable');
+            return null;
+          }
+        }
+
+        this.safeSetSignal(this.modelStatus, 'downloading');
+        this.safeSetSignal(this.downloadProgress, 0);
+
+        const translator = await this.translatorApi.create(this.createOptions(s, t));
+
+        this.cacheTranslator(pairKey, translator);
+        this.safeSetSignal(this.modelStatus, 'ready');
+        this.safeSetSignal(this.downloadProgress, 100);
+        this.safeSetSignal(this.lastError, undefined);
+        // Only a download changes what can be translated. A model that was already available needs no
+        // refresh, and announcing it would restart sessions whose batch is already in flight.
+        if (capability.status === 'after-download') {
+          this.modelReadySubject.next({ sourceLang: s, targetLang: t });
+        }
+        return translator;
+      } catch (err: any) {
+        const msg = err?.message || String(err);
+        if (err?.name === 'NotSupportedError') {
+          this.unsupportedPairs.add(pairKey);
+        }
+        this.safeSetSignal(this.modelStatus, 'error');
+        this.safeSetSignal(this.lastError, msg);
+        return null;
+      } finally {
+        if (this.pendingInits.get(pairKey) === entry) {
+          this.pendingInits.delete(pairKey);
+        }
+      }
+    })();
+    this.pendingInits.set(pairKey, entry);
+
+    return entry.promise;
+  }
+
+  private cachedTranslator(pairKey: string): BrowserTranslator | undefined {
+    const translator = this.translators.get(pairKey);
+    if (translator) {
+      // Re-insert to mark as most recently used
+      this.translators.delete(pairKey);
+      this.translators.set(pairKey, translator);
+    }
+    return translator;
+  }
+
+  private cacheTranslator(pairKey: string, translator: BrowserTranslator): void {
+    const existing = this.translators.get(pairKey);
+    if (existing && existing !== translator) {
+      this.destroyTranslator(existing);
+    }
+    this.translators.delete(pairKey);
+    this.translators.set(pairKey, translator);
+    while (this.translators.size > this.MAX_TRANSLATORS) {
+      const [oldestKey, oldest] = this.translators.entries().next().value as [string, BrowserTranslator];
+      this.translators.delete(oldestKey);
+      this.destroyTranslator(oldest);
+    }
+  }
+
+  private destroyTranslator(translator: BrowserTranslator): void {
+    if (typeof translator.destroy === 'function') {
+      try {
+        translator.destroy();
+      } catch (e) {
+        // ignore cleanup error
+      }
+    }
+  }
+
+  private createOptions(sourceLanguage: string, targetLanguage: string): TranslatorCreateOptions {
+    return {
+      sourceLanguage,
+      targetLanguage,
+      monitor: (m: EventTarget) => {
+        m.addEventListener('downloadprogress', (e: Event) => {
+          // Chrome reports loaded as a 0..1 fraction (total is 1); tolerate byte counts too
+          const { loaded, total } = e as ProgressEvent;
+          const fraction = total > 0 ? loaded / total : loaded;
+          this.safeSetSignal(this.downloadProgress, Math.round(Math.min(Math.max(fraction, 0), 1) * 100));
+        });
+      }
+    };
+  }
+
+  public async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+
+    if (!text || !text.trim() || s === t) {
+      return text;
+    }
+
+    const pairKey = `${s}->${t}`;
+    if (this.unsupportedPairs.has(pairKey)) {
+      return text;
+    }
+
+    let translator: BrowserTranslator | null = null;
+    try {
+      translator = await this.getOrCreateTranslator(s, t, false);
+      if (translator && typeof translator.translate === 'function') {
+        const result = await translator.translate(text);
+        if (result && result.trim()) {
+          this.translationFailing.set(false);
+          this.warnedAboutFailure = false;
+          return result;
+        }
+      }
+      return text;
+    } catch (err: any) {
+      this.onTranslateFailure(pairKey, translator, err);
+      return text;
+    }
+  }
+
+  /**
+   * A live-line translator for one consumer: debounced "latest wins", and strict, so a failed translation
+   * is '' and never the source text. Each consumer needs its own channel; sharing one would translate every
+   * line once per subscriber and hand each consumer the other's results.
+   */
+  public createLiveChannel(): LiveTranslationChannel {
+    // null is a cancel
+    const input = new Subject<{ text: string; sourceLang: string; targetLang: string; retry: boolean } | null>();
+    const output$ = input.pipe(
+      // A line waits 150 ms and a newer value replaces it (latest wins). A cancel (null) passes through at once,
+      // so it reaches the translation switchMap before any later request and invalidates in-flight work
+      // immediately, even when a new line is queued in the same tick.
+      switchMap((request) => request ? timer(150).pipe(map(() => request)) : of(null)),
+      distinctUntilChanged((prev, curr) => !!prev && !!curr && !curr.retry
+        && prev.text === curr.text && prev.sourceLang === curr.sourceLang && prev.targetLang === curr.targetLang),
+      switchMap((request) => {
+        if (!request || !request.text || !request.text.trim()) {
+          return of('');
+        }
+        // Strict: a failed translation is '' and never the source text, so nothing shows or is sent
+        // (broadcast, OBS) as a translation when it isn't one. Interim lines are not cached.
+        return from(this.translateSegmentsStrict([request.text], request.sourceLang, request.targetLang, false)).pipe(
+          map(([translated]) => translated ?? ''),
+          catchError(() => of(''))
+        );
+      })
+    );
+    return {
+      output$,
+      queue: (text: string, sourceLang: string, targetLang: string, retry = false): void => {
+        const s = this.normalizeLanguageCode(sourceLang);
+        const t = this.normalizeLanguageCode(targetLang);
+        if (s === t) return;
+        input.next({ text, sourceLang: s, targetLang: t, retry });
+      },
+      cancel: (): void => input.next(null)
+    };
+  }
+
+  public async translateSegments(segments: string[], sourceLang: string, targetLang: string): Promise<string[]> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+
+    if (s === t || !segments || segments.length === 0) {
+      return segments;
+    }
+
+    const pairKey = `${s}->${t}`;
+    if (this.unsupportedPairs.has(pairKey)) {
+      return segments;
+    }
+
+    const promises = segments.map(async (segment) => {
+      const cacheKey = `${s}->${t}:${segment}`;
+      if (this.segmentCache.has(cacheKey)) {
+        return this.segmentCache.get(cacheKey)!;
+      }
+      const translated = await this.translate(segment, s, t);
+      // Only cache if translation actually succeeded and produced translated text
+      if (translated && (translated !== segment || s === t)) {
+        this.cacheSegment(cacheKey, translated);
+      }
+      return translated;
+    });
+
+    return await Promise.all(promises);
+  }
+
+  /**
+   * Like translateSegments, but a segment that could not really be translated yields null instead of
+   * its source text (unsupported pair, no translator available, model still to download, an error).
+   * Text already in the target language is returned unchanged. Callers use it to tell a translation
+   * from a failure, for example before sending one to broadcast viewers.
+   */
+  public async translateSegmentsStrict(segments: string[], sourceLang: string, targetLang: string, cacheResults = true): Promise<(string | null)[]> {
+    const s = this.normalizeLanguageCode(sourceLang);
+    const t = this.normalizeLanguageCode(targetLang);
+
+    if (!segments || segments.length === 0) {
+      return [];
+    }
+    if (s === t) {
+      return [...segments];
+    }
+    if (this.unsupportedPairs.has(`${s}->${t}`)) {
+      return segments.map(() => null);
+    }
+
+    return Promise.all(segments.map(async (segment): Promise<string | null> => {
+      if (!segment || !segment.trim()) {
+        return segment;
+      }
+      const cacheKey = `${s}->${t}:${segment}`;
+      const cached = this.segmentCache.get(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
+      let translator: BrowserTranslator | null = null;
+      try {
+        translator = await this.getOrCreateTranslator(s, t, false);
+        if (!translator || typeof translator.translate !== 'function') {
+          return null;
+        }
+        const result = await translator.translate(segment);
+        if (!result || !result.trim()) {
+          return null;
+        }
+        if (cacheResults) {
+          this.cacheSegment(cacheKey, result);
+        }
+        this.translationFailing.set(false);
+        this.warnedAboutFailure = false;
+        return result;
+      } catch (err: any) {
+        this.onTranslateFailure(`${s}->${t}`, translator, err);
+        return null;
+      }
+    }));
+  }
+
+  /**
+   * Chrome's Translator can fail (UnknownError) and then keep failing for the rest of the page's life.
+   * The failed instance is dropped, so the next attempt builds a new one, the failure is made visible, and
+   * the console gets one warning per run of failures instead of one per segment.
+   */
+  private onTranslateFailure(pairKey: string, translator: BrowserTranslator | null, err: any): void {
+    if (translator && this.translators.get(pairKey) === translator) {
+      this.translators.delete(pairKey);
+      this.destroyTranslator(translator);
+    }
+    this.translationFailing.set(true);
+    if (!this.warnedAboutFailure) {
+      this.warnedAboutFailure = true;
+      console.warn('Translate execution failed (further failures are not logged until a translation succeeds):', err);
+    }
+  }
+
+  private cacheSegment(cacheKey: string, translated: string): void {
+    this.segmentCache.delete(cacheKey);
+    this.segmentCache.set(cacheKey, translated);
+    if (this.segmentCache.size > this.MAX_CACHED_SEGMENTS) {
+      const oldestKey = this.segmentCache.keys().next().value as string;
+      this.segmentCache.delete(oldestKey);
+    }
+  }
+
+  /**
+   * Drops translated text from the ending session, and the Translator instances, so a session never
+   * inherits one that Chrome has left in a broken state (stopping and restarting fixed that). The
+   * downloaded models are the browser's and stay; the next translation builds a new instance.
+   */
+  public clearSessionCache(): void {
+    this.segmentCache.clear();
+    this.translators.forEach((translator) => this.destroyTranslator(translator));
+    this.translators.clear();
+    this.translationFailing.set(false);
+    this.warnedAboutFailure = false;
+  }
+
+  public destroy(): void {
+    this.translators.forEach((translator) => this.destroyTranslator(translator));
+    this.translators.clear();
+    this.segmentCache.clear();
+  }
+}

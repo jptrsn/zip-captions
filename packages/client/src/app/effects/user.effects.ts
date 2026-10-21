@@ -100,18 +100,6 @@ export class UserEffects {
       )
     )
 
-    saveRooms$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(UserActions.saveRooms),
-        switchMap(({ rooms, upsert }) => this.userService.saveUserRooms(rooms, upsert)
-          .pipe(
-            map((rooms) => UserActions.saveRoomsSuccess({ rooms })),
-            catchError((err) => of(UserActions.saveRoomsFailure({ error: err.message })))
-          )
-        )
-      )
-    )
-
     deleteAccount$ = createEffect(() =>
       this.actions$.pipe(
         ofType(UserActions.deleteAccount),

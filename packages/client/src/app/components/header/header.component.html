@@ -33,13 +33,23 @@
   </button>
 
   <!-- Trigger recognition buttons -->
-  <ng-container *ngIf="activeRoute() !== '/stream'" [ngSwitch]="showRecordButton()">
+  <ng-container *ngIf="activeRoute() !== '/stream' && !isViewerRoute()" [ngSwitch]="showRecordButton()">
     <app-audio-input-enable *ngSwitchCase="true"></app-audio-input-enable>
     <app-recognition-enable *ngSwitchCase="false"></app-recognition-enable>
     <button *ngIf="!isActive() && activeRoute() === '/'" class="btn btn-circle btn-ghost tooltip tooltip-bottom" [ngClass]="{'btn-sm': windowControlsOverlay()}" [attr.data-tip]="'ROUTES.stream' | translate" routerLink="stream">
       <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
     </button>
   </ng-container>
+
+  <!-- Pop the captions out into a Picture-in-Picture window -->
+  <button *ngIf="showPip() && !isViewerRoute()" data-testid="zc-header-pip"
+    class="btn btn-circle tooltip tooltip-bottom" [ngClass]="{'btn-xs': isActive() || isPip(), 'btn-sm': windowControlsOverlay(), 'btn-ghost': !isPip(), 'btn-secondary': isPip()}"
+    [attr.data-tip]="(isPip() ? 'LABELS.documentPipExit' : 'LABELS.documentPip') | translate"
+    [attr.aria-label]="(isPip() ? 'LABELS.documentPipExit' : 'LABELS.documentPip') | translate"
+    [attr.aria-pressed]="isPip()"
+    (click)="togglePip()">
+    <ng-icon [name]="isPip() ? 'heroArrowBottomLeftIntoSquare' : 'heroArrowTopRightOnSquare'"></ng-icon>
+  </button>
 
   <!-- Broadcast Banner -->
   <ng-container *ngIf="isBroadcasting()">

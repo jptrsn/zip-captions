@@ -33,6 +33,7 @@ import { DialectSelectorComponent } from './components/dialect-selector/dialect-
 import { RecognitionEngineComponent } from './components/recognition-engine/recognition-engine.component';
 import { ProfanityFilterToggleComponent } from './components/profanity-filter-toggle/profanity-filter-toggle.component';
 import { RecognitionEngineSelectComponent } from '../../components/recognition-engine-select/recognition-engine-select.component';
+import { TranslationSettingsComponent } from './components/translation-settings/translation-settings.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { RecognitionEngineSelectComponent } from '../../components/recognition-e
     DialectSelectorComponent,
     RecognitionEngineComponent,
     ProfanityFilterToggleComponent,
+    TranslationSettingsComponent,
   ],
   imports: [
     CommonModule,

@@ -6,13 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppActions, AppState } from './models/app.model';
 import { AppTheme, AvailableLanguages, InterfaceLanguage, RecognitionDialect, SupportedDialects } from './modules/settings/models/settings.model';
 import { windowControlsOverlaySelector } from './selectors/app.selector';
-import { languageSelector, selectTranscriptionEnabled, themeSelector } from './selectors/settings.selector';
+import { selectTranscriptionEnabled, selectUiLanguage, themeSelector } from './selectors/settings.selector';
 import { AuthActions } from './actions/auth.actions';
 import { selectUserBalance, selectUserId } from './selectors/user.selector';
 import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
 import { StorageService } from './services/storage.service';
+import { ObsCaptionFeedService } from './services/obs-connection/obs-caption-feed.service';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,9 @@ export class AppComponent {
               private renderer: Renderer2,
               private updates: SwUpdate,
               private translate: TranslateService,
-						  private storage: StorageService) {
+						  private storage: StorageService,
+              // Injected so OBS captions are sent from any page
+              private obsCaptionFeed: ObsCaptionFeedService) {
 
     AvailableLanguages.forEach((lang) => this.translate.reloadLang(lang));
 
@@ -42,7 +45,7 @@ export class AppComponent {
 			if (defaultDialect) {
 				const settings = this.storage.get('settings')
 				const setDialect = settings?.dialect;
-				const setLanguage = settings?.language;
+				const setLanguage = settings?.lang;
 				if (!setDialect && (!setLanguage || setLanguage === defaultLanguage)) {
 					this.store.dispatch(setDefaultDialect({dialect: defaultDialect}))
 				}
@@ -53,7 +56,7 @@ export class AppComponent {
 
 
     this.theme$ = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
-    const languageChanged = toSignal(this.store.pipe(select(languageSelector))) as Signal<InterfaceLanguage>;
+    const languageChanged = toSignal(this.store.pipe(select(selectUiLanguage))) as Signal<InterfaceLanguage>;
     effect(() => this.translate.use(languageChanged()))
     effect(() => this.renderer.setAttribute(document.documentElement, 'data-theme', this.theme$()));
 

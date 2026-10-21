@@ -141,6 +141,71 @@ export const DefaultDialects: { [key in InterfaceLanguage]: RecognitionDialect }
   'ar': 'ar-EG'
 }
 
+/**
+ * Azure locales whose models natively recognize a second language (requirements §3.1).
+ * Metadata only: recognizer configuration is unchanged for these locales.
+ */
+export const BilingualDialects: Partial<Record<RecognitionDialect, readonly string[]>> = {
+  'fr-CA': ['fr', 'en'],
+  'es-US': ['es', 'en'],
+  'ar-AE': ['ar', 'en'],
+  'ar-BH': ['ar', 'en'],
+  'ar-DZ': ['ar', 'en'],
+  'ar-IL': ['ar', 'en'],
+  'ar-IQ': ['ar', 'en'],
+  'ar-KW': ['ar', 'en'],
+  'ar-LB': ['ar', 'en'],
+  'ar-LY': ['ar', 'en'],
+  'ar-MA': ['ar', 'en'],
+  'ar-OM': ['ar', 'en'],
+  'ar-PS': ['ar', 'en'],
+  'ar-QA': ['ar', 'en'],
+  'ar-SA': ['ar', 'en'],
+  'ar-SY': ['ar', 'en'],
+  'ar-TN': ['ar', 'en'],
+  'ar-YE': ['ar', 'en'],
+  // English + Hindi; Hindi is not a translation source
+  'en-IN': ['en'],
+};
+
+/** True when the dialect's Azure model also recognizes English */
+export function isBilingualDialect(dialect: string | null | undefined): boolean {
+  return !!dialect && (BilingualDialects[dialect as RecognitionDialect]?.length ?? 0) > 1;
+}
+
+/** True when a translation language can also be spoken (has recognition dialects) */
+export function isSpokenLanguage(code: string | null | undefined): code is InterfaceLanguage {
+  return !!code && (AvailableLanguages as string[]).includes(code);
+}
+
+export interface LanguagePair {
+  lang: InterfaceLanguage;
+  dialect: RecognitionDialect;
+  targetLanguage: string;
+  dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
+}
+
+/**
+ * Swaps the spoken and translation languages. The new spoken dialect is the one last used for that
+ * language, so swapping back restores e.g. fr-CA. Returns undefined when the translation language
+ * can't be spoken.
+ */
+export function swapLanguagePair(pair: LanguagePair): LanguagePair | undefined {
+  const target = pair.targetLanguage;
+  if (!isSpokenLanguage(target) || target === pair.lang) {
+    return undefined;
+  }
+  const dialectByLanguage = pair.dialect !== 'unspecified'
+    ? { ...pair.dialectByLanguage, [pair.dialect.split('-')[0].toLowerCase()]: pair.dialect }
+    : pair.dialectByLanguage;
+  return {
+    lang: target,
+    dialect: dialectByLanguage?.[target] ?? 'unspecified',
+    targetLanguage: pair.lang,
+    dialectByLanguage,
+  };
+}
+
 export type TextSize = 'textSize-xs' | 'textSize-sm' | 'textSize-base' | 'textSize-lg' | 'textSize-xl' | 'textSize-2xl' | 'textSize-3xl' | 'textSize-4xl' | 'textSize-5xl' | 'textSize-6xl' | 'textSize-7xl' | 'textSize-8xl' | 'textSize-9xl';
 
 export const AvailableTextSizes: TextSize[] = [
@@ -206,13 +271,124 @@ export interface TranscriptionSettings {
   loading?: boolean;
   titlePattern?: string;
 }
+
+/**
+ * What this device shows. `original-only` keeps translating, so a broadcast still offers the translation to
+ * viewers (for example on a phone, which cannot translate), while this screen shows the spoken language alone.
+ */
+export type TranslationDisplayMode = 'off' | 'split' | 'translated-only' | 'original-only';
+
+/** vertical = stacked panes, horizontal = side by side (FR-D2) */
+export type SplitOrientation = 'vertical' | 'horizontal';
+/** Which pane comes first: the top (stacked) or the start side (side by side) */
+export type PaneOrder = 'original-first' | 'translated-first';
+/** What the Picture-in-Picture window shows while translation is on (FR-W1) */
+export type PipContent = 'original' | 'translated' | 'split';
+
+/** What OBS stream captions carry while translation is on (FR-P3) */
+export type ObsFeed = 'original' | 'translated';
+
+export const DefaultSplitOrientation: SplitOrientation = 'vertical';
+export const DefaultPaneOrder: PaneOrder = 'original-first';
+export const DefaultPipContent: PipContent = 'translated';
+export const DefaultObsFeed: ObsFeed = 'original';
+
+export interface TranslationSettings {
+  enabled: boolean;
+  mode: TranslationDisplayMode;
+  targetLanguage: string;
+  // Optional: settings stored before U3 don't have them; selectors supply the defaults
+  splitOrientation?: SplitOrientation;
+  paneOrder?: PaneOrder;
+  pipContent?: PipContent;
+  obsFeed?: ObsFeed;
+  // Last dialect used per spoken language, so swapping back restores e.g. fr-CA rather than the default
+  dialectByLanguage?: Partial<Record<InterfaceLanguage, RecognitionDialect>>;
+}
+
+/**
+ * Translation settings that describe this device's output (the Picture-in-Picture window and the OBS
+ * connection), so they are not synced between devices: they are left out of the saved snapshot and
+ * a saved snapshot never overwrites them.
+ */
+export const DeviceSpecificTranslationKeys = ['pipContent', 'obsFeed'] as const satisfies readonly (keyof TranslationSettings)[];
+
+/** The settings without the device-specific translation keys */
+export function omitDeviceSettings<T extends object>(settings: T): T {
+  const { translation } = settings as { translation?: TranslationSettings };
+  if (!translation) {
+    return settings;
+  }
+  const withoutDeviceKeys = { ...translation };
+  for (const key of DeviceSpecificTranslationKeys) {
+    delete withoutDeviceKeys[key];
+  }
+  return { ...settings, translation: withoutDeviceKeys };
+}
+
+/**
+ * The translation settings after applying a saved snapshot: the saved values, except that this device keeps
+ * its own device-specific keys (and, if it has none, falls back to the defaults, not to the saved ones).
+ */
+export function applySavedTranslation(existing: Partial<TranslationSettings> | undefined, saved: TranslationSettings): TranslationSettings {
+  const merged: TranslationSettings = { ...existing, ...saved };
+  for (const key of DeviceSpecificTranslationKeys) {
+    if (existing && existing[key] !== undefined) {
+      (merged as unknown as Record<string, unknown>)[key] = existing[key];
+    } else {
+      delete merged[key];
+    }
+  }
+  return merged;
+}
+
+export interface SupportedTranslationLanguage {
+  code: string;
+  name: string;
+}
+
+export const AvailableTranslationLanguages: SupportedTranslationLanguage[] = [
+  { code: 'fr', name: 'French (Français)' },
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Spanish (Español)' },
+  { code: 'de', name: 'German (Deutsch)' },
+  { code: 'it', name: 'Italian (Italiano)' },
+  { code: 'pt', name: 'Portuguese (Português)' },
+  { code: 'uk', name: 'Ukrainian (Українська)' },
+  { code: 'ar', name: 'Arabic (العربية)' },
+  { code: 'zh', name: 'Chinese (中文)' },
+  { code: 'ja', name: 'Japanese (日本語)' },
+  { code: 'ko', name: 'Korean (한국어)' },
+  { code: 'hi', name: 'Hindi (हिन्दी)' },
+  { code: 'vi', name: 'Vietnamese (Tiếng Việt)' },
+  { code: 'ru', name: 'Russian (Русский)' },
+  { code: 'nl', name: 'Dutch (Nederlands)' },
+  { code: 'pl', name: 'Polish (Polski)' },
+  { code: 'tr', name: 'Turkish (Türkçe)' }
+];
+
+/** The language translation targets until the user chooses one: the first in the list */
+export const DefaultTranslationTarget = AvailableTranslationLanguages[0].code;
+
+/** The first translation language that is not the one being spoken, for when the chosen target would collide with it */
+export function fallbackTranslationTarget(spoken: string | null | undefined): string {
+  const spokenBase = (spoken || '').split('-')[0].toLowerCase();
+  return (AvailableTranslationLanguages.find((lang) => lang.code !== spokenBase) ?? AvailableTranslationLanguages[0]).code;
+}
+
 export interface SettingsState extends SyncableSettings {
   transcription: TranscriptionSettings;
+  translation: TranslationSettings;
 }
+
+/** Interface language preference; 'spoken' follows the spoken (recognition) language */
+export type UiLanguagePreference = InterfaceLanguage | 'spoken';
 
 export interface SyncableSettings {
   theme: AppTheme;
+  /** Spoken (recognition) language; also the interface language when uiLanguage is 'spoken' */
   lang: InterfaceLanguage;
+  uiLanguage: UiLanguagePreference;
 	dialect: RecognitionDialect;
   wakelock: boolean;
   renderHistory: number;
@@ -220,6 +396,7 @@ export interface SyncableSettings {
   lineHeight: LineHeight;
   textFlow: TextFlow;
   fontFamily: FontFamily;
+  translation: TranslationSettings;
 }
 
 export * as SettingsActions from '../../../actions/settings.actions';

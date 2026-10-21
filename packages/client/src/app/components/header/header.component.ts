@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, Signal, ViewChild, ViewEncapsulation, WritableSignal, computed, effect, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -16,6 +16,7 @@ import { selectObsConnected } from '../../selectors/obs.selectors';
 import { selectUserLoggedIn } from '../../selectors/auth.selectors';
 import { AuthActions } from '../../actions/auth.actions';
 import { selectTranscriptionEnabled } from '../../selectors/settings.selector';
+import { DocumentPipService } from '../../services/document-pip/document-pip.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -44,12 +45,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showObsConnectionState: Signal<boolean | undefined>;
   public isLoggedIn: Signal<boolean | undefined>;
   public transcriptionEnabled: Signal<boolean | undefined>;
+  /** The pop-out button: Picture-in-Picture works here, and recognition is running on a caption screen */
+  public showPip: Signal<boolean>;
+  public isPip: Signal<boolean>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(private router: Router,
               private store: Store<AppState>,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private documentPip: DocumentPipService) {
 
     this.isActive = toSignal(this.store.pipe(
       select(recognitionStatusSelector),
@@ -96,6 +101,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { label: 'our_story', href: 'https://www.zipsolutions.org/story.html'},
       ]}
     ]
+    this.isPip = this.documentPip.isPipActive;
+    this.showPip = computed(() => this.documentPip.isSupported && this.documentPip.hasElement() && (!!this.isActive() || this.isPip()));
     this.showRecordButton = toSignal(this.store.pipe(select(platformSelector), map((platform) => platform === AppPlatform.desktop)));
 
     this.windowControlsOverlay = toSignal(this.store.select(windowControlsOverlaySelector))
@@ -112,6 +119,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+  }
+
+  togglePip(): void {
+    this.documentPip.toggle();
+  }
+
+  /** A viewer joins a broadcast at /stream/<code> and never records, so the recognition buttons don't belong there */
+  isViewerRoute(): boolean {
+    return (this.router.url ?? '').split('?')[0].startsWith('/stream/');
   }
 
   logout(): void {
