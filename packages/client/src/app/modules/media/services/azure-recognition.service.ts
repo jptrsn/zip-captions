@@ -127,6 +127,11 @@ export class AzureRecognitionService {
 		return this.recognizedText;
 	}
 
+	public clear(): void {
+		this.recognizedText.set([]);
+		this.liveOutput.set('');
+	}
+
   private _refreshToken(): void {
       this._getToken().pipe(take(1)).subscribe((auth) => {
         if (this.recognizer !== undefined) {
@@ -154,8 +159,7 @@ export class AzureRecognitionService {
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
 				this.recognizedText.update((current: string[]) => {
-					current.push(event.result.text);
-					return current;
+					return [...current, event.result.text];
 				});
 				this.liveOutput.set('');
 				if (this.transcriptionEnabled()) {

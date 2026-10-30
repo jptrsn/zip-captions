@@ -5,6 +5,7 @@ import { selectTextFlow } from '../../../../selectors/settings.selector';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { SettingsActions, TextFlow } from '../../../settings/models/settings.model';
+import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 
 @Component({
   selector: 'app-flow-direction',
@@ -13,10 +14,15 @@ import { SettingsActions, TextFlow } from '../../../settings/models/settings.mod
 })
 export class FlowDirectionComponent {
   public isFlowDown: Signal<boolean | undefined>;
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,
+              private shortcutsService: KeyboardShortcutsService) {
     this.isFlowDown = toSignal(this.store.pipe(
       select(selectTextFlow), 
       map((flow: TextFlow) => (flow === 'top-down'))));
+  }
+
+  formatShortcut(): string {
+    return this.shortcutsService.formatShortcut('toggleFlow');
   }
 
   toggle(): void {

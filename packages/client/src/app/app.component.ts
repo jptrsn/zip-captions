@@ -1,4 +1,4 @@
-import { Component, Renderer2, Signal, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
+import { Component, HostListener, Renderer2, Signal, ViewEncapsulation, WritableSignal, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SwUpdate } from '@angular/service-worker';
 import { Store, select } from '@ngrx/store';
@@ -13,6 +13,7 @@ import { RecognitionActions } from './actions/recogntion.actions';
 import { selectUserLoggedIn } from './selectors/auth.selectors';
 import { setDefaultDialect } from './actions/settings.actions';
 import { StorageService } from './services/storage.service';
+import { KeyboardShortcutsService } from './services/keyboard-shortcuts/keyboard-shortcuts.service';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,8 @@ export class AppComponent {
               private renderer: Renderer2,
               private updates: SwUpdate,
               private translate: TranslateService,
-						  private storage: StorageService) {
+              private storage: StorageService,
+              private shortcutsService: KeyboardShortcutsService) {
 
     AvailableLanguages.forEach((lang) => this.translate.reloadLang(lang));
 
@@ -102,6 +104,11 @@ export class AppComponent {
         this.store.dispatch(RecognitionActions.deInitTranscriptDB())
       }
     }, { allowSignalWrites: true })
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    this.shortcutsService.handleKeyboardEvent(event);
   }
 
 }

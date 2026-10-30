@@ -76,3 +76,13 @@ export const selectTranscriptSettingsLoading = createSelector(
   selectAppSettings,
   (state) => state.transcription.loading
 )
+
+export const selectShortcutsEnabled = createSelector(
+  selectAppSettings,
+  (state) => state.shortcutsEnabled ?? true
+)
+
+export const selectShortcuts = createSelector(
+  selectAppSettings,
+  (state) => state.shortcuts
+)

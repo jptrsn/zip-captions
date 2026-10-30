@@ -10,6 +10,8 @@ export const RecognitionActions = createActionGroup({
     'Pause Success': emptyProps(),
     'Resume': emptyProps(),
     'Resume Success': emptyProps(),
+    'Clear': emptyProps(),
+    'Clear Success': emptyProps(),
     'Connect success': emptyProps(),
     'Connect failure': props<{ error: string }>(),
     'Disconnect success': emptyProps(),

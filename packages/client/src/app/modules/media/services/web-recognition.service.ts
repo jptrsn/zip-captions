@@ -33,6 +33,8 @@ export class WebRecognitionService {
   private obsConnected: Signal<boolean | undefined>;
   private resultCount: Signal<number | undefined>;
   private transcriptionEnabled: Signal<boolean | undefined>;
+  private mostRecentResults: SpeechRecognitionResult[] | undefined;
+  private transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
 	private isStreaming = false;
 
@@ -88,11 +90,23 @@ export class WebRecognitionService {
 		return this.recognizedText;
 	}
 
+	public clear(): void {
+		if (this.mostRecentResults) {
+			for (const result of this.mostRecentResults) {
+				this.transcriptSegments.add(result);
+			}
+			this.mostRecentResults = undefined;
+		}
+		this.recognizedText.set([]);
+		this.liveOutput.set('');
+		if (this.obsConnected()) {
+			this.store.dispatch(ObsActions.sendCaption({ text: '' }));
+		}
+	}
+
 	private _addEventListeners(): void {
 		const platform: AppPlatform | undefined = this.platform();
 		let transcript: string;
-    let mostRecentResults: SpeechRecognitionResult[] | undefined;
-    const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
 		// Debounce is to provide a timeout after the last-recognized full text,
 				// in order to better handle chunking in related tasks for the media stream
@@ -112,12 +126,12 @@ export class WebRecognitionService {
 					throttleTime(this.DEBOUNCE_TIME_MS, undefined, { leading: false, trailing: true }),
 				).subscribe(() => {
 					// console.log('debounce ended', Date.now());
-					if (mostRecentResults) {
-						const partialTranscript: string = mostRecentResults
+					if (this.mostRecentResults) {
+						const partialTranscript: string = this.mostRecentResults
 						.filter((result) => {
-							if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
+							if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
 								if (platform !== AppPlatform.mobile) {
-									transcriptSegments.add(result);
+									this.transcriptSegments.add(result);
 								}
 								return true;
 							}
@@ -178,9 +192,9 @@ export class WebRecognitionService {
 					// console.log('result', e.results[0][0])
 					debounce$.next(Date.now());
 					if (this.platform() === AppPlatform.desktop) {
-						mostRecentResults = Array.from(e.results);
-						transcript = mostRecentResults
-						.filter((result: SpeechRecognitionResult) => !transcriptSegments.has(result))
+						this.mostRecentResults = Array.from(e.results);
+						transcript = this.mostRecentResults
+						.filter((result: SpeechRecognitionResult) => !this.transcriptSegments.has(result))
 						.map((result: SpeechRecognitionResult) => {
 							return result[0];
 						})
@@ -194,7 +208,7 @@ export class WebRecognitionService {
 						.join('');
 					} else {
 						const lastResult = e.results.item(e.results.length - 1);
-						mostRecentResults = [lastResult];
+						this.mostRecentResults = [lastResult];
 						if (lastResult[0].transcript.length) {
 							transcript = lastResult[0].transcript
 						}
@@ -210,9 +224,9 @@ export class WebRecognitionService {
 
 				this.recog.addEventListener('end', (e) => {
 					// console.log('end', Date.now())
-					mostRecentResults = undefined;
+					this.mostRecentResults = undefined;
 					const mostRecentOutput = this.liveOutput();
-					transcriptSegments.clear();
+					this.transcriptSegments.clear();
 					if (mostRecentOutput !== '') {
 						this.recognizedText.update((current: string[]) => {
 							current.push(mostRecentOutput);

@@ -28,9 +28,6 @@ export class FullScreenService {
   }
 
   toggle(): void {
-    if (!this.el) {
-      throw new Error('No element registered for full screen');
-    }
     if (this.isAvailable) {
       if (this.isFullscreen()) {
         this._minimize();
@@ -41,10 +38,13 @@ export class FullScreenService {
   }
 
   private _maximize(): void {
-    this.el?.nativeElement.requestFullscreen();
+    const target = this.el?.nativeElement || document.documentElement;
+    target.requestFullscreen?.();
   }
 
   private _minimize(): void {
-    document.exitFullscreen();
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+    }
   }
 }

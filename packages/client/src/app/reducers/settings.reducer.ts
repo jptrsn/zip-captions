@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
+import { AppTheme, DefaultKeyboardShortcuts, FontFamily, InterfaceLanguage, KeyboardShortcutsMap, LineHeight, RecognitionDialect, SettingsActions, SettingsState, ShortcutActionId, TextFlow, TextSize, TranscriptionSettings } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -13,7 +13,9 @@ export const defaultSettingsState: SettingsState = {
   fontFamily: FontFamily.sans,
   transcription: {
     enabled: false
-  }
+  },
+  shortcutsEnabled: true,
+  shortcuts: { ...DefaultKeyboardShortcuts }
 }
 
 export const settingsReducers = createReducer(
@@ -32,4 +34,17 @@ export const settingsReducers = createReducer(
   on(SettingsActions.saveTranscriptionSettings, (state: SettingsState, action: { transcription: Partial<TranscriptionSettings>}) => ({...state, transcription: { ...state.transcription, ...action.transcription, loading: true }})),
   on(SettingsActions.saveTranscriptionSettingsSuccess, (state: SettingsState) => ({...state, transcription: { ...state.transcription, loading: false }})),
   on(SettingsActions.saveTranscriptionSettingsFailure, (state: SettingsState, action: { error: string }) => ({...state, error: action.error, transcription: { ...state.transcription, loading: false }})),
+  on(SettingsActions.setShortcutsEnabled, (state: SettingsState, action: { enabled: boolean }) => ({ ...state, shortcutsEnabled: action.enabled })),
+  on(SettingsActions.setShortcut, (state: SettingsState, action: { actionId: ShortcutActionId; key: string }) => ({
+    ...state,
+    shortcuts: { ...state.shortcuts, [action.actionId]: action.key }
+  })),
+  on(SettingsActions.setShortcuts, (state: SettingsState, action: { shortcuts: KeyboardShortcutsMap }) => ({
+    ...state,
+    shortcuts: { ...action.shortcuts }
+  })),
+  on(SettingsActions.resetShortcuts, (state: SettingsState) => ({
+    ...state,
+    shortcuts: { ...DefaultKeyboardShortcuts }
+  })),
 )

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProperPipe } from 'packages/shared-ui/src/lib/pipes/proper.pipe';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
@@ -8,6 +9,7 @@ import { WakeLockEnabledComponent } from '../wake-lock-enabled/wake-lock-enabled
 import { SettingsComponent } from './settings.component';
 import { TextSizeComponent } from '../text-size/text-size.component';
 import { LineHeightComponent } from '../line-height/line-height.component';
+import { KeyboardShortcutsSettingsComponent } from '../keyboard-shortcuts-settings/keyboard-shortcuts-settings.component';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -27,7 +29,9 @@ describe('SettingsComponent', () => {
         WakeLockEnabledComponent,
         TextSizeComponent,
         LineHeightComponent,
+        KeyboardShortcutsSettingsComponent,
       ],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: TestingModuleProviders
     }).compileComponents();
 

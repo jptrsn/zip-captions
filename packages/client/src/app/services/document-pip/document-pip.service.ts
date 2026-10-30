@@ -136,6 +136,21 @@ export class DocumentPipService {
           this.pipWindow = undefined;
         }
       });
+
+      // Forward keydown events from PiP window to main window so keyboard shortcuts work when PiP is focused
+      pipWindow.addEventListener('keydown', (event: KeyboardEvent) => {
+        window.dispatchEvent(new KeyboardEvent('keydown', {
+          key: event.key,
+          code: event.code,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey,
+          altKey: event.altKey,
+          metaKey: event.metaKey,
+          repeat: event.repeat,
+          bubbles: true,
+          cancelable: true,
+        }));
+      });
     } catch (err) {
       console.error('Failed to open Document Picture-in-Picture window:', err);
       this._restoreElement();

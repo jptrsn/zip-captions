@@ -4,9 +4,9 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { AppState } from "../models/app.model";
-import { SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
+import { DefaultKeyboardShortcuts, SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { defaultSettingsState } from "../reducers/settings.reducer";
-import { selectTranscriptionSettings } from "../selectors/settings.selector";
+import { selectShortcuts, selectTranscriptionSettings } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
 import { RecognitionActions } from "../actions/recogntion.actions";
 
@@ -143,6 +143,41 @@ export class SettingsEffects {
     )
   )
 
+  saveShortcutsEnabled$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcutsEnabled),
+      tap(({ enabled }) => this.storage.update('settings', 'shortcutsEnabled', enabled)),
+      map(() => SettingsActions.setShortcutsEnabledSuccess())
+    )
+  )
+
+  saveShortcut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcut),
+      withLatestFrom(this.store.select(selectShortcuts)),
+      tap(([{ actionId, key }, shortcuts]) => {
+        this.storage.update('settings', 'shortcuts', { ...shortcuts, [actionId]: key });
+      }),
+      map(() => SettingsActions.setShortcutSuccess())
+    )
+  )
+
+  saveShortcuts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcuts),
+      tap(({ shortcuts }) => this.storage.update('settings', 'shortcuts', shortcuts)),
+      map(() => SettingsActions.setShortcutsSuccess())
+    )
+  )
+
+  resetShortcuts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.resetShortcuts),
+      tap(() => this.storage.update('settings', 'shortcuts', { ...DefaultKeyboardShortcuts })),
+      map(() => SettingsActions.resetShortcutsSuccess())
+    )
+  )
+
   private _applySettingsToDefault(partial: Partial<SettingsState> | null): SettingsState {
     const defaults = {...defaultSettingsState};
     // This ensures that any deprecated properties are pruned from the saved object
@@ -154,6 +189,13 @@ export class SettingsEffects {
           defaults[k] = partial[k];
         }
       }
+      if (partial.shortcuts && typeof partial.shortcuts === 'object') {
+        defaults.shortcuts = { ...DefaultKeyboardShortcuts, ...partial.shortcuts };
+      } else {
+        defaults.shortcuts = { ...DefaultKeyboardShortcuts };
+      }
+    } else {
+      defaults.shortcuts = { ...DefaultKeyboardShortcuts };
     }
     return defaults;
   }

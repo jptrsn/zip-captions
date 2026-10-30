@@ -2,14 +2,18 @@ import { Component, Input, Renderer2, Signal, ViewChildren, computed } from '@an
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectRenderHistoryLength, selectTextSize } from '../../../../selectors/settings.selector';
-import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, TextSize } from '../../../settings/models/settings.model';
+import { selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
+import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, ShortcutActionId, TextFlow, TextSize } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { map } from 'rxjs';
+import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
+import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { PeerService } from '../../../peer/services/peer.service';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
@@ -37,11 +41,17 @@ export class RecognitionControlSidebarComponent {
   public renderHistoryMin: Signal<boolean>;
   public renderHistoryMax: Signal<boolean>;
 
+  public textFlow: Signal<TextFlow>;
+
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
 
   constructor(private store: Store<AppState>,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private shortcutsService: KeyboardShortcutsService,
+              private fullScreenService: FullScreenService,
+              private documentPipService: DocumentPipService,
+              private peerService: PeerService) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.textSizeMax = computed(() => this.textSize() === this.availableTextSizes[this.availableTextSizes.length - 1]);
     this.textSizeMin = computed(() => this.textSize() === this.availableTextSizes[0]);
@@ -58,6 +68,16 @@ export class RecognitionControlSidebarComponent {
     this.renderHistoryLength = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     this.renderHistoryMin = computed(() => this.renderHistoryLength() < 1);
     this.renderHistoryMax = computed(() => this.renderHistoryLength() > 24);
+
+    this.textFlow = toSignal(this.store.select(selectTextFlow)) as Signal<TextFlow>;
+  }
+
+  formatShortcut(actionId: ShortcutActionId): string {
+    return this.shortcutsService.formatShortcut(actionId);
+  }
+
+  formatPairShortcut(action1: ShortcutActionId, action2: ShortcutActionId): string {
+    return this.shortcutsService.formatPairShortcut(action1, action2);
   }
 
   hideElements(elements: HTMLElement[]) {
@@ -67,61 +87,52 @@ export class RecognitionControlSidebarComponent {
   }
 
   increaseTextSize(): void {
-    if (!this.textSizeMax()) {
-      const idx = this.availableTextSizes.findIndex((size: TextSize) => size === this.textSize());
-      this.store.dispatch(SettingsActions.setTextSize({size: this.availableTextSizes[idx+1]}));
-    }
+    this.shortcutsService.increaseTextSize();
   }
 
   decreaseTextSize(): void {
-    if (!this.textSizeMin()) {
-      const idx = this.availableTextSizes.findIndex((size: TextSize) => size === this.textSize());
-      this.store.dispatch(SettingsActions.setTextSize({size: this.availableTextSizes[idx-1]}));
-    }
+    this.shortcutsService.decreaseTextSize();
   }
 
   increaseLineHeight(): void {
-    if (!this.lineHeightMax()) {
-      const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
-      this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx+1]}));
-    }
+    this.shortcutsService.increaseLineHeight();
   }
 
   decreaseLineHeight(): void {
-    if (!this.lineHeightMin()) {
-      const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
-      this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx-1]}));
-    }
+    this.shortcutsService.decreaseLineHeight();
   }
 
   increaseRenderHistory(): void {
-    if (!this.renderHistoryMax()) {
-      const count = (this.renderHistoryLength() || 0) + 1;
-      this.store.dispatch(SettingsActions.setRenderHistory({count}))
-    }
+    this.shortcutsService.increaseRenderHistory();
   }
 
   decreaseRenderHistory(): void {
-    if (!this.renderHistoryMin()) {
-      const count = this.renderHistoryLength() - 1;
-      this.store.dispatch(SettingsActions.setRenderHistory({count}))
+    this.shortcutsService.decreaseRenderHistory();
+  }
+
+  toggleTextFlow(): void {
+    if (this.showTextFlow) {
+      this.shortcutsService.toggleTextFlow();
+    }
+  }
+
+  toggleFullscreen(): void {
+    if (this.showFullscreen && this.fullScreenService.isAvailable) {
+      this.shortcutsService.toggleFullscreen();
+    }
+  }
+
+  togglePip(): void {
+    if (this.showPip && this.documentPipService.isSupported) {
+      this.shortcutsService.togglePip();
     }
   }
 
   toggleRecognition(): void {
-    if (this.recognitionActive()) {
-      this._pauseRecognition();
-    } else {
-      this._resumeRecognition();
-    }
-
+    this.shortcutsService.toggleRecognition();
   }
 
-  private _pauseRecognition(): void {
-    this.store.dispatch(RecognitionActions.pause());
-  }
-
-  private _resumeRecognition(): void {
-    this.store.dispatch(RecognitionActions.resume());
+  clearScreen(): void {
+    this.shortcutsService.clearScreen();
   }
 }

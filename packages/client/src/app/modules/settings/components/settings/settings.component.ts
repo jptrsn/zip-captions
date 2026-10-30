@@ -29,6 +29,7 @@ export class SettingsComponent {
 
   public tabNames = [
     'appearance',
+    'shortcuts',
     'transcription',
     'sync',
     'sharing',
@@ -38,6 +39,7 @@ export class SettingsComponent {
 
   public tabIcons: {[key: string]: string} = {
     'appearance': 'heroSwatch',
+    'shortcuts': 'heroCommandLine',
     'transcription': 'heroDocumentText',
     'sync': 'heroArrowsRightLeft',
     'sharing': 'heroShare',

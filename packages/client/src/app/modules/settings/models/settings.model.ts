@@ -201,6 +201,35 @@ export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
 
 export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
 
+export type ShortcutActionId =
+  | 'togglePause'
+  | 'clearScreen'
+  | 'increaseTextSize'
+  | 'decreaseTextSize'
+  | 'increaseLineHeight'
+  | 'decreaseLineHeight'
+  | 'increaseHistory'
+  | 'decreaseHistory'
+  | 'toggleFlow'
+  | 'toggleFullscreen'
+  | 'togglePip';
+
+export type KeyboardShortcutsMap = Record<ShortcutActionId, string>;
+
+export const DefaultKeyboardShortcuts: KeyboardShortcutsMap = {
+  togglePause: 'p',
+  clearScreen: 'c',
+  increaseTextSize: '=',
+  decreaseTextSize: '-',
+  increaseLineHeight: ']',
+  decreaseLineHeight: '[',
+  increaseHistory: '.',
+  decreaseHistory: ',',
+  toggleFlow: 'd',
+  toggleFullscreen: 'm',
+  togglePip: 'i',
+};
+
 export interface TranscriptionSettings {
   enabled: boolean;
   loading?: boolean;
@@ -208,6 +237,8 @@ export interface TranscriptionSettings {
 }
 export interface SettingsState extends SyncableSettings {
   transcription: TranscriptionSettings;
+  shortcutsEnabled: boolean;
+  shortcuts: KeyboardShortcutsMap;
 }
 
 export interface SyncableSettings {
