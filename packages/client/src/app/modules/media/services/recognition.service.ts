@@ -1,9 +1,13 @@
 import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { map } from 'rxjs';
+import { ObsActions } from '../../../actions/obs.actions';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
 import { RecognitionEngineState, RecognitionState } from '../../../models/recognition.model';
+import { ObsConnectionState } from '../../../reducers/obs.reducer';
+import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../selectors/user.selector';
@@ -26,6 +30,7 @@ export class RecognitionService {
 
 	private provider: Signal<RecognitionEngineState['provider']>;
   private tokenBalance: Signal<number | undefined>;
+  private obsConnected: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
 		private webRecognition: WebRecognitionService,
 		private azureRecognition: AzureRecognitionService,
@@ -34,6 +39,7 @@ export class RecognitionService {
 		const dialect = toSignal(this.store.select(dialectSelector));
 
     this.tokenBalance = toSignal(this.store.select(selectUserBalance))
+    this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
 
 		this.activeLanguage = computed(() => {
 			const l = language();
@@ -138,6 +144,9 @@ export class RecognitionService {
 			this.webRecognition.clear();
 		} else {
 			this.azureRecognition.clear();
+		}
+		if (this.obsConnected()) {
+			this.store.dispatch(ObsActions.sendCaption({ text: '' }));
 		}
   }
 

@@ -99,9 +99,6 @@ export class WebRecognitionService {
 		}
 		this.recognizedText.set([]);
 		this.liveOutput.set('');
-		if (this.obsConnected()) {
-			this.store.dispatch(ObsActions.sendCaption({ text: '' }));
-		}
 	}
 
 	private _addEventListeners(): void {
