@@ -1,6 +1,6 @@
 <div class="flex flex-col p-3 gap-3 drop-shadow bg-base-300 rounded-s-xl">
   
-    <button class="btn btn-md btn-primary tooltip tooltip-left tooltip-info" [attr.data-tip]="(recognitionActive() ? ('BUTTONS.pause' | translate) : ('HINTS.resume' | translate)) + formatShortcut('togglePause')" [ngClass]="{'bg-secondary': !recognitionActive()}" (click)="toggleRecognition()">
+    <button class="btn btn-md btn-primary tooltip tooltip-left tooltip-info" [attr.data-tip]="(recognitionActive() ? ('BUTTONS.pause' | translate) : (recognitionPaused() ? ('HINTS.resume' | translate) : ('BUTTONS.start' | translate))) + formatShortcut('togglePause')" [ngClass]="{'bg-secondary': !recognitionActive()}" (click)="toggleRecognition()">
       <ng-icon [name]="recognitionActive() ? 'heroPause' : 'heroPlayPause'"></ng-icon>
     </button>
 

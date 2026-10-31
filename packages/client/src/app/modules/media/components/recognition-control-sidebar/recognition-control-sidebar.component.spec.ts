@@ -11,6 +11,9 @@ import { PeerService } from '../../../peer/services/peer.service';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
 import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
+import { RecognitionStatus } from '../../../../models/recognition.model';
+import { defaultAppState } from '../../../../reducers/app.reducer';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('RecognitionControlSidebarComponent', () => {
   let component: RecognitionControlSidebarComponent;
@@ -20,6 +23,7 @@ describe('RecognitionControlSidebarComponent', () => {
   let fullScreenService: FullScreenService;
   let documentPipService: DocumentPipService;
   let shortcutsService: KeyboardShortcutsService;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,12 +44,44 @@ describe('RecognitionControlSidebarComponent', () => {
     fullScreenService = TestBed.inject(FullScreenService);
     documentPipService = TestBed.inject(DocumentPipService);
     shortcutsService = TestBed.inject(KeyboardShortcutsService);
+    translate = TestBed.inject(TranslateService);
+    translate.use('en');
     jest.spyOn(store, 'dispatch');
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display "Start" in tooltip when disconnected', () => {
+    store.setState({
+      ...defaultAppState,
+      recognition: { ...defaultAppState.recognition, status: RecognitionStatus.disconnected }
+    });
+    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Start (P)');
+  });
+
+  it('should display "Resume" in tooltip when paused', () => {
+    store.setState({
+      ...defaultAppState,
+      recognition: { ...defaultAppState.recognition, status: RecognitionStatus.paused }
+    });
+    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Resume (P)');
+  });
+
+  it('should display "Pause" in tooltip when recognition is active', () => {
+    store.setState({
+      ...defaultAppState,
+      recognition: { ...defaultAppState.recognition, status: RecognitionStatus.connected }
+    });
+    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Pause (P)');
   });
 
   it('should clear screen and broadcast empty results on clearScreen()', () => {
