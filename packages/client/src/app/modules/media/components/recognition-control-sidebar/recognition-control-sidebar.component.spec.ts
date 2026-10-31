@@ -84,6 +84,11 @@ describe('RecognitionControlSidebarComponent', () => {
     expect(button.getAttribute('data-tip')).toBe('Pause (P)');
   });
 
+  it('should have translated aria-label on clear screen button', () => {
+    const clearButton: HTMLButtonElement = fixture.nativeElement.querySelector('button[data-testid="zc-recog-clear"]');
+    expect(clearButton.getAttribute('aria-label')).toBe('Clear Screen');
+  });
+
   it('should clear screen and broadcast empty results on clearScreen()', () => {
     peerService.liveText$.next('in progress text');
     peerService.textOutput$.next(['segment 1', 'segment 2']);

@@ -4,7 +4,7 @@
       <ng-icon [name]="recognitionActive() ? 'heroPause' : 'heroPlayPause'"></ng-icon>
     </button>
 
-    <button data-testid="zc-recog-clear" class="btn btn-md btn-primary tooltip tooltip-left tooltip-info" [attr.data-tip]="('LABELS.clearScreen' | translate) + formatShortcut('clearScreen')" (click)="clearScreen()">
+    <button data-testid="zc-recog-clear" class="btn btn-md btn-primary tooltip tooltip-left tooltip-info" [attr.aria-label]="'LABELS.clearScreen' | translate" [attr.data-tip]="('LABELS.clearScreen' | translate) + formatShortcut('clearScreen')" (click)="clearScreen()">
       <ng-icon name="heroTrash"></ng-icon>
     </button>
 
