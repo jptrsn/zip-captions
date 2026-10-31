@@ -35,6 +35,7 @@ export class WebRecognitionService {
   private transcriptionEnabled: Signal<boolean | undefined>;
   private mostRecentResults: SpeechRecognitionResult[] | undefined;
   private transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
+  private segmentStart: Date | undefined;
 
 	private isStreaming = false;
 
@@ -92,13 +93,56 @@ export class WebRecognitionService {
 
 	public clear(): void {
 		if (this.mostRecentResults) {
+			if (this.transcriptionEnabled()) {
+				const partialTranscript: string = this._getPendingFinalTranscript();
+				if (partialTranscript !== '') {
+					if (!this.segmentStart) {
+						this.segmentStart = new Date();
+					}
+					this.store.dispatch(RecognitionActions.addTranscriptSegment({
+						text: partialTranscript,
+						start: this.segmentStart
+					}));
+					this.segmentStart = undefined;
+				}
+			}
 			for (const result of this.mostRecentResults) {
 				this.transcriptSegments.add(result);
 			}
 			this.mostRecentResults = undefined;
 		}
+		this.segmentStart = undefined;
 		this.recognizedText.set([]);
 		this.liveOutput.set('');
+	}
+
+	private _getPendingFinalTranscript(): string {
+		if (!this.mostRecentResults) {
+			return '';
+		}
+		const platform: AppPlatform | undefined = this.platform();
+		return this.mostRecentResults
+			.filter((result) => {
+				if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
+					if (platform !== AppPlatform.mobile) {
+						this.transcriptSegments.add(result);
+					}
+					return true;
+				}
+				return false;
+			})
+			.map((result: SpeechRecognitionResult) => result[0])
+			.reduce((acc, alternative: SpeechRecognitionAlternative) => {
+				if (platform === AppPlatform.mobile) {
+					acc.push(alternative);
+				} else if (alternative.confidence > 0) {
+					acc.push(alternative);
+				}
+				return acc;
+			}, [] as SpeechRecognitionAlternative[])
+			.map((alternative) => alternative.transcript)
+			.join('')
+			.trim();
 	}
 
 	private _addEventListeners(): void {
@@ -114,7 +158,6 @@ export class WebRecognitionService {
 				// Network error observable is used to debounce intermittent network issues that interrupt connection to the recognition server without going offline fully
 				const networkError$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-				let segmentStart: Date | undefined;
 				// Live results logic
 				debounce$.pipe(
 					takeUntil(disconnect$),
@@ -124,38 +167,17 @@ export class WebRecognitionService {
 				).subscribe(() => {
 					// console.log('debounce ended', Date.now());
 					if (this.mostRecentResults) {
-						const partialTranscript: string = this.mostRecentResults
-						.filter((result) => {
-							if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
-								if (platform !== AppPlatform.mobile) {
-									this.transcriptSegments.add(result);
-								}
-								return true;
-							}
-							return false;
-						})
-						.map((result: SpeechRecognitionResult) => result[0])
-						.reduce((acc, alternative: SpeechRecognitionAlternative, idx) => {
-							if (platform === AppPlatform.mobile) {
-								acc.push(alternative);
-							} else if (alternative.confidence > 0) {
-								acc.push(alternative)
-							}
-							return acc;
-						}, [] as SpeechRecognitionAlternative[])
-						.map((alternative) => alternative.transcript)
-						.join('')
-						.trim();
+						const partialTranscript: string = this._getPendingFinalTranscript();
 						if (partialTranscript !== '') {
-							if (!segmentStart) {
-								segmentStart = new Date();
+							if (!this.segmentStart) {
+								this.segmentStart = new Date();
 							}
 							this.recognizedText.update((current: string[]) => {
 								current.push(partialTranscript);
 								if (this.transcriptionEnabled()) {
-									// console.log('segmentStart', segmentStart)
-									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
-									segmentStart = undefined;
+									// console.log('segmentStart', this.segmentStart)
+									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: this.segmentStart }))
+									this.segmentStart = undefined;
 								}
 								return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
 							});
@@ -210,8 +232,8 @@ export class WebRecognitionService {
 							transcript = lastResult[0].transcript
 						}
 					}
-					if (transcript.length && !segmentStart) {
-						segmentStart = new Date();
+					if (transcript.length && !this.segmentStart) {
+						this.segmentStart = new Date();
 					}
 					this.liveOutput.set(transcript);
 					if (this.obsConnected()) {
@@ -231,8 +253,8 @@ export class WebRecognitionService {
 							return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
 						});
 						if (this.transcriptionEnabled()) {
-							this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: segmentStart }))
-							segmentStart = undefined;
+							this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: this.segmentStart }))
+							this.segmentStart = undefined;
 						}
 						// console.log('clearing live output');
 						this.liveOutput.set('');
