@@ -73,10 +73,9 @@ export class KeyboardShortcutsSettingsComponent {
       return;
     }
 
-    event.preventDefault();
-    event.stopPropagation();
-
     if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
       this.cancelRecording();
       return;
     }
@@ -85,6 +84,9 @@ export class KeyboardShortcutsSettingsComponent {
       this.errorMessage = 'SHORTCUTS.invalidKey';
       return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
 
     const newKey = this.shortcutsService.normalizeKey(event.key);
     const currentShortcuts = { ...this.shortcuts() };

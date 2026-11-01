@@ -46,6 +46,7 @@ describe('KeyboardShortcutsSettingsComponent', () => {
     const event = new KeyboardEvent('keydown', { key: 'q', bubbles: true, cancelable: true });
     window.dispatchEvent(event);
 
+    expect(event.defaultPrevented).toBe(true);
     expect(store.dispatch).toHaveBeenCalledWith(SettingsActions.setShortcut({ actionId: 'togglePause', key: 'q' }));
     expect(component.recordingActionId).toBeNull();
   });
@@ -55,6 +56,7 @@ describe('KeyboardShortcutsSettingsComponent', () => {
     const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
     window.dispatchEvent(event);
 
+    expect(event.defaultPrevented).toBe(true);
     expect(component.recordingActionId).toBeNull();
     expect(store.dispatch).not.toHaveBeenCalled();
   });
@@ -70,11 +72,12 @@ describe('KeyboardShortcutsSettingsComponent', () => {
     expect(cancelButton.getAttribute('aria-label')).toBe('Cancel');
   });
 
-  it('should reject browser reserved keys and show error', () => {
+  it('should reject browser reserved keys without preventing default and show error', () => {
     component.startRecording('clearScreen');
     const event = new KeyboardEvent('keydown', { key: 'F5', bubbles: true, cancelable: true });
     window.dispatchEvent(event);
 
+    expect(event.defaultPrevented).toBe(false);
     expect(component.errorMessage).toBe('SHORTCUTS.invalidKey');
     expect(component.recordingActionId).toBe('clearScreen');
   });
