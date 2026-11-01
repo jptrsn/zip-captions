@@ -27,6 +27,7 @@ import {
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { FullScreenService } from '../full-screen/full-screen.service';
 import { DocumentPipService } from '../document-pip/document-pip.service';
+import { isEditableTarget } from './editable-target';
 
 export const RESERVED_BROWSER_KEYS: ReadonlySet<string> = new Set([
   'F1',
@@ -130,23 +131,7 @@ export class KeyboardShortcutsService {
   }
 
   public isEditableTarget(target: EventTarget | null): boolean {
-    if (!target || !(target instanceof HTMLElement)) {
-      return false;
-    }
-    const tagName = target.tagName.toUpperCase();
-    if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') {
-      return true;
-    }
-    if (
-      target.isContentEditable ||
-      target.contentEditable === 'true' ||
-      target.contentEditable === '' ||
-      target.getAttribute('contenteditable') === 'true' ||
-      target.getAttribute('contenteditable') === ''
-    ) {
-      return true;
-    }
-    return false;
+    return isEditableTarget(target);
   }
 
   public isReservedOrBrowserDefault(event: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' | 'altKey'>): boolean {

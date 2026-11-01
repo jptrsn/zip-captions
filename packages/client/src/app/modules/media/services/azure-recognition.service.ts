@@ -34,6 +34,7 @@ export class AzureRecognitionService {
 	// Final segments of a bilingual model are tagged by detection one at a time, in order
 	private appendQueue: Promise<void> = Promise.resolve();
 	private pendingAppends = 0;
+	private clearGeneration = 0;
 	private lastSegmentLang?: string;
 	private segmentStart?: Date;
 	private translationOn: Signal<boolean>;
@@ -163,6 +164,7 @@ export class AzureRecognitionService {
 	}
 
 	public clear(): void {
+		this.clearGeneration++;
 		this.segmentStart = undefined;
 		this.lastSegmentLang = undefined;
 		this.recognizedSegments.set([]);
@@ -185,16 +187,30 @@ export class AzureRecognitionService {
 		return pair && pair.length > 1 ? pair : undefined;
 	}
 
-	private async _appendDetected(text: string, pair: readonly string[] | undefined, start: Date | undefined): Promise<void> {
+	private async _appendDetected(
+		text: string,
+		pair: readonly string[] | undefined,
+		start: Date | undefined,
+		generation = this.clearGeneration
+	): Promise<void> {
+		if (generation !== this.clearGeneration) {
+			return;
+		}
 		const configured = this.recognitionLang;
 		let lang = configured;
 		if (pair) {
 			const configuredBase = configured.split('-')[0].toLowerCase();
 			void this.segmentLanguage.prepare(pair);
 			const base = await this.segmentLanguage.detect(text, pair, this.lastSegmentLang, configuredBase);
+			if (generation !== this.clearGeneration) {
+				return;
+			}
 			this.lastSegmentLang = base;
 			// The configured locale keeps its region (fr-CA); the other language is tagged by its base code
 			lang = base === configuredBase ? configured : base;
+		}
+		if (generation !== this.clearGeneration) {
+			return;
 		}
 		this.recognizedSegments.update((current: CaptionSegment[]) => this.segmentHistory.append(current, text, lang, start));
 	}
@@ -226,9 +242,10 @@ export class AzureRecognitionService {
 					if (pair || this.pendingAppends > 0) {
 						// Azure does not say which of a bilingual model's languages was spoken; this device works it out
 						// from the text. Appends stay in order, so a segment never overtakes one still being checked.
+						const generation = this.clearGeneration;
 						this.pendingAppends++;
 						this.appendQueue = this.appendQueue
-							.then(() => this._appendDetected(text, pair, start))
+							.then(() => this._appendDetected(text, pair, start, generation))
 							.finally(() => this.pendingAppends--);
 					} else {
 						const lang = reported || this.recognitionLang;

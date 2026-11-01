@@ -219,7 +219,7 @@ describe('AzureRecognitionService', () => {
       expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-CA']);
     });
 
-    it('does not detect with translation off, or for a locale that is not bilingual', async () => {
+    it('does not detect with translation off', async () => {
       setupBilingual('off');
       recognize(initialize('fr-CA'), 'Hello everyone.');
       expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-CA']);
@@ -231,6 +231,33 @@ describe('AzureRecognitionService', () => {
       recognize(initialize('fr-FR'), 'Hello everyone.');
       expect(service.getRecognizedSegments()().map((segment) => segment.lang)).toEqual(['fr-FR']);
       expect(detect).not.toHaveBeenCalled();
+    });
+
+    it('does not restore a cleared caption or update lastSegmentLang when detection resolves after clear()', async () => {
+      setupBilingual();
+      let resolveFirst!: (lang: string) => void;
+      detect.mockImplementationOnce(() => new Promise<string>((resolve) => {
+        resolveFirst = resolve;
+      }));
+
+      const recognizer = initialize('fr-CA');
+      recognize(recognizer, 'Hello everyone.');
+      await settle();
+      expect(detect).toHaveBeenCalledTimes(1);
+
+      service.clear();
+
+      resolveFirst('en');
+      await settle();
+      expect(service.getRecognizedSegments()()).toEqual([]);
+
+      Object.assign(detected, { 'Merci beaucoup.': 'fr' });
+      recognize(recognizer, 'Merci beaucoup.');
+      await settle();
+      expect(detect).toHaveBeenNthCalledWith(2, 'Merci beaucoup.', ['fr', 'en'], undefined, 'fr');
+      expect(service.getRecognizedSegments()().map((segment) => [segment.text, segment.lang])).toEqual([
+        ['Merci beaucoup.', 'fr-CA'],
+      ]);
     });
   });
 

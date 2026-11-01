@@ -148,4 +148,88 @@ describe('DocumentPipService', () => {
       }
     }
   });
+
+  it('should guard editable targets in pipWindow keydown and cancel the original PiP event when handled', async () => {
+    const originalDocPip = (window as any).documentPictureInPicture;
+    const originalSpeech = (window as any).SpeechRecognition;
+    let keydownListener: ((event: KeyboardEvent) => void) | undefined;
+
+    const mockPipWindow = {
+      document: {
+        documentElement: { setAttribute: jest.fn() },
+        body: {
+          style: {},
+          appendChild: jest.fn(),
+        },
+        createElement: (tag: string) => document.createElement(tag),
+        head: { appendChild: jest.fn() },
+      },
+      addEventListener: jest.fn((event: string, handler: any) => {
+        if (event === 'keydown') {
+          keydownListener = handler;
+        }
+      }),
+      close: jest.fn(),
+    };
+
+    const windowKeydownHandler = (e: KeyboardEvent) => {
+      if (e.key === 'p') {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', windowKeydownHandler);
+    const dispatchSpy = jest.spyOn(window, 'dispatchEvent');
+
+    try {
+      (window as any).documentPictureInPicture = {
+        requestWindow: jest.fn().mockResolvedValue(mockPipWindow),
+      };
+      (window as any).SpeechRecognition = jest.fn();
+
+      const store = TestBed.inject(Store);
+      const testService = TestBed.runInInjectionContext(() => new DocumentPipService(store));
+
+      const div = document.createElement('div');
+      testService.registerElement(new ElementRef(div));
+
+      await testService.open();
+      expect(keydownListener).toBeDefined();
+
+      // Editable targets (including cross-realm select/input) must not be forwarded
+      const crossRealmSelect = { nodeType: 1, tagName: 'SELECT' };
+      const selectEvent = new KeyboardEvent('keydown', { key: 'p', cancelable: true });
+      Object.defineProperty(selectEvent, 'target', { value: crossRealmSelect });
+      keydownListener!(selectEvent);
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(selectEvent.defaultPrevented).toBe(false);
+
+      // Handled shortcut on non-editable target cancels the original PiP event
+      const bodyTarget = document.createElement('div');
+      const handledEvent = new KeyboardEvent('keydown', { key: 'p', cancelable: true });
+      Object.defineProperty(handledEvent, 'target', { value: bodyTarget });
+      keydownListener!(handledEvent);
+      expect(dispatchSpy).toHaveBeenCalledTimes(1);
+      expect(handledEvent.defaultPrevented).toBe(true);
+
+      // Unhandled key on non-editable target leaves the original PiP event uncancelled
+      const unhandledEvent = new KeyboardEvent('keydown', { key: 'z', cancelable: true });
+      Object.defineProperty(unhandledEvent, 'target', { value: bodyTarget });
+      keydownListener!(unhandledEvent);
+      expect(dispatchSpy).toHaveBeenCalledTimes(2);
+      expect(unhandledEvent.defaultPrevented).toBe(false);
+    } finally {
+      window.removeEventListener('keydown', windowKeydownHandler);
+      dispatchSpy.mockRestore();
+      if (originalDocPip !== undefined) {
+        (window as any).documentPictureInPicture = originalDocPip;
+      } else {
+        delete (window as any).documentPictureInPicture;
+      }
+      if (originalSpeech !== undefined) {
+        (window as any).SpeechRecognition = originalSpeech;
+      } else {
+        delete (window as any).SpeechRecognition;
+      }
+    }
+  });
 });

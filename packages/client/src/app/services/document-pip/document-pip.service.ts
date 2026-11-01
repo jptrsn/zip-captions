@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../models/app.model';
 import { themeSelector } from '../../selectors/settings.selector';
 import { AppTheme } from '../../modules/settings/models/settings.model';
+import { isEditableTarget } from '../keyboard-shortcuts/editable-target';
 
 interface DocumentPictureInPictureOptions {
   width?: number;
@@ -143,7 +144,10 @@ export class DocumentPipService {
 
       // Forward keydown events from PiP window to main window so keyboard shortcuts work when PiP is focused
       pipWindow.addEventListener('keydown', (event: KeyboardEvent) => {
-        window.dispatchEvent(new KeyboardEvent('keydown', {
+        if (event.defaultPrevented || isEditableTarget(event.target)) {
+          return;
+        }
+        const forwardedEvent = new KeyboardEvent('keydown', {
           key: event.key,
           code: event.code,
           ctrlKey: event.ctrlKey,
@@ -153,7 +157,11 @@ export class DocumentPipService {
           repeat: event.repeat,
           bubbles: true,
           cancelable: true,
-        }));
+        });
+        window.dispatchEvent(forwardedEvent);
+        if (forwardedEvent.defaultPrevented) {
+          event.preventDefault();
+        }
       });
     } catch (err) {
       console.error('Failed to open Document Picture-in-Picture window:', err);
