@@ -11,7 +11,6 @@ import { RecognitionStatus } from '../../models/recognition.model';
 import { RecognitionActions } from '../../actions/recogntion.actions';
 import { FullScreenService } from '../full-screen/full-screen.service';
 import { DocumentPipService } from '../document-pip/document-pip.service';
-import { PeerService } from '../../modules/peer/services/peer.service';
 
 describe('KeyboardShortcutsService', () => {
   let service: KeyboardShortcutsService;
@@ -19,7 +18,6 @@ describe('KeyboardShortcutsService', () => {
   let router: Router;
   let fullScreenService: FullScreenService;
   let documentPipService: DocumentPipService;
-  let peerService: PeerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -31,7 +29,6 @@ describe('KeyboardShortcutsService', () => {
     router = TestBed.inject(Router);
     fullScreenService = TestBed.inject(FullScreenService);
     documentPipService = TestBed.inject(DocumentPipService);
-    peerService = TestBed.inject(PeerService);
     jest.spyOn(store, 'dispatch');
   });
 
@@ -214,15 +211,10 @@ describe('KeyboardShortcutsService', () => {
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should clear screen and broadcast empty results on clearScreen()', () => {
-    peerService.liveText$.next('in progress');
-    peerService.textOutput$.next(['done']);
-
+  it('should dispatch clear action on clearScreen()', () => {
     service.clearScreen();
 
     expect(store.dispatch).toHaveBeenCalledWith(RecognitionActions.clear());
-    expect(peerService.liveText$.value).toBe('');
-    expect(peerService.textOutput$.value).toEqual([]);
   });
 
   it('should invoke the mapped handler method for each default shortcut key in handleKeyboardEvent(), call preventDefault(), and return true or false appropriately', () => {

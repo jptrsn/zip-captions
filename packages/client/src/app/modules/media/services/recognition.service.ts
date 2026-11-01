@@ -12,6 +12,7 @@ import { selectRecognitionEngine } from '../../../selectors/recognition.selector
 import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../selectors/user.selector';
 import { DefaultDialects, InterfaceLanguage, RecognitionDialect } from '../../settings/models/settings.model';
+import { PeerService } from '../../peer/services/peer.service';
 import { AzureRecognitionService } from './azure-recognition.service';
 import { WebRecognitionService } from './web-recognition.service';
 // TODO: Fix missing definitions once https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1560 is resolved
@@ -34,6 +35,7 @@ export class RecognitionService {
   constructor(private store: Store<AppState>,
 		private webRecognition: WebRecognitionService,
 		private azureRecognition: AzureRecognitionService,
+		private peerService: PeerService,
 	) {
 		const language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
 		const dialect = toSignal(this.store.select(dialectSelector));
@@ -145,6 +147,8 @@ export class RecognitionService {
 		} else {
 			this.azureRecognition.clear();
 		}
+		this.peerService.liveText$.next('');
+		this.peerService.textOutput$.next([]);
 		if (this.obsConnected()) {
 			this.store.dispatch(ObsActions.sendCaption({ text: '' }));
 		}

@@ -27,7 +27,6 @@ import {
 import { recognitionStatusSelector } from '../../selectors/recognition.selector';
 import { FullScreenService } from '../full-screen/full-screen.service';
 import { DocumentPipService } from '../document-pip/document-pip.service';
-import { PeerService } from '../../modules/peer/services/peer.service';
 
 export const RESERVED_BROWSER_KEYS: ReadonlySet<string> = new Set([
   'F1',
@@ -97,8 +96,7 @@ export class KeyboardShortcutsService {
     private store: Store<AppState>,
     private router: Router,
     private fullScreenService: FullScreenService,
-    private documentPipService: DocumentPipService,
-    private peerService: PeerService
+    private documentPipService: DocumentPipService
   ) {
     const enabled = toSignal(this.store.select(selectShortcutsEnabled));
     const mapSignal = toSignal(this.store.select(selectShortcuts));
@@ -305,8 +303,6 @@ export class KeyboardShortcutsService {
 
   public clearScreen(): void {
     this.store.dispatch(RecognitionActions.clear());
-    this.peerService.liveText$.next('');
-    this.peerService.textOutput$.next([]);
   }
 
   public increaseTextSize(): void {

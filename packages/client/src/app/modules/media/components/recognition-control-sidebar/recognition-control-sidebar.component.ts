@@ -13,7 +13,6 @@ import { map } from 'rxjs';
 import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { PeerService } from '../../../peer/services/peer.service';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
@@ -51,8 +50,7 @@ export class RecognitionControlSidebarComponent {
               private renderer: Renderer2,
               private shortcutsService: KeyboardShortcutsService,
               private fullScreenService: FullScreenService,
-              private documentPipService: DocumentPipService,
-              private peerService: PeerService) {
+              private documentPipService: DocumentPipService) {
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.textSizeMax = computed(() => this.textSize() === this.availableTextSizes[this.availableTextSizes.length - 1]);
     this.textSizeMin = computed(() => this.textSize() === this.availableTextSizes[0]);

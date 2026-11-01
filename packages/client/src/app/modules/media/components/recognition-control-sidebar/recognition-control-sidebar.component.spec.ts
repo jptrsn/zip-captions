@@ -7,7 +7,6 @@ import { DocumentPipComponent } from '../document-pip/document-pip.component';
 import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../../../models/app.model';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
-import { PeerService } from '../../../peer/services/peer.service';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
 import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
@@ -19,7 +18,6 @@ describe('RecognitionControlSidebarComponent', () => {
   let component: RecognitionControlSidebarComponent;
   let fixture: ComponentFixture<RecognitionControlSidebarComponent>;
   let store: MockStore<AppState>;
-  let peerService: PeerService;
   let fullScreenService: FullScreenService;
   let documentPipService: DocumentPipService;
   let shortcutsService: KeyboardShortcutsService;
@@ -40,7 +38,6 @@ describe('RecognitionControlSidebarComponent', () => {
     fixture = TestBed.createComponent(RecognitionControlSidebarComponent);
     component = fixture.componentInstance;
     store = TestBed.inject<MockStore<AppState>>(MockStore);
-    peerService = TestBed.inject(PeerService);
     fullScreenService = TestBed.inject(FullScreenService);
     documentPipService = TestBed.inject(DocumentPipService);
     shortcutsService = TestBed.inject(KeyboardShortcutsService);
@@ -89,15 +86,10 @@ describe('RecognitionControlSidebarComponent', () => {
     expect(clearButton.getAttribute('aria-label')).toBe('Clear Screen');
   });
 
-  it('should clear screen and broadcast empty results on clearScreen()', () => {
-    peerService.liveText$.next('in progress text');
-    peerService.textOutput$.next(['segment 1', 'segment 2']);
-
+  it('should dispatch RecognitionActions.clear() on clearScreen()', () => {
     component.clearScreen();
 
     expect(store.dispatch).toHaveBeenCalledWith(RecognitionActions.clear());
-    expect(peerService.liveText$.value).toBe('');
-    expect(peerService.textOutput$.value).toEqual([]);
   });
 
   it('should delegate clearScreen to shortcutsService', () => {
