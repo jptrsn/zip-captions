@@ -1,0 +1,16 @@
+// Placeholder for a caption line whose translation hasn't arrived yet
+.caption-pending {
+  display: inline-block;
+  animation: caption-pending-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes caption-pending-pulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caption-pending {
+    animation: none;
+  }
+}

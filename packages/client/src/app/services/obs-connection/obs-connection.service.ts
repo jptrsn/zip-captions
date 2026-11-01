@@ -6,7 +6,8 @@ import OBSWebSocket from 'obs-websocket-js';
 import { Observable, from, timeout } from 'rxjs';
 import { ObsActions } from '../../actions/obs.actions';
 import { AppState } from '../../models/app.model';
-import { selectObsStreamActive } from '../../selectors/obs.selectors';
+import { ObsConnectionState } from '../../reducers/obs.reducer';
+import { selectObsConnected, selectObsStreamActive } from '../../selectors/obs.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class ObsConnectionService {
 
   private obs: OBSWebSocket;
   private isStreaming: Signal<boolean | undefined>;
+  private connectionState: Signal<ObsConnectionState | undefined>;
   private url?: string;
   private pass?: string;
   constructor(private store: Store<AppState>) { 
@@ -23,6 +25,7 @@ export class ObsConnectionService {
     this.obs.on('ConnectionError', (err) => this.store.dispatch(ObsActions.errorReceived({error: err.message || 'Unknown Error Occurred'})))
     this.obs.on('Identified', () => this._addObsListeners());
     this.isStreaming = toSignal(this.store.select(selectObsStreamActive));
+    this.connectionState = toSignal(this.store.select(selectObsConnected));
   }
 
   connect({ip, port, password}: {ip: string, port: number, password: string | null}): Observable<any> {
@@ -42,8 +45,13 @@ export class ObsConnectionService {
   }
 
   async sendCaption(captionText: string): Promise<void> {
-    if (this.isStreaming()) {
-      this.obs.call<"SendStreamCaption">('SendStreamCaption', {captionText})
+    // streamingActive isn't reset when the socket closes, so the connection is checked as well
+    if (this.isStreaming() && this.connectionState() === ObsConnectionState.connected) {
+      try {
+        await this.obs.call<"SendStreamCaption">('SendStreamCaption', {captionText});
+      } catch (err) {
+        console.warn('Could not send caption to OBS', err);
+      }
     }
   }
 

@@ -1,29 +1,35 @@
-import { Component, Input, Renderer2, Signal, ViewChildren, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize } from '../../../../selectors/settings.selector';
-import { AvailableLineHeights, AvailableTextSizes, LineHeight, SettingsActions, ShortcutActionId, TextFlow, TextSize } from '../../../settings/models/settings.model';
+import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
+import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, ShortcutActionId, SplitOrientation, SupportedTranslationLanguage, TextFlow, TextSize, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
 import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
-import { map } from 'rxjs';
 import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
-import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
+import { ViewerLanguageOptions, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
+import { PeerService } from '../../../peer/services/peer.service';
+import { Subject, map, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-recognition-control-sidebar',
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent {
+export class RecognitionControlSidebarComponent implements AfterViewInit, OnDestroy {
   @Input() showFullscreen = true;
   @Input() showTextFlow = true;
   @Input() showPip = true;
+  @Input() showRecognitionToggle = true;
   @ViewChildren('details') subMenus!: HTMLElement[];
+  private host: ElementRef<HTMLElement> = inject(ElementRef);
+  private drawerToggle?: HTMLInputElement;
   public textSize: Signal<TextSize>;
   public textSizeMax: Signal<boolean>;
   public textSizeMin: Signal<boolean>;
@@ -33,6 +39,7 @@ export class RecognitionControlSidebarComponent {
   public lineHeightMax: Signal<boolean>;
 
   public isBroadcasting: Signal<boolean | undefined>;
+  public showOriginalOnly: Signal<boolean>;
   public isObsStreaming: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
   public recognitionPaused: Signal<boolean | undefined>;
@@ -43,14 +50,77 @@ export class RecognitionControlSidebarComponent {
 
   public textFlow: Signal<TextFlow>;
 
+  // Translation signals
+  public isTranslatorSupported: boolean;
+  public offeredLanguages: Signal<string[]>;
+  public translationAvailable: Signal<boolean>;
+  public languageOptions: Signal<ViewerLanguageOptions>;
+  public translationSettings: Signal<TranslationSettings | undefined>;
+  public translationMode: Signal<TranslationDisplayMode>;
+  public targetLanguage: Signal<string>;
+  public availableLanguages: Signal<SupportedTranslationLanguage[]>;
+  // Viewers of a broadcast don't control the spoken language
+  public showSwap: Signal<boolean>;
+  public canSwap: Signal<boolean>;
+  public splitOrientation: Signal<SplitOrientation>;
+  public pipContent: Signal<PipContent>;
+  public pipSupported: boolean;
+
   private availableTextSizes = AvailableTextSizes;
   private availableLineHeights = AvailableLineHeights;
+  private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
               private shortcutsService: KeyboardShortcutsService,
               private fullScreenService: FullScreenService,
-              private documentPipService: DocumentPipService) {
+              private translatorService: ChromeTranslatorService,
+              private peerService: PeerService,
+              private documentPip: DocumentPipService) {
+    this.isTranslatorSupported = this.translatorService.isSupported();
+    this.offeredLanguages = toSignal(this.peerService.offeredLanguages$, { initialValue: [] });
+    // A viewer whose device can't translate can still show the broadcaster's translation
+    this.translationAvailable = computed(() => this.isTranslatorSupported || this.offeredLanguages().length > 0);
+    this.translationSettings = toSignal(this.store.select(selectTranslationSettings));
+    this.translationMode = computed(() => this.translationAvailable() ? (this.translationSettings()?.mode ?? 'off') : 'off');
+
+    const hostLang = toSignal(this.peerService.hostLanguage$);
+    const dialect = toSignal(this.store.select(dialectSelector));
+    const lang = toSignal(this.store.select(languageSelector));
+    const sourceLanguageCode = computed(() => {
+      const hl = hostLang();
+      if (hl) return this.translatorService.normalizeLanguageCode(hl);
+      const d = dialect();
+      if (d && d !== 'unspecified') return this.translatorService.normalizeLanguageCode(d);
+      return this.translatorService.normalizeLanguageCode(lang());
+    });
+
+    this.availableLanguages = computed(() => {
+      const src = sourceLanguageCode();
+      return AvailableTranslationLanguages.filter((l) => l.code !== src);
+    });
+    // The broadcaster's languages first, then those this device can translate into
+    this.languageOptions = computed(() => viewerLanguageOptions(AvailableTranslationLanguages, this.offeredLanguages(), sourceLanguageCode(), this.isTranslatorSupported));
+
+    this.targetLanguage = computed(() => {
+      return this.translationSettings()?.targetLanguage ?? fallbackTranslationTarget(sourceLanguageCode());
+    });
+
+    this.splitOrientation = computed(() => this.translationSettings()?.splitOrientation ?? DefaultSplitOrientation);
+    this.pipContent = computed(() => this.translationSettings()?.pipContent ?? DefaultPipContent);
+    this.pipSupported = this.documentPip.isSupported;
+
+    this.showSwap = computed(() => !hostLang());
+    this.canSwap = computed(() => isSpokenLanguage(this.targetLanguage()));
+
+    toObservable(sourceLanguageCode).pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((src) => {
+      const currentTgt = this.translationSettings()?.targetLanguage;
+      if (currentTgt === src) {
+        this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(src) }));
+      }
+    });
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.textSizeMax = computed(() => this.textSize() === this.availableTextSizes[this.availableTextSizes.length - 1]);
     this.textSizeMin = computed(() => this.textSize() === this.availableTextSizes[0]);
@@ -60,6 +130,8 @@ export class RecognitionControlSidebarComponent {
     this.lineHeightMin = computed(() => this.lineHeight() === this.availableLineHeights[0]);
 
     this.isBroadcasting = toSignal(this.store.select(selectIsBroadcasting));
+    // Original only is a choice for the host of a broadcast; it also shows where it is already the saved mode
+    this.showOriginalOnly = computed(() => !!this.isBroadcasting() || this.translationMode() === 'original-only');
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
     this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
 
@@ -79,6 +151,57 @@ export class RecognitionControlSidebarComponent {
   formatPairShortcut(action1: ShortcutActionId, action2: ShortcutActionId): string {
     return this.shortcutsService.formatPairShortcut(action1, action2);
   }
+
+  setTranslationMode(mode: TranslationDisplayMode): void {
+    this.store.dispatch(SettingsActions.setTranslationMode({ mode }));
+    this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled: mode !== 'off' }));
+  }
+
+  /** Switches translation on (back to split view when it was off) or off, as the switch on the Translation settings tab does */
+  setTranslationEnabled(enabled: boolean): void {
+    this.store.dispatch(SettingsActions.setTranslationEnabled({ enabled }));
+  }
+
+  swapLanguages(): void {
+    this.store.dispatch(SettingsActions.swapTranslationLanguages());
+  }
+
+  toggleOrientation(): void {
+    this.store.dispatch(SettingsActions.setSplitOrientation({ orientation: this.splitOrientation() === 'vertical' ? 'horizontal' : 'vertical' }));
+  }
+
+  /** Exchanges which pane is first; unlike swapLanguages it changes no language */
+  swapPanes(): void {
+    this.store.dispatch(SettingsActions.swapCaptionPanes());
+  }
+
+  setPipContent(content: PipContent): void {
+    this.store.dispatch(SettingsActions.setPipContent({ content }));
+  }
+
+  setTargetLanguage(targetLanguage: string): void {
+    this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage }));
+    if (this.translationMode() === 'off') {
+      this.setTranslationMode('split');
+    }
+  }
+
+  onTargetLanguageSelect(event: Event): void {
+    const value = (event.target as HTMLSelectElement)?.value;
+    if (value) {
+      this.setTargetLanguage(value);
+    }
+  }
+
+  /** Steps through the choices the menu offers; turning translation off is the switch, not a step */
+  cycleTranslationMode(): void {
+    const current = this.translationMode();
+    let next: TranslationDisplayMode = 'split';
+    if (current === 'split') next = 'translated-only';
+    else if (current === 'translated-only') next = this.showOriginalOnly() ? 'original-only' : 'split';
+    this.setTranslationMode(next);
+  }
+
 
   hideElements(elements: HTMLElement[]) {
     for (const el of elements) {
@@ -123,7 +246,7 @@ export class RecognitionControlSidebarComponent {
   }
 
   togglePip(): void {
-    if (this.showPip && this.documentPipService.isSupported) {
+    if (this.showPip && this.documentPip.isSupported) {
       this.shortcutsService.togglePip();
     }
   }
@@ -134,5 +257,31 @@ export class RecognitionControlSidebarComponent {
 
   clearScreen(): void {
     this.shortcutsService.clearScreen();
+  }
+
+  /**
+   * The menus are <details> pop-ups that open onto the page. Nothing closed them when the drawer slid away,
+   * leaving a pop-up that covered the drawer's trigger. The drawer is the checkbox of the enclosing daisyUI
+   * `.drawer`, and a click on the overlay or the trigger label changes it, so its `change` event is the moment
+   * to close them. (A browser reports a box that only touches the viewport edge as still intersecting, which
+   * is why watching the sidebar leave the screen did not work.)
+   */
+  ngAfterViewInit(): void {
+    this.drawerToggle = this.host.nativeElement.closest('.drawer')?.querySelector<HTMLInputElement>('input.drawer-toggle') ?? undefined;
+    this.drawerToggle?.addEventListener('change', this.onDrawerChange);
+  }
+
+  private onDrawerChange = (): void => {
+    if (this.drawerToggle && !this.drawerToggle.checked) this.closeMenus();
+  };
+
+  public closeMenus(): void {
+    const open: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('details[open]'));
+    this.hideElements(open);
+  }
+
+  ngOnDestroy(): void {
+    this.drawerToggle?.removeEventListener('change', this.onDrawerChange);
+    this.onDestroy$.next();
   }
 }

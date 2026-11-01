@@ -21,9 +21,6 @@ export const UserActions = createActionGroup({
     'Get Rooms Success': props<{rooms: UserRoom[]}>(),
     'Get Rooms Failure': props<{error: string}>(),
 
-    'Save Rooms': props<{rooms: UserRoom[], upsert?: boolean}>(),
-    'Save Rooms Success': props<{rooms: UserRoom[]}>(),
-    'Save Rooms Failure': props<{error: string}>(),
 
     'Save Sync Property': props<{sync: boolean}>(),
     'Save Sync Property Success': props<{sync: boolean}>(),

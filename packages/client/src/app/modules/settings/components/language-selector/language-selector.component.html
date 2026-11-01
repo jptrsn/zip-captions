@@ -1,7 +1,7 @@
 <label class="form-control" [formGroup]="group">
-  <span class="text-accent label" translate>LABELS.lang</span>
-  <select data-testid="zc-appearance-lang" class="select select-lg mt-1 w-full" [formControlName]="controlName">
+  <span class="text-accent label" translate>{{ label }}</span>
+  <select [attr.data-testid]="testId" class="select select-lg mt-1 w-full" [formControlName]="controlName">
+    <option *ngIf="includeSameAsSpoken" value="spoken" translate>LABELS.sameAsSpoken</option>
     <option *ngFor="let lang of languages" [value]="lang">{{ 'LANGUAGES.' + lang | translate }}</option>
   </select>
 </label>
-

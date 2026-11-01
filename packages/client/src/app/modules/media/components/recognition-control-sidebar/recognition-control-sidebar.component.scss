@@ -1,3 +1,15 @@
+// The translation menu's choices are extra-small buttons with text labels ("Split (Bilingual)", "Original and
+// translated"). A label that wraps must make its button taller, or the second line spills out of it.
+.dropdown-content .btn-xs:not(.btn-square) {
+  height: auto;
+  min-height: 1.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  line-height: 1.15;
+  white-space: normal;
+  text-align: center;
+}
+
 .menu {
   li {
     .btn {

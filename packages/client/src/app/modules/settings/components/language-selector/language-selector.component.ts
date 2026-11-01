@@ -12,5 +12,9 @@ import { AvailableLanguages } from '../../models/settings.model';
 export class LanguageSelectorComponent {
   @Input() group!: FormGroup
   @Input() controlName!: string;
+  @Input() label = 'LABELS.spokenLanguage';
+  @Input() testId = 'zc-appearance-lang';
+  /** Adds a first option that follows the spoken language (value 'spoken') */
+  @Input() includeSameAsSpoken = false;
   public languages = AvailableLanguages;
 }

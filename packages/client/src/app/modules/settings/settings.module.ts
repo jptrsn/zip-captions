@@ -34,6 +34,7 @@ import { RecognitionEngineComponent } from './components/recognition-engine/reco
 import { ProfanityFilterToggleComponent } from './components/profanity-filter-toggle/profanity-filter-toggle.component';
 import { RecognitionEngineSelectComponent } from '../../components/recognition-engine-select/recognition-engine-select.component';
 import { KeyboardShortcutsSettingsComponent } from './components/keyboard-shortcuts-settings/keyboard-shortcuts-settings.component';
+import { TranslationSettingsComponent } from './components/translation-settings/translation-settings.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { KeyboardShortcutsSettingsComponent } from './components/keyboard-shortc
     RecognitionEngineComponent,
     ProfanityFilterToggleComponent,
     KeyboardShortcutsSettingsComponent,
+    TranslationSettingsComponent,
   ],
   imports: [
     CommonModule,

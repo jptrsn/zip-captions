@@ -7,8 +7,14 @@
     <div class="text-sm text-accent flex flex-row text-center" translate>{{hintText}}</div>
   </div>
 
-  <div *ngFor="let text of renderedResults()" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()">
-    {{text}}
+  <div *ngFor="let line of renderedResults(); trackBy: trackLine" data-testid="zc-caption-line" @fadeInOnEnter @fadeOutOnLeave [classList]="classList()"
+       [attr.lang]="line.lang" [attr.dir]="line.dir">
+    <ng-container *ngIf="!line.pending; else pendingLine">
+      <span *ngIf="line.foreignLang" class="badge badge-neutral badge-sm me-2 align-middle uppercase opacity-70" aria-hidden="true" data-testid="zc-line-lang">{{line.foreignLang}}</span>{{line.text}}
+    </ng-container>
+    <ng-template #pendingLine>
+      <span class="caption-pending opacity-40" aria-hidden="true" data-testid="zc-line-pending">…</span>
+    </ng-template>
   </div>
   <div class="absolute top-0 left-0 right-0 bottom-0 flex flex-col gap-3 items-center justify-center" *ngIf="isPaused()">
     <div class="badge badge-warning px-6 py-3 text-center h-auto" translate>HINTS.recognitionPaused</div>

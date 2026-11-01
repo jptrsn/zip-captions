@@ -18,12 +18,12 @@
       <button data-testid="zc-cookie-reject" class="btn" (click)="decline()" [disabled]="accepted() || !!declinedDate()" translate>
         {{ !!declinedDate() ? "BUTTONS.rejected" : "BUTTONS.reject" }}
       </button>
-      <button data-testid="zc-cookie-accept" class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()" aria-label="Accept cookies">
+      <button data-testid="zc-cookie-accept" class="btn" [ngClass]="{'btn-primary': !accepted(), 'btn-info': accepted()}" (click)="accept()">
         {{ (accepted() ? "BUTTONS.accepted" : "BUTTONS.acceptAll") | translate }} 
       </button>
     </div>
   </form>
   <form method="dialog" class="modal-backdrop">
-    <button #close [attr.aria-label]="'closeCookieModal' | translate"></button>
+    <button #close [attr.aria-label]="'COOKIES.MODAL.close' | translate" data-testid="zc-cookie-close"></button>
   </form>
 </dialog>

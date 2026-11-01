@@ -8,9 +8,9 @@ import { fadeInOnEnterAnimation, fadeOutOnLeaveAnimation } from 'angular-animati
 import { Subject, combineLatest, filter, map, startWith, takeUntil } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
-import { dialectSelector, languageSelector, selectAppSettings, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
+import { dialectSelector, languageSelector, selectAppSettings, selectUiLanguage, selectUiLanguagePreference, selectFontFamily, selectLineHeight, selectRenderHistoryLength, selectTextSize, themeSelector, wakeLockEnabledSelector } from '../../../../selectors/settings.selector';
 import { selectUserSettingsSync } from '../../../../selectors/user.selector';
-import { AppTheme, FontFamily, FontFamilyClassMap, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextSize } from '../../models/settings.model';
+import { AppTheme, FontFamily, FontFamilyClassMap, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextSize, UiLanguagePreference } from '../../models/settings.model';
 import { UserActions } from '../../../../actions/user.actions';
 
 @Component({
@@ -26,6 +26,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup<{
     theme: FormControl<AppTheme | null>,
     lang: FormControl<InterfaceLanguage | null>,
+    uiLanguage: FormControl<UiLanguagePreference | null>,
     dialect: FormControl<RecognitionDialect | null>,
     font: FormControl<FontFamily | null>,
     wakelock: FormControl<boolean | undefined | null>,
@@ -45,6 +46,8 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   private currentTheme: Signal<AppTheme>;
   private language: Signal<InterfaceLanguage>;
+  private uiLanguage: Signal<InterfaceLanguage>;
+  private uiLanguagePreference: Signal<UiLanguagePreference>;
   private dialect: Signal<RecognitionDialect | undefined>;
   private wakeLockEnabled: Signal<boolean | undefined>;
   private currentTextSize: Signal<TextSize>;
@@ -61,6 +64,8 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
               private translate: TranslateService) {
     this.currentTheme = toSignal(this.store.select(themeSelector)) as Signal<AppTheme>;
     this.language = toSignal(this.store.select(languageSelector)) as Signal<InterfaceLanguage>;
+    this.uiLanguage = toSignal(this.store.select(selectUiLanguage)) as Signal<InterfaceLanguage>;
+    this.uiLanguagePreference = toSignal(this.store.select(selectUiLanguagePreference)) as Signal<UiLanguagePreference>;
     this.wakeLockEnabled = toSignal(this.store.select(wakeLockEnabledSelector));
     this.currentTextSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.currentLineHeight = toSignal(this.store.select(selectLineHeight)) as Signal<LineHeight>;
@@ -74,6 +79,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     this.formGroup = this.fb.group({
       theme: this.fb.control(this.currentTheme()),
       lang: this.fb.control(this.language()),
+      uiLanguage: this.fb.control(this.uiLanguagePreference()),
       dialect: this.fb.control(this.dialect() || null),
       font: this.fb.control(this.fontFamily()),
       wakelock: this.fb.control(this.wakeLockEnabled()),
@@ -109,12 +115,17 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
         this.renderer.setAttribute(this.el.nativeElement, 'data-theme', theme);
       }
     });
-    this.formGroup.get('lang')?.valueChanges.pipe(
+    // Preview the interface language: the spoken language unless a separate one is chosen
+    combineLatest([
+      this.formGroup.get('lang')!.valueChanges.pipe(startWith(this.language())),
+      this.formGroup.get('uiLanguage')!.valueChanges.pipe(startWith(this.uiLanguagePreference())),
+    ]).pipe(
       takeUntil(this.onDestroy$)
-    ).subscribe((lang: InterfaceLanguage | null) => {
-      if (lang) {
-        this.translate.use(lang).subscribe(() => {
-          // console.log('used lang', lang)
+    ).subscribe(([lang, uiLanguage]: [InterfaceLanguage | null, UiLanguagePreference | null]) => {
+      const preview = (!uiLanguage || uiLanguage === 'spoken') ? lang : uiLanguage;
+      if (preview) {
+        this.translate.use(preview).subscribe(() => {
+          // console.log('used lang', preview)
         })
       }
     });
@@ -133,7 +144,7 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.formGroup.dirty) {
-      this.translate.use(this.language());
+      this.translate.use(this.uiLanguage());
     }
     this.onDestroy$.next();
   }
@@ -151,6 +162,10 @@ export class UiSettingsComponent implements OnInit, OnDestroy {
     // TODO: Refactor save functionality to write entire settings object
     const theme: AppTheme = this.formGroup.controls['theme'].value as AppTheme;
     this.store.dispatch(SettingsActions.setTheme({theme}));
+
+    // Interface language first, so applying the spoken language sees the new preference
+    const uiLanguage = (this.formGroup.controls['uiLanguage'].value ?? 'spoken') as UiLanguagePreference;
+    this.store.dispatch(SettingsActions.setUiLanguage({uiLanguage}))
 
     const language: InterfaceLanguage = this.formGroup.controls['lang'].value as InterfaceLanguage;
     this.store.dispatch(SettingsActions.setLanguage({language}))

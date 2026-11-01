@@ -28,6 +28,10 @@
       <span>{{ room.expires | timeago }}</span>
     </div>
     <div class="flex flex-row justify-end items-center gap-1 mt-3">
+      <button class="btn btn-primary btn-sm" data-testid="zc-room-start-broadcast" (click)="startBroadcast()">
+        <ng-icon name="tablerBuildingBroadcastTower"></ng-icon>
+        <span translate>STREAM.createBroadcast</span>
+      </button>
       <button class="btn btn-secondary btn-sm" (click)="showEditMode()">
         <ng-icon name="heroPencilSquare"></ng-icon>
         <span translate>BUTTONS.edit</span>
@@ -38,7 +42,7 @@
     </div>
   </div>
   <div class="flex flex-row justify-center items-center p-1">
-    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied()" [cbContent]="'https://zipcaptions.app/stream/' + room.roomId" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{'https://zipcaptions.app/stream/' + room.roomId}}</div>
+    <div class="text-xs tooltip tooltip-secondary" ngxClipboard (cbOnSuccess)="copied()" [cbContent]="directLink" [attr.data-tip]="'STREAM.copyIdTip' | translate">{{ directLink }}</div>
   </div>
 </div>
 
@@ -72,6 +76,7 @@
         </select>
       </div>
     </div>
+    <p class="px-3 text-sm text-error text-right" role="alert" data-testid="zc-room-delete-error" *ngIf="deleteFailed()" translate>STREAM.ROOMCARD.deleteFailed</p>
     <div class="p-3 flex items-center justify-end gap-6">
       <button type="button" class="btn btn-sm btn-accent" *ngIf="room && room.roomId" (click)="deleteRoom(room.roomId)" [disabled]="loading()" translate>BUTTONS.delete</button>
       <button type="button" class="btn btn-sm" translate (click)="closeEditMode()" [disabled]="loading()">BUTTONS.cancel</button>

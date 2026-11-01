@@ -1,51 +1,216 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { PeerActions } from '../../../../actions/peer.actions';
+import { UserRoom } from '../../../../reducers/user.reducer';
+import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
+import { selectMyBroadcastRooms } from '../../../../selectors/peer.selectors';
+import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 import { StartBroadcastComponent } from './start-broadcast.component';
-import { FormsModule } from '@angular/forms';
-import { PeerService } from '../../services/peer.service';
-import { of } from 'rxjs';
+
+const room = (roomId: string, extra: Partial<UserRoom> = {}): UserRoom => ({ roomId, createdAt: '2026-01-01', ...extra });
 
 describe('StartBroadcastComponent', () => {
   let component: StartBroadcastComponent;
   let fixture: ComponentFixture<StartBroadcastComponent>;
-  let peerService: PeerService;
+  let store: MockStore;
+  let dispatch: jest.SpyInstance;
+
+  const create = (rooms: UserRoom[] | undefined = undefined, loggedIn = false) => {
+    store.overrideSelector(selectMyBroadcastRooms, rooms as UserRoom[]);
+    store.overrideSelector(selectUserLoggedIn, loggedIn);
+    store.refreshState();
+    fixture = TestBed.createComponent(StartBroadcastComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('acceptedPeerConnections', signal(true));
+    fixture.componentRef.setInput('isMobileDevice', signal(false));
+    fixture.componentRef.setInput('isIncompatibleBrowser', signal(false));
+    fixture.componentRef.setInput('disabled', false);
+    fixture.detectChanges();
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [...TestingModuleImports],
       declarations: [StartBroadcastComponent],
-      providers: [
-        {
-          provide: PeerService,
-          useValue: {
-            createRoom: jest.fn().mockReturnValue(of('room123'))
-          }
-        }
-      ]
+      providers: [...TestingModuleProviders],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(StartBroadcastComponent);
-    component = fixture.componentInstance;
-    peerService = TestBed.inject(PeerService);
-    fixture.detectChanges();
+    store = TestBed.inject(Store) as MockStore;
+    dispatch = jest.spyOn(store, 'dispatch');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should validate form inputs', () => {
-    component.formGroup.controls['room'].setValue('testRoom');
-    component.formGroup.controls['useAthentication'].setValue(true);
-    fixture.detectChanges();
+  it('requires sign-in to join by default, and does not send a room id when none is chosen', () => {
+    create();
     component.createRoom();
-    expect(peerService.joinRoom).toHaveBeenCalledWith({ roomId: 'testRoom', allowAnonymous: true });
+    expect(dispatch).toHaveBeenCalledWith(PeerActions.createBroadcastRoom({ myBroadcast: true, allowAnonymous: false }));
   });
 
-  it('should handle empty room ID', () => {
-    component.formGroup.controls['room'].setValue('');
-    component.formGroup.controls['useAthentication'].setValue(false);
-    fixture.detectChanges();
+  it('allows anonymous viewers when the sign-in requirement is switched off', () => {
+    create();
+    component.formGroup.controls['useAuthentication'].setValue(false);
     component.createRoom();
-    expect(peerService.joinRoom).not.toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalledWith(PeerActions.createBroadcastRoom({ myBroadcast: true, allowAnonymous: true }));
+  });
+
+  it('sends the chosen room id', () => {
+    create();
+    component.formGroup.controls['room'].setValue('AB-1234-5678');
+    component.createRoom();
+    expect(dispatch).toHaveBeenCalledWith(PeerActions.createBroadcastRoom({ myBroadcast: true, allowAnonymous: false, roomId: 'AB-1234-5678' }));
+  });
+
+  it('follows the saved room\'s anonymous setting, ignoring case, when a room is picked', () => {
+    create([room('AB-1234-5678', { allowAnonymous: true }), room('CD-1234-5678', { allowAnonymous: false })]);
+    component.formGroup.controls['room'].setValue('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+    component.formGroup.controls['room'].setValue('cd-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('preselects the static room once the rooms are known', () => {
+    create([room('AB-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+  });
+
+  it('preselects the room chosen in the settings over the static room', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
+  it('preselects the requested room, and its join code setting, when the rooms arrive after the screen has loaded', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create(undefined);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    // an anonymous room does not require the join code
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+  });
+
+  it('preselects the requested room when an empty list arrives first and the real one after it', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([]);
+    expect(component.formGroup.controls['room'].value).toBeNull();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('preselects the static room when the list arrives after an empty one, and leaves a room the user picked alone', () => {
+    create([]);
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+
+    component.formGroup.controls['room'].setValue('ab-1234-5678');
+    component.formGroup.controls['room'].markAsDirty();
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true }), room('cd-0000-1111')]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+  });
+
+  it('follows an edit of the room\'s join code setting when the refreshed list arrives after the screen started with the old one', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    // the copy of the list left from the last visit still has the old setting: anonymous viewers allowed
+    create([room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(false);
+
+    // the room was edited to require the join code; the refresh from the server says so
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: false }), room('ST-0000-0000', { isStatic: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['room'].value).toBe('ab-1234-5678');
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('does not override the join code choice the user made on this screen when the list is refreshed', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    create([room('ab-1234-5678', { allowAnonymous: true })]);
+    component.formGroup.controls['useAuthentication'].setValue(true);
+    component.formGroup.controls['useAuthentication'].markAsDirty();
+
+    store.overrideSelector(selectMyBroadcastRooms, [room('ab-1234-5678', { allowAnonymous: true })]);
+    store.refreshState();
+    expect(component.formGroup.controls['useAuthentication'].value).toBe(true);
+  });
+
+  it('keeps the room shown in the select when the server sends the list again, as new objects', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'ab-1234-5678' };
+    const rooms = () => [room('ab-1234-5678', { allowAnonymous: true }), room('ST-0000-0000', { isStatic: true })];
+    create(rooms());
+    const select = () => fixture.nativeElement.querySelector('[data-testid="zc-share-start"]') as HTMLSelectElement;
+    expect(select().value).toBe('ab-1234-5678');
+
+    for (let i = 0; i < 2; i++) {
+      store.overrideSelector(selectMyBroadcastRooms, rooms());
+      store.refreshState();
+      fixture.detectChanges();
+      expect(select().value).toBe('ab-1234-5678');
+    }
+    expect(component.trackRoom(0, room('ab-1234-5678'))).toBe('ab-1234-5678');
+  });
+
+  it('falls back to the static room when the requested room is not one of the user\'s', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    route.snapshot.queryParams = { room: 'zz-9999-9999' };
+    create([room('ab-1234-5678'), room('ST-0000-0000', { isStatic: true })]);
+    expect(component.formGroup.controls['room'].value).toBe('ST-0000-0000');
+  });
+
+  it('asks for the user\'s rooms when already signed in', () => {
+    create(undefined, true);
+    expect(dispatch).toHaveBeenCalledWith(PeerActions.getBroadcastRooms());
+  });
+
+  it('does not ask for rooms when signed out', () => {
+    create(undefined, false);
+    expect(dispatch).not.toHaveBeenCalledWith(PeerActions.getBroadcastRooms());
+  });
+
+  it('disables the form while the parent is disabled and enables it again', () => {
+    create();
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    expect(component.formGroup.disabled).toBe(true);
+    fixture.componentRef.setInput('disabled', false);
+    fixture.detectChanges();
+    expect(component.formGroup.enabled).toBe(true);
+  });
+
+  it('explains the broadcast on a compatible desktop browser, without a warning', () => {
+    create();
+    expect(fixture.nativeElement.querySelector('.text-warning')).toBeFalsy();
+    expect(fixture.nativeElement.querySelector('.text-xl')).toBeTruthy();
+  });
+
+  it.each([
+    ['a mobile device', 'isMobileDevice'],
+    ['an incompatible browser', 'isIncompatibleBrowser'],
+  ])('shows a single warning instead of the explanation on %s', (_name, input) => {
+    create();
+    fixture.componentRef.setInput(input, signal(true));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.text-warning').length).toBe(1);
+    expect(fixture.nativeElement.querySelector('.text-xl')).toBeFalsy();
+  });
+
+  it('shows no warning before the browser has accepted peer connections', () => {
+    create();
+    fixture.componentRef.setInput('isIncompatibleBrowser', signal(true));
+    fixture.componentRef.setInput('acceptedPeerConnections', signal(false));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.text-warning')).toBeFalsy();
   });
 });

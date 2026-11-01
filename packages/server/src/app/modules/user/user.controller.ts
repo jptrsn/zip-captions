@@ -2,6 +2,7 @@ import { CacheKey } from '@nestjs/cache-manager';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { Error as MongooseError } from 'mongoose';
 import { NoCache } from '../../decorators/no-cache.decorator';
 import { AzureOAuthGuard } from '../../guards/azure-oauth.guard';
 import { GoogleOAuthGuard } from '../../guards/google-oauth.guard';
@@ -140,7 +141,15 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async saveSettings(@Req() req, @Param() params: { id: string}, @Body() body): Promise<Partial<UiSettings>> {
     this._validateParam(req, params);
-    const settings = await this.uiSettingsService.upsert({...body.settings, ownerId: params.id });
+    let settings: UiSettingsDocument;
+    try {
+      settings = await this.uiSettingsService.upsert({...body.settings, ownerId: params.id });
+    } catch (err) {
+      if (err instanceof MongooseError.ValidationError) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      }
+      throw err;
+    }
     const pruned = this._pruneSettingsFields(settings);
     this._updateCachedResponse(UserController.SETTINGS_CACHE_KEY, params, pruned);
     return pruned;

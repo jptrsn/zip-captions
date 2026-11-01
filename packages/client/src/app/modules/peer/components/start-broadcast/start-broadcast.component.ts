@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, effect, Input, OnChanges, Signal, SimpleChanges } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, Observable, take } from 'rxjs';
 import { PeerActions } from '../../../../actions/peer.actions';
@@ -29,7 +30,8 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
   private broadcastRooms$: Observable<UserRoom[] | undefined>;
   
   constructor(private store: Store<AppState>,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private route: ActivatedRoute) {
     this.broadcastRooms$ = this.store.select(selectMyBroadcastRooms);
     this.userRooms = toSignal(this.broadcastRooms$);
     this.formGroup = this.fb.group({
@@ -63,17 +65,42 @@ export class StartBroadcastComponent implements AfterViewInit, OnChanges {
           }
         }
       })
+
+    // The screen starts with the copy of the list left from the last visit, and the server's refresh follows. The
+    // room's join code setting may have been edited in between, so a refreshed list updates the checkbox too,
+    // unless the user has chosen for themselves on this screen.
+    this.broadcastRooms$.pipe(takeUntilDestroyed()).subscribe((rooms) => {
+      const roomId = this.formGroup.controls['room'].value?.toLowerCase();
+      const room = roomId ? rooms?.find((r) => r.roomId.toLowerCase() === roomId) : undefined;
+      const requireCode = this.formGroup.controls['useAuthentication'];
+      if (room && !requireCode.dirty) {
+        requireCode.setValue(!room.allowAnonymous);
+      }
+    });
+  }
+
+  /**
+   * The server sends the whole list again on every refresh, as new objects. Without a key per room the options
+   * are rebuilt each time, and the select forgets which one is chosen while the form still holds it.
+   */
+  public trackRoom(_index: number, room: UserRoom): string {
+    return room.roomId;
   }
 
   ngAfterViewInit(): void {
+    // The first list can be empty (nothing has come back from the server yet), so wait for one with rooms in it;
+    // taking the first list of any kind left the room unselected, and a room the user picks meanwhile is theirs
     this.broadcastRooms$.pipe(
-      filter((rooms) => !!rooms),
+      filter((rooms) => !!rooms && rooms.length > 0),
       take(1))
     .subscribe((rooms) => {
-      const staticRoom = rooms?.find((r: UserRoom) => r.isStatic);
-      if (staticRoom) {
-        // console.log('updating form controls', staticRoom.roomId)
-        this.formGroup.controls['room'].setValue(staticRoom.roomId);
+      if (this.formGroup.controls['room'].dirty) return;
+      // A room chosen in the settings (its Start Broadcast button) wins over the default static room
+      const requested = this.route.snapshot.queryParams['room']?.toLowerCase();
+      const chosen = (requested && rooms?.find((r: UserRoom) => r.roomId.toLowerCase() === requested))
+        || rooms?.find((r: UserRoom) => r.isStatic);
+      if (chosen) {
+        this.formGroup.controls['room'].setValue(chosen.roomId);
       }
     });
   }

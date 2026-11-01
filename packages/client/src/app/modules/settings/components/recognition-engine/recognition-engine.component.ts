@@ -1,4 +1,5 @@
 import { Component, computed, effect, signal, Signal, WritableSignal } from '@angular/core';
+import { startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -10,7 +11,7 @@ import { selectUserLoggedIn } from '../../../../selectors/auth.selectors';
 import { selectProfanityFilterEnabled, selectRecognitionEngineProvider } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector } from '../../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../../selectors/user.selector';
-import { DefaultDialects, InterfaceLanguage, RecognitionDialect, SettingsActions } from '../../models/settings.model';
+import { DefaultDialects, InterfaceLanguage, RecognitionDialect, SettingsActions, isBilingualDialect } from '../../models/settings.model';
 
 interface ProviderOption {
   value: string;
@@ -39,6 +40,8 @@ export class RecognitionEngineComponent {
 	public profanityFilterEnabled: Signal<boolean | undefined>;
 	public patreonUrl = 'https://patreon.com/zipcaptions';
   public selectedOption: Signal<ProviderOption | undefined>;
+  // The selected Azure dialect's model also recognizes English
+  public isBilingual: Signal<boolean>;
 	public group: FormGroup<{
 		provider: FormControl<RecognitionEngineState['provider'] | null | undefined>,
 		dialect: FormControl<RecognitionDialect | null | undefined>,
@@ -84,6 +87,9 @@ export class RecognitionEngineComponent {
 				this.group.controls['dialect'].setValue(d)
 			}
 		})
+
+		const formDialect = toSignal(this.group.controls['dialect'].valueChanges.pipe(startWith(this.group.controls['dialect'].value)));
+		this.isBilingual = computed(() => isBilingualDialect(formDialect()));
 
 		const formProvider = toSignal(this.group.controls['provider'].valueChanges);
 		this.provider = computed(() => {

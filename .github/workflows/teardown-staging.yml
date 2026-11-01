@@ -1,0 +1,65 @@
+name: Tear down staging
+
+# Staging exists only while a release candidate does (aidlc-docs/construction/u12-release-and-staging):
+# deleting the release/* branch ends it, and the workflow can also be run by hand for an abandoned candidate.
+# It deletes every resource in the staging resource group and nothing else. The group itself stays: it is the
+# permission boundary of the service principal, holds nothing, and costs nothing.
+on:
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Shares the deploy workflow's group: a teardown waits for a running deploy and the other way round
+concurrency:
+  group: staging-environment
+  cancel-in-progress: false
+
+jobs:
+  teardown:
+    name: Remove staging
+    # A delete event fires for every branch and tag; only a release branch matters
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    env:
+      RESOURCE_GROUP: ${{ vars.STAGING_RESOURCE_GROUP || 'ZipCaptions-Staging' }}
+    steps:
+      - name: Refuse anything that is not the staging resource group
+        run: |
+          case "${RESOURCE_GROUP,,}" in
+            *staging*) ;;
+            *) echo "::error::'$RESOURCE_GROUP' is not a staging resource group; refusing to delete from it"; exit 1 ;;
+          esac
+
+      - name: Log in to Azure
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          # Not named AZURE_CREDENTIALS: that is production's repository secret, which a job would silently fall back to
+          creds: ${{ secrets.STAGING_AZURE_CREDENTIALS }}
+
+      # Resources depend on each other (apps on their environment, the environment on the log workspace), so a delete
+      # can fail until another has gone: repeat until the group is empty
+      - name: Delete everything in the group
+        run: |
+          set -uo pipefail
+          for round in 1 2 3 4 5 6; do
+            ids=$(az resource list --resource-group "$RESOURCE_GROUP" --query '[].id' -o tsv)
+            if [ -z "$ids" ]; then echo "The group is empty."; break; fi
+            echo "Round $round:"; echo "$ids"
+            for id in $ids; do
+              az resource delete --ids "$id" --verbose || echo "could not delete $id yet"
+            done
+          done
+          left=$(az resource list --resource-group "$RESOURCE_GROUP" --query '[].id' -o tsv)
+          if [ -n "$left" ]; then echo "::error::left behind: $left"; exit 1; fi
+
+      - name: What to do next
+        run: |
+          {
+            echo "## Staging is gone"
+            echo
+            echo "Delete the DNS records for this candidate if they still exist: \`next.zipcaptions.app\`, \`next-api.zipcaptions.app\` and \`asuid.next-api.zipcaptions.app\`. A CNAME left pointing at a deleted Azure hostname is a dangling record."
+          } >> "$GITHUB_STEP_SUMMARY"

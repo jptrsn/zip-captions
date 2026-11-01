@@ -14,6 +14,24 @@
   },
   "DIALECTS": {
     "unspecified": "Genérico",
+    "ar-AE": "Árabe (Emiratos Árabes Unidos)",
+    "ar-BH": "Árabe (Baréin)",
+    "ar-DZ": "Árabe (Argelia)",
+    "ar-EG": "Árabe (Egipto)",
+    "ar-IL": "Árabe (Israel)",
+    "ar-IQ": "Árabe (Irak)",
+    "ar-JO": "Árabe (Jordania)",
+    "ar-KW": "Árabe (Kuwait)",
+    "ar-LB": "Árabe (Libán)",
+    "ar-LY": "Árabe (Libya)",
+    "ar-MA": "Árabe (Marruecos)",
+    "ar-OM": "Árabe (Omán)",
+    "ar-PS": "Árabe (Autoridad Palestina)",
+    "ar-QA": "Árabe (Qatar)",
+    "ar-SA": "Árabe (Arabia Saudita)",
+    "ar-SY": "Árabe (Siria)",
+    "ar-TN": "Árabe (Túnez)",
+    "ar-YE": "Árabe (Yemen)",
     "en-AU": "Inglés (Australia)",
     "en-CA": "inglés (Canadá)",
     "en-GB": "inglés (Reino Unido)",
@@ -65,24 +83,6 @@
     "id-ID": "indonesio (Indonesia)",
     "pl-PL": "polaco (Polonia)",
     "uk-UA": "ucraniano (Ucrania)",
-    "ar-AE": "Árabe (Emiratos Árabes Unidos)",
-    "ar-BH": "Árabe (Baréin)",
-    "ar-DZ": "Árabe (Argelia)",
-    "ar-EG": "Árabe (Egipto)",
-    "ar-IL": "Árabe (Israel)",
-    "ar-IQ": "Árabe (Irak)",
-    "ar-JO": "Árabe (Jordania)",
-    "ar-KW": "Árabe (Kuwait)",
-    "ar-LB": "Árabe (Libán)",
-    "ar-LY": "Árabe (Libya)",
-    "ar-MA": "Árabe (Marruecos)",
-    "ar-OM": "Árabe (Omán)",
-    "ar-PS": "Árabe (Autoridad Palestina)",
-    "ar-QA": "Árabe (Qatar)",
-    "ar-SA": "Árabe (Arabia Saudita)",
-    "ar-SY": "Árabe (Siria)",
-    "ar-TN": "Árabe (Túnez)",
-    "ar-YE": "Árabe (Yemen)",
     "zh-CN": "Chino (Mandarin, Simplificado)",
     "zh-CN-shandong": "Chino (Jilu Mandarin, Simplificado)",
     "zh-CN-sichuan": "China (Mandarin del suroeste, Simplificado)",
@@ -143,7 +143,8 @@
       "title": "Este sitio web utiliza cookies",
       "p1": "Utilizamos cookies para proporcionar la funcionalidad del sitio web. Solo almacenamos las cookies estrictamente necesarias, requeridas para permitir la funcionalidad de estas aplicaciones (por ejemplo, ajustes personalizados, etc.).",
       "p2": "No rastreamos ni almacenamos cookies no funcionales en su dispositivo",
-      "p3": "Consulta nuestra política de cookies para obtener más detalles"
+      "p3": "Consulta nuestra política de cookies para obtener más detalles",
+      "close": "Cerrar el aviso de cookies"
     },
     "POLICY": {
       "title": "Política de cookies",
@@ -210,7 +211,6 @@
     "4.3": "Si envía información personal para su publicación en nuestro sitio web, publicaremos y utilizaremos esa información de acuerdo con la licencia que nos otorga",
     "4.4": "Su configuración de privacidad se puede usar para limitar la publicación de su información en nuestro sitio web y se puede ajustar mediante los controles de privacidad en el sitio web",
     "4.5": "Sin su consentimiento expreso, no proporcionaremos su información personal a ningún tercero con el fin de su comercialización directa o la de cualquier otro tercero",
-    "4.6": "Todas las transacciones financieras de nuestro sitio web se manejan a través de nuestro proveedor de servicios de pago, nombre del PSP. Puede revisar la política de privacidad del proveedor en URL. Compartiremos información con nuestro proveedor de servicios de pago solo en la medida necesaria para los fines de procesar los pagos que realiza a través de nuestro sitio web, reembolsar dichos pagos y tratar las quejas y consultas relacionadas con dichos pagos y reembolsos",
     "5.1": "Podemos divulgar su información personal a cualquiera de nuestros empleados, funcionarios, aseguradores, asesores profesionales, agentes, proveedores o subcontratistas en la medida en que sea razonablemente necesario para los fines establecidos en esta política",
     "5.2": "Podemos revelar su información personal a cualquier miembro de nuestro grupo de empresas (esto significa nuestras filiales, nuestra sociedad de cartera última y todas sus filiales) en la medida en que sea razonablemente necesario para los fines establecidos en esta política.",
     "5.3": "Podemos revelar su información personal:",
@@ -333,12 +333,59 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "Mira y siente",
+      "shortcuts": "Shortcuts",
+      "transcription": "Transcripción",
+      "translation": "Traducción",
       "sync": "Sincronización",
       "sharing": "Intercambio",
       "obs": "Estudio OBS",
-      "transcription": "Transcripción",
-      "engine": "El motor",
-      "shortcuts": "Shortcuts"
+      "engine": "El motor"
+    },
+    "TRANSLATION": {
+      "enable": "Traducción en vivo",
+      "on": "Traducción activada",
+      "off": "Traducción desactivada",
+      "targetLang": "Traducir a",
+      "displayMode": "Diseño de subtítulos",
+      "modeSplit": "Dividido (bilingüe)",
+      "modeSplitDesc": "Subtítulos originales y traducidos en dos paneles",
+      "modeTranslatedOnly": "Solo traducción",
+      "modeTranslatedOnlyDesc": "Mostrar solo los subtítulos traducidos",
+      "modeOriginalOnly": "Solo original",
+      "modeOriginalOnlyDesc": "Muestra solo el idioma hablado en esta pantalla. Los espectadores de una transmisión siguen recibiendo la traducción.",
+      "statusTitle": "Estado de la IA en el dispositivo de Chrome",
+      "statusReady": "Modelo listo (en el dispositivo)",
+      "statusDownloadable": "Descarga requerida",
+      "statusDownloading": "Descargando modelo...",
+      "statusError": "Error del modelo",
+      "statusUnsupported": "Navegador no compatible",
+      "downloadButton": "Descargar modelo de traducción",
+      "downloadPrompt": "Descargue el modelo de idioma en el dispositivo para habilitar la traducción",
+      "downloadingModel": "Descargando el modelo de traducción por IA directamente en su dispositivo...",
+      "privacyNotice": "La traducción se realiza por completo en tu dispositivo mediante los modelos de idioma integrados de Chrome, por lo que ningún servicio de traducción recibe tu texto.",
+      "privacyNoticeSpeech": "El reconocimiento de voz es independiente y, según el motor de voz que elijas, el audio puede procesarse en la nube.",
+      "modelsTitle": "Modelos de traducción",
+      "modelsPerPair": "Cada par de idiomas utiliza su propio modelo de traducción, que Chrome descarga la primera vez que lo usas.",
+      "modelPerPairNotice": "Descarga única para este par de idiomas",
+      "translationFailing": "La traducción no funciona en este momento. Recargar la página podría solucionarlo.",
+      "resetBySpokenLanguage": "Cambió el idioma hablado, por lo que la traducción se desactivó. Actívala de nuevo para elegir un nuevo idioma de traducción.",
+      "unsupportedHint": "La API de traducción de Chrome solo está disponible en navegadores Chromium de escritorio compatibles (Chrome 138+ / Edge). Es posible que deba activar chrome://flags/#translation-api.",
+      "experimental": "Función experimental",
+      "unsupportedMobileHint": "La traducción en el dispositivo solo está disponible en navegadores de escritorio (Chrome 138+ o Edge 148+) y no se admite en teléfonos ni tabletas.",
+      "swapLanguages": "Intercambiar el idioma hablado y el idioma de traducción",
+      "swapUnavailable": "El reconocimiento de voz no está disponible para este idioma.",
+      "modelsManagedByChrome": "Chrome gestiona los modelos de traducción descargados y puede eliminarlos para liberar espacio.",
+      "learnMore": "Más información",
+      "splitOrientation": "Orientación dividida",
+      "orientationSideBySide": "Lado a lado",
+      "orientationStacked": "Apilado",
+      "swapPanes": "Intercambiar los paneles original y traducido",
+      "paneOriginal": "Subtítulos originales",
+      "paneTranslated": "Subtítulos traducidos",
+      "pipContent": "Picture-in-Picture muestra",
+      "pipContentOriginal": "Solo original",
+      "pipContentTranslated": "Solo traducido",
+      "pipContentSplit": "Original y traducido"
     },
     "UI": {
       "t1": "Avance",
@@ -378,7 +425,12 @@
     },
     "PROVIDER": {
       "title": "Proveedor de API",
-      "description": "Seleccione cuál proveedor de servicios le gustaría utilizar para procesar de forma segura los resultados de audio y devolución. Los diferentes motores varían en velocidad, calidad y coste. Nosotros hacemos lo mejor posible para traerle la mayor cantidad de opciones posible mientras mantendremos las cosas tan libres como podemos.",
+      "description": "Selecciona el proveedor de servicios que deseas utilizar para procesar el audio de forma segura y devolver los resultados. Los distintos motores varían en velocidad, calidad y costo. Hacemos todo lo posible por ofrecerte la mayor cantidad de opciones posible, manteniendo las cosas lo más gratuitas que podemos.",
+      "balance": "tu equilibrio",
+      "dialectRequired": "NOTA: Este proveedor requiere un dialecto seleccionado. con sus configuraciones actuales, usará el dialecto de",
+      "acquire": "Nuestros seguidores de Patreon reciben tokens gratuitos automáticamente cada mes.",
+      "setSuccess": "El proveedor cambió con éxito",
+      "requestTokens": "Solicitar tokens gratuitos",
       "web": {
         "label": "El navegador (Chrome y Safari)",
         "description": "Con el proveedor de navegador, Zip Captions enviará datos de audio desde su dispositivo directamente a su proveedor de navegador utilizando la API de habla web.",
@@ -389,16 +441,13 @@
         "description": "Con el proveedor de Servicios Cognitivos de Azure, Zip Captions enviará datos de audio desde su dispositivo directamente a la API de Microsoft utilizando un socket web seguro.",
         "cost": "Rate: 60 tokens por minuto"
       },
-      "dialectRequired": "NOTA: Este proveedor requiere un dialecto seleccionado. con sus configuraciones actuales, usará el dialecto de",
-      "setSuccess": "El proveedor cambió con éxito",
-      "balance": "tu equilibrio",
-      "acquire": "Nuestros seguidores de Patreon reciben tokens gratuitos automáticamente cada mes.",
-      "requestTokens": "Solicitar tokens gratuitos"
+      "bilingualHint": "Este dialecto también reconoce el inglés.",
+      "bilingualLanguageHint": "El idioma que se hable de los dos se muestra en ese idioma en los subtítulos en vivo."
     }
   },
   "STREAM": {
     "TABS": {
-      "broadcast": "Share",
+      "broadcast": "Compartir",
       "view": "Watch"
     },
     "serverStatus": "Servidor de difusión",
@@ -431,6 +480,9 @@
     "authentication": "Autenticación",
     "authDescription": "Requerir que los espectadores ingresen el código para unirse",
     "countdown": "Tiempo restante",
+    "fromBroadcaster": "Traducido por el emisor",
+    "showTranslation": "Mostrar traducción",
+    "translatedOnDevice": "Traducido en este dispositivo",
     "ROOMCARD": {
       "broadcastId": "ID de transmisión",
       "broadcastType": "Tipo de transmisión",
@@ -447,7 +499,8 @@
       "clickToCopy": "Haga clic para copiar",
       "copied": "Enlace copiado al portapapeles",
       "create": "Crear un nuevo",
-      "changeWarning": "La ID de transmisión no se puede cambiar después de guardar"
+      "changeWarning": "La ID de transmisión no se puede cambiar después de guardar",
+      "deleteFailed": "No se pudo eliminar la transmisión. Inténtalo de nuevo."
     }
   },
   "MODAL": {
@@ -518,6 +571,8 @@
   },
   "LABELS": {
     "menu": "Menu",
+    "pause": "Pause",
+    "clearScreen": "Clear Screen",
     "viewPolicy": "Ver la política de cookies",
     "closeCookieModal": "Cerrar ventana emergente de cookies",
     "viewGithub": "Ver el repositorio de github",
@@ -526,12 +581,12 @@
     "stop": "Stop",
     "listen": "Escuchar",
     "lang": "Idioma",
-    "theme": "Theme",
     "dialect": "Dialecto",
+    "theme": "Tema",
     "wakelock": "Sveglia schermo",
-    "wakelockOn": "Impedisce allo schermo di dormire mentre le didascalie sono attive",
-    "wakelockOff": "Zip Captions rispetterà le impostazioni del sistema per la sospensione.",
-    "rememberSetting": "Ricordate la mia risposta su questo dispositivo.",
+    "wakelockOn": "Evitar que la pantalla se apague mientras los subtítulos están activos",
+    "wakelockOff": "Zip Captions respetará la configuración de tu sistema para el modo de suspensión.",
+    "rememberSetting": "Recuerda mi respuesta en este dispositivo.",
     "textSize": "Tamaño del texto",
     "lineHeight": "Interlineado",
     "textFlow": "Flujo de texto",
@@ -549,16 +604,17 @@
     "renderHistory": "Resultados en pantalla",
     "fontFamily": "Fuente",
     "transcriptEnable": "Salvar transcrições",
-    "transcriptEnabled": "As transcrições das legendas serão gravadas",
-    "transcriptDisabled": "Gravar transcrição de legendas",
-    "transcriptTitlePattern": "Use este padrão para gerar títulos de transcrição",
+    "transcriptEnabled": "Se grabarán las transcripciones de subtítulos",
+    "transcriptDisabled": "Grabar transcripción de subtítulos",
+    "transcriptTitlePattern": "Usa este patrón para generar títulos de transcripciones",
     "title": "Título",
     "description": "Descrição",
     "date": "Data",
     "duration": "Duración",
     "provider": "proveedor",
-    "pause": "Pause",
-    "clearScreen": "Clear Screen"
+    "spokenLanguage": "Idioma hablado",
+    "uiLanguage": "Idioma de la interfaz",
+    "sameAsSpoken": "Igual que el idioma hablado"
   },
   "HINTS": {
     "pipActive": "Los subtítulos se muestran en imagen en imagen",
@@ -582,19 +638,17 @@
     "required": "Requerido",
     "invalidUrl": "URL invalida",
     "invalidId": "Identificación invalida",
+    "pageNotFound": "La página no se encontró",
     "RECOGNITION": {
       "no-speech": "Error de reconocimiento de voz: No se detectó habla",
       "aborted": "Error de reconocimiento de voz: La entrada de voz se abortó de alguna manera",
       "audio-capture": "Error de reconocimiento de voz: Fallo de captura de audio",
-      "red": "Error de reconocimiento de voz: Falló la comunicación de red necesaria para completar el reconocimiento.",
-      "no permitido": "Error de reconocimiento de voz: El agente de usuario no permitió que se produjera ninguna entrada de voz por motivos de seguridad, privacidad o preferencias del usuario.",
+      "network": "Error de reconocimiento de habla: la comunicación de red necesaria para completar el reconocimiento falleció.",
+      "not-allowed": "Error de reconocimiento de habla: El agente de usuario deshabilitó cualquier entrada de habla de ocurrir por razones de seguridad, privacidad o preferencia del usuario.",
       "service-not-allowed": "Error de reconocimiento de voz: El agente de usuario no permitió el servicio de reconocimiento de voz solicitado, ya sea porque el agente de usuario no lo admite o por motivos de seguridad, privacidad o preferencia del usuario.",
       "bad-grammar": "Error de reconocimiento de voz: Se ha producido un error en la gramática o en las etiquetas semánticas de reconocimiento del habla, o el formato de gramática o de etiqueta semántica elegido no es compatible.",
-      "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition.",
-      "network": "Error de reconocimiento de habla: la comunicación de red necesaria para completar el reconocimiento falleció.",
-      "not-allowed": "Error de reconocimiento de habla: El agente de usuario deshabilitó cualquier entrada de habla de ocurrir por razones de seguridad, privacidad o preferencia del usuario."
-    },
-    "pageNotFound": "La página no se encontró"
+      "language-not-supported": "Error de reconocimiento de voz: El agente de usuario no admite el idioma especificado en el valor del atributo lang del objeto SpeechRecognition."
+    }
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
@@ -632,8 +686,14 @@
     "obsStudioPort": "Puerto del servidor",
     "obsPassword": "Contraseña del servidor",
     "obsStreamInactive": "Esperando a que comience el flujo de OBS",
+    "obsCaptionSource": "Lo que OBS recibe",
+    "obsCaptionTranslatedFallback": "OBS recibe el texto original cuando la traducción está desactivada o no está disponible.",
+    "obsCaptionUnsupportedLanguage": "OBS no puede mostrar este idioma, porque utiliza el formato CEA-608.",
     "connectionEstablished": "Conectado - puede iniciar la sesión de redacción",
-    "disconnected": "Desconectado"
+    "disconnected": "Desconectado",
+    "notConnected": "No conectado a OBS",
+    "connecting": "Conectando a OBS",
+    "connectionError": "Error de conexión con OBS"
   },
   "AUTH": {
     "title": "Iniciar sesión en los subtítulos",
@@ -643,6 +703,10 @@
     "loginWithPatreon": "Iniciar sesión con Patreon"
   },
   "USER": {
+    "TABS": {
+      "account": "Cuentas",
+      "provider": "proveedor"
+    },
     "PROFILE": {
       "title": "Bienvenido",
       "blurb": "Esto es lo que sabemos de ti:",
@@ -675,10 +739,6 @@
       "usernameLabel": "Nombre de usuario de Patreon",
       "startDateLabel": "Unido",
       "thanksMessage": "Gracias por apoyarnos. ¡No podríamos hacer esto sin su ayuda!"
-    },
-    "TABS": {
-      "account": "Cuentas",
-      "provider": "proveedor"
     }
   },
   "TRANSCRIPT": {

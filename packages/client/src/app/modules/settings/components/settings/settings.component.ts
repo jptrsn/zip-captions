@@ -7,6 +7,7 @@ import { Observable, Subject, map, startWith, tap } from 'rxjs';
 import { AppAppearanceState, AppState } from '../../../../models/app.model';
 import { selectAppAppearance } from '../../../../selectors/app.selector';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
 
 @Component({
   selector: 'app-settings',
@@ -41,6 +42,7 @@ export class SettingsComponent {
     'appearance': 'heroSwatch',
     'shortcuts': 'heroCommandLine',
     'transcription': 'heroDocumentText',
+    'translation': 'heroGlobeAlt',
     'sync': 'heroArrowsRightLeft',
     'sharing': 'heroShare',
     'obs': 'obsStudioLogo',
@@ -50,12 +52,18 @@ export class SettingsComponent {
   constructor(private fb: FormBuilder,
               private store: Store<AppState>,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private chromeTranslator: ChromeTranslatorService) {
+
+    if (this.chromeTranslator.isSupported()) {
+      this.tabNames.splice(3, 0, 'translation');
+    }
 
     this.acceptedCookies = toSignal(this.store.pipe(
       select(selectAppAppearance),
       map((appearance: AppAppearanceState) => appearance.cookiesAccepted)
     ));
+
 
     // The modulus operator here makes sure that the index is always less than the length of the array of tab names
     const initialTabIndex = this.route.snapshot.queryParams['tabIndex'] % this.tabNames.length || 0;

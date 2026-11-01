@@ -14,6 +14,24 @@
   },
   "DIALECTS": {
     "unspecified": "基因",
+    "ar-AE": "阿拉伯语(阿拉伯联合酋长国)",
+    "ar-BH": "阿拉伯语(巴林)",
+    "ar-DZ": "阿拉伯语(阿尔及利亚)",
+    "ar-EG": "阿拉伯语(埃及)",
+    "ar-IL": "阿拉伯语(以色列语)",
+    "ar-IQ": "阿拉伯语(伊拉克)",
+    "ar-JO": "阿拉伯语(约旦)",
+    "ar-KW": "阿拉伯语(科威特)",
+    "ar-LB": "阿拉伯语(黎巴嫩)",
+    "ar-LY": "阿拉伯语(利比亚)",
+    "ar-MA": "阿拉伯语(摩洛哥)",
+    "ar-OM": "阿拉伯语(Oman)",
+    "ar-PS": "阿拉伯语(巴勒斯坦当局)",
+    "ar-QA": "阿拉伯语(卡塔尔)",
+    "ar-SA": "阿拉伯语(沙特阿拉伯语)",
+    "ar-SY": "阿拉伯语(叙利亚)",
+    "ar-TN": "阿拉伯语(突尼斯)",
+    "ar-YE": "阿拉伯语(也门)",
     "en-AU": "英语(澳大利亚)",
     "en-CA": "英语(加拿大)",
     "en-GB": "英语(英国)",
@@ -65,24 +83,6 @@
     "id-ID": "印度尼西亚语(Indonesia)",
     "pl-PL": "波兰语(波兰语)",
     "uk-UA": "乌克兰(乌克兰)",
-    "ar-AE": "阿拉伯语(阿拉伯联合酋长国)",
-    "ar-BH": "阿拉伯语(巴林)",
-    "ar-DZ": "阿拉伯语(阿尔及利亚)",
-    "ar-EG": "阿拉伯语(埃及)",
-    "ar-IL": "阿拉伯语(以色列语)",
-    "ar-IQ": "阿拉伯语(伊拉克)",
-    "ar-JO": "阿拉伯语(约旦)",
-    "ar-KW": "阿拉伯语(科威特)",
-    "ar-LB": "阿拉伯语(黎巴嫩)",
-    "ar-LY": "阿拉伯语(利比亚)",
-    "ar-MA": "阿拉伯语(摩洛哥)",
-    "ar-OM": "阿拉伯语(Oman)",
-    "ar-PS": "阿拉伯语(巴勒斯坦当局)",
-    "ar-QA": "阿拉伯语(卡塔尔)",
-    "ar-SA": "阿拉伯语(沙特阿拉伯语)",
-    "ar-SY": "阿拉伯语(叙利亚)",
-    "ar-TN": "阿拉伯语(突尼斯)",
-    "ar-YE": "阿拉伯语(也门)",
     "zh-CN": "中国(曼达林,简化)",
     "zh-CN-shandong": "中国(Jilu Mandarin,简化)",
     "zh-CN-sichuan": "中国(西南曼达林,简化)",
@@ -143,7 +143,8 @@
       "title": "本网站使用Cookies",
       "p1": "我们只存储严格必要的cookies,需要允许这些应用程序的功能(例如自定义设置等)。",
       "p2": "我们不会在您的设备上跟踪或存储任何非功能的 Cookie。",
-      "p3": "查看我们的 Cookie 政策 更多详细信息"
+      "p3": "查看我们的 Cookie 政策 更多详细信息",
+      "close": "关闭 Cookie 通知"
     },
     "POLICY": {
       "title": "Cookie 政策",
@@ -210,7 +211,6 @@
     "4.3": "如果您提交个人信息,以便在我们的网站上发布,我们将根据您授予我们的许可,发布并以其他方式使用这些信息。",
     "4.4": "您的隐私设置可以用来限制您在我们的网站上发布的信息,并且可以通过网站上的隐私控制进行调整。",
     "4.5": "我们不会在没有您的明确同意的情况下向任何第三方提供您的个人信息,以便其或其他第三方的直接营销。",
-    "4.6": "我们网站的所有财务交易都是通过我们的支付服务提供商,PSP名称进行的,您可以在URL上查看提供商的隐私政策,我们将与我们的支付服务提供商共享信息,只有在您通过我们的网站进行的支付处理目的所需的范围内,将这些支付退还,并处理有关这些支付和退款的投诉和请求。",
     "5.1": "我们可能会向我们的员工、官员、保险人、专业顾问、代理人、供应商或子承包商披露您的个人信息,在本政策中所规定的目的所合理需要的范围内。",
     "5.2": "我们可能会将您的个人信息披露给我们公司的任何成员(即我们的子公司、最终持有公司和其所有子公司)在本政策中所规定的目的所合理需要的范围内。",
     "5.3": "我们可能会披露您的个人信息:",
@@ -333,12 +333,59 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "看和感受",
+      "shortcuts": "Shortcuts",
+      "transcription": "翻译",
+      "translation": "翻译",
       "sync": "同步",
       "sharing": "分享",
       "obs": "OBS 工作室",
-      "transcription": "翻译",
-      "engine": "发动机",
-      "shortcuts": "Shortcuts"
+      "engine": "发动机"
+    },
+    "TRANSLATION": {
+      "enable": "实时翻译",
+      "on": "翻译已启用",
+      "off": "翻译已禁用",
+      "targetLang": "翻译为",
+      "displayMode": "字幕布局",
+      "modeSplit": "分屏（双语）",
+      "modeSplitDesc": "在两个窗格中显示原始字幕和翻译后的字幕",
+      "modeTranslatedOnly": "仅显示翻译",
+      "modeTranslatedOnlyDesc": "仅显示翻译后的字幕",
+      "modeOriginalOnly": "仅原文",
+      "modeOriginalOnlyDesc": "此屏幕仅显示源语言字幕。观看直播的观众仍会收到翻译。",
+      "statusTitle": "Chrome 端侧 AI 状态",
+      "statusReady": "模型就绪（本地设备）",
+      "statusDownloadable": "需要下载",
+      "statusDownloading": "正在下载模型...",
+      "statusError": "模型错误",
+      "statusUnsupported": "浏览器不支持",
+      "downloadButton": "下载翻译模型",
+      "downloadPrompt": "在设备上下载语言模型以启用翻译",
+      "downloadingModel": "正在将 AI 翻译模型直接下载到您的设备...",
+      "privacyNotice": "翻译完全在您的设备上运行，使用 Chrome 内置的语言模型，因此没有任何翻译服务会接收您的文本。",
+      "privacyNoticeSpeech": "语音识别是独立的，根据您选择的语音引擎，音频可能会在云端进行处理。",
+      "modelsTitle": "翻译模型",
+      "modelsPerPair": "每种语言对使用各自的翻译模型，Chrome 会在您首次使用时下载该模型。",
+      "modelPerPairNotice": "此语言对的一次性下载",
+      "translationFailing": "翻译当前无法正常工作。重新加载页面可能会解决问题。",
+      "resetBySpokenLanguage": "您更改了口语语言，因此翻译已关闭。请重新开启以选择新的翻译语言。",
+      "unsupportedHint": "Chrome 翻译 API 仅在受支持的桌面 Chromium 浏览器（Chrome 138+ / Edge）中可用。您可能需要在 chrome://flags/#translation-api 中启用该功能。",
+      "experimental": "实验性功能",
+      "unsupportedMobileHint": "设备端翻译仅在桌面浏览器（Chrome 138+ 或 Edge 148+）中可用，不支持手机或平板电脑。",
+      "swapLanguages": "交换源语言和目标语言",
+      "swapUnavailable": "该语言不支持语音识别。",
+      "modelsManagedByChrome": "Chrome 管理已下载的翻译模型，并可能删除它们以释放空间。",
+      "learnMore": "了解更多",
+      "splitOrientation": "分栏方向",
+      "orientationSideBySide": "并排",
+      "orientationStacked": "堆叠",
+      "swapPanes": "交换原始和翻译面板",
+      "paneOriginal": "原始字幕",
+      "paneTranslated": "已翻译的字幕",
+      "pipContent": "画中画显示",
+      "pipContentOriginal": "仅原始",
+      "pipContentTranslated": "仅翻译",
+      "pipContentSplit": "原文和译文"
     },
     "UI": {
       "t1": "预告片",
@@ -378,7 +425,12 @@
     },
     "PROVIDER": {
       "title": "API 供应商",
-      "description": "选择哪个服务提供商你会喜欢使用安全处理音频和返回结果. 不同的发动机将因速度,质量和成本而有所不同. 我们竭尽全力为您提供尽可能多的选择,同时保持事物尽可能自由。",
+      "description": "选择您希望用于安全处理音频并返回结果的服务提供商。不同的引擎在速度、质量和成本方面会有所不同。我们尽力在尽可能保持免费的同时，为您提供尽可能多的选择。",
+      "balance": "你的平衡",
+      "dialectRequired": "警告! 此提供商需要选择的字符串. 与您的当前设置,您将使用默认字符串",
+      "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
+      "setSuccess": "供应商成功改变",
+      "requestTokens": "请求免费代币",
       "web": {
         "label": "浏览器(Chrome/Safari)",
         "description": "使用浏览器提供商,Zip Captions 将从您的设备直接向您的浏览器提供商发送音频数据,使用 Web Speech API。",
@@ -389,11 +441,8 @@
         "description": "使用 Azure Cognitive Services 提供商,Zip Captions 将从您的设备直接向 Microsoft API 发送音频数据,使用安全的 Web Socket。",
         "cost": "速度:每分钟60元"
       },
-      "dialectRequired": "警告! 此提供商需要选择的字符串. 与您的当前设置,您将使用默认字符串",
-      "setSuccess": "供应商成功改变",
-      "balance": "你的平衡",
-      "acquire": "我们的 Patreon 支持者每个月都会自动获得免费的代币。",
-      "requestTokens": "请求免费代币"
+      "bilingualHint": "该方言也能识别英语。",
+      "bilingualLanguageHint": "在实时字幕中，以正在使用的两种语言之一显示。"
     }
   },
   "STREAM": {
@@ -431,6 +480,9 @@
     "authentication": "身份验证",
     "authDescription": "要求观众登录加入代码",
     "countdown": "时间留下",
+    "fromBroadcaster": "由主播翻译",
+    "showTranslation": "显示翻译",
+    "translatedOnDevice": "在此设备上翻译",
     "ROOMCARD": {
       "broadcastId": "广播ID",
       "broadcastType": "广播类型",
@@ -447,7 +499,8 @@
       "clickToCopy": "点击复制",
       "copied": "链接复制到Clipboard",
       "create": "创建一个新",
-      "changeWarning": "播放 ID 不能在存储后更改。"
+      "changeWarning": "播放 ID 不能在存储后更改。",
+      "deleteFailed": "无法删除广播。请重试。"
     }
   },
   "MODAL": {
@@ -518,6 +571,8 @@
   },
   "LABELS": {
     "menu": "菜单",
+    "pause": "Pause",
+    "clearScreen": "Clear Screen",
     "viewPolicy": "查看 Cookie 政策",
     "closeCookieModal": "接近 Cookie Pop-up",
     "viewGithub": "查看 GitHub 存储库",
@@ -536,6 +591,8 @@
     "lineHeight": "线路空间",
     "textFlow": "文本流",
     "fullScreen": "全屏幕",
+    "documentPip": "图片在图片中",
+    "documentPipExit": "外出图片在图片中",
     "increase": "增加",
     "decrease": "減少",
     "password": "密码",
@@ -555,10 +612,13 @@
     "date": "日期",
     "duration": "长度",
     "provider": "供应商",
-    "pause": "Pause",
-    "clearScreen": "Clear Screen"
+    "spokenLanguage": "口语",
+    "uiLanguage": "界面语言",
+    "sameAsSpoken": "与语音语言相同"
   },
   "HINTS": {
+    "pipActive": "图片显示在Picture-in-Picture中",
+    "pipReturn": "回到窗口",
     "beginSpeaking": "开始说话......",
     "streamConnected": "文本会出现,一旦我们听到一些东西......",
     "verifyingConnection": "查看加入代码...",
@@ -578,6 +638,7 @@
     "required": "需要",
     "invalidUrl": "不合格的URL",
     "invalidId": "残疾 ID",
+    "pageNotFound": "页面无法找到",
     "RECOGNITION": {
       "no-speech": "语音识别错误:没有语音被发现。",
       "aborted": "语音识别错误:语音输入以某种方式被堕胎。",
@@ -587,8 +648,7 @@
       "service-not-allowed": "语音识别错误:用户代理人取消了所要求的语音识别服务,无论是因为用户代理人不支持它,还是由于安全、隐私或用户偏好原因。",
       "bad-grammar": "语言识别错误:语言识别语法或语法标签中出现错误,或者选择的语法格式或语法标签格式未支持。",
       "language-not-supported": "语音识别错误:用户代理人不支持在语音识别对象的长属值中指定的语言。"
-    },
-    "pageNotFound": "页面无法找到"
+    }
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
@@ -626,8 +686,14 @@
     "obsStudioPort": "服务器港口",
     "obsPassword": "服务器密码",
     "obsStreamInactive": "等待OBS流开始",
+    "obsCaptionSource": "OBS 接收的内容",
+    "obsCaptionTranslatedFallback": "当翻译关闭或不可用时，OBS 将接收原始文本。",
+    "obsCaptionUnsupportedLanguage": "OBS 无法显示此语言，因为它使用 CEA-608 格式。",
     "connectionEstablished": "连接 - 您可以开始 caption 会议",
-    "disconnected": "连接"
+    "disconnected": "连接",
+    "notConnected": "未连接到 OBS",
+    "connecting": "正在连接到 OBS",
+    "connectionError": "OBS 连接错误"
   },
   "AUTH": {
     "title": "登录到 Zip Captions",

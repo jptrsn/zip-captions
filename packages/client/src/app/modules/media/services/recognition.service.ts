@@ -1,13 +1,10 @@
 import { Injectable, Signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs';
-import { ObsActions } from '../../../actions/obs.actions';
+import { Store } from '@ngrx/store';
 import { RecognitionActions } from '../../../actions/recogntion.actions';
 import { AppState } from '../../../models/app.model';
+import { CaptionSegment } from '../../../models/caption-segment.model';
 import { RecognitionEngineState, RecognitionState } from '../../../models/recognition.model';
-import { ObsConnectionState } from '../../../reducers/obs.reducer';
-import { selectObsConnected } from '../../../selectors/obs.selectors';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectTranscriptionEnabled } from '../../../selectors/settings.selector';
 import { selectUserBalance } from '../../../selectors/user.selector';
@@ -31,7 +28,6 @@ export class RecognitionService {
 
 	private provider: Signal<RecognitionEngineState['provider']>;
   private tokenBalance: Signal<number | undefined>;
-  private obsConnected: Signal<boolean | undefined>;
   constructor(private store: Store<AppState>,
 		private webRecognition: WebRecognitionService,
 		private azureRecognition: AzureRecognitionService,
@@ -41,7 +37,6 @@ export class RecognitionService {
 		const dialect = toSignal(this.store.select(dialectSelector));
 
     this.tokenBalance = toSignal(this.store.select(selectUserBalance))
-    this.obsConnected = toSignal(this.store.pipe(select(selectObsConnected), map((status) => status === ObsConnectionState.connected)));
 
 		this.activeLanguage = computed(() => {
 			const l = language();
@@ -133,6 +128,14 @@ export class RecognitionService {
 		}
   }
 
+  public getRecognizedSegments(): Signal<CaptionSegment[]> {
+		if (this.provider() === 'web') {
+			return this.webRecognition.getRecognizedSegments();
+		} else {
+			return this.azureRecognition.getRecognizedSegments();
+		}
+  }
+
   public getRecognizedText(): Signal<string[]> {
 		if (this.provider() === 'web') {
 			return this.webRecognition.getRecognizedText();
@@ -149,9 +152,9 @@ export class RecognitionService {
 		}
 		this.peerService.liveText$.next('');
 		this.peerService.textOutput$.next([]);
-		if (this.obsConnected()) {
-			this.store.dispatch(ObsActions.sendCaption({ text: '' }));
-		}
+		this.peerService.segments$.next([]);
+		this.peerService.broadcasterTranslations$.next([]);
+		this.peerService.translatedLiveText$.next('');
   }
 
   public fallbackToWebEngine(): void {

@@ -14,6 +14,24 @@
   },
   "DIALECTS": {
     "unspecified": "Umum",
+    "ar-AE": "Bahasa Arab (Uni Emirat Arab)",
+    "ar-BH": "Bahasa Arab (Bahrain)",
+    "ar-DZ": "Bahasa Arab (Aljazair)",
+    "ar-EG": "Bahasa Arab (Mesir)",
+    "ar-IL": "Bahasa Arab (Israel)",
+    "ar-IQ": "Bahasa Arab (Irak)",
+    "ar-JO": "Bahasa Arab (Yordania)",
+    "ar-KW": "Bahasa Arab (Kuwait)",
+    "ar-LB": "Bahasa Arab (Lebanon)",
+    "ar-LY": "Bahasa Arab (Libya)",
+    "ar-MA": "Bahasa Arab (Maroko)",
+    "ar-OM": "Bahasa Arab (Oman)",
+    "ar-PS": "Bahasa Arab (Otoritas Palestina)",
+    "ar-QA": "Bahasa Arab (Katar)",
+    "ar-SA": "Bahasa Arab (Arab Saudi)",
+    "ar-SY": "Bahasa Arab (Suriah)",
+    "ar-TN": "Bahasa Arab (Tunisia)",
+    "ar-YE": "Bahasa Arab (Yaman)",
     "en-AU": "Bahasa Inggris (Australia)",
     "en-CA": "Bahasa Inggris (Kanada)",
     "en-GB": "Bahasa Inggris (Inggris Raya)",
@@ -65,24 +83,6 @@
     "id-ID": "Bahasa Indonesia (Indonesia)",
     "pl-PL": "Polandia (Polandia)",
     "uk-UA": "Ukraina (Ukraina)",
-    "ar-AE": "Bahasa Arab (Uni Emirat Arab)",
-    "ar-BH": "Bahasa Arab (Bahrain)",
-    "ar-DZ": "Bahasa Arab (Aljazair)",
-    "ar-EG": "Bahasa Arab (Mesir)",
-    "ar-IL": "Bahasa Arab (Israel)",
-    "ar-IQ": "Bahasa Arab (Irak)",
-    "ar-JO": "Bahasa Arab (Yordania)",
-    "ar-KW": "Bahasa Arab (Kuwait)",
-    "ar-LB": "Bahasa Arab (Lebanon)",
-    "ar-LY": "Bahasa Arab (Libya)",
-    "ar-MA": "Bahasa Arab (Maroko)",
-    "ar-OM": "Bahasa Arab (Oman)",
-    "ar-PS": "Bahasa Arab (Otoritas Palestina)",
-    "ar-QA": "Bahasa Arab (Katar)",
-    "ar-SA": "Bahasa Arab (Arab Saudi)",
-    "ar-SY": "Bahasa Arab (Suriah)",
-    "ar-TN": "Bahasa Arab (Tunisia)",
-    "ar-YE": "Bahasa Arab (Yaman)",
     "zh-CN": "Bahasa Cina (Mandarin, Sederhana)",
     "zh-CN-shandong": "Bahasa Cina (Jilu Mandarin, Sederhana)",
     "zh-CN-sichuan": "Cina (Mandarin Barat Selatan, Simplified)",
@@ -143,7 +143,8 @@
       "title": "Situs web ini menggunakan cookie",
       "p1": "Kami menggunakan cookie untuk memberikan fungsionalitas situs web. Kami hanya menyimpan cookie yang sangat diperlukan, diperlukan untuk mengizinkan fungsionalitas aplikasi ini (mis. Pengaturan yang disesuaikan, dll).",
       "p2": "Kami tidak melacak atau menyimpan cookie non-fungsional di perangkat Anda.",
-      "p3": "Lihat kebijakan cookie kami untuk lebih detail"
+      "p3": "Lihat kebijakan cookie kami untuk lebih detail",
+      "close": "Tutup pemberitahuan cookie"
     },
     "POLICY": {
       "title": "Kebijakan Cookie",
@@ -210,7 +211,6 @@
     "4.3": "Jika Anda mengirimkan informasi pribadi untuk publikasi di situs web kami, kami akan mempublikasikan dan menggunakan informasi itu sesuai dengan lisensi yang Anda berikan kepada kami.",
     "4.4": "Pengaturan privasi Anda dapat digunakan untuk membatasi publikasi informasi Anda di situs web kami, dan dapat disesuaikan menggunakan kontrol privasi di situs web.",
     "4.5": "Kami tidak akan, tanpa persetujuan tertulis Anda, memberikan informasi pribadi Anda kepada pihak ketiga mana pun untuk tujuan pemasaran langsung pihak ketiga mereka atau lainnya.",
-    "4.6": "Semua transaksi keuangan situs web kami ditangani melalui penyedia layanan pembayaran kami, nama PSP. Anda dapat meninjau kebijakan privasi penyedia di URL. Kami akan berbagi informasi dengan penyedia layanan pembayaran kami hanya sejauh yang diperlukan untuk keperluan pemrosesan pembayaran yang Anda lakukan melalui Situs web kami, mengembalikan pembayaran dan berurusan dengan keluhan dan pertanyaan yang berkaitan dengan pembayaran dan pengembalian uang tersebut. ",
     "5.1": "Kami dapat mengungkapkan informasi pribadi Anda kepada karyawan, petugas, perusahaan asuransi, penasihat profesional, agen, pemasok atau subkontraktor kami sejauh yang diperlukan untuk tujuan yang ditetapkan dalam kebijakan ini.",
     "5.2": "Kami dapat mengungkapkan informasi pribadi Anda kepada setiap anggota kelompok perusahaan kami (ini berarti anak perusahaan kami, perusahaan induk utama kami dan semua anak perusahaannya) sejauh yang wajar diperlukan untuk tujuan yang ditetapkan dalam kebijakan ini.",
     "5.3": "Kami dapat mengungkapkan informasi pribadi Anda:",
@@ -333,12 +333,59 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "Lihat & Rasakan",
+      "shortcuts": "Shortcuts",
+      "transcription": "Salinan",
+      "translation": "Terjemahan",
       "sync": "Sinkronisasi",
       "sharing": "Membagikan",
       "obs": "OBS Studio",
-      "transcription": "Salinan",
-      "engine": "mesin",
-      "shortcuts": "Shortcuts"
+      "engine": "mesin"
+    },
+    "TRANSLATION": {
+      "enable": "Terjemahan Langsung",
+      "on": "Terjemahan Diaktifkan",
+      "off": "Terjemahan Dinonaktifkan",
+      "targetLang": "Terjemahkan Ke",
+      "displayMode": "Tata Letak Teks",
+      "modeSplit": "Terpisah (Bilingual)",
+      "modeSplitDesc": "Teks asli dan terjemahan dalam dua panel",
+      "modeTranslatedOnly": "Hanya Terjemahan",
+      "modeTranslatedOnlyDesc": "Hanya menampilkan teks terjemahan",
+      "modeOriginalOnly": "Hanya asli",
+      "modeOriginalOnlyDesc": "Tampilkan hanya bahasa yang diucapkan di layar ini. Penonton siaran masih menerima terjemahan.",
+      "statusTitle": "Status AI Di Perangkat Chrome",
+      "statusReady": "Model Siap (Di Perangkat)",
+      "statusDownloadable": "Perlu Diunduh",
+      "statusDownloading": "Mengunduh Model...",
+      "statusError": "Kesalahan Model",
+      "statusUnsupported": "Browser Tidak Didukung",
+      "downloadButton": "Unduh Model Terjemahan",
+      "downloadPrompt": "Unduh model bahasa di perangkat untuk mengaktifkan terjemahan",
+      "downloadingModel": "Mengunduh model terjemahan AI langsung ke perangkat Anda...",
+      "privacyNotice": "Penerjemahan berjalan sepenuhnya di perangkat Anda menggunakan model bahasa bawaan Chrome, sehingga tidak ada layanan penerjemahan yang menerima teks Anda.",
+      "privacyNoticeSpeech": "Pengenalan ucapan bersifat terpisah, dan tergantung pada mesin ucapan yang Anda pilih, audio mungkin diproses di cloud.",
+      "modelsTitle": "Model penerjemahan",
+      "modelsPerPair": "Setiap pasangan bahasa menggunakan model terjemahan sendiri, yang diunduh oleh Chrome saat pertama kali Anda menggunakannya.",
+      "modelPerPairNotice": "Unduhan sekali untuk pasangan bahasa ini",
+      "translationFailing": "Terjemahan tidak berfungsi saat ini. Memuat ulang halaman mungkin dapat memperbaikinya.",
+      "resetBySpokenLanguage": "Anda telah mengubah bahasa yang diucapkan, sehingga terjemahan dimatikan. Nyalakan kembali untuk memilih bahasa terjemahan baru.",
+      "unsupportedHint": "API Penerjemah Chrome hanya tersedia di browser Chromium desktop yang didukung (Chrome 138+ / Edge). Anda mungkin perlu mengaktifkan chrome://flags/#translation-api.",
+      "experimental": "Fitur eksperimental",
+      "unsupportedMobileHint": "Terjemahan di perangkat hanya tersedia di browser desktop (Chrome 138+ atau Edge 148+) dan tidak didukung di ponsel atau tablet.",
+      "swapLanguages": "Tukar bahasa yang diucapkan dan bahasa terjemahan",
+      "swapUnavailable": "Pengenalan ucapan tidak tersedia untuk bahasa ini.",
+      "modelsManagedByChrome": "Chrome mengelola model terjemahan yang diunduh dan mungkin menghapusnya untuk mengosongkan ruang.",
+      "learnMore": "Pelajari lebih lanjut",
+      "splitOrientation": "Orientasi terbagi",
+      "orientationSideBySide": "Sampingan",
+      "orientationStacked": "Tumpang",
+      "swapPanes": "Tukar panel asli dan terjemahan",
+      "paneOriginal": "Teks asli",
+      "paneTranslated": "Teks terjemahan",
+      "pipContent": "Picture-in-Picture menampilkan",
+      "pipContentOriginal": "Hanya asli",
+      "pipContentTranslated": "Hanya diterjemahkan",
+      "pipContentSplit": "Asli dan terjemahan"
     },
     "UI": {
       "t1": "Pratinjau",
@@ -378,7 +425,12 @@
     },
     "PROVIDER": {
       "title": "Penyedia API",
-      "description": "Pilih mana penyedia layanan yang ingin Anda gunakan untuk memproses audio dengan aman dan mengembalikan hasil. mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. kami melakukan yang terbaik untuk membawa Anda sebanyak pilihan yang mungkin sambil menjaga hal-hal gratis sebanyak yang kita bisa.",
+      "description": "Pilih penyedia layanan yang ingin Anda gunakan untuk memproses audio secara aman dan mengembalikan hasil. Mesin yang berbeda akan bervariasi dalam kecepatan, kualitas, dan biaya. Kami berusaha semaksimal mungkin untuk memberikan Anda sebanyak mungkin pilihan sambil tetap menjaga agar sesedikit mungkin biaya.",
+      "balance": "Keseimbangan Anda",
+      "dialectRequired": "PERINGATAN!Penyedia ini membutuhkan dialek yang dipilih.Dengan pengaturan Anda saat ini, Anda akan menggunakan dialek default dari",
+      "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
+      "setSuccess": "Pembekal Berubah Sukses",
+      "requestTokens": "Meminta Token Gratis",
       "web": {
         "label": "Penggunaan Browser (Chrome dan Safari)",
         "description": "Dengan menggunakan penyedia browser, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke penyedia browser Anda menggunakan Web Speech API.",
@@ -389,11 +441,8 @@
         "description": "Menggunakan penyedia layanan kognitif Azure, Zip Captions akan mengirim data audio dari perangkat Anda langsung ke API Microsoft menggunakan soket web yang aman.",
         "cost": "Kadar: 60 token per menit"
       },
-      "dialectRequired": "PERINGATAN!Penyedia ini membutuhkan dialek yang dipilih.Dengan pengaturan Anda saat ini, Anda akan menggunakan dialek default dari",
-      "setSuccess": "Pembekal Berubah Sukses",
-      "balance": "Keseimbangan Anda",
-      "acquire": "Penyokong Patreon kami menerima token gratis secara otomatis setiap bulan.",
-      "requestTokens": "Meminta Token Gratis"
+      "bilingualHint": "Dialek ini juga mengenali bahasa Inggris.",
+      "bilingualLanguageHint": "Bahasa mana pun dari dua bahasa yang diucapkan akan ditampilkan dalam bahasa tersebut di teks langsung."
     }
   },
   "STREAM": {
@@ -431,6 +480,9 @@
     "authentication": "Autentikasi",
     "authDescription": "Wajibkan pemirsa untuk memasukkan kode bergabung",
     "countdown": "Waktu yang tersisa",
+    "fromBroadcaster": "Diterjemahkan oleh penyiar",
+    "showTranslation": "Tampilkan terjemahan",
+    "translatedOnDevice": "Diterjemahkan di perangkat ini",
     "ROOMCARD": {
       "broadcastId": "ID Siaran",
       "broadcastType": "Jenis Siaran",
@@ -447,7 +499,8 @@
       "clickToCopy": "Klik untuk menyalin",
       "copied": "Tautan disalin ke papan klip",
       "create": "Buat yang baru",
-      "changeWarning": "ID siaran tidak dapat diubah setelah disimpan."
+      "changeWarning": "ID siaran tidak dapat diubah setelah disimpan.",
+      "deleteFailed": "Siaran tidak dapat dihapus. Silakan coba lagi."
     }
   },
   "MODAL": {
@@ -518,6 +571,8 @@
   },
   "LABELS": {
     "menu": "Menu",
+    "pause": "Pause",
+    "clearScreen": "Clear Screen",
     "viewPolicy": "Lihat Kebijakan Cookie",
     "closeCookieModal": "Tutup Cookie Pop-Up",
     "viewGithub": "Lihat Repositori GitHub",
@@ -526,8 +581,8 @@
     "stop": "Berhenti",
     "listen": "Mendengarkan",
     "lang": "Bahasa",
-    "theme": "Tema",
     "dialect": "Dialek",
+    "theme": "Tema",
     "wakelock": "Wake Screen",
     "wakelockOn": "Cegah layar dari tidur saat keterangan aktif",
     "wakelockOff": "Keterangan zip akan menghormati pengaturan sistem Anda untuk tidur.",
@@ -536,6 +591,8 @@
     "lineHeight": "Jarak garis",
     "textFlow": "Aliran teks",
     "fullScreen": "Layar penuh",
+    "documentPip": "Gambar dalam Gambar",
+    "documentPipExit": "Gambar keluar dalam gambar",
     "increase": "Meningkatkan",
     "decrease": "Mengurangi",
     "password": "Kata sandi",
@@ -555,10 +612,13 @@
     "date": "Tanggal",
     "duration": "Lamanya",
     "provider": "Penyedia",
-    "pause": "Pause",
-    "clearScreen": "Clear Screen"
+    "spokenLanguage": "Bahasa yang diucapkan",
+    "uiLanguage": "Bahasa antarmuka",
+    "sameAsSpoken": "Sama dengan bahasa yang diucapkan"
   },
   "HINTS": {
+    "pipActive": "Gambar-gambar yang ditampilkan dalam Picture-in-Picture",
+    "pipReturn": "Kembali ke jendela",
     "beginSpeaking": "Mulailah berbicara ...",
     "streamConnected": "Teks akan muncul begitu kita mendengar sesuatu ...",
     "verifyingConnection": "Memverifikasi kode bergabung ...",
@@ -578,6 +638,7 @@
     "required": "Diperlukan",
     "invalidUrl": "URL tidak valid",
     "invalidId": "ID tidak valid",
+    "pageNotFound": "Halaman tidak dapat ditemukan",
     "RECOGNITION": {
       "no-speech": "Kesalahan Pengenalan Pidato: Tidak ada pidato yang terdeteksi.",
       "aborted": "Kesalahan Pengenalan Pidato: Input ucapan dibatalkan dalam beberapa cara.",
@@ -587,8 +648,7 @@
       "service-not-allowed": "Kesalahan Pengenalan Pidato: Agen pengguna melarang layanan pengenalan suara yang diminta, baik karena agen pengguna tidak mendukungnya atau karena alasan keamanan, privasi atau preferensi pengguna.",
       "bad-grammar": "Kesalahan pengenalan suara: Ada kesalahan dalam tata bahasa pengenalan ucapan atau tag semantik, atau format tata bahasa yang dipilih atau format tag semantik tidak didukung.",
       "language-not-supported": "Kesalahan Pengenalan Pidato: Agen Pengguna tidak mendukung bahasa yang ditentukan dalam nilai atribut Lang dari objek pidato."
-    },
-    "pageNotFound": "Halaman tidak dapat ditemukan"
+    }
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
@@ -626,8 +686,14 @@
     "obsStudioPort": "Port Server",
     "obsPassword": "Password server",
     "obsStreamInactive": "Menunggu aliran obs untuk memulai",
+    "obsCaptionSource": "Apa yang diterima OBS",
+    "obsCaptionTranslatedFallback": "OBS menerima teks asli saat terjemahan dimatikan atau tidak tersedia.",
+    "obsCaptionUnsupportedLanguage": "OBS tidak dapat menampilkan bahasa ini karena menggunakan format CEA-608.",
     "connectionEstablished": "Terhubung - Anda dapat memulai sesi teks",
-    "disconnected": "Terputus"
+    "disconnected": "Terputus",
+    "notConnected": "Tidak terhubung ke OBS",
+    "connecting": "Menghubungkan ke OBS",
+    "connectionError": "Kesalahan koneksi OBS"
   },
   "AUTH": {
     "title": "Masuk ke Zip Captions",
@@ -637,6 +703,10 @@
     "loginWithPatreon": "Masuk dengan Patreon"
   },
   "USER": {
+    "TABS": {
+      "account": "Akun",
+      "provider": "Penyedia"
+    },
     "PROFILE": {
       "title": "Selamat datang",
       "blurb": "Inilah yang kami ketahui tentang Anda:",
@@ -669,10 +739,6 @@
       "usernameLabel": "Nama pengguna Patreon",
       "startDateLabel": "Bergabung",
       "thanksMessage": "Terima kasih telah mendukung kami - kami tidak dapat melakukan ini tanpa bantuan Anda!"
-    },
-    "TABS": {
-      "account": "Akun",
-      "provider": "Penyedia"
     }
   },
   "TRANSCRIPT": {

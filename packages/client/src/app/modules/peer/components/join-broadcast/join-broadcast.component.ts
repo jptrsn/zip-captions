@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation } from 'angular-animations';
 import { AppState } from '../../../../models/app.model';
+import { formatSessionId } from '../../models/session-id';
 import { selectRoomId } from '../../../../selectors/peer.selectors';
 
 @Component({
@@ -71,18 +72,13 @@ export class JoinBroadcastComponent {
 
   private _injectDashIfRequired(): void {
     const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['room'];
-    const dashIndexes = [2, 7]
     sessionControl.valueChanges.pipe(
       takeUntilDestroyed(),
     ).subscribe((value) => {
-      for (const i of dashIndexes) {
-        if (value && value.length > i) {
-          if (value[i] !== '-') {
-            sessionControl.setValue(value.slice(0,i) + '-' + value.slice(i, value.length))
-          }
-        }
+      const formatted = formatSessionId(value);
+      if (formatted !== value) {
+        sessionControl.setValue(formatted);
       }
-      
     })
   }
 

@@ -16,6 +16,7 @@ import { RecognitionControlSidebarComponent } from './components/recognition-con
 import { FullScreenComponent } from './components/full-screen/full-screen.component';
 import { FlowDirectionComponent } from './components/flow-direction/flow-direction.component';
 import { DocumentPipComponent } from './components/document-pip/document-pip.component';
+import { CaptionPanesComponent } from './components/caption-panes/caption-panes.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { DocumentPipComponent } from './components/document-pip/document-pip.com
     FullScreenComponent,
     FlowDirectionComponent,
     DocumentPipComponent,
+    CaptionPanesComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +47,7 @@ import { DocumentPipComponent } from './components/document-pip/document-pip.com
     RecognitionRenderComponent,
     RecognitionControlSidebarComponent,
     DocumentPipComponent,
+    CaptionPanesComponent,
   ]
 })
 export class MediaModule {}

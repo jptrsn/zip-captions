@@ -1,7 +1,7 @@
 <form class="flex flex-col items-center align-start max-w-xl w-full gap-3 p-3" [formGroup]="formGroup" (submit)="saveObsWebsocket()">
 
   <div class="flex flex-col items-center gap-3">
-    <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{connectionState()}}</div>
+    <div class="badge h-auto" [ngClass]="{'badge-success': isConnected()}">{{ obsConnectionStateKey(connectionState()) | translate }}</div>
     <div class="badge h-auto badge-error" *ngIf="error() as err">{{err}}</div>
     <div class="flex" *ngIf="isConnected()">
       <div class="badge h-auto badge-secondary" translate>CONNECTIONS.connectionEstablished</div>
@@ -47,3 +47,17 @@
   </div>
 
 </form>
+
+<fieldset class="form-control flex flex-col items-start max-w-xl w-full gap-2 px-3 pb-6" data-testid="zc-obs-caption-source">
+  <legend class="text-accent label" translate>CONNECTIONS.obsCaptionSource</legend>
+  <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between self-stretch">
+    <span class="font-semibold text-sm" translate>SETTINGS.TRANSLATION.pipContentOriginal</span>
+    <input type="radio" name="obsCaptionSource" value="original" class="radio radio-primary" [checked]="obsFeed() === 'original'" (change)="setObsFeed('original')" data-testid="zc-obs-feed-original" />
+  </label>
+  <label class="cursor-pointer label bg-base-100 rounded-lg p-4 flex flex-row items-center justify-between self-stretch">
+    <span class="font-semibold text-sm" translate>SETTINGS.TRANSLATION.pipContentTranslated</span>
+    <input type="radio" name="obsCaptionSource" value="translated" class="radio radio-primary" [checked]="obsFeed() === 'translated'" (change)="setObsFeed('translated')" data-testid="zc-obs-feed-translated" />
+  </label>
+  <p class="text-xs text-warning" *ngIf="showFeedFallbackHint()" data-testid="zc-obs-feed-fallback-hint" translate>CONNECTIONS.obsCaptionTranslatedFallback</p>
+  <p class="text-xs text-warning" *ngIf="showUnsupportedLanguageHint()" data-testid="zc-obs-feed-language-hint" translate>CONNECTIONS.obsCaptionUnsupportedLanguage</p>
+</fieldset>

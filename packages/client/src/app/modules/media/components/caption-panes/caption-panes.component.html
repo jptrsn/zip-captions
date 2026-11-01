@@ -1,0 +1,69 @@
+<!-- Split view: both panes, in the saved order and orientation -->
+<ng-container *ngIf="view === 'split'; else singlePane">
+  <div class="flex flex-1 overflow-hidden relative min-h-0" [ngClass]="orientation === 'horizontal' ? 'flex-row' : 'flex-col'" data-testid="zc-split">
+    <ng-container *ngFor="let pane of panes; let first = first">
+      <div class="flex flex-1 flex-col overflow-hidden relative min-w-0 min-h-0" role="region"
+           [attr.data-testid]="'zc-caption-pane-' + pane"
+           [attr.aria-label]="(pane === 'original' ? 'SETTINGS.TRANSLATION.paneOriginal' : 'SETTINGS.TRANSLATION.paneTranslated') | translate"
+           [ngClass]="first ? (orientation === 'horizontal' ? 'border-e border-base-300' : 'border-b border-base-300') : ''">
+        <ng-container *ngTemplateOutlet="pane === 'original' ? originalPane : translatedPane"></ng-container>
+      </div>
+    </ng-container>
+
+    <!-- Layout controls on the divider; part of the caption area, so they also work in Picture-in-Picture -->
+    <ng-content select="[dividerControls]"></ng-content>
+  </div>
+</ng-container>
+
+<!-- Original-only or translated-only view -->
+<ng-template #singlePane>
+  <div class="flex flex-1 flex-col overflow-hidden relative min-h-0" role="region"
+       [attr.data-testid]="'zc-caption-pane-' + (view === 'translated' ? 'translated' : 'original')"
+       [attr.aria-label]="(view === 'translated' ? 'SETTINGS.TRANSLATION.paneTranslated' : 'SETTINGS.TRANSLATION.paneOriginal') | translate">
+    <ng-container *ngTemplateOutlet="view === 'translated' ? translatedPane : originalPane"></ng-container>
+  </div>
+</ng-template>
+
+<!-- Original pane -->
+<ng-template #originalPane>
+  <div *ngIf="view === 'split'" data-testid="zc-caption-pane-label-original" class="badge badge-neutral badge-sm absolute top-2 left-2 z-10 transition-opacity duration-500"
+       [ngClass]="controlsVisible ? 'opacity-70' : 'opacity-0 pointer-events-none'">
+    {{ originalLabel }}
+  </div>
+  <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown, 'flex-col justify-end': !textFlowDown}" [attr.lang]="originalLang" [attr.dir]="originalDir">
+    <app-recognized-text
+      *ngIf="renderHistory()"
+      [renderHistory]="renderHistory"
+      [connected]="connected"
+      [hasLiveResults]="hasLiveResults"
+      [lines]="originalLines"
+      [error]="error"
+      [hintText]="hintText"
+      class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+    ></app-recognized-text>
+    <app-recognized-live-text
+      [text]="liveText"
+    ></app-recognized-live-text>
+  </div>
+</ng-template>
+
+<!-- Translated pane -->
+<ng-template #translatedPane>
+  <ng-content select="[translatedControls]"></ng-content>
+
+  <div class="flex flex-grow basis-full overflow-hidden" [ngClass]="{'flex-col-reverse justify-start': textFlowDown, 'flex-col justify-end': !textFlowDown}" [attr.lang]="translatedLang" [attr.dir]="translatedDir">
+    <app-recognized-text
+      *ngIf="renderHistory()"
+      [renderHistory]="renderHistory"
+      [connected]="connected"
+      [hasLiveResults]="view === 'translated' ? hasTranslatedResults : hasLiveResults"
+      [lines]="translatedLines"
+      [error]="error"
+      [hintText]="hintText"
+      class="flex flex-grow-0 flex-shrink basis-full overflow-hidden"
+    ></app-recognized-text>
+    <app-recognized-live-text
+      [text]="translatedLiveText"
+    ></app-recognized-live-text>
+  </div>
+</ng-template>

@@ -10,6 +10,8 @@ import { CacheService } from './services/cache/cache.service';
 import { PeerServerService } from './services/peer-server/peer-server.service';
 import { ConfigModule } from '@nestjs/config';
 import { SessionService } from './services/session/session.service';
+import { PeerIdentityService } from './services/peer-identity/peer-identity.service';
+import { SocketIdentityService } from './services/socket-identity/socket-identity.service';
 import { SocketConnection, SocketConnectionSchema } from './models/socket-connection.model';
 import { OwnerRoom, OwnerRoomSchema } from './models/owner-rooms.model';
 import { BroadcastSession, BroadcastSessionSchema } from './models/broadcast-session.model';
@@ -65,6 +67,8 @@ function getDbConnectionData(): [string, MongooseModuleOptions] {
     SessionGateway,
     { provide: APP_INTERCEPTOR, useClass: CustomCacheInterceptor },
     SessionService,
+    SocketIdentityService,
+    PeerIdentityService,
     EventsService,
     AppService,
   ],

@@ -6,14 +6,32 @@
     "de": "Deutsch",
     "it": "Italienisch (Italiano)",
     "pt": "Portugiesisch (Português)",
-    "pl": "Polnisch (Polski)",
     "id": "Indonesisch (Bahasa Indonesia)",
+    "pl": "Polnisch (Polski)",
     "uk": "Ukrainisch (Український)",
     "ar": "Arabisch (عربي)",
     "zh": "Mandarin Vereinfacht (简体中文)"
   },
   "DIALECTS": {
     "unspecified": "Generisch",
+    "ar-AE": "Arabische (Vereinigte Arabische Emirate)",
+    "ar-BH": "Arabisch (Bahrain)",
+    "ar-DZ": "Arabische Sprache (Algerien)",
+    "ar-EG": "Arabische Sprache (Egypt)",
+    "ar-IL": "Arabische Sprache (Israel)",
+    "ar-IQ": "Arabisch (Irak)",
+    "ar-JO": "Arabische Sprache (Jordan)",
+    "ar-KW": "Arabische Sprache (Kuwait)",
+    "ar-LB": "Arabische Sprache (Lebanon)",
+    "ar-LY": "Arabische Sprache (Libien)",
+    "ar-MA": "Arabische Sprache (Morocco)",
+    "ar-OM": "Arabisch (Oman)",
+    "ar-PS": "Arabisch (Palästinensische Behörde)",
+    "ar-QA": "Arabische Sprache (Katar)",
+    "ar-SA": "Arabisch (Saudi Arabische Sprache)",
+    "ar-SY": "Arabische Sprache (Syria)",
+    "ar-TN": "Arabische Sprache (Tunisia)",
+    "ar-YE": "Arabische Sprache (Jemen)",
     "en-AU": "Englisch (Australien)",
     "en-CA": "Englisch (Kanada)",
     "en-GB": "Englisch (Vereinigtes Königreich)",
@@ -65,24 +83,6 @@
     "id-ID": "Indonesisch (Indonesien)",
     "pl-PL": "Polnisch (Polen)",
     "uk-UA": "Ukrainisch (Ukraine)",
-    "ar-AE": "Arabische (Vereinigte Arabische Emirate)",
-    "ar-BH": "Arabisch (Bahrain)",
-    "ar-DZ": "Arabische Sprache (Algerien)",
-    "ar-EG": "Arabische Sprache (Egypt)",
-    "ar-IL": "Arabische Sprache (Israel)",
-    "ar-IQ": "Arabisch (Irak)",
-    "ar-JO": "Arabische Sprache (Jordan)",
-    "ar-KW": "Arabische Sprache (Kuwait)",
-    "ar-LB": "Arabische Sprache (Lebanon)",
-    "ar-LY": "Arabische Sprache (Libien)",
-    "ar-MA": "Arabische Sprache (Morocco)",
-    "ar-OM": "Arabisch (Oman)",
-    "ar-PS": "Arabisch (Palästinensische Behörde)",
-    "ar-QA": "Arabische Sprache (Katar)",
-    "ar-SA": "Arabisch (Saudi Arabische Sprache)",
-    "ar-SY": "Arabische Sprache (Syria)",
-    "ar-TN": "Arabische Sprache (Tunisia)",
-    "ar-YE": "Arabische Sprache (Jemen)",
     "zh-CN": "Chinesisch (Mandarin, vereinfacht)",
     "zh-CN-shandong": "Chinesisch (Jilu Mandarin, vereinfacht)",
     "zh-CN-sichuan": "Chinesisch (Southwestern Mandarin, vereinfacht)",
@@ -143,7 +143,8 @@
       "title": "Diese Website verwendet Cookies",
       "p1": "Wir verwenden Cookies, um die Funktionalität der Website zu gewährleisten. Wir speichern nur unbedingt notwendige Cookies, die für die Funktionalität dieser Anwendungen erforderlich sind (z. B. angepasste Einstellungen usw.).",
       "p2": "Wir verfolgen oder speichern keine nicht-funktionalen Cookies auf Ihrem Gerät.",
-      "p3": "Weitere Einzelheiten finden Sie in unserer Cookie-Richtlinie"
+      "p3": "Weitere Einzelheiten finden Sie in unserer Cookie-Richtlinie",
+      "close": "Cookie-Hinweis schließen"
     },
     "POLICY": {
       "title": "Cookie-Richtlinie",
@@ -210,7 +211,6 @@
     "4.3": "Wenn Sie uns personenbezogene Daten zur Veröffentlichung auf unserer Website übermitteln, werden wir diese Daten gemäß der uns von Ihnen erteilten Lizenz veröffentlichen und anderweitig nutzen.",
     "4.4": "Ihre Datenschutzeinstellungen können verwendet werden, um die Veröffentlichung Ihrer Daten auf unserer Website einzuschränken, und können über die Datenschutzkontrollen auf der Website angepasst werden.",
     "4.5": "Ohne Ihre ausdrückliche Zustimmung geben wir Ihre persönlichen Daten nicht an Dritte weiter, um deren Direktmarketing oder das eines anderen Dritten zu betreiben.",
-    "4.6": "Alle finanziellen Transaktionen auf unserer Website werden über unseren Zahlungsdienstleister PSP-Name abgewickelt. Sie können die Datenschutzrichtlinien des Anbieters unter URL einsehen. Wir geben Informationen an unseren Zahlungsdienstleister nur in dem Umfang weiter, der für die Abwicklung von Zahlungen, die Sie über unsere Website tätigen, für die Rückerstattung solcher Zahlungen und für die Bearbeitung von Beschwerden und Anfragen im Zusammenhang mit solchen Zahlungen und Rückerstattungen erforderlich ist.",
     "5.1": "Wir können Ihre personenbezogenen Daten an unsere Mitarbeiter, Führungskräfte, Versicherer, Fachberater, Vertreter, Lieferanten oder Unterauftragnehmer weitergeben, soweit dies für die in dieser Richtlinie genannten Zwecke erforderlich ist.",
     "5.2": "Wir können Ihre personenbezogenen Daten an jedes Mitglied unserer Unternehmensgruppe (d. h. unsere Tochtergesellschaften, unsere oberste Holdinggesellschaft und alle ihre Tochtergesellschaften) weitergeben, soweit dies für die in dieser Richtlinie dargelegten Zwecke angemessen ist.",
     "5.3": "Wir können Ihre personenbezogenen Daten offenlegen:",
@@ -333,12 +333,59 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "Sehen und fühlen",
+      "shortcuts": "Shortcuts",
+      "transcription": "Transkript",
+      "translation": "Übersetzung",
       "sync": "Synchronisieren",
       "sharing": "Teilen",
       "obs": "OBS Studio",
-      "transcription": "Transkript",
-      "engine": "Motoren",
-      "shortcuts": "Shortcuts"
+      "engine": "Motoren"
+    },
+    "TRANSLATION": {
+      "enable": "Live-Übersetzung",
+      "on": "Übersetzung aktiviert",
+      "off": "Übersetzung deaktiviert",
+      "targetLang": "Übersetzen in",
+      "displayMode": "Untertitel-Layout",
+      "modeSplit": "Geteilt (Zweisprachig)",
+      "modeSplitDesc": "Original- und übersetzte Untertitel in zwei Paneelen",
+      "modeTranslatedOnly": "Nur Übersetzung",
+      "modeTranslatedOnlyDesc": "Nur die übersetzten Untertitel anzeigen",
+      "modeOriginalOnly": "Nur Original",
+      "modeOriginalOnlyDesc": "Zeige auf diesem Bildschirm nur die gesprochene Sprache. Zuschauer eines Streams erhalten weiterhin die Übersetzung.",
+      "statusTitle": "Status der lokalen Chrome-KI",
+      "statusReady": "Modell bereit (auf dem Gerät)",
+      "statusDownloadable": "Download erforderlich",
+      "statusDownloading": "Modell wird heruntergeladen...",
+      "statusError": "Modellfehler",
+      "statusUnsupported": "Browser nicht unterstützt",
+      "downloadButton": "Übersetzungsmodell herunterladen",
+      "downloadPrompt": "Laden Sie das Sprachmodell auf Ihr Gerät herunter, um die Übersetzung zu aktivieren",
+      "downloadingModel": "KI-Übersetzungsmodell wird direkt auf Ihr Gerät heruntergeladen...",
+      "privacyNotice": "Die Übersetzung erfolgt vollständig auf Ihrem Gerät mit den integrierten Sprachmodellen von Chrome, sodass kein Übersetzungsdienst Ihren Text erhält.",
+      "privacyNoticeSpeech": "Die Spracherkennung ist separat und je nach gewähltem Spracherkennungssystem kann die Audioverarbeitung in der Cloud erfolgen.",
+      "modelsTitle": "Übersetzungsmodelle",
+      "modelsPerPair": "Jedes Sprachpaar verwendet sein eigenes Übersetzungsmodell, das Chrome beim ersten Gebrauch herunterlädt.",
+      "modelPerPairNotice": "Einmaliger Download für dieses Sprachpaar",
+      "translationFailing": "Die Übersetzung funktioniert gerade nicht. Ein Neuladen der Seite kann das Problem beheben.",
+      "resetBySpokenLanguage": "Sie haben die gesprochene Sprache geändert, daher wurde die Übersetzung deaktiviert. Aktivieren Sie sie erneut, um eine neue Zielsprache auszuwählen.",
+      "unsupportedHint": "Die Chrome Translator API ist nur in unterstützten Desktop-Chromium-Browsern (Chrome 138+ / Edge) verfügbar. Möglicherweise müssen Sie chrome://flags/#translation-api aktivieren.",
+      "experimental": "Experimentelle Funktion",
+      "unsupportedMobileHint": "Die Übersetzung auf dem Gerät ist nur in Desktop-Browsern (Chrome 138+ oder Edge 148+) verfügbar und wird auf Smartphones oder Tablets nicht unterstützt.",
+      "swapLanguages": "Gesprochene und Zielsprache tauschen",
+      "swapUnavailable": "Spracherkennung ist für diese Sprache nicht verfügbar.",
+      "modelsManagedByChrome": "Chrome verwaltet heruntergeladene Übersetzungsmodelle und kann sie entfernen, um Speicherplatz freizugeben.",
+      "learnMore": "Mehr erfahren",
+      "splitOrientation": "Anordnung",
+      "orientationSideBySide": "Nebeneinander",
+      "orientationStacked": "Gestapelt",
+      "swapPanes": "Original- und Übersetzungsfenster tauschen",
+      "paneOriginal": "Original-Untertitel",
+      "paneTranslated": "Übersetzte Untertitel",
+      "pipContent": "Picture-in-Picture zeigt",
+      "pipContentOriginal": "Nur Original",
+      "pipContentTranslated": "Nur übersetzt",
+      "pipContentSplit": "Original und übersetzt"
     },
     "UI": {
       "t1": "Vorschau",
@@ -378,7 +425,12 @@
     },
     "PROVIDER": {
       "title": "Anerkennung API Provider",
-      "description": "Wählen Sie aus, welcher Dienstleister Sie verwenden möchten, um sichere Audio- und Rückgabeergebnisse zu verarbeiten. Verschiedene Motoren werden in Geschwindigkeit, Qualität und Kosten unterschiedlich sein. Wir tun unser Bestes, um Ihnen so viel Wahl wie möglich zu bringen, während die Dinge so frei wie wir können.",
+      "description": "Wählen Sie den Diensteanbieter, mit dem Sie Audio sicher verarbeiten und Ergebnisse zurückgeben möchten. Verschiedene Engines unterscheiden sich in Geschwindigkeit, Qualität und Kosten. Wir tun unser Bestes, um Ihnen so viel Auswahl wie möglich zu bieten, während wir die Dinge so kostenlos wie möglich halten.",
+      "balance": "Dein Gleichgewicht",
+      "dialectRequired": "WARNING! Dieser Anbieter erfordert einen ausgewählten Dialekt. Mit Ihren aktuellen Einstellungen werden Sie den Standarddialekt",
+      "acquire": "Unsere Patreon-Folder erhalten jeden Monat automatisch Tokens kostenlos.",
+      "setSuccess": "Der Anbieter hat sich erfolgreich geändert",
+      "requestTokens": "Kostenlose Tokens anfordern",
       "web": {
         "label": "Browser (Chrome und Safari)",
         "description": "Mit dem Browser-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an Ihren Browser-Anbieter über die Web Speech API.",
@@ -389,11 +441,8 @@
         "description": "Mit dem Azure Cognitive Services-Anbieter sendet Zip Captions Audio-Daten von Ihrem Gerät direkt an die Microsoft-API mit einem sicheren Web-Socket.",
         "cost": "Rate: 60 Tokens pro Minute"
       },
-      "dialectRequired": "WARNING! Dieser Anbieter erfordert einen ausgewählten Dialekt. Mit Ihren aktuellen Einstellungen werden Sie den Standarddialekt",
-      "setSuccess": "Der Anbieter hat sich erfolgreich geändert",
-      "balance": "Dein Gleichgewicht",
-      "acquire": "Unsere Patreon-Folder erhalten jeden Monat automatisch Tokens kostenlos.",
-      "requestTokens": "Kostenlose Tokens anfordern"
+      "bilingualHint": "Dieser Dialekt erkennt auch Englisch.",
+      "bilingualLanguageHint": "Die gesprochene Sprache von beiden wird in den Live-Untertiteln in dieser Sprache angezeigt."
     }
   },
   "STREAM": {
@@ -431,6 +480,9 @@
     "authentication": "Authentifizierung",
     "authDescription": "Zuschauer müssen einen Beitrittscode eingeben",
     "countdown": "Verbleibende Zeit",
+    "fromBroadcaster": "Übersetzt von der Sendenden Person",
+    "showTranslation": "Übersetzung anzeigen",
+    "translatedOnDevice": "Auf diesem Gerät übersetzt",
     "ROOMCARD": {
       "broadcastId": "Broadcast-ID",
       "broadcastType": "Broadcast-Typ",
@@ -447,7 +499,8 @@
       "clickToCopy": "Zum Kopieren klicken",
       "copied": "Link in die Zwischenablage kopiert",
       "create": "Erstelle eine neue",
-      "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden."
+      "changeWarning": "Die Broadcast-ID kann nach dem Speichern nicht mehr geändert werden.",
+      "deleteFailed": "Die Übertragung konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
     }
   },
   "MODAL": {
@@ -518,6 +571,8 @@
   },
   "LABELS": {
     "menu": "Menü",
+    "pause": "Pause",
+    "clearScreen": "Clear Screen",
     "viewPolicy": "Die Cookie-Richtlinie anzeigen",
     "closeCookieModal": "Cookie-Pop-up schließen",
     "viewGithub": "Das Github-Repository anzeigen",
@@ -526,8 +581,8 @@
     "stop": "Stoppen Sie",
     "listen": "Hören Sie",
     "lang": "Sprache",
-    "theme": "Thema",
     "dialect": "Dialekt",
+    "theme": "Thema",
     "wakelock": "Bildschirm aufwecken",
     "wakelockOn": "Verhindern, dass der Bildschirm bei aktiven Untertiteln in den Ruhezustand versetzt wird",
     "wakelockOff": "Zip Captions respektiert Ihre Systemeinstellungen für den Ruhezustand.",
@@ -557,8 +612,9 @@
     "date": "Datum",
     "duration": "Dauer",
     "provider": "Anbieter",
-    "pause": "Pause",
-    "clearScreen": "Clear Screen"
+    "spokenLanguage": "Gesprochene Sprache",
+    "uiLanguage": "Sprache der Benutzeroberfläche",
+    "sameAsSpoken": "Wie in der gesprochenen Sprache"
   },
   "HINTS": {
     "pipActive": "Untertitel werden im Bild-in-Bild-Fenster angezeigt",
@@ -582,6 +638,7 @@
     "required": "Erforderlich",
     "invalidUrl": "Ungültige URL",
     "invalidId": "Ungültige ID",
+    "pageNotFound": "Seite konnte nicht gefunden werden",
     "RECOGNITION": {
       "no-speech": "Fehler bei der Spracherkennung: Es wurde keine Sprache erkannt.",
       "aborted": "Spracherkennungsfehler: Die Spracheingabe wurde auf irgendeine Weise abgebrochen.",
@@ -591,8 +648,7 @@
       "service-not-allowed": "Fehler bei der Spracherkennung: Der Benutzeragent hat den angeforderten Spracherkennungsdienst nicht zugelassen, entweder weil der Benutzeragent ihn nicht unterstützt oder aus Gründen der Sicherheit, des Datenschutzes oder der Benutzerpräferenz.",
       "bad-grammar": "Fehler bei der Spracherkennung: Es gab einen Fehler in der Spracherkennungsgrammatik oder den semantischen Tags, oder das gewählte Grammatikformat oder semantische Tag-Format wurde nicht unterstützt.",
       "language-not-supported": "Spracherkennungsfehler: Der User Agent unterstützt die im Wert des Attributs lang des SpeechRecognition-Objekts angegebene Sprache nicht."
-    },
-    "pageNotFound": "Seite konnte nicht gefunden werden"
+    }
   },
   "TEXT_SIZE": {
     "textSize-xs": "XS",
@@ -630,8 +686,14 @@
     "obsStudioPort": "Server-Anschluss",
     "obsPassword": "Server-Kennwort",
     "obsStreamInactive": "Warten auf den Beginn des OBS-Streams",
+    "obsCaptionSource": "Was OBS empfängt",
+    "obsCaptionTranslatedFallback": "OBS erhält den Originaltext, wenn die Übersetzung deaktiviert ist oder nicht verfügbar ist.",
+    "obsCaptionUnsupportedLanguage": "OBS kann diese Sprache nicht anzeigen, da sie das CEA-608-Format verwendet.",
     "connectionEstablished": "Verbunden - Sie können mit der Erfassung beginnen",
-    "disconnected": "Getrennt"
+    "disconnected": "Getrennt",
+    "notConnected": "Nicht mit OBS verbunden",
+    "connecting": "Verbinde mit OBS",
+    "connectionError": "OBS-Verbindungsfehler"
   },
   "AUTH": {
     "title": "Anmelden Sie sich für Zip -Bildunterschriften an",
@@ -641,6 +703,10 @@
     "loginWithPatreon": "Melden Sie sich mit Patreon an"
   },
   "USER": {
+    "TABS": {
+      "account": "Konto",
+      "provider": "Anbieter"
+    },
     "PROFILE": {
       "title": "Willkommen",
       "blurb": "Hier ist, was wir über dich wissen:",
@@ -673,10 +739,6 @@
       "usernameLabel": "Patreon-Benutzername",
       "startDateLabel": "Beigetreten",
       "thanksMessage": "Vielen Dank für Ihre Unterstützung - ohne Ihre Hilfe könnten wir das nicht schaffen!"
-    },
-    "TABS": {
-      "account": "Konto",
-      "provider": "Anbieter"
     }
   },
   "TRANSCRIPT": {

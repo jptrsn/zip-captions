@@ -40,7 +40,8 @@
           </ng-template>
         </div> 
         <div class="d-flex">
-          <div class="flex flex-row gap-3 justify-between" *ngFor="let item of local | keyvalue">
+          <ng-container *ngFor="let item of local | keyvalue">
+          <div class="flex flex-row gap-3 justify-between" *ngIf="isSimpleSettingValue(item.value)">
             <span class="label-text" translate>{{'LABELS.' + item.key}}</span>
             <ng-container *ngIf="server && local[item.key] !== server[item.key]; else valuesMatch">
               <span class="tooltip tooltip-left tooltip-rounded" [ngClass]="{'tooltip-accent' : viewingSaved, 'tooltip-primary': !viewingSaved}" [attr.data-tip]="(viewingSaved ? local[item.key] : server[item.key])">
@@ -52,6 +53,7 @@
             </ng-template>
             
           </div>
+          </ng-container>
         </div>
       </div>
     </ng-template>

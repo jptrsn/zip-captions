@@ -172,7 +172,8 @@ export class AppService {
     } else {
       for (const k of Object.keys(record)) {
         if (record[k] === null) {
-          delete supporter[k]
+          // `delete` does nothing on a Mongoose document; set() with undefined removes the field
+          supporter.set(k, undefined);
         } else {
           supporter[k] = record[k];
         }

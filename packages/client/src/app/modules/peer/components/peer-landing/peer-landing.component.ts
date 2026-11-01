@@ -14,6 +14,7 @@ import { peerConnectionsAcceptedSelector, platformSelector } from '../../../../s
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { selectIsBroadcasting, selectJoinCode, selectPeerError, selectPeerServerConnected, selectRoomId, selectServerOffline, selectSocketServerConnected } from '../../../../selectors/peer.selectors';
 import { recognitionActiveSelector } from '../../../../selectors/recognition.selector';
+import { formatSessionId } from '../../models/session-id';
 
 @Component({
   selector: 'app-peer-landing',
@@ -150,18 +151,13 @@ export class PeerLandingComponent implements OnDestroy, ComponentCanDeactivate {
 
   private _injectDashIfRequired(): void {
     const sessionControl: AbstractControl = this.joinSessionFormGroup.controls['session'];
-    const dashIndexes = [2, 7]
     sessionControl.valueChanges.pipe(
       takeUntilDestroyed(),
     ).subscribe((value) => {
-      for (const i of dashIndexes) {
-        if (value && value.length > i) {
-          if (value[i] !== '-') {
-            sessionControl.setValue(value.slice(0,i) + '-' + value.slice(i, value.length))
-          }
-        }
+      const formatted = formatSessionId(value);
+      if (formatted !== value) {
+        sessionControl.setValue(formatted);
       }
-
     })
   }
 }

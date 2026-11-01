@@ -1,0 +1,64 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    # A change to nothing but these cannot break a test. (Not the repo's docs/ folder: that is the client's build output.)
+    paths-ignore:
+      - 'aidlc-docs/**'
+      - '**/*.md'
+  workflow_dispatch:
+  # The staging deploy runs the same tests before it builds anything
+  workflow_call:
+
+permissions:
+  contents: read
+
+# A newer push to the same pull request makes the running tests obsolete
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  client:
+    name: Client tests
+    runs-on: ubuntu-latest
+    # The client suite has been seen to hang on its last suite; do not let that hold a runner for hours
+    timeout-minutes: 25
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run the client tests
+        run: npx jest -c packages/client/jest.config.ts --ci
+
+  server:
+    name: Server tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run the server tests
+        run: npx jest -c packages/server/jest.config.ts --ci
