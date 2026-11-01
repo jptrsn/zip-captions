@@ -36,6 +36,7 @@ export class WebRecognitionService {
   private mostRecentResults: SpeechRecognitionResult[] | undefined;
   private transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
   private segmentStart: Date | undefined;
+  private transcript = '';
 
 	private isStreaming = false;
 
@@ -112,6 +113,7 @@ export class WebRecognitionService {
 			this.mostRecentResults = undefined;
 		}
 		this.segmentStart = undefined;
+		this.transcript = '';
 		this.recognizedText.set([]);
 		this.liveOutput.set('');
 	}
@@ -147,7 +149,6 @@ export class WebRecognitionService {
 
 	private _addEventListeners(): void {
 		const platform: AppPlatform | undefined = this.platform();
-		let transcript: string;
 
 		// Debounce is to provide a timeout after the last-recognized full text,
 				// in order to better handle chunking in related tasks for the media stream
@@ -181,7 +182,7 @@ export class WebRecognitionService {
 								}
 								return current.slice(this.MAX_RECOGNITION_LENGTH * -1);
 							});
-							transcript = '';
+							this.transcript = '';
 							this.liveOutput.set('');
 							debounce$.next(Date.now());
 						}
@@ -212,7 +213,7 @@ export class WebRecognitionService {
 					debounce$.next(Date.now());
 					if (this.platform() === AppPlatform.desktop) {
 						this.mostRecentResults = Array.from(e.results);
-						transcript = this.mostRecentResults
+						this.transcript = this.mostRecentResults
 						.filter((result: SpeechRecognitionResult) => !this.transcriptSegments.has(result))
 						.map((result: SpeechRecognitionResult) => {
 							return result[0];
@@ -229,15 +230,15 @@ export class WebRecognitionService {
 						const lastResult = e.results.item(e.results.length - 1);
 						this.mostRecentResults = [lastResult];
 						if (lastResult[0].transcript.length) {
-							transcript = lastResult[0].transcript
+							this.transcript = lastResult[0].transcript
 						}
 					}
-					if (transcript.length && !this.segmentStart) {
+					if (this.transcript.length && !this.segmentStart) {
 						this.segmentStart = new Date();
 					}
-					this.liveOutput.set(transcript);
+					this.liveOutput.set(this.transcript);
 					if (this.obsConnected()) {
-						this.store.dispatch(ObsActions.sendCaption({text: transcript}));
+						this.store.dispatch(ObsActions.sendCaption({text: this.transcript}));
 					}
 				});
 
@@ -258,7 +259,7 @@ export class WebRecognitionService {
 						}
 						// console.log('clearing live output');
 						this.liveOutput.set('');
-						transcript = '';
+						this.transcript = '';
 					}
 					if (this.isStreaming) {
 						// console.log('recognition still active, restarting')
