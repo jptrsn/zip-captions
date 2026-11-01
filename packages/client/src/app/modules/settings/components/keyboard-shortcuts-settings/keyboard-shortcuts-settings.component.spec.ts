@@ -4,6 +4,7 @@ import { TestingModuleImports, TestingModuleProviders } from '../../../../../tes
 import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../../../models/app.model';
 import { SettingsActions } from '../../../settings/models/settings.model';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('KeyboardShortcutsSettingsComponent', () => {
   let component: KeyboardShortcutsSettingsComponent;
@@ -56,6 +57,17 @@ describe('KeyboardShortcutsSettingsComponent', () => {
 
     expect(component.recordingActionId).toBeNull();
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should have translated aria-label on cancel recording button', () => {
+    const translate = TestBed.inject(TranslateService);
+    translate.use('en');
+    component.startRecording('clearScreen');
+    fixture.detectChanges();
+
+    const cancelButton: HTMLButtonElement = fixture.nativeElement.querySelector('button.btn-circle');
+    expect(cancelButton).toBeTruthy();
+    expect(cancelButton.getAttribute('aria-label')).toBe('Cancel');
   });
 
   it('should reject browser reserved keys and show error', () => {

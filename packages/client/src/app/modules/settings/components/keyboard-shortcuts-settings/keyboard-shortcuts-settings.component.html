@@ -57,7 +57,9 @@
               <span class="badge badge-warning animate-pulse text-xs py-3 px-2 font-mono" translate>
                 SHORTCUTS.pressKey
               </span>
-              <button class="btn btn-xs btn-ghost btn-circle" (click)="cancelRecording()">
+              <button class="btn btn-xs btn-ghost btn-circle"
+                      [attr.aria-label]="'BUTTONS.cancel' | translate"
+                      (click)="cancelRecording()">
                 <ng-icon name="heroXMark"></ng-icon>
               </button>
             </div>
