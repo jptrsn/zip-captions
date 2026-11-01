@@ -203,6 +203,15 @@ describe('KeyboardShortcutsService', () => {
     });
     service.toggleRecognition();
     expect(store.dispatch).toHaveBeenCalledWith(RecognitionActions.resume());
+
+    // Connecting -> no-op
+    (store.dispatch as jest.Mock).mockClear();
+    store.setState({
+      ...defaultAppState,
+      recognition: { ...defaultAppState.recognition, status: RecognitionStatus.connecting }
+    });
+    service.toggleRecognition();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should clear screen and broadcast empty results on clearScreen()', () => {

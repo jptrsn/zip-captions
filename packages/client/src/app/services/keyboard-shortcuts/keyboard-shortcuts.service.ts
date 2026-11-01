@@ -292,7 +292,9 @@ export class KeyboardShortcutsService {
 
   public toggleRecognition(): void {
     const status = this.recognitionStatus();
-    if (status === RecognitionStatus.connected) {
+    if (status === RecognitionStatus.connecting) {
+      return;
+    } else if (status === RecognitionStatus.connected) {
       this.store.dispatch(RecognitionActions.pause());
     } else if (status === RecognitionStatus.paused) {
       this.store.dispatch(RecognitionActions.resume());
