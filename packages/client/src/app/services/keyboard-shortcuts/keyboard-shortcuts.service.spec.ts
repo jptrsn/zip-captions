@@ -68,7 +68,7 @@ describe('KeyboardShortcutsService', () => {
     expect(service.isReservedOrBrowserDefault({ key: 'p', ctrlKey: false, metaKey: false, altKey: false })).toBe(false);
   });
 
-  it('should match action for valid key event', () => {
+  it('should match actions case-insensitively and treat "+" / "=" and "-" / "_" as equivalent', () => {
     const eventP = new KeyboardEvent('keydown', { key: 'p' });
     expect(service.getMatchingAction(eventP)).toBe('togglePause');
 
@@ -216,7 +216,7 @@ describe('KeyboardShortcutsService', () => {
     expect(peerService.textOutput$.value).toEqual([]);
   });
 
-  it('should dispatch handleKeyboardEvent for shortcut actions, call preventDefault(), and return true or false appropriately', () => {
+  it('should invoke the mapped handler method for each default shortcut key in handleKeyboardEvent(), call preventDefault(), and return true or false appropriately', () => {
     jest.spyOn(service, 'toggleRecognition');
     jest.spyOn(service, 'clearScreen');
     jest.spyOn(service, 'increaseTextSize');
