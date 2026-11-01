@@ -98,4 +98,36 @@ describe('KeyboardShortcutsSettingsComponent', () => {
       })
     );
   });
+
+  it('should treat "=" and "+" and "-" and "_" as equivalent when checking for conflicts', () => {
+    component.startRecording('togglePause');
+    // '=' is currently bound to 'increaseTextSize' by default; pressing '+' should conflict with it
+    const plusEvent = new KeyboardEvent('keydown', { key: '+', bubbles: true, cancelable: true });
+    window.dispatchEvent(plusEvent);
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: SettingsActions.setShortcuts.type,
+        shortcuts: expect.objectContaining({
+          togglePause: '+',
+          increaseTextSize: 'p',
+        })
+      })
+    );
+
+    component.startRecording('clearScreen');
+    // '-' is currently bound to 'decreaseTextSize' by default; pressing '_' should conflict with it
+    const underscoreEvent = new KeyboardEvent('keydown', { key: '_', bubbles: true, cancelable: true });
+    window.dispatchEvent(underscoreEvent);
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: SettingsActions.setShortcuts.type,
+        shortcuts: expect.objectContaining({
+          clearScreen: '_',
+          decreaseTextSize: 'c',
+        })
+      })
+    );
+  });
 });

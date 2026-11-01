@@ -94,7 +94,15 @@ export class KeyboardShortcutsSettingsComponent {
 
     // Check if newKey is already used by another action
     const existingConflict = (Object.entries(currentShortcuts) as [ShortcutActionId, string][]).find(
-      ([actionId, key]) => actionId !== currentAction && this.shortcutsService.normalizeKey(key) === newKey
+      ([actionId, key]) => {
+        if (actionId === currentAction) {
+          return false;
+        }
+        const normalizedBound = this.shortcutsService.normalizeKey(key);
+        const isEquivalentPlus = (normalizedBound === '=' && newKey === '+') || (normalizedBound === '+' && newKey === '=');
+        const isEquivalentMinus = (normalizedBound === '-' && newKey === '_') || (normalizedBound === '_' && newKey === '-');
+        return normalizedBound === newKey || isEquivalentPlus || isEquivalentMinus;
+      }
     );
 
     if (existingConflict) {
