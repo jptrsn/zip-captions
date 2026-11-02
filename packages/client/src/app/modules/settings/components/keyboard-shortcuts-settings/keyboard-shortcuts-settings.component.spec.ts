@@ -4,6 +4,7 @@ import { TestingModuleImports, TestingModuleProviders } from '../../../../../tes
 import { MockStore } from '@ngrx/store/testing';
 import { AppState } from '../../../../models/app.model';
 import { SettingsActions } from '../../../settings/models/settings.model';
+import { selectShortcutsEnabled } from '../../../../selectors/settings.selector';
 import { TranslateService } from '@ngx-translate/core';
 
 describe('KeyboardShortcutsSettingsComponent', () => {
@@ -129,5 +130,20 @@ describe('KeyboardShortcutsSettingsComponent', () => {
         })
       })
     );
+  });
+
+  it('should disable the reset and shortcut recording buttons when shortcuts are disabled', () => {
+    store.overrideSelector(selectShortcutsEnabled, false);
+    store.refreshState();
+    fixture.detectChanges();
+
+    const resetButton: HTMLButtonElement = fixture.nativeElement.querySelector('[data-testid="zc-shortcuts-reset"]');
+    expect(resetButton.disabled).toBe(true);
+
+    const shortcutButtons: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[data-testid^="zc-shortcut-"]');
+    expect(shortcutButtons.length).toBe(component.actionList.length);
+    shortcutButtons.forEach((button) => {
+      expect(button.disabled).toBe(true);
+    });
   });
 });

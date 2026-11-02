@@ -23,6 +23,7 @@
       </div>
       <button class="btn btn-sm btn-outline btn-secondary"
               data-testid="zc-shortcuts-reset"
+              [disabled]="!shortcutsEnabled()"
               (click)="resetToDefaults()"
               translate>
         SHORTCUTS.resetDefaults
@@ -48,6 +49,7 @@
                   type="button"
                   class="btn btn-sm btn-primary min-w-[3.5rem] font-mono text-base"
                   [attr.data-testid]="'zc-shortcut-' + action.id"
+                  [disabled]="!shortcutsEnabled()"
                   (click)="startRecording(action.id)">
             {{ formatKey(shortcuts()[action.id]) }}
           </button>
@@ -59,6 +61,7 @@
               </span>
               <button class="btn btn-xs btn-ghost btn-circle"
                       [attr.aria-label]="'BUTTONS.cancel' | translate"
+                      [disabled]="!shortcutsEnabled()"
                       (click)="cancelRecording()">
                 <ng-icon name="heroXMark"></ng-icon>
               </button>

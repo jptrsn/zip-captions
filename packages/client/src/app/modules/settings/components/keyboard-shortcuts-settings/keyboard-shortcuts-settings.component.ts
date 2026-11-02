@@ -45,6 +45,9 @@ export class KeyboardShortcutsSettingsComponent {
   }
 
   toggleEnabled(enabled: boolean): void {
+    if (!enabled) {
+      this.cancelRecording();
+    }
     this.store.dispatch(SettingsActions.setShortcutsEnabled({ enabled }));
   }
 
