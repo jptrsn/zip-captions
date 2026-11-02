@@ -7,7 +7,6 @@ jest.mock('microsoft-cognitiveservices-speech-sdk', () => ({}));
 import { CaptionSegment } from '../../../models/caption-segment.model';
 import { defaultAppState } from '../../../reducers/app.reducer';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
-import { PeerService } from '../../peer/services/peer.service';
 import { AzureRecognitionService } from './azure-recognition.service';
 import { RecognitionService } from './recognition.service';
 import { WebRecognitionService } from './web-recognition.service';
@@ -28,7 +27,6 @@ const stubEngine = (segments: CaptionSegment[]) => {
 describe('RecognitionService', () => {
   let service: RecognitionService;
   let store: MockStore;
-  let peerService: PeerService;
   let web: ReturnType<typeof stubEngine>;
   let azure: ReturnType<typeof stubEngine>;
 
@@ -43,11 +41,11 @@ describe('RecognitionService', () => {
       ]
     });
     store = TestBed.inject(MockStore);
-    peerService = TestBed.inject(PeerService);
   });
 
   const useProvider = (provider: 'web' | 'azure') => {
     store.overrideSelector(selectRecognitionEngine, { ...defaultAppState.recognition.engine, provider });
+    store.refreshState();
     service = TestBed.inject(RecognitionService);
   };
 
@@ -56,22 +54,14 @@ describe('RecognitionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should clear PeerService outputs on clearRecognition()', () => {
+  it('should delegate to active engine on clearRecognition()', () => {
     useProvider('web');
-    peerService.liveText$.next('in progress');
-    peerService.textOutput$.next(['segment 1']);
-    peerService.segments$.next([{ id: 'w-e-0', text: 'segment 1', lang: 'en' }]);
-    peerService.broadcasterTranslations$.next([{ id: 'w-e-0', text: 'segmento 1', lang: 'es' }]);
-    peerService.translatedLiveText$.next('en progreso');
-
     service.clearRecognition();
-
     expect(web.clear).toHaveBeenCalled();
-    expect(peerService.liveText$.value).toBe('');
-    expect(peerService.textOutput$.value).toEqual([]);
-    expect(peerService.segments$.value).toEqual([]);
-    expect(peerService.broadcasterTranslations$.value).toEqual([]);
-    expect(peerService.translatedLiveText$.value).toBe('');
+
+    useProvider('azure');
+    service.clearRecognition();
+    expect(azure.clear).toHaveBeenCalled();
   });
 
   it.each(['web', 'azure'] as const)('returns the %s engine segments', (provider) => {

@@ -4,6 +4,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Action } from '@ngrx/store';
 import { ReplaySubject } from 'rxjs';
 import { PeerActions } from '../actions/peer.actions';
+import { RecognitionActions } from '../actions/recogntion.actions';
 import { PeerService } from '../modules/peer/services/peer.service';
 import { defaultAppState } from '../reducers/app.reducer';
 import { selectSocketServerConnected } from '../selectors/peer.selectors';
@@ -13,11 +14,11 @@ describe('PeerEffects', () => {
   let actions$: ReplaySubject<Action>;
   let effects: PeerEffects;
   let store: MockStore;
-  let peerService: { refreshUserRooms: jest.Mock };
+  let peerService: { refreshUserRooms: jest.Mock; reset: jest.Mock };
 
   beforeEach(() => {
     actions$ = new ReplaySubject<Action>(1);
-    peerService = { refreshUserRooms: jest.fn() };
+    peerService = { refreshUserRooms: jest.fn(), reset: jest.fn() };
     TestBed.configureTestingModule({
       providers: [
         PeerEffects,
@@ -53,6 +54,14 @@ describe('PeerEffects', () => {
       actions$.next(PeerActions.getBroadcastRooms());
       expect(peerService.refreshUserRooms).toHaveBeenCalledTimes(1);
       expect(emitted).toEqual([PeerActions.getBroadcastRoomsRequested()]);
+    });
+  });
+
+  describe('clearOnRecognitionClear$', () => {
+    it('resets PeerService when RecognitionActions.clear is dispatched', () => {
+      effects.clearOnRecognitionClear$.subscribe();
+      actions$.next(RecognitionActions.clear());
+      expect(peerService.reset).toHaveBeenCalledTimes(1);
     });
   });
 });

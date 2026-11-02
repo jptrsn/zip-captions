@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, filter, map, of, switchMap, take } from 'rxjs';
+import { catchError, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { PeerActions } from '../actions/peer.actions';
+import { RecognitionActions } from '../actions/recogntion.actions';
 import { AppState } from '../models/app.model';
 import { PeerService } from '../modules/peer/services/peer.service';
 import { selectSocketServerConnected } from '../selectors/peer.selectors';
@@ -92,6 +93,15 @@ export class PeerEffects {
       map(() => this.peerService.refreshUserRooms()),
       map(() => PeerActions.getBroadcastRoomsRequested())
     )
+  )
+
+  clearOnRecognitionClear$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RecognitionActions.clear),
+        tap(() => this.peerService.reset())
+      ),
+    { dispatch: false }
   )
 
 }

@@ -35,6 +35,7 @@ export class AzureRecognitionService {
 	private appendQueue: Promise<void> = Promise.resolve();
 	private pendingAppends = 0;
 	private clearGeneration = 0;
+	private utteranceGeneration?: number;
 	private lastSegmentLang?: string;
 	private segmentStart?: Date;
 	private translationOn: Signal<boolean>;
@@ -226,11 +227,19 @@ export class AzureRecognitionService {
 			this.recognizer.recognizing = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this.liveOutput.set(event.result.text);
 				if (!this.segmentStart) {
-					this.segmentStart = new Date()
+					this.segmentStart = new Date();
+					this.utteranceGeneration = this.clearGeneration;
 				}
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
+				if (this.utteranceGeneration !== undefined && this.utteranceGeneration !== this.clearGeneration) {
+					this.liveOutput.set('');
+					this.segmentStart = undefined;
+					this.utteranceGeneration = undefined;
+					return;
+				}
+				this.utteranceGeneration = undefined;
 				// NoMatch results arrive with empty text; they are not captions
 				const text = event.result.text;
 				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();

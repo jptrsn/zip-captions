@@ -44,11 +44,11 @@ describe('KeyboardShortcutsSettingsComponent', () => {
     component.startRecording('togglePause');
     expect(component.recordingActionId).toBe('togglePause');
 
-    const event = new KeyboardEvent('keydown', { key: 'q', bubbles: true, cancelable: true });
+    const event = new KeyboardEvent('keydown', { code: 'KeyQ', key: 'q', bubbles: true, cancelable: true });
     window.dispatchEvent(event);
 
     expect(event.defaultPrevented).toBe(true);
-    expect(store.dispatch).toHaveBeenCalledWith(SettingsActions.setShortcut({ actionId: 'togglePause', key: 'q' }));
+    expect(store.dispatch).toHaveBeenCalledWith(SettingsActions.setShortcut({ actionId: 'togglePause', key: 'KeyQ' }));
     expect(component.recordingActionId).toBeNull();
   });
 
@@ -85,16 +85,16 @@ describe('KeyboardShortcutsSettingsComponent', () => {
 
   it('should swap keys if pressed key is already used by another action', () => {
     component.startRecording('togglePause');
-    // 'c' is currently bound to 'clearScreen'
-    const event = new KeyboardEvent('keydown', { key: 'c', bubbles: true, cancelable: true });
+    // 'KeyC' is currently bound to 'clearScreen'
+    const event = new KeyboardEvent('keydown', { code: 'KeyC', key: 'c', bubbles: true, cancelable: true });
     window.dispatchEvent(event);
 
     expect(store.dispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         type: SettingsActions.setShortcuts.type,
         shortcuts: expect.objectContaining({
-          togglePause: 'c',
-          clearScreen: 'p',
+          togglePause: 'KeyC',
+          clearScreen: 'KeyP',
         })
       })
     );
@@ -102,7 +102,7 @@ describe('KeyboardShortcutsSettingsComponent', () => {
 
   it('should treat "=" and "+" and "-" and "_" as equivalent when checking for conflicts', () => {
     component.startRecording('togglePause');
-    // '=' is currently bound to 'increaseTextSize' by default; pressing '+' should conflict with it
+    // 'Equal' is currently bound to 'increaseTextSize' by default; pressing '+' should conflict with it
     const plusEvent = new KeyboardEvent('keydown', { key: '+', bubbles: true, cancelable: true });
     window.dispatchEvent(plusEvent);
 
@@ -111,13 +111,13 @@ describe('KeyboardShortcutsSettingsComponent', () => {
         type: SettingsActions.setShortcuts.type,
         shortcuts: expect.objectContaining({
           togglePause: '+',
-          increaseTextSize: 'p',
+          increaseTextSize: 'KeyP',
         })
       })
     );
 
     component.startRecording('clearScreen');
-    // '-' is currently bound to 'decreaseTextSize' by default; pressing '_' should conflict with it
+    // 'Minus' is currently bound to 'decreaseTextSize' by default; pressing '_' should conflict with it
     const underscoreEvent = new KeyboardEvent('keydown', { key: '_', bubbles: true, cancelable: true });
     window.dispatchEvent(underscoreEvent);
 
@@ -126,10 +126,17 @@ describe('KeyboardShortcutsSettingsComponent', () => {
         type: SettingsActions.setShortcuts.type,
         shortcuts: expect.objectContaining({
           clearScreen: '_',
-          decreaseTextSize: 'c',
+          decreaseTextSize: 'KeyC',
         })
       })
     );
+  });
+
+  it('should cancel recording on window blur', () => {
+    component.startRecording('togglePause');
+    expect(component.recordingActionId).toBe('togglePause');
+    window.dispatchEvent(new Event('blur'));
+    expect(component.recordingActionId).toBeNull();
   });
 
   it('should disable the reset and shortcut recording buttons when shortcuts are disabled', () => {

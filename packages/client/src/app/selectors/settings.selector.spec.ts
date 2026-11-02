@@ -66,5 +66,11 @@ describe('settings selectors', () => {
     it('leaves out the transcription loading flag', () => {
       expect(selectSyncSettings(state).transcription).toEqual({ enabled: true, titlePattern: 'Sunday' });
     });
+
+    it('leaves out shortcuts and shortcutsEnabled', () => {
+      const syncSettings = selectSyncSettings(state) as unknown as Record<string, unknown>;
+      expect('shortcutsEnabled' in syncSettings).toBe(false);
+      expect('shortcuts' in syncSettings).toBe(false);
+    });
   });
 });

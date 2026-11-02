@@ -29,14 +29,15 @@ describe('KeyboardShortcutsService', () => {
     router = TestBed.inject(Router);
     fullScreenService = TestBed.inject(FullScreenService);
     documentPipService = TestBed.inject(DocumentPipService);
+    service.setAvailableActions(Object.keys(DefaultKeyboardShortcuts) as any);
     jest.spyOn(store, 'dispatch');
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
     expect(service.shortcutsEnabled()).toBe(true);
-    expect(service.shortcuts().togglePause).toBe('p');
-    expect(service.shortcuts().clearScreen).toBe('c');
+    expect(service.shortcuts().togglePause).toBe('KeyP');
+    expect(service.shortcuts().clearScreen).toBe('KeyC');
   });
 
   it('should identify editable targets', () => {
@@ -177,13 +178,20 @@ describe('KeyboardShortcutsService', () => {
   });
 
   it('should handle toggleRecognition across recognition states', () => {
-    // Uninitialized / disconnected -> connects
+    // Uninitialized / disconnected -> no-op
     store.setState({
       ...defaultAppState,
       recognition: { ...defaultAppState.recognition, status: RecognitionStatus.uninitialized }
     });
     service.toggleRecognition();
-    expect(store.dispatch).toHaveBeenCalledWith(RecognitionActions.connect({ id: 'default' }));
+    expect(store.dispatch).not.toHaveBeenCalled();
+
+    store.setState({
+      ...defaultAppState,
+      recognition: { ...defaultAppState.recognition, status: RecognitionStatus.disconnected }
+    });
+    service.toggleRecognition();
+    expect(store.dispatch).not.toHaveBeenCalled();
 
     // Connected -> pauses
     store.setState({
@@ -209,6 +217,30 @@ describe('KeyboardShortcutsService', () => {
     });
     service.toggleRecognition();
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should ignore shortcuts when not in availableActions()', () => {
+    service.setAvailableActions(['clearScreen']);
+    const eventP = new KeyboardEvent('keydown', { code: 'KeyP', key: 'p' });
+    expect(service.getMatchingAction(eventP)).toBeNull();
+
+    const eventC = new KeyboardEvent('keydown', { code: 'KeyC', key: 'c' });
+    expect(service.getMatchingAction(eventC)).toBe('clearScreen');
+  });
+
+  it('should ignore shortcuts when recordingShortcut is true', () => {
+    service.setRecordingShortcut(true);
+    const eventC = new KeyboardEvent('keydown', { code: 'KeyC', key: 'c' });
+    expect(service.getMatchingAction(eventC)).toBeNull();
+    service.setRecordingShortcut(false);
+  });
+
+  it('should match shortcuts using event.code', () => {
+    const eventCodeP = new KeyboardEvent('keydown', { code: 'KeyP' });
+    expect(service.getMatchingAction(eventCodeP)).toBe('togglePause');
+
+    const eventCodeEqual = new KeyboardEvent('keydown', { code: 'Equal' });
+    expect(service.getMatchingAction(eventCodeEqual)).toBe('increaseTextSize');
   });
 
   it('should dispatch clear action on clearScreen()', () => {

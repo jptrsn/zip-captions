@@ -36,6 +36,7 @@ export class WebRecognitionService {
   private transcriptionEnabled: Signal<boolean | undefined>;
   private mostRecentResults: SpeechRecognitionResult[] | undefined;
   private transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
+  private clearedResultCount = 0;
   private segmentStart: Date | undefined;
   private transcript = '';
 
@@ -107,20 +108,22 @@ export class WebRecognitionService {
 	}
 
 	public clear(): void {
-		if (this.mostRecentResults) {
-			if (this.transcriptionEnabled()) {
-				const partialTranscript: string = this._getPendingFinalTranscript();
-				if (partialTranscript !== '') {
-					if (!this.segmentStart) {
-						this.segmentStart = new Date();
-					}
-					this.store.dispatch(RecognitionActions.addTranscriptSegment({
-						text: partialTranscript,
-						start: this.segmentStart
-					}));
-					this.segmentStart = undefined;
+		if (this.transcriptionEnabled()) {
+			const partialTranscript: string = this._getPendingFinalTranscript();
+			const textToFlush = partialTranscript !== '' ? partialTranscript : this.transcript.trim();
+			if (textToFlush !== '') {
+				if (!this.segmentStart) {
+					this.segmentStart = new Date();
 				}
+				this.store.dispatch(RecognitionActions.addTranscriptSegment({
+					text: textToFlush,
+					start: this.segmentStart
+				}));
+				this.segmentStart = undefined;
 			}
+		}
+		if (this.mostRecentResults) {
+			this.clearedResultCount = this.mostRecentResults.length;
 			for (const result of this.mostRecentResults) {
 				this.transcriptSegments.add(result);
 			}
@@ -138,6 +141,7 @@ export class WebRecognitionService {
 		}
 		const platform: AppPlatform | undefined = this.platform();
 		return this.mostRecentResults
+			.slice(this.clearedResultCount)
 			.filter((result) => {
 				if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
 					if (platform !== AppPlatform.mobile) {
@@ -236,6 +240,7 @@ export class WebRecognitionService {
 					if (this.platform() === AppPlatform.desktop) {
 						this.mostRecentResults = Array.from(e.results);
 						this.transcript = this.mostRecentResults
+						.slice(this.clearedResultCount)
 						.filter((result: SpeechRecognitionResult) => !this.transcriptSegments.has(result))
 						.map((result: SpeechRecognitionResult) => {
 							return result[0];
@@ -264,6 +269,7 @@ export class WebRecognitionService {
 				this.recog.addEventListener('end', (e) => {
 					// console.log('end', Date.now())
 					this.mostRecentResults = undefined;
+					this.clearedResultCount = 0;
 					const mostRecentOutput = this.liveOutput();
 					this.transcriptSegments.clear();
 					if (mostRecentOutput !== '') {

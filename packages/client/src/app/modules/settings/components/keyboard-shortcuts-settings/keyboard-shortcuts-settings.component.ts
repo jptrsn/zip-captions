@@ -1,8 +1,8 @@
-import { Component, HostListener, Signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
+import { KEY_TO_CODE_MAP, KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 import { DefaultKeyboardShortcuts, KeyboardShortcutsMap, SettingsActions, ShortcutActionId } from '../../models/settings.model';
 import { selectShortcuts, selectShortcutsEnabled } from '../../../../selectors/settings.selector';
 
@@ -31,7 +31,7 @@ export const SHORTCUT_ACTION_LIST: ShortcutActionDefinition[] = [
   templateUrl: './keyboard-shortcuts-settings.component.html',
   styleUrls: ['./keyboard-shortcuts-settings.component.scss']
 })
-export class KeyboardShortcutsSettingsComponent {
+export class KeyboardShortcutsSettingsComponent implements OnDestroy {
   public shortcutsEnabled: Signal<boolean>;
   public shortcuts: Signal<KeyboardShortcutsMap>;
   public actionList = SHORTCUT_ACTION_LIST;
@@ -44,6 +44,15 @@ export class KeyboardShortcutsSettingsComponent {
     this.shortcuts = toSignal(this.store.select(selectShortcuts), { initialValue: DefaultKeyboardShortcuts });
   }
 
+  ngOnDestroy(): void {
+    this.cancelRecording();
+  }
+
+  @HostListener('window:blur')
+  onBlur(): void {
+    this.cancelRecording();
+  }
+
   toggleEnabled(enabled: boolean): void {
     if (!enabled) {
       this.cancelRecording();
@@ -54,11 +63,13 @@ export class KeyboardShortcutsSettingsComponent {
   startRecording(actionId: ShortcutActionId): void {
     this.recordingActionId = actionId;
     this.errorMessage = null;
+    this.shortcutsService.setRecordingShortcut(true);
   }
 
   cancelRecording(): void {
     this.recordingActionId = null;
     this.errorMessage = null;
+    this.shortcutsService.setRecordingShortcut(false);
   }
 
   resetToDefaults(): void {
@@ -79,6 +90,7 @@ export class KeyboardShortcutsSettingsComponent {
     if (event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
+      event.stopImmediatePropagation();
       this.cancelRecording();
       return;
     }
@@ -90,8 +102,9 @@ export class KeyboardShortcutsSettingsComponent {
 
     event.preventDefault();
     event.stopPropagation();
+    event.stopImmediatePropagation();
 
-    const newKey = this.shortcutsService.normalizeKey(event.key);
+    const newKey = event.code || this.shortcutsService.normalizeKey(event.key);
     const currentShortcuts = { ...this.shortcuts() };
     const currentAction = this.recordingActionId;
 
@@ -101,10 +114,12 @@ export class KeyboardShortcutsSettingsComponent {
         if (actionId === currentAction) {
           return false;
         }
-        const normalizedBound = this.shortcutsService.normalizeKey(key);
-        const isEquivalentPlus = (normalizedBound === '=' && newKey === '+') || (normalizedBound === '+' && newKey === '=');
-        const isEquivalentMinus = (normalizedBound === '-' && newKey === '_') || (normalizedBound === '_' && newKey === '-');
-        return normalizedBound === newKey || isEquivalentPlus || isEquivalentMinus;
+        if (key === newKey) {
+          return true;
+        }
+        const mappedExisting = KEY_TO_CODE_MAP[key.toLowerCase()] || key;
+        const mappedNew = KEY_TO_CODE_MAP[newKey.toLowerCase()] || newKey;
+        return mappedExisting === mappedNew;
       }
     );
 

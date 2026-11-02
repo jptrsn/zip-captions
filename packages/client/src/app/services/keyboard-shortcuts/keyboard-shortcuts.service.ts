@@ -1,4 +1,4 @@
-import { Injectable, Signal, computed } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -80,12 +80,46 @@ export const NON_REPEATABLE_ACTIONS: ReadonlySet<ShortcutActionId> = new Set([
   'togglePip',
 ]);
 
+export const CODE_TO_LABEL_MAP: Record<string, string> = {
+  Equal: '+',
+  Minus: '-',
+  BracketRight: ']',
+  BracketLeft: '[',
+  Period: '.',
+  Comma: ',',
+  Slash: '/',
+  Backquote: '`',
+  Backslash: '\\',
+  Semicolon: ';',
+  Quote: "'",
+};
+
+export const KEY_TO_CODE_MAP: Record<string, string> = {
+  'p': 'KeyP',
+  'c': 'KeyC',
+  '=': 'Equal',
+  '+': 'Equal',
+  '-': 'Minus',
+  '_': 'Minus',
+  ']': 'BracketRight',
+  '[': 'BracketLeft',
+  '.': 'Period',
+  '>': 'Period',
+  ',': 'Comma',
+  '<': 'Comma',
+  'd': 'KeyD',
+  'm': 'KeyM',
+  'i': 'KeyI',
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class KeyboardShortcutsService {
   public readonly shortcutsEnabled: Signal<boolean>;
   public readonly shortcuts: Signal<KeyboardShortcutsMap>;
+  public readonly availableActions: WritableSignal<ReadonlySet<ShortcutActionId>> = signal(new Set());
+  public readonly recordingShortcut: WritableSignal<boolean> = signal(false);
 
   public readonly recognitionStatus: Signal<RecognitionStatus | undefined>;
   public readonly textSize: Signal<TextSize | undefined>;
@@ -138,13 +172,22 @@ export class KeyboardShortcutsService {
     if (event.ctrlKey || event.metaKey || event.altKey) {
       return true;
     }
-    if (!event.key) {
-      return true;
-    }
-    if (RESERVED_BROWSER_KEYS.has(event.key)) {
+    if (event.key && RESERVED_BROWSER_KEYS.has(event.key)) {
       return true;
     }
     return false;
+  }
+
+  public setAvailableActions(actions: Iterable<ShortcutActionId>): void {
+    this.availableActions.set(new Set(actions));
+  }
+
+  public clearAvailableActions(): void {
+    this.availableActions.set(new Set());
+  }
+
+  public setRecordingShortcut(recording: boolean): void {
+    this.recordingShortcut.set(recording);
   }
 
   public normalizeKey(key: string): string {
@@ -152,6 +195,24 @@ export class KeyboardShortcutsService {
   }
 
   public formatKeyLabel(key: string): string {
+    if (CODE_TO_LABEL_MAP[key]) {
+      return CODE_TO_LABEL_MAP[key];
+    }
+    if (key.startsWith('Key')) {
+      return key.slice(3).toUpperCase();
+    }
+    if (key.startsWith('Digit')) {
+      return key.slice(5);
+    }
+    const mappedCode = KEY_TO_CODE_MAP[key.toLowerCase()];
+    if (mappedCode) {
+      if (CODE_TO_LABEL_MAP[mappedCode]) {
+        return CODE_TO_LABEL_MAP[mappedCode];
+      }
+      if (mappedCode.startsWith('Key')) {
+        return mappedCode.slice(3).toUpperCase();
+      }
+    }
     if (key === '=') return '+';
     return key.toUpperCase();
   }
@@ -179,15 +240,14 @@ export class KeyboardShortcutsService {
     return ` (${this.formatKeyLabel(k1 || '')} / ${this.formatKeyLabel(k2 || '')})`;
   }
 
-  public formatShortcutDisplay(actionId: ShortcutActionId): string {
-    return this.formatShortcut(actionId);
-  }
-
   public getMatchingAction(event: KeyboardEvent): ShortcutActionId | null {
     if (event.defaultPrevented) {
       return null;
     }
     if (!this.shortcutsEnabled()) {
+      return null;
+    }
+    if (this.recordingShortcut()) {
       return null;
     }
     if (!this.isAllowedRoute()) {
@@ -200,15 +260,31 @@ export class KeyboardShortcutsService {
       return null;
     }
 
+    const eventCode = event.code;
     const pressed = this.normalizeKey(event.key);
     const activeMap = this.shortcuts();
+    const available = this.availableActions();
 
     for (const [actionId, boundKey] of Object.entries(activeMap) as [ShortcutActionId, string][]) {
+      if (!available.has(actionId)) {
+        continue;
+      }
+
+      const matchesCode = Boolean(eventCode && (boundKey === eventCode || KEY_TO_CODE_MAP[boundKey.toLowerCase()] === eventCode));
       const normalizedBound = this.normalizeKey(boundKey);
+      const mappedPressedCode = pressed ? KEY_TO_CODE_MAP[pressed] : undefined;
+      const boundLabel = (CODE_TO_LABEL_MAP[boundKey] || (boundKey.startsWith('Key') ? boundKey.slice(3) : '')).toLowerCase();
       const isEquivalentPlus = (normalizedBound === '=' && pressed === '+') || (normalizedBound === '+' && pressed === '=');
       const isEquivalentMinus = (normalizedBound === '-' && pressed === '_') || (normalizedBound === '_' && pressed === '-');
+      const matchesKey = Boolean(pressed && (
+        pressed === normalizedBound ||
+        pressed === boundLabel ||
+        (mappedPressedCode !== undefined && mappedPressedCode === boundKey) ||
+        isEquivalentPlus ||
+        isEquivalentMinus
+      ));
 
-      if (pressed === normalizedBound || isEquivalentPlus || isEquivalentMinus) {
+      if (matchesCode || matchesKey) {
         if (event.repeat && NON_REPEATABLE_ACTIONS.has(actionId)) {
           return null;
         }
@@ -275,14 +351,10 @@ export class KeyboardShortcutsService {
 
   public toggleRecognition(): void {
     const status = this.recognitionStatus();
-    if (status === RecognitionStatus.connecting) {
-      return;
-    } else if (status === RecognitionStatus.connected) {
+    if (status === RecognitionStatus.connected) {
       this.store.dispatch(RecognitionActions.pause());
     } else if (status === RecognitionStatus.paused) {
       this.store.dispatch(RecognitionActions.resume());
-    } else {
-      this.store.dispatch(RecognitionActions.connect({ id: 'default' }));
     }
   }
 

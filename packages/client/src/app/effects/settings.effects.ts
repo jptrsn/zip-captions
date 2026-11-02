@@ -33,9 +33,10 @@ export class SettingsEffects {
       ofType(SettingsActions.applySettings),
       map(({ settings }) => {
         const existing = (this.storage.get('settings') as Partial<SettingsState> | null) ?? {};
+        const { shortcutsEnabled: _sEnabled, shortcuts: _sShortcuts, ...syncedSettings } = settings;
         const merged: Partial<SettingsState> = {
           ...existing,
-          ...settings,
+          ...syncedSettings,
           transcription: settings.transcription
             ? { ...(existing.transcription ?? {}), ...settings.transcription }
             : existing.transcription ?? defaultSettingsState.transcription,

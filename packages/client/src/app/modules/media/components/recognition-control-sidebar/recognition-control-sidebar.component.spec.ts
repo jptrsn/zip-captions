@@ -537,4 +537,20 @@ describe('RecognitionControlSidebarComponent', () => {
     component.togglePip();
     expect(shortcutsService.togglePip).toHaveBeenCalled();
   });
+
+  it('should register available actions on init and clear them on destroy', () => {
+    create();
+    expect(shortcutsService.availableActions().has('clearScreen')).toBe(true);
+    expect(shortcutsService.availableActions().has('togglePause')).toBe(true);
+    expect(shortcutsService.availableActions().has('toggleFlow')).toBe(true);
+    expect(shortcutsService.availableActions().has('toggleFullscreen')).toBe(true);
+    expect(shortcutsService.availableActions().has('togglePip')).toBe(true);
+
+    component.showPip = false;
+    component.ngOnChanges();
+    expect(shortcutsService.availableActions().has('togglePip')).toBe(false);
+
+    component.ngOnDestroy();
+    expect(shortcutsService.availableActions().size).toBe(0);
+  });
 });

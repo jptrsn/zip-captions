@@ -315,4 +315,34 @@ describe('AzureRecognitionService', () => {
     expect(service.getRecognizedText()()).toEqual([]);
     expect(service.getLiveOutput()()).toBe('');
   });
+
+  it('drops in-flight utterance recognized after clear() and allows subsequent utterances', () => {
+    setup(true);
+    const recognizer = initialize('en-US');
+    recognizer.recognizing({}, { result: { text: 'in flight utterance' } });
+    expect(service.getLiveOutput()()).toBe('in flight utterance');
+
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+
+    // Late recognized event for the utterance in flight during clear()
+    recognizer.recognized({}, { sessionId: 'session', result: { text: 'in flight utterance', reason: RECOGNIZED_SPEECH } });
+    expect(service.getRecognizedSegments()()).toEqual([]);
+    expect(store.dispatch).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: RecognitionActions.addTranscriptSegment.type,
+        text: 'in flight utterance'
+      })
+    );
+
+    // New utterance after clear() is processed normally
+    recognize(recognizer, 'subsequent sentence');
+    expect(service.getRecognizedSegments()().map((segment) => segment.text)).toEqual(['subsequent sentence']);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: RecognitionActions.addTranscriptSegment.type,
+        text: 'subsequent sentence'
+      })
+    );
+  });
 });

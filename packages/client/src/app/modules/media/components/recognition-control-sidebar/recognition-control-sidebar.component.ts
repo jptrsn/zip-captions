@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
@@ -22,7 +22,7 @@ import { Subject, map, takeUntil } from 'rxjs';
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent implements AfterViewInit, OnDestroy {
+export class RecognitionControlSidebarComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() showFullscreen = true;
   @Input() showTextFlow = true;
   @Input() showPip = true;
@@ -72,7 +72,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
-              private shortcutsService: KeyboardShortcutsService,
+              public shortcutsService: KeyboardShortcutsService,
               private fullScreenService: FullScreenService,
               private translatorService: ChromeTranslatorService,
               private peerService: PeerService,
@@ -144,12 +144,37 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     this.textFlow = toSignal(this.store.select(selectTextFlow)) as Signal<TextFlow>;
   }
 
-  formatShortcut(actionId: ShortcutActionId): string {
-    return this.shortcutsService.formatShortcut(actionId);
+  ngOnInit(): void {
+    this.updateAvailableActions();
   }
 
-  formatPairShortcut(action1: ShortcutActionId, action2: ShortcutActionId): string {
-    return this.shortcutsService.formatPairShortcut(action1, action2);
+  ngOnChanges(): void {
+    this.updateAvailableActions();
+  }
+
+  private updateAvailableActions(): void {
+    const actions: ShortcutActionId[] = [
+      'clearScreen',
+      'increaseTextSize',
+      'decreaseTextSize',
+      'increaseLineHeight',
+      'decreaseLineHeight',
+      'increaseHistory',
+      'decreaseHistory',
+    ];
+    if (this.showRecognitionToggle) {
+      actions.push('togglePause');
+    }
+    if (this.showTextFlow) {
+      actions.push('toggleFlow');
+    }
+    if (this.showFullscreen) {
+      actions.push('toggleFullscreen');
+    }
+    if (this.showPip) {
+      actions.push('togglePip');
+    }
+    this.shortcutsService.setAvailableActions(actions);
   }
 
   setTranslationMode(mode: TranslationDisplayMode): void {
@@ -281,6 +306,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   }
 
   ngOnDestroy(): void {
+    this.shortcutsService.clearAvailableActions();
     this.drawerToggle?.removeEventListener('change', this.onDrawerChange);
     this.onDestroy$.next();
   }

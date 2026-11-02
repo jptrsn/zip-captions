@@ -124,6 +124,14 @@ export class PeerService {
 
   }
 
+  public reset(): void {
+    this.liveText$.next('');
+    this.textOutput$.next([]);
+    this.segments$.next([]);
+    this.broadcasterTranslations$.next([]);
+    this.translatedLiveText$.next('');
+  }
+
   /** What the server needs to know who this socket is: the login token, and the token for an anonymous id it issued */
   private socketAuth(): { token?: string; anonymousToken?: string } {
     this.handshakeLoginToken = this.loginToken();
