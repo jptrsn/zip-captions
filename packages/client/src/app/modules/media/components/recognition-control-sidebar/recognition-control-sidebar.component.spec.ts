@@ -225,6 +225,13 @@ describe('RecognitionControlSidebarComponent', () => {
       component.toggleRecognition();
       expect(dispatched()).toEqual([RecognitionActions.resume()]);
     });
+
+    it('dispatches resume when clicking the button while disconnected', () => {
+      create({ status: RecognitionStatus.disconnected, active: false });
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.btn-primary');
+      button.click();
+      expect(dispatched()).toEqual([RecognitionActions.resume()]);
+    });
   });
 
   describe('translation availability', () => {
@@ -470,13 +477,6 @@ describe('RecognitionControlSidebarComponent', () => {
     jest.spyOn(shortcutsService, 'clearScreen');
     component.clearScreen();
     expect(shortcutsService.clearScreen).toHaveBeenCalled();
-  });
-
-  it('should delegate toggleRecognition to shortcutsService', () => {
-    create();
-    jest.spyOn(shortcutsService, 'toggleRecognition');
-    component.toggleRecognition();
-    expect(shortcutsService.toggleRecognition).toHaveBeenCalled();
   });
 
   it('should delegate text size adjustments to shortcutsService', () => {

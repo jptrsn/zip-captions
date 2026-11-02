@@ -264,13 +264,14 @@ export class KeyboardShortcutsService {
     const pressed = this.normalizeKey(event.key);
     const activeMap = this.shortcuts();
     const available = this.availableActions();
+    const useCode = Boolean(eventCode && eventCode !== 'Unidentified');
 
     for (const [actionId, boundKey] of Object.entries(activeMap) as [ShortcutActionId, string][]) {
       if (!available.has(actionId)) {
         continue;
       }
 
-      const matchesCode = Boolean(eventCode && (boundKey === eventCode || KEY_TO_CODE_MAP[boundKey.toLowerCase()] === eventCode));
+      const matchesCode = Boolean(boundKey === eventCode || KEY_TO_CODE_MAP[boundKey.toLowerCase()] === eventCode);
       const normalizedBound = this.normalizeKey(boundKey);
       const mappedPressedCode = pressed ? KEY_TO_CODE_MAP[pressed] : undefined;
       const boundLabel = (CODE_TO_LABEL_MAP[boundKey] || (boundKey.startsWith('Key') ? boundKey.slice(3) : '')).toLowerCase();
@@ -284,7 +285,9 @@ export class KeyboardShortcutsService {
         isEquivalentMinus
       ));
 
-      if (matchesCode || matchesKey) {
+      const matches = useCode ? matchesCode : matchesKey;
+
+      if (matches) {
         if (event.repeat && NON_REPEATABLE_ACTIONS.has(actionId)) {
           return null;
         }

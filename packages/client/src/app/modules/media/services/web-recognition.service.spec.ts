@@ -189,6 +189,25 @@ describe('WebRecognitionService', () => {
     expect(service.getLiveOutput()()).toBe('');
   });
 
+  it('appends final results on mobile after clear() when debounce timer advances', () => {
+    jest.useFakeTimers();
+    setup();
+    store.overrideSelector(platformSelector, AppPlatform.mobile);
+    store.refreshState();
+    service.setLanguage('en-US');
+    service.connectToStream();
+
+    recog.dispatchEvent(resultEvent('before clear', false));
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+
+    recog.dispatchEvent(resultEvent('after clear final', true));
+    jest.advanceTimersByTime(2000);
+
+    expect(service.getRecognizedSegments()().map((s) => s.text)).toEqual(['after clear final']);
+    expect(service.getLiveOutput()()).toBe('');
+  });
+
   it('should slice cleared results on desktop so prior accumulated results do not restore cleared text', () => {
     setup();
     store.overrideSelector(platformSelector, AppPlatform.desktop);

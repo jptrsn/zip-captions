@@ -243,6 +243,16 @@ describe('KeyboardShortcutsService', () => {
     expect(service.getMatchingAction(eventCodeEqual)).toBe('increaseTextSize');
   });
 
+  it('should prioritize event.code on non-QWERTY layouts and fall back to event.key when code is empty', () => {
+    // On AZERTY, physical M key has code: 'KeyM' and key: ','.
+    // Must match toggleFullscreen by code, not decreaseHistory by key.
+    const azertyM = new KeyboardEvent('keydown', { code: 'KeyM', key: ',' });
+    expect(service.getMatchingAction(azertyM)).toBe('toggleFullscreen');
+
+    const fallbackM = new KeyboardEvent('keydown', { code: '', key: 'm' });
+    expect(service.getMatchingAction(fallbackM)).toBe('toggleFullscreen');
+  });
+
   it('should dispatch clear action on clearScreen()', () => {
     service.clearScreen();
 

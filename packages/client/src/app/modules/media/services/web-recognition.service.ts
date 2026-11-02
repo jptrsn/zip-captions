@@ -123,7 +123,9 @@ export class WebRecognitionService {
 			}
 		}
 		if (this.mostRecentResults) {
-			this.clearedResultCount = this.mostRecentResults.length;
+			if (this.platform() === AppPlatform.desktop) {
+				this.clearedResultCount = this.mostRecentResults.length;
+			}
 			for (const result of this.mostRecentResults) {
 				this.transcriptSegments.add(result);
 			}
@@ -140,13 +142,13 @@ export class WebRecognitionService {
 			return '';
 		}
 		const platform: AppPlatform | undefined = this.platform();
-		return this.mostRecentResults
-			.slice(this.clearedResultCount)
+		const results = platform === AppPlatform.desktop
+			? this.mostRecentResults.slice(this.clearedResultCount)
+			: this.mostRecentResults;
+		return results
 			.filter((result) => {
 				if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
-					if (platform !== AppPlatform.mobile) {
-						this.transcriptSegments.add(result);
-					}
+					this.transcriptSegments.add(result);
 					return true;
 				}
 				return false;

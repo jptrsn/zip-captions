@@ -277,7 +277,11 @@ export class RecognitionControlSidebarComponent implements OnInit, OnChanges, Af
   }
 
   toggleRecognition(): void {
-    this.shortcutsService.toggleRecognition();
+    if (this.recognitionActive()) {
+      this.store.dispatch(RecognitionActions.pause());
+    } else {
+      this.store.dispatch(RecognitionActions.resume());
+    }
   }
 
   clearScreen(): void {

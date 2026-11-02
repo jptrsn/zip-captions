@@ -7,7 +7,6 @@ export default {
   preset: '../../jest.preset.js',
   setupFiles: ['jest-wake-lock-mock'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/\\._'],
   coverageDirectory: '../../coverage/packages/client',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
