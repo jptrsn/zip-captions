@@ -1,3 +1,9 @@
+import buffer from 'node:buffer';
+
+if (!(buffer as any).SlowBuffer) {
+  (buffer as any).SlowBuffer = buffer.Buffer;
+}
+
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
