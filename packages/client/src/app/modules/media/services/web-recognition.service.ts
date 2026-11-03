@@ -36,6 +36,7 @@ export class WebRecognitionService {
   private transcriptionEnabled: Signal<boolean | undefined>;
 
 	private isStreaming = false;
+	private paused = false;
 
   constructor(private store: Store<AppState>) {
 
@@ -78,16 +79,24 @@ export class WebRecognitionService {
 
 	public disconnectFromStream(): void {
 		this.isStreaming = false;
+		this.paused = false;
 		this.recog.stop();
 
 	}
 
 	public pauseRecognition(): void {
+		this.paused = true;
 		this.recog.stop();
 	}
 
 	public resumeRecognition(): void {
-		this.recog.start();
+		this.paused = false;
+		try {
+			this.recog.start();
+		} catch {
+			// A quick resume can land while the stop from the pause is still pending, and start() throws then.
+			// The `end` handler restarts recognition because it is no longer paused.
+		}
 	}
 
 	public getLiveOutput(): Signal<string> {
@@ -245,8 +254,8 @@ export class WebRecognitionService {
 						transcript = '';
 					}
 					if (this.isStreaming) {
-						// console.log('recognition still active, restarting')
-						this.recog.start();
+						// restart unless paused; resumeRecognition() starts it again
+						if (!this.paused) this.recog.start();
 					} else {
 						// console.log('recognition inactive, disconnecting')
 						disconnect$.next();

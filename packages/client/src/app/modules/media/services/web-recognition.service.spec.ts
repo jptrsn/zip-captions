@@ -67,6 +67,45 @@ describe('WebRecognitionService', () => {
     }).not.toThrow();
   });
 
+  describe('pause and resume', () => {
+    it('does not restart recognition when the pause ends it', () => {
+      setup();
+      service.connectToStream();
+      recog.start.mockClear();
+
+      service.pauseRecognition();
+      recog.dispatchEvent(new Event('end'));
+
+      expect(recog.stop).toHaveBeenCalled();
+      expect(recog.start).not.toHaveBeenCalled();
+    });
+
+    it('survives a resume that lands while the stop is still pending, and restarts on the end event', () => {
+      setup();
+      service.connectToStream();
+      service.pauseRecognition();
+      recog.start.mockImplementationOnce(() => { throw new Error('InvalidStateError'); });
+
+      expect(() => service.resumeRecognition()).not.toThrow();
+
+      recog.start.mockClear();
+      recog.dispatchEvent(new Event('end'));
+      expect(recog.start).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts recognition on resume once the pause has ended it', () => {
+      setup();
+      service.connectToStream();
+      service.pauseRecognition();
+      recog.dispatchEvent(new Event('end'));
+      recog.start.mockClear();
+
+      service.resumeRecognition();
+
+      expect(recog.start).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('appends a segment on the end path, tagged with the language captured at start', () => {
     setup();
     service.setLanguage('fr-CA');
