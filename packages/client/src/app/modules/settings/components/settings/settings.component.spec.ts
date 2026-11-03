@@ -42,12 +42,12 @@ describe('SettingsComponent', () => {
   describe('tabs', () => {
     it('lists the settings tabs, without translation when the browser cannot translate', () => {
       create({ translatorSupported: false });
-      expect(tabIds()).toEqual(['appearance', 'transcription', 'sync', 'sharing', 'obs', 'engine']);
+      expect(tabIds()).toEqual(['appearance', 'shortcuts', 'transcription', 'sync', 'sharing', 'obs', 'engine']);
     });
 
     it('adds the translation tab after transcription when the browser can translate', () => {
       create({ translatorSupported: true });
-      expect(tabIds()).toEqual(['appearance', 'transcription', 'translation', 'sync', 'sharing', 'obs', 'engine']);
+      expect(tabIds()).toEqual(['appearance', 'shortcuts', 'transcription', 'translation', 'sync', 'sharing', 'obs', 'engine']);
     });
 
     it('has a test id and an icon for every tab', () => {
@@ -65,14 +65,14 @@ describe('SettingsComponent', () => {
     });
 
     it('opens the tab from the tabIndex query parameter', () => {
-      create({ tabIndex: '3' });
-      expect(component.tabIndex()).toBe(3);
+      create({ tabIndex: '4' });
+      expect(component.tabIndex()).toBe(4);
       expect(body()).toEqual(['app-broadcast-settings']);
     });
 
     it('wraps a tabIndex past the last tab', () => {
-      create({ tabIndex: '8' });
-      expect(component.tabIndex()).toBe(2);
+      create({ tabIndex: '10' });
+      expect(component.tabIndex()).toBe(3);
       expect(body()).toEqual(['app-user-saved-settings']);
     });
 
@@ -85,7 +85,7 @@ describe('SettingsComponent', () => {
       create();
       component.tabsControl.setValue(1);
       fixture.detectChanges();
-      expect(body()).toEqual(['app-transcription-settings']);
+      expect(body()).toEqual(['app-keyboard-shortcuts-settings']);
       expect(navigate).toHaveBeenCalledWith([], expect.objectContaining({ queryParams: { tabIndex: 1 }, queryParamsHandling: 'merge' }));
     });
   });

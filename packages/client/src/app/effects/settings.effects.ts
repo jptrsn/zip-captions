@@ -4,9 +4,9 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { AppState } from "../models/app.model";
-import { applySavedTranslation, SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
+import { applySavedTranslation, DefaultKeyboardShortcuts, SettingsActions, SettingsState } from "../modules/settings/models/settings.model";
 import { defaultSettingsState } from "../reducers/settings.reducer";
-import { selectAppSettings, selectTranscriptionSettings, selectTranslationSettings, selectUiLanguage } from "../selectors/settings.selector";
+import { selectAppSettings, selectShortcuts, selectTranscriptionSettings, selectTranslationSettings, selectUiLanguage } from "../selectors/settings.selector";
 import { StorageService } from "../services/storage.service";
 import { RecognitionActions } from "../actions/recogntion.actions";
 
@@ -33,9 +33,10 @@ export class SettingsEffects {
       ofType(SettingsActions.applySettings),
       map(({ settings }) => {
         const existing = (this.storage.get('settings') as Partial<SettingsState> | null) ?? {};
+        const { shortcutsEnabled: _sEnabled, shortcuts: _sShortcuts, ...syncedSettings } = settings;
         const merged: Partial<SettingsState> = {
           ...existing,
-          ...settings,
+          ...syncedSettings,
           transcription: settings.transcription
             ? { ...(existing.transcription ?? {}), ...settings.transcription }
             : existing.transcription ?? defaultSettingsState.transcription,
@@ -170,6 +171,41 @@ export class SettingsEffects {
     )
   )
 
+  saveShortcutsEnabled$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcutsEnabled),
+      tap(({ enabled }) => this.storage.update('settings', 'shortcutsEnabled', enabled)),
+      map(() => SettingsActions.setShortcutsEnabledSuccess())
+    )
+  )
+
+  saveShortcut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcut),
+      withLatestFrom(this.store.select(selectShortcuts)),
+      tap(([{ actionId, key }, shortcuts]) => {
+        this.storage.update('settings', 'shortcuts', { ...shortcuts, [actionId]: key });
+      }),
+      map(() => SettingsActions.setShortcutSuccess())
+    )
+  )
+
+  saveShortcuts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.setShortcuts),
+      tap(({ shortcuts }) => this.storage.update('settings', 'shortcuts', shortcuts)),
+      map(() => SettingsActions.setShortcutsSuccess())
+    )
+  )
+
+  resetShortcuts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SettingsActions.resetShortcuts),
+      tap(() => this.storage.update('settings', 'shortcuts', { ...DefaultKeyboardShortcuts })),
+      map(() => SettingsActions.resetShortcutsSuccess())
+    )
+  )
+
   saveTranslationSettings$ = createEffect(() =>
     this.actions$.pipe(
       ofType(
@@ -206,9 +242,16 @@ export class SettingsEffects {
           defaults[k] = partial[k];
         }
       }
+      if (partial.shortcuts && typeof partial.shortcuts === 'object') {
+        defaults.shortcuts = { ...DefaultKeyboardShortcuts, ...partial.shortcuts };
+      } else {
+        defaults.shortcuts = { ...DefaultKeyboardShortcuts };
+      }
       if (partial.translation) {
         defaults.translation = { ...defaultSettingsState.translation, ...partial.translation };
       }
+    } else {
+      defaults.shortcuts = { ...DefaultKeyboardShortcuts };
     }
     return defaults;
   }

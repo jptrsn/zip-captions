@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../models/app.model';
 import { themeSelector } from '../../selectors/settings.selector';
 import { AppTheme } from '../../modules/settings/models/settings.model';
+import { isEditableTarget } from '../keyboard-shortcuts/editable-target';
 
 interface DocumentPictureInPictureOptions {
   width?: number;
@@ -138,6 +139,28 @@ export class DocumentPipService {
           this._restoreElement();
           this.isPipActive.set(false);
           this.pipWindow = undefined;
+        }
+      });
+
+      // Forward keydown events from PiP window to main window so keyboard shortcuts work when PiP is focused
+      pipWindow.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (event.defaultPrevented || isEditableTarget(event.target)) {
+          return;
+        }
+        const forwardedEvent = new KeyboardEvent('keydown', {
+          key: event.key,
+          code: event.code,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey,
+          altKey: event.altKey,
+          metaKey: event.metaKey,
+          repeat: event.repeat,
+          bubbles: true,
+          cancelable: true,
+        });
+        window.dispatchEvent(forwardedEvent);
+        if (forwardedEvent.defaultPrevented) {
+          event.preventDefault();
         }
       });
     } catch (err) {

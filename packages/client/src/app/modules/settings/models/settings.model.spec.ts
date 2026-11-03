@@ -59,6 +59,20 @@ describe('settings model', () => {
       expect(omitDeviceSettings(snapshot)).toBe(snapshot);
     });
 
+    it('omits shortcuts and shortcutsEnabled from a settings snapshot', () => {
+      const snapshot = {
+        theme: 'dark',
+        shortcutsEnabled: false,
+        shortcuts: { togglePause: 'KeyP' } as any,
+        translation,
+      };
+      const result = omitDeviceSettings(snapshot) as any;
+      expect('shortcutsEnabled' in result).toBe(false);
+      expect('shortcuts' in result).toBe(false);
+      expect(result.theme).toBe('dark');
+      expect(result.translation?.pipContent).toBeUndefined();
+    });
+
     it('applies the saved settings but keeps this device\'s own Picture-in-Picture and OBS settings', () => {
       const existing: Partial<TranslationSettings> = { targetLanguage: 'es', pipContent: 'original', obsFeed: 'original' };
       expect(applySavedTranslation(existing, translation)).toEqual({ ...translation, pipContent: 'original', obsFeed: 'original' });

@@ -1,5 +1,6 @@
 import { Component, Signal, ViewEncapsulation } from '@angular/core';
 import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 
 @Component({
   selector: 'app-full-screen',
@@ -11,9 +12,14 @@ export class FullScreenComponent {
   
   public show: boolean;
   public isFullscreen: Signal<boolean>;
-  constructor(private svc: FullScreenService) {
+  constructor(private svc: FullScreenService,
+              private shortcutsService: KeyboardShortcutsService) {
     this.show = this.svc.isAvailable;
     this.isFullscreen = this.svc.isFullscreen;
+  }
+
+  formatShortcut(): string {
+    return this.shortcutsService.formatShortcut('toggleFullscreen');
   }
 
   toggle(): void {

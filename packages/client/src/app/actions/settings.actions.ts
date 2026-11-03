@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, ObsFeed, PipContent, RecognitionDialect, SettingsState, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
+import { AppTheme, FontFamily, InterfaceLanguage, KeyboardShortcutsMap, LineHeight, ObsFeed, PipContent, RecognitionDialect, SettingsState, ShortcutActionId, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference } from "../modules/settings/models/settings.model";
 
 
 export const initSettings = createAction('[Settings] Init');
@@ -47,6 +47,18 @@ export const saveTranscriptionSettings = createAction('[Settings] Save Transcrip
 export const saveTranscriptionSettingsSuccess = createAction('[Settings] Save Transcription Settings Success');
 export const saveTranscriptionSettingsFailure = createAction('[Settings] Save Transcription Settings Failure', props<{error: string}>());
 export const saveEngineSuccess = createAction('[Settings] Save Engine Success');
+
+export const setShortcutsEnabled = createAction('[Settings] Set Shortcuts Enabled', props<{ enabled: boolean }>());
+export const setShortcutsEnabledSuccess = createAction('[Settings] Set Shortcuts Enabled Success');
+
+export const setShortcut = createAction('[Settings] Set Shortcut', props<{ actionId: ShortcutActionId; key: string }>());
+export const setShortcutSuccess = createAction('[Settings] Set Shortcut Success');
+
+export const setShortcuts = createAction('[Settings] Set Shortcuts', props<{ shortcuts: KeyboardShortcutsMap }>());
+export const setShortcutsSuccess = createAction('[Settings] Set Shortcuts Success');
+
+export const resetShortcuts = createAction('[Settings] Reset Shortcuts');
+export const resetShortcutsSuccess = createAction('[Settings] Reset Shortcuts Success');
 
 export const setTranslationEnabled = createAction('[Settings] Set Translation Enabled', props<{ enabled: boolean }>());
 export const setTranslationMode = createAction('[Settings] Set Translation Mode', props<{ mode: TranslationDisplayMode }>());

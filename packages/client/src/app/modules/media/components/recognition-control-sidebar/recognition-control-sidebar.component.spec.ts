@@ -2,15 +2,19 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { TestingModuleImports, TestingModuleProviders } from '../../../../../testing/test-scaffold';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
+import { RecognitionStatus } from '../../../../models/recognition.model';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
-import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionPausedSelector, recognitionStatusSelector } from '../../../../selectors/recognition.selector';
 import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
+import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
+import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
 import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
 import { PeerService } from '../../../peer/services/peer.service';
 import { AvailableLineHeights, AvailableTextSizes, SettingsActions, TranslationSettings } from '../../../settings/models/settings.model';
@@ -21,6 +25,7 @@ interface Scenario {
   lineHeight?: string;
   history?: number;
   active?: boolean;
+  status?: RecognitionStatus;
   translation?: Partial<TranslationSettings> | undefined;
   translatorSupported?: boolean;
   offered?: string[];
@@ -37,6 +42,9 @@ describe('RecognitionControlSidebarComponent', () => {
   let fixture: ComponentFixture<RecognitionControlSidebarComponent>;
   let store: MockStore;
   let dispatch: jest.SpyInstance;
+  let fullScreenService: FullScreenService;
+  let documentPipService: DocumentPipService;
+  let shortcutsService: KeyboardShortcutsService;
   let offered$: BehaviorSubject<string[]>;
   let hostLanguage$: BehaviorSubject<string | undefined>;
   let translatorSupported: boolean;
@@ -47,10 +55,13 @@ describe('RecognitionControlSidebarComponent', () => {
     translatorSupported = s.translatorSupported ?? true;
     offered$.next(s.offered ?? []);
     hostLanguage$.next(s.hostLang);
+    const status = s.status ?? ((s.active ?? true) ? RecognitionStatus.connected : RecognitionStatus.paused);
     store.overrideSelector(selectTextSize, (s.textSize ?? 'textSize-3xl') as never);
     store.overrideSelector(selectLineHeight, (s.lineHeight ?? 'lineHeight-normal') as never);
     store.overrideSelector(selectRenderHistoryLength, s.history ?? 5);
-    store.overrideSelector(recognitionConnectedSelector, s.active ?? true);
+    store.overrideSelector(recognitionStatusSelector, status);
+    store.overrideSelector(recognitionConnectedSelector, status === RecognitionStatus.connected);
+    store.overrideSelector(recognitionPausedSelector, status === RecognitionStatus.paused);
     store.overrideSelector(selectIsBroadcasting, s.broadcasting ?? false);
     store.overrideSelector(selectObsConnected, ObsConnectionState.disconnected);
     store.overrideSelector(selectTranslationSettings, ('translation' in s ? s.translation : settings()) as TranslationSettings);
@@ -83,12 +94,16 @@ describe('RecognitionControlSidebarComponent', () => {
         ...TestingModuleProviders,
         { provide: ChromeTranslatorService, useFactory: () => ({ isSupported: () => translatorSupported, normalizeLanguageCode: (c?: string) => (c ?? '').split('-')[0].toLowerCase() }) },
         { provide: PeerService, useValue: { offeredLanguages$: offered$, hostLanguage$ } },
-        { provide: DocumentPipService, useValue: { isSupported: true } },
+        { provide: DocumentPipService, useValue: { isSupported: true, toggle: jest.fn() } },
       ],
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [RecognitionControlSidebarComponent],
     }).compileComponents();
     store = TestBed.inject(Store) as MockStore;
+    fullScreenService = TestBed.inject(FullScreenService);
+    documentPipService = TestBed.inject(DocumentPipService);
+    shortcutsService = TestBed.inject(KeyboardShortcutsService);
+    TestBed.inject(TranslateService).use('en');
     dispatch = jest.spyOn(store, 'dispatch');
   });
 
@@ -208,6 +223,13 @@ describe('RecognitionControlSidebarComponent', () => {
     it('resumes recognition when it is not', () => {
       create({ active: false });
       component.toggleRecognition();
+      expect(dispatched()).toEqual([RecognitionActions.resume()]);
+    });
+
+    it('dispatches resume when clicking the button while disconnected', () => {
+      create({ status: RecognitionStatus.disconnected, active: false });
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.btn-primary');
+      button.click();
       expect(dispatched()).toEqual([RecognitionActions.resume()]);
     });
   });
@@ -417,5 +439,118 @@ describe('RecognitionControlSidebarComponent', () => {
       component.setPipContent('split');
       expect(dispatched()).toEqual([SettingsActions.setPipContent({ content: 'split' })]);
     });
+  });
+
+  it('should display "Start" in tooltip when disconnected', () => {
+    create({ status: RecognitionStatus.disconnected });
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Start (P)');
+  });
+
+  it('should display "Resume" in tooltip when paused', () => {
+    create({ status: RecognitionStatus.paused });
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Resume (P)');
+  });
+
+  it('should display "Pause" in tooltip when recognition is active', () => {
+    create({ status: RecognitionStatus.connected });
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(button.getAttribute('data-tip')).toBe('Pause (P)');
+  });
+
+  it('should have translated aria-label on clear screen button', () => {
+    create();
+    const clearButton: HTMLButtonElement = fixture.nativeElement.querySelector('button[data-testid="zc-recog-clear"]');
+    expect(clearButton.getAttribute('aria-label')).toBe('Clear Screen');
+  });
+
+  it('should dispatch RecognitionActions.clear() on clearScreen()', () => {
+    create();
+    component.clearScreen();
+
+    expect(store.dispatch).toHaveBeenCalledWith(RecognitionActions.clear());
+  });
+
+  it('should delegate clearScreen to shortcutsService', () => {
+    create();
+    jest.spyOn(shortcutsService, 'clearScreen');
+    component.clearScreen();
+    expect(shortcutsService.clearScreen).toHaveBeenCalled();
+  });
+
+  it('should delegate text size adjustments to shortcutsService', () => {
+    create();
+    jest.spyOn(shortcutsService, 'increaseTextSize');
+    jest.spyOn(shortcutsService, 'decreaseTextSize');
+
+    component.increaseTextSize();
+    expect(shortcutsService.increaseTextSize).toHaveBeenCalled();
+
+    component.decreaseTextSize();
+    expect(shortcutsService.decreaseTextSize).toHaveBeenCalled();
+  });
+
+  it('should delegate line height adjustments to shortcutsService', () => {
+    create();
+    jest.spyOn(shortcutsService, 'increaseLineHeight');
+    jest.spyOn(shortcutsService, 'decreaseLineHeight');
+
+    component.increaseLineHeight();
+    expect(shortcutsService.increaseLineHeight).toHaveBeenCalled();
+
+    component.decreaseLineHeight();
+    expect(shortcutsService.decreaseLineHeight).toHaveBeenCalled();
+  });
+
+  it('should delegate history adjustments to shortcutsService', () => {
+    create();
+    jest.spyOn(shortcutsService, 'increaseRenderHistory');
+    jest.spyOn(shortcutsService, 'decreaseRenderHistory');
+
+    component.increaseRenderHistory();
+    expect(shortcutsService.increaseRenderHistory).toHaveBeenCalled();
+
+    component.decreaseRenderHistory();
+    expect(shortcutsService.decreaseRenderHistory).toHaveBeenCalled();
+  });
+
+  it('should delegate text flow toggle to shortcutsService', () => {
+    create();
+    jest.spyOn(shortcutsService, 'toggleTextFlow');
+    component.toggleTextFlow();
+    expect(shortcutsService.toggleTextFlow).toHaveBeenCalled();
+  });
+
+  it('should delegate fullscreen toggle to shortcutsService when available', () => {
+    create();
+    fullScreenService.isAvailable = true;
+    jest.spyOn(shortcutsService, 'toggleFullscreen');
+    component.toggleFullscreen();
+    expect(shortcutsService.toggleFullscreen).toHaveBeenCalled();
+  });
+
+  it('should delegate pip toggle to shortcutsService when supported', () => {
+    create();
+    Object.defineProperty(documentPipService, 'isSupported', { value: true, configurable: true });
+    jest.spyOn(shortcutsService, 'togglePip');
+    component.togglePip();
+    expect(shortcutsService.togglePip).toHaveBeenCalled();
+  });
+
+  it('should register available actions on init and clear them on destroy', () => {
+    create();
+    expect(shortcutsService.availableActions().has('clearScreen')).toBe(true);
+    expect(shortcutsService.availableActions().has('togglePause')).toBe(true);
+    expect(shortcutsService.availableActions().has('toggleFlow')).toBe(true);
+    expect(shortcutsService.availableActions().has('toggleFullscreen')).toBe(true);
+    expect(shortcutsService.availableActions().has('togglePip')).toBe(true);
+
+    component.showPip = false;
+    component.ngOnChanges();
+    expect(shortcutsService.availableActions().has('togglePip')).toBe(false);
+
+    component.ngOnDestroy();
+    expect(shortcutsService.availableActions().size).toBe(0);
   });
 });

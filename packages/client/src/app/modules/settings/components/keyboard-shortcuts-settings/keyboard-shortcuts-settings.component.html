@@ -1,0 +1,83 @@
+<div class="flex flex-col basis-full px-3 sm:px-6 max-w-4xl gap-6">
+  <!-- Enable / Disable Switcher -->
+  <div class="form-control bg-base-100 p-4 rounded-xl shadow">
+    <label class="label cursor-pointer justify-between">
+      <div class="flex flex-col">
+        <span class="label-text text-lg font-bold" translate>SHORTCUTS.enableTitle</span>
+        <span class="label-text-alt text-base-content/70" translate>SHORTCUTS.enableDescription</span>
+      </div>
+      <input type="checkbox"
+             class="toggle toggle-primary"
+             data-testid="zc-shortcuts-toggle"
+             [checked]="shortcutsEnabled()"
+             (change)="toggleEnabled($any($event.target).checked)" />
+    </label>
+  </div>
+
+  <!-- Shortcuts List -->
+  <div class="flex flex-col bg-base-100 p-4 rounded-xl shadow gap-4" [ngClass]="{'opacity-50 pointer-events-none': !shortcutsEnabled()}">
+    <div class="flex flex-row items-center justify-between border-b pb-3 border-base-200">
+      <div>
+        <h3 class="text-xl font-bold" translate>SHORTCUTS.listTitle</h3>
+        <p class="text-sm text-base-content/70" translate>SHORTCUTS.listDescription</p>
+      </div>
+      <button class="btn btn-sm btn-outline btn-secondary"
+              data-testid="zc-shortcuts-reset"
+              [disabled]="!shortcutsEnabled()"
+              (click)="resetToDefaults()"
+              translate>
+        SHORTCUTS.resetDefaults
+      </button>
+    </div>
+
+    <!-- Error notice if invalid key is pressed during recording -->
+    <div *ngIf="errorMessage" class="alert alert-warning text-sm py-2">
+      <ng-icon name="heroExclamationTriangle"></ng-icon>
+      <span translate>{{ errorMessage }}</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div *ngFor="let action of actionList"
+           class="flex flex-row items-center justify-between p-3 rounded-lg bg-base-200/50 hover:bg-base-200 transition-colors">
+        <div class="flex flex-col pr-2">
+          <span class="font-semibold text-sm" translate>{{ action.labelKey }}</span>
+          <span class="text-xs text-base-content/70" translate>{{ action.descKey }}</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button *ngIf="recordingActionId !== action.id; else recordingBadge"
+                  type="button"
+                  class="btn btn-sm btn-primary min-w-[3.5rem] font-mono text-base"
+                  [attr.data-testid]="'zc-shortcut-' + action.id"
+                  [disabled]="!shortcutsEnabled()"
+                  (click)="startRecording(action.id)">
+            {{ formatKey(shortcuts()[action.id]) }}
+          </button>
+
+          <ng-template #recordingBadge>
+            <div class="flex items-center gap-1">
+              <span class="badge badge-warning animate-pulse text-xs py-3 px-2 font-mono" translate>
+                SHORTCUTS.pressKey
+              </span>
+              <button class="btn btn-xs btn-ghost btn-circle"
+                      [attr.aria-label]="'BUTTONS.cancel' | translate"
+                      [disabled]="!shortcutsEnabled()"
+                      (click)="cancelRecording()">
+                <ng-icon name="heroXMark"></ng-icon>
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informational Callout -->
+  <div class="alert alert-info text-xs py-3 rounded-xl shadow">
+    <ng-icon name="heroQuestionMarkCircle" class="text-xl"></ng-icon>
+    <div class="flex flex-col">
+      <span class="font-bold" translate>SHORTCUTS.protectionNoticeTitle</span>
+      <span translate>SHORTCUTS.protectionNotice</span>
+    </div>
+  </div>
+</div>

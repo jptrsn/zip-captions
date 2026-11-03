@@ -1,15 +1,17 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, Renderer2, Signal, ViewChildren, computed, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../models/app.model';
-import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
+import { dialectSelector, languageSelector, selectLineHeight, selectRenderHistoryLength, selectTextFlow, selectTextSize, selectTranslationSettings } from '../../../../selectors/settings.selector';
 import { DocumentPipService } from '../../../../services/document-pip/document-pip.service';
-import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, SplitOrientation, SupportedTranslationLanguage, TextSize, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget, isSpokenLanguage } from '../../../settings/models/settings.model';
+import { AvailableLineHeights, AvailableTextSizes, AvailableTranslationLanguages, DefaultPipContent, DefaultSplitOrientation, LineHeight, PipContent, SettingsActions, ShortcutActionId, SplitOrientation, SupportedTranslationLanguage, TextFlow, TextSize, TranslationDisplayMode, TranslationSettings, fallbackTranslationTarget, isSpokenLanguage } from '../../../settings/models/settings.model';
 import { selectIsBroadcasting } from '../../../../selectors/peer.selectors';
 import { RecognitionActions } from '../../../../actions/recogntion.actions';
-import { recognitionConnectedSelector } from '../../../../selectors/recognition.selector';
+import { recognitionConnectedSelector, recognitionPausedSelector } from '../../../../selectors/recognition.selector';
 import { selectObsConnected } from '../../../../selectors/obs.selectors';
 import { ObsConnectionState } from '../../../../reducers/obs.reducer';
+import { KeyboardShortcutsService } from '../../../../services/keyboard-shortcuts/keyboard-shortcuts.service';
+import { FullScreenService } from '../../../../services/full-screen/full-screen.service';
 import { ChromeTranslatorService } from '../../../../services/translator/chrome-translator.service';
 import { ViewerLanguageOptions, viewerLanguageOptions } from '../../../../services/translator/viewer-translation';
 import { PeerService } from '../../../peer/services/peer.service';
@@ -20,7 +22,7 @@ import { Subject, map, takeUntil } from 'rxjs';
   templateUrl: './recognition-control-sidebar.component.html',
   styleUrls: ['./recognition-control-sidebar.component.scss'],
 })
-export class RecognitionControlSidebarComponent implements AfterViewInit, OnDestroy {
+export class RecognitionControlSidebarComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() showFullscreen = true;
   @Input() showTextFlow = true;
   @Input() showPip = true;
@@ -40,10 +42,13 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   public showOriginalOnly: Signal<boolean>;
   public isObsStreaming: Signal<boolean | undefined>;
   public recognitionActive: Signal<boolean | undefined>;
+  public recognitionPaused: Signal<boolean | undefined>;
 
   public renderHistoryLength: Signal<number>;
   public renderHistoryMin: Signal<boolean>;
   public renderHistoryMax: Signal<boolean>;
+
+  public textFlow: Signal<TextFlow>;
 
   // Translation signals
   public isTranslatorSupported: boolean;
@@ -67,6 +72,8 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
 
   constructor(private store: Store<AppState>,
               private renderer: Renderer2,
+              public shortcutsService: KeyboardShortcutsService,
+              private fullScreenService: FullScreenService,
               private translatorService: ChromeTranslatorService,
               private peerService: PeerService,
               private documentPip: DocumentPipService) {
@@ -114,7 +121,6 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
         this.store.dispatch(SettingsActions.setTranslationTargetLanguage({ targetLanguage: fallbackTranslationTarget(src) }));
       }
     });
-
     this.textSize = toSignal(this.store.select(selectTextSize)) as Signal<TextSize>;
     this.textSizeMax = computed(() => this.textSize() === this.availableTextSizes[this.availableTextSizes.length - 1]);
     this.textSizeMin = computed(() => this.textSize() === this.availableTextSizes[0]);
@@ -127,12 +133,48 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
     // Original only is a choice for the host of a broadcast; it also shows where it is already the saved mode
     this.showOriginalOnly = computed(() => !!this.isBroadcasting() || this.translationMode() === 'original-only');
     this.recognitionActive = toSignal(this.store.select(recognitionConnectedSelector));
+    this.recognitionPaused = toSignal(this.store.select(recognitionPausedSelector));
 
     this.isObsStreaming = toSignal(this.store.pipe(select(selectObsConnected), map((state) => (state === ObsConnectionState.connected))));
 
     this.renderHistoryLength = toSignal(this.store.select(selectRenderHistoryLength)) as Signal<number>;
     this.renderHistoryMin = computed(() => this.renderHistoryLength() < 1);
     this.renderHistoryMax = computed(() => this.renderHistoryLength() > 24);
+
+    this.textFlow = toSignal(this.store.select(selectTextFlow)) as Signal<TextFlow>;
+  }
+
+  ngOnInit(): void {
+    this.updateAvailableActions();
+  }
+
+  ngOnChanges(): void {
+    this.updateAvailableActions();
+  }
+
+  private updateAvailableActions(): void {
+    const actions: ShortcutActionId[] = [
+      'clearScreen',
+      'increaseTextSize',
+      'decreaseTextSize',
+      'increaseLineHeight',
+      'decreaseLineHeight',
+      'increaseHistory',
+      'decreaseHistory',
+    ];
+    if (this.showRecognitionToggle) {
+      actions.push('togglePause');
+    }
+    if (this.showTextFlow) {
+      actions.push('toggleFlow');
+    }
+    if (this.showFullscreen) {
+      actions.push('toggleFullscreen');
+    }
+    if (this.showPip) {
+      actions.push('togglePip');
+    }
+    this.shortcutsService.setAvailableActions(actions);
   }
 
   setTranslationMode(mode: TranslationDisplayMode): void {
@@ -193,62 +235,57 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   }
 
   increaseTextSize(): void {
-    if (!this.textSizeMax()) {
-      const idx = this.availableTextSizes.findIndex((size: TextSize) => size === this.textSize());
-      this.store.dispatch(SettingsActions.setTextSize({size: this.availableTextSizes[idx+1]}));
-    }
+    this.shortcutsService.increaseTextSize();
   }
 
   decreaseTextSize(): void {
-    if (!this.textSizeMin()) {
-      const idx = this.availableTextSizes.findIndex((size: TextSize) => size === this.textSize());
-      this.store.dispatch(SettingsActions.setTextSize({size: this.availableTextSizes[idx-1]}));
-    }
+    this.shortcutsService.decreaseTextSize();
   }
 
   increaseLineHeight(): void {
-    if (!this.lineHeightMax()) {
-      const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
-      this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx+1]}));
-    }
+    this.shortcutsService.increaseLineHeight();
   }
 
   decreaseLineHeight(): void {
-    if (!this.lineHeightMin()) {
-      const idx = this.availableLineHeights.findIndex((height: LineHeight) => height === this.lineHeight());
-      this.store.dispatch(SettingsActions.setLineHeight({height: this.availableLineHeights[idx-1]}));
-    }
+    this.shortcutsService.decreaseLineHeight();
   }
 
   increaseRenderHistory(): void {
-    if (!this.renderHistoryMax()) {
-      const count = (this.renderHistoryLength() || 0) + 1;
-      this.store.dispatch(SettingsActions.setRenderHistory({count}))
-    }
+    this.shortcutsService.increaseRenderHistory();
   }
 
   decreaseRenderHistory(): void {
-    if (!this.renderHistoryMin()) {
-      const count = this.renderHistoryLength() - 1;
-      this.store.dispatch(SettingsActions.setRenderHistory({count}))
+    this.shortcutsService.decreaseRenderHistory();
+  }
+
+  toggleTextFlow(): void {
+    if (this.showTextFlow) {
+      this.shortcutsService.toggleTextFlow();
+    }
+  }
+
+  toggleFullscreen(): void {
+    if (this.showFullscreen && this.fullScreenService.isAvailable) {
+      this.shortcutsService.toggleFullscreen();
+    }
+  }
+
+  togglePip(): void {
+    if (this.showPip && this.documentPip.isSupported) {
+      this.shortcutsService.togglePip();
     }
   }
 
   toggleRecognition(): void {
     if (this.recognitionActive()) {
-      this._pauseRecognition();
+      this.store.dispatch(RecognitionActions.pause());
     } else {
-      this._resumeRecognition();
+      this.store.dispatch(RecognitionActions.resume());
     }
-
   }
 
-  private _pauseRecognition(): void {
-    this.store.dispatch(RecognitionActions.pause());
-  }
-
-  private _resumeRecognition(): void {
-    this.store.dispatch(RecognitionActions.resume());
+  clearScreen(): void {
+    this.shortcutsService.clearScreen();
   }
 
   /**
@@ -273,6 +310,7 @@ export class RecognitionControlSidebarComponent implements AfterViewInit, OnDest
   }
 
   ngOnDestroy(): void {
+    this.shortcutsService.clearAvailableActions();
     this.drawerToggle?.removeEventListener('change', this.onDrawerChange);
     this.onDestroy$.next();
   }

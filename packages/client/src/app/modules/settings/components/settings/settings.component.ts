@@ -30,6 +30,7 @@ export class SettingsComponent {
 
   public tabNames = [
     'appearance',
+    'shortcuts',
     'transcription',
     'sync',
     'sharing',
@@ -39,6 +40,7 @@ export class SettingsComponent {
 
   public tabIcons: {[key: string]: string} = {
     'appearance': 'heroSwatch',
+    'shortcuts': 'heroCommandLine',
     'transcription': 'heroDocumentText',
     'translation': 'heroGlobeAlt',
     'sync': 'heroArrowsRightLeft',
@@ -54,7 +56,7 @@ export class SettingsComponent {
               private chromeTranslator: ChromeTranslatorService) {
 
     if (this.chromeTranslator.isSupported()) {
-      this.tabNames.splice(2, 0, 'translation');
+      this.tabNames.splice(3, 0, 'translation');
     }
 
     this.acceptedCookies = toSignal(this.store.pipe(

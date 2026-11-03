@@ -69,6 +69,14 @@ export class RecognitionEffects {
     )
   )
 
+  clearRecognition$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RecognitionActions.clear),
+      map(() => this.recognitionService.clearRecognition()),
+      map(() => RecognitionActions.clearSuccess())
+    )
+  )
+
   initTranscriptDb$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.initTranscriptDB),

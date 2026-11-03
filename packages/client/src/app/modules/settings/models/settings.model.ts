@@ -266,6 +266,35 @@ export const FontFamilyClassMap: Map<FontFamily, string> = new Map([
 
 export const AvailableFontFamilies: FontFamily[] = Array.from(FontFamilyClassMap.keys());
 
+export type ShortcutActionId =
+  | 'togglePause'
+  | 'clearScreen'
+  | 'increaseTextSize'
+  | 'decreaseTextSize'
+  | 'increaseLineHeight'
+  | 'decreaseLineHeight'
+  | 'increaseHistory'
+  | 'decreaseHistory'
+  | 'toggleFlow'
+  | 'toggleFullscreen'
+  | 'togglePip';
+
+export type KeyboardShortcutsMap = Record<ShortcutActionId, string>;
+
+export const DefaultKeyboardShortcuts: KeyboardShortcutsMap = {
+  togglePause: 'KeyP',
+  clearScreen: 'KeyC',
+  increaseTextSize: 'Equal',
+  decreaseTextSize: 'Minus',
+  increaseLineHeight: 'BracketRight',
+  decreaseLineHeight: 'BracketLeft',
+  increaseHistory: 'Period',
+  decreaseHistory: 'Comma',
+  toggleFlow: 'KeyD',
+  toggleFullscreen: 'KeyM',
+  togglePip: 'KeyI',
+};
+
 export interface TranscriptionSettings {
   enabled: boolean;
   loading?: boolean;
@@ -313,17 +342,35 @@ export interface TranslationSettings {
  */
 export const DeviceSpecificTranslationKeys = ['pipContent', 'obsFeed'] as const satisfies readonly (keyof TranslationSettings)[];
 
-/** The settings without the device-specific translation keys */
+/** The settings without device-specific keys (translation device keys and keyboard shortcuts) */
 export function omitDeviceSettings<T extends object>(settings: T): T {
-  const { translation } = settings as { translation?: TranslationSettings };
-  if (!translation) {
+  const s = settings as {
+    shortcutsEnabled?: boolean;
+    shortcuts?: KeyboardShortcutsMap;
+    translation?: TranslationSettings;
+  };
+  const hasShortcuts = s.shortcutsEnabled !== undefined || s.shortcuts !== undefined;
+  const translation = s.translation;
+  const hasDeviceTranslation = translation && DeviceSpecificTranslationKeys.some((k) => k in translation);
+
+  if (!hasShortcuts && !hasDeviceTranslation) {
     return settings;
   }
-  const withoutDeviceKeys = { ...translation };
-  for (const key of DeviceSpecificTranslationKeys) {
-    delete withoutDeviceKeys[key];
+
+  const { shortcutsEnabled, shortcuts, translation: trans, ...rest } = s;
+  let resultTranslation = trans;
+  if (hasDeviceTranslation && trans) {
+    const withoutDeviceKeys = { ...trans };
+    for (const key of DeviceSpecificTranslationKeys) {
+      delete withoutDeviceKeys[key];
+    }
+    resultTranslation = withoutDeviceKeys;
   }
-  return { ...settings, translation: withoutDeviceKeys };
+
+  return {
+    ...rest,
+    ...(resultTranslation !== undefined ? { translation: resultTranslation } : {}),
+  } as unknown as T;
 }
 
 /**
@@ -379,6 +426,8 @@ export function fallbackTranslationTarget(spoken: string | null | undefined): st
 export interface SettingsState extends SyncableSettings {
   transcription: TranscriptionSettings;
   translation: TranslationSettings;
+  shortcutsEnabled: boolean;
+  shortcuts: KeyboardShortcutsMap;
 }
 
 /** Interface language preference; 'spoken' follows the spoken (recognition) language */

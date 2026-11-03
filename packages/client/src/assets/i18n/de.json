@@ -333,6 +333,7 @@
   "SETTINGS": {
     "TABS": {
       "appearance": "Sehen und fühlen",
+      "shortcuts": "Shortcuts",
       "sync": "Synchronisieren",
       "sharing": "Teilen",
       "obs": "OBS Studio",
@@ -565,7 +566,8 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "saveCurrent": "Aktuell speichern",
-    "applySaved": "Gespeichert anwenden"
+    "applySaved": "Gespeichert anwenden",
+    "pause": "Pause"
   },
   "LABELS": {
     "menu": "Menü",
@@ -610,7 +612,9 @@
     "provider": "Anbieter",
     "spokenLanguage": "Gesprochene Sprache",
     "uiLanguage": "Sprache der Benutzeroberfläche",
-    "sameAsSpoken": "Wie in der gesprochenen Sprache"
+    "sameAsSpoken": "Wie in der gesprochenen Sprache",
+    "pause": "Pause",
+    "clearScreen": "Clear Screen"
   },
   "HINTS": {
     "pipActive": "Untertitel werden im Bild-in-Bild-Fenster angezeigt",
@@ -755,5 +759,40 @@
     "notFollowing": "Treten Sie uns kostenlos auf Patreon bei, um die neuesten Updates zu erhalten, oder unterstützen Sie uns dabei, den Zugang für alle kostenlos zu ermöglichen.",
     "notLoggedIn": "Melden Sie sich unten an, um ein besseres Erlebnis mit Zip Captions zu ermöglichen",
     "visit": "Besuchen Sie uns auf Patreon"
+  },
+  "SHORTCUTS": {
+    "title": "Keyboard Shortcuts",
+    "enableTitle": "Enable Keyboard Shortcuts",
+    "enableDescription": "Control captioning features and clear screen using keyboard shortcuts",
+    "listTitle": "Active Shortcuts",
+    "listDescription": "Click any shortcut button to assign a new key",
+    "resetDefaults": "Reset to Defaults",
+    "pressKey": "Press a key...",
+    "invalidKey": "Reserved or browser default keys cannot be used",
+    "duplicateKey": "Key swapped with conflicting action",
+    "protectionNoticeTitle": "Browser Default Protection",
+    "protectionNotice": "To ensure your browser continues to function normally, standard browser shortcuts (such as browser zoom, navigation, printing, and F-keys) are protected and cannot be overridden. Keyboard shortcuts only activate when captioning or viewing, and never while typing in a text field.",
+    "togglePause": "Pause / Resume",
+    "togglePauseDesc": "Toggle pausing and resuming speech recognition",
+    "clearScreen": "Clear Screen",
+    "clearScreenDesc": "Instantly clear all displayed live and recognized captions",
+    "increaseTextSize": "Increase Text Size",
+    "increaseTextSizeDesc": "Make caption font larger",
+    "decreaseTextSize": "Decrease Text Size",
+    "decreaseTextSizeDesc": "Make caption font smaller",
+    "increaseLineHeight": "Increase Line Spacing",
+    "increaseLineHeightDesc": "Increase spacing between caption lines",
+    "decreaseLineHeight": "Decrease Line Spacing",
+    "decreaseLineHeightDesc": "Decrease spacing between caption lines",
+    "increaseHistory": "Increase On-Screen Lines",
+    "increaseHistoryDesc": "Show more past caption lines on screen",
+    "decreaseHistory": "Decrease On-Screen Lines",
+    "decreaseHistoryDesc": "Show fewer past caption lines on screen",
+    "toggleFlow": "Toggle Text Flow",
+    "toggleFlowDesc": "Switch between bottom-up and top-down caption flow",
+    "toggleFullscreen": "Toggle Full Screen",
+    "toggleFullscreenDesc": "Enter or exit full screen display",
+    "togglePip": "Toggle Picture-in-Picture",
+    "togglePipDesc": "Pop captions into a Picture-in-Picture floating window"
   }
 }

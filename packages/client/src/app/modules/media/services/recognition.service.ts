@@ -142,6 +142,14 @@ export class RecognitionService {
 		}
   }
 
+  public clearRecognition(): void {
+		if (this.provider() === 'web') {
+			this.webRecognition.clear();
+		} else {
+			this.azureRecognition.clear();
+		}
+  }
+
   public fallbackToWebEngine(): void {
     this.azureRecognition.disconnectFromStream();
     this.webRecognition.connectToStream();

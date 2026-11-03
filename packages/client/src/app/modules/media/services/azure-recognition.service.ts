@@ -34,7 +34,10 @@ export class AzureRecognitionService {
 	// Final segments of a bilingual model are tagged by detection one at a time, in order
 	private appendQueue: Promise<void> = Promise.resolve();
 	private pendingAppends = 0;
+	private clearGeneration = 0;
+	private utteranceGeneration?: number;
 	private lastSegmentLang?: string;
+	private segmentStart?: Date;
 	private translationOn: Signal<boolean>;
 
 	constructor(private store: Store<AppState>,
@@ -161,6 +164,14 @@ export class AzureRecognitionService {
 		return this.recognizedText;
 	}
 
+	public clear(): void {
+		this.clearGeneration++;
+		this.segmentStart = undefined;
+		this.lastSegmentLang = undefined;
+		this.recognizedSegments.set([]);
+		this.liveOutput.set('');
+	}
+
   private _refreshToken(): void {
       this._getToken().pipe(take(1)).subscribe((auth) => {
         if (this.recognizer !== undefined) {
@@ -177,23 +188,36 @@ export class AzureRecognitionService {
 		return pair && pair.length > 1 ? pair : undefined;
 	}
 
-	private async _appendDetected(text: string, pair: readonly string[] | undefined, start: Date | undefined): Promise<void> {
+	private async _appendDetected(
+		text: string,
+		pair: readonly string[] | undefined,
+		start: Date | undefined,
+		generation = this.clearGeneration
+	): Promise<void> {
+		if (generation !== this.clearGeneration) {
+			return;
+		}
 		const configured = this.recognitionLang;
 		let lang = configured;
 		if (pair) {
 			const configuredBase = configured.split('-')[0].toLowerCase();
 			void this.segmentLanguage.prepare(pair);
 			const base = await this.segmentLanguage.detect(text, pair, this.lastSegmentLang, configuredBase);
+			if (generation !== this.clearGeneration) {
+				return;
+			}
 			this.lastSegmentLang = base;
 			// The configured locale keeps its region (fr-CA); the other language is tagged by its base code
 			lang = base === configuredBase ? configured : base;
+		}
+		if (generation !== this.clearGeneration) {
+			return;
 		}
 		this.recognizedSegments.update((current: CaptionSegment[]) => this.segmentHistory.append(current, text, lang, start));
 	}
 
 	private _addEventListeners(): void {
 		if (this.recognizer) {
-			let segmentStart: Date | undefined;
 			this.recognizer.sessionStarted = (sender: sdk.Recognizer, event: sdk.SessionEventArgs) => {
 				this._startSession(event.sessionId, Date.now());
 			}
@@ -202,26 +226,35 @@ export class AzureRecognitionService {
 			}
 			this.recognizer.recognizing = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this.liveOutput.set(event.result.text);
-				if (!segmentStart) {
-					segmentStart = new Date()
+				if (!this.segmentStart) {
+					this.segmentStart = new Date();
+					this.utteranceGeneration = this.clearGeneration;
 				}
 			}
 			this.recognizer.recognized = (sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
 				this._updateSession(event.sessionId, Date.now());
+				if (this.utteranceGeneration !== undefined && this.utteranceGeneration !== this.clearGeneration) {
+					this.liveOutput.set('');
+					this.segmentStart = undefined;
+					this.utteranceGeneration = undefined;
+					return;
+				}
+				this.utteranceGeneration = undefined;
 				// NoMatch results arrive with empty text; they are not captions
 				const text = event.result.text;
 				const hasSpeech = event.result.reason === sdk.ResultReason.RecognizedSpeech && !!text?.trim();
 				if (hasSpeech) {
 					// Respect the language Azure reports for the result, when it provides one
 					const reported = event.result.language;
-					const start = segmentStart;
+					const start = this.segmentStart;
 					const pair = reported ? undefined : this._bilingualPair(this.recognitionLang);
 					if (pair || this.pendingAppends > 0) {
 						// Azure does not say which of a bilingual model's languages was spoken; this device works it out
 						// from the text. Appends stay in order, so a segment never overtakes one still being checked.
+						const generation = this.clearGeneration;
 						this.pendingAppends++;
 						this.appendQueue = this.appendQueue
-							.then(() => this._appendDetected(text, pair, start))
+							.then(() => this._appendDetected(text, pair, start, generation))
 							.finally(() => this.pendingAppends--);
 					} else {
 						const lang = reported || this.recognitionLang;
@@ -232,9 +265,9 @@ export class AzureRecognitionService {
 				}
 				this.liveOutput.set('');
 				if (hasSpeech && this.transcriptionEnabled()) {
-					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text, start: segmentStart }))
+					this.store.dispatch(RecognitionActions.addTranscriptSegment({ text, start: this.segmentStart }))
 				}
-				segmentStart = undefined;
+				this.segmentStart = undefined;
 			}
 			this.recognizer.canceled = (sender: sdk.Recognizer,  event: sdk.SpeechRecognitionCanceledEventArgs) => {
 				console.log('cancelled', event);

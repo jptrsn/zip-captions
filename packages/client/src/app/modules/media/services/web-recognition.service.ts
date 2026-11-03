@@ -34,6 +34,11 @@ export class WebRecognitionService {
   private sessionLang = '';
   private resultCount: Signal<number | undefined>;
   private transcriptionEnabled: Signal<boolean | undefined>;
+  private mostRecentResults: SpeechRecognitionResult[] | undefined;
+  private transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
+  private clearedResultCount = 0;
+  private segmentStart: Date | undefined;
+  private transcript = '';
 
 	private isStreaming = false;
 
@@ -102,15 +107,72 @@ export class WebRecognitionService {
 		return this.recognizedText;
 	}
 
+	public clear(): void {
+		if (this.transcriptionEnabled()) {
+			const partialTranscript: string = this._getPendingFinalTranscript();
+			const textToFlush = partialTranscript !== '' ? partialTranscript : this.transcript.trim();
+			if (textToFlush !== '') {
+				if (!this.segmentStart) {
+					this.segmentStart = new Date();
+				}
+				this.store.dispatch(RecognitionActions.addTranscriptSegment({
+					text: textToFlush,
+					start: this.segmentStart
+				}));
+				this.segmentStart = undefined;
+			}
+		}
+		if (this.mostRecentResults) {
+			if (this.platform() === AppPlatform.desktop) {
+				this.clearedResultCount = this.mostRecentResults.length;
+			}
+			for (const result of this.mostRecentResults) {
+				this.transcriptSegments.add(result);
+			}
+			this.mostRecentResults = undefined;
+		}
+		this.segmentStart = undefined;
+		this.transcript = '';
+		this.recognizedSegments.set([]);
+		this.liveOutput.set('');
+	}
+
+	private _getPendingFinalTranscript(): string {
+		if (!this.mostRecentResults) {
+			return '';
+		}
+		const platform: AppPlatform | undefined = this.platform();
+		const results = platform === AppPlatform.desktop
+			? this.mostRecentResults.slice(this.clearedResultCount)
+			: this.mostRecentResults;
+		return results
+			.filter((result) => {
+				if (result.isFinal && result[0].transcript !== '' && !this.transcriptSegments.has(result)) {
+					this.transcriptSegments.add(result);
+					return true;
+				}
+				return false;
+			})
+			.map((result: SpeechRecognitionResult) => result[0])
+			.reduce((acc, alternative: SpeechRecognitionAlternative) => {
+				if (platform === AppPlatform.mobile) {
+					acc.push(alternative);
+				} else if (alternative.confidence > 0) {
+					acc.push(alternative);
+				}
+				return acc;
+			}, [] as SpeechRecognitionAlternative[])
+			.map((alternative) => alternative.transcript)
+			.join('')
+			.trim();
+	}
+
 	private _segmentLang(): string {
 		return this.sessionLang || this.recog.lang;
 	}
 
 	private _addEventListeners(): void {
 		const platform: AppPlatform | undefined = this.platform();
-		let transcript: string;
-    let mostRecentResults: SpeechRecognitionResult[] | undefined;
-    const transcriptSegments: Set<SpeechRecognitionResult> = new Set<SpeechRecognitionResult>();
 
 		// Debounce is to provide a timeout after the last-recognized full text,
 				// in order to better handle chunking in related tasks for the media stream
@@ -121,7 +183,6 @@ export class WebRecognitionService {
 				// Network error observable is used to debounce intermittent network issues that interrupt connection to the recognition server without going offline fully
 				const networkError$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-				let segmentStart: Date | undefined;
 				// Live results logic
 				debounce$.pipe(
 					takeUntil(disconnect$),
@@ -130,43 +191,22 @@ export class WebRecognitionService {
 					throttleTime(this.DEBOUNCE_TIME_MS, undefined, { leading: false, trailing: true }),
 				).subscribe(() => {
 					// console.log('debounce ended', Date.now());
-					if (mostRecentResults) {
-						const partialTranscript: string = mostRecentResults
-						.filter((result) => {
-							if (result.isFinal && result[0].transcript !== '' && !transcriptSegments.has(result)) {
-								if (platform !== AppPlatform.mobile) {
-									transcriptSegments.add(result);
-								}
-								return true;
-							}
-							return false;
-						})
-						.map((result: SpeechRecognitionResult) => result[0])
-						.reduce((acc, alternative: SpeechRecognitionAlternative, idx) => {
-							if (platform === AppPlatform.mobile) {
-								acc.push(alternative);
-							} else if (alternative.confidence > 0) {
-								acc.push(alternative)
-							}
-							return acc;
-						}, [] as SpeechRecognitionAlternative[])
-						.map((alternative) => alternative.transcript)
-						.join('')
-						.trim();
+					if (this.mostRecentResults) {
+						const partialTranscript: string = this._getPendingFinalTranscript();
 						if (partialTranscript !== '') {
-							if (!segmentStart) {
-								segmentStart = new Date();
+							if (!this.segmentStart) {
+								this.segmentStart = new Date();
 							}
-							const start = segmentStart;
+							const start = this.segmentStart;
 							this.recognizedSegments.update((current: CaptionSegment[]) => {
 								if (this.transcriptionEnabled()) {
-									// console.log('segmentStart', segmentStart)
-									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: segmentStart }))
-									segmentStart = undefined;
+									// console.log('segmentStart', this.segmentStart)
+									this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: partialTranscript, start: this.segmentStart }))
+									this.segmentStart = undefined;
 								}
 								return this.segmentHistory.append(current, partialTranscript, this._segmentLang(), start);
 							});
-							transcript = '';
+							this.transcript = '';
 							this.liveOutput.set('');
 							debounce$.next(Date.now());
 						}
@@ -200,9 +240,10 @@ export class WebRecognitionService {
 					// console.log('result', e.results[0][0])
 					debounce$.next(Date.now());
 					if (this.platform() === AppPlatform.desktop) {
-						mostRecentResults = Array.from(e.results);
-						transcript = mostRecentResults
-						.filter((result: SpeechRecognitionResult) => !transcriptSegments.has(result))
+						this.mostRecentResults = Array.from(e.results);
+						this.transcript = this.mostRecentResults
+						.slice(this.clearedResultCount)
+						.filter((result: SpeechRecognitionResult) => !this.transcriptSegments.has(result))
 						.map((result: SpeechRecognitionResult) => {
 							return result[0];
 						})
@@ -216,33 +257,35 @@ export class WebRecognitionService {
 						.join('');
 					} else {
 						const lastResult = e.results.item(e.results.length - 1);
-						mostRecentResults = [lastResult];
+						this.mostRecentResults = [lastResult];
 						if (lastResult[0].transcript.length) {
-							transcript = lastResult[0].transcript
+							this.transcript = lastResult[0].transcript
 						}
 					}
-					if (transcript.length && !segmentStart) {
-						segmentStart = new Date();
+					if (this.transcript.length && !this.segmentStart) {
+						this.segmentStart = new Date();
 					}
-					this.liveOutput.set(transcript);
+					this.liveOutput.set(this.transcript);
 				});
 
 				this.recog.addEventListener('end', (e) => {
 					// console.log('end', Date.now())
-					mostRecentResults = undefined;
+					this.mostRecentResults = undefined;
+					this.clearedResultCount = 0;
 					const mostRecentOutput = this.liveOutput();
-					transcriptSegments.clear();
+					this.transcriptSegments.clear();
 					if (mostRecentOutput !== '') {
+						const start = this.segmentStart;
 						this.recognizedSegments.update((current: CaptionSegment[]) => {
-							return this.segmentHistory.append(current, mostRecentOutput, this._segmentLang(), segmentStart);
+							return this.segmentHistory.append(current, mostRecentOutput, this._segmentLang(), start);
 						});
 						if (this.transcriptionEnabled()) {
-							this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: segmentStart }))
-							segmentStart = undefined;
+							this.store.dispatch(RecognitionActions.addTranscriptSegment({ text: mostRecentOutput, start: this.segmentStart }))
 						}
+						this.segmentStart = undefined;
 						// console.log('clearing live output');
 						this.liveOutput.set('');
-						transcript = '';
+						this.transcript = '';
 					}
 					if (this.isStreaming) {
 						// console.log('recognition still active, restarting')

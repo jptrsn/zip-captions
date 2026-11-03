@@ -173,4 +173,77 @@ describe('WebRecognitionService', () => {
     service.setLanguage('en-US');
     expect(recog.stop).not.toHaveBeenCalled();
   });
+
+  it('should reset transcript on clear() so a subsequent empty result on mobile does not restore cleared text', () => {
+    setup();
+    store.overrideSelector(platformSelector, AppPlatform.mobile);
+    store.refreshState();
+
+    recog.dispatchEvent(resultEvent('hello world', false));
+    expect(service.getLiveOutput()()).toBe('hello world');
+
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+
+    recog.dispatchEvent(resultEvent('', false, 0));
+    expect(service.getLiveOutput()()).toBe('');
+  });
+
+  it('appends final results on mobile after clear() when debounce timer advances', () => {
+    jest.useFakeTimers();
+    setup();
+    store.overrideSelector(platformSelector, AppPlatform.mobile);
+    store.refreshState();
+    service.setLanguage('en-US');
+    service.connectToStream();
+
+    recog.dispatchEvent(resultEvent('before clear', false));
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+
+    recog.dispatchEvent(resultEvent('after clear final', true));
+    jest.advanceTimersByTime(2000);
+
+    expect(service.getRecognizedSegments()().map((s) => s.text)).toEqual(['after clear final']);
+    expect(service.getLiveOutput()()).toBe('');
+  });
+
+  it('should slice cleared results on desktop so prior accumulated results do not restore cleared text', () => {
+    setup();
+    store.overrideSelector(platformSelector, AppPlatform.desktop);
+    store.refreshState();
+
+    const res1 = Object.assign([{ transcript: 'first sentence', confidence: 0.9 }], { isFinal: true });
+    const event1 = Object.assign(new Event('result'), { results: [res1] });
+    recog.dispatchEvent(event1);
+    expect(service.getLiveOutput()()).toBe('first sentence');
+
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+
+    // In Chrome desktop, results array accumulates and returns new objects
+    const res1Duplicate = Object.assign([{ transcript: 'first sentence', confidence: 0.9 }], { isFinal: true });
+    const res2 = Object.assign([{ transcript: ' second sentence', confidence: 0.9 }], { isFinal: false });
+    const event2 = Object.assign(new Event('result'), { results: [res1Duplicate, res2] });
+    recog.dispatchEvent(event2);
+    expect(service.getLiveOutput()()).toBe(' second sentence');
+  });
+
+  it('flushes interim text to transcript segments on clear() when transcription is enabled', () => {
+    setup(true);
+    store.overrideSelector(platformSelector, AppPlatform.desktop);
+    store.refreshState();
+
+    recog.dispatchEvent(resultEvent('interim text in progress', false));
+    expect(service.getLiveOutput()()).toBe('interim text in progress');
+
+    service.clear();
+    expect(service.getLiveOutput()()).toBe('');
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: RecognitionActions.addTranscriptSegment.type,
+        text: 'interim text in progress'
+      })
+    );
+  });
 });

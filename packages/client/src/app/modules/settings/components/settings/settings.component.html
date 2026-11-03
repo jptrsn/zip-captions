@@ -16,6 +16,7 @@
   <!-- Tabs body -->
   <div class="basis-full overflow-y-auto p-3" [ngSwitch]="tabNames[tabIndex()]">
     <app-ui-settings *ngSwitchCase="'appearance'" @fadeInOnEnter></app-ui-settings>
+    <app-keyboard-shortcuts-settings *ngSwitchCase="'shortcuts'" @fadeInOnEnter></app-keyboard-shortcuts-settings>
     <app-user-saved-settings *ngSwitchCase="'sync'" @fadeInOnEnter></app-user-saved-settings>
     <app-broadcast-settings *ngSwitchCase="'sharing'" @fadeInOnEnter></app-broadcast-settings>
     <app-obs-studio-settings *ngSwitchCase="'obs'" @fadeInOnEnter></app-obs-studio-settings>

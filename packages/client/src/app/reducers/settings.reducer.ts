@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AppTheme, FontFamily, InterfaceLanguage, LineHeight, RecognitionDialect, SettingsActions, SettingsState, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, swapLanguagePair, DefaultSplitOrientation, DefaultPaneOrder, DefaultPipContent, DefaultTranslationTarget, fallbackTranslationTarget, SplitOrientation, PipContent, ObsFeed } from "../modules/settings/models/settings.model";
+import { AppTheme, DefaultKeyboardShortcuts, DefaultPaneOrder, DefaultPipContent, DefaultSplitOrientation, DefaultTranslationTarget, FontFamily, InterfaceLanguage, KeyboardShortcutsMap, LineHeight, ObsFeed, PipContent, RecognitionDialect, SettingsActions, SettingsState, ShortcutActionId, SplitOrientation, TextFlow, TextSize, TranscriptionSettings, TranslationDisplayMode, TranslationSettings, UiLanguagePreference, fallbackTranslationTarget, swapLanguagePair } from "../modules/settings/models/settings.model";
 
 export const defaultSettingsState: SettingsState = {
   theme: AppTheme.ZipDark,
@@ -15,6 +15,8 @@ export const defaultSettingsState: SettingsState = {
   transcription: {
     enabled: false
   },
+  shortcutsEnabled: true,
+  shortcuts: { ...DefaultKeyboardShortcuts },
   translation: {
     enabled: false,
     mode: 'off',
@@ -100,6 +102,19 @@ export const settingsReducers = createReducer(
   on(SettingsActions.saveTranscriptionSettings, (state: SettingsState, action: { transcription: Partial<TranscriptionSettings>}) => ({...state, transcription: { ...state.transcription, ...action.transcription, loading: true }})),
   on(SettingsActions.saveTranscriptionSettingsSuccess, (state: SettingsState) => ({...state, transcription: { ...state.transcription, loading: false }})),
   on(SettingsActions.saveTranscriptionSettingsFailure, (state: SettingsState, action: { error: string }) => ({...state, error: action.error, transcription: { ...state.transcription, loading: false }})),
+  on(SettingsActions.setShortcutsEnabled, (state: SettingsState, action: { enabled: boolean }) => ({ ...state, shortcutsEnabled: action.enabled })),
+  on(SettingsActions.setShortcut, (state: SettingsState, action: { actionId: ShortcutActionId; key: string }) => ({
+    ...state,
+    shortcuts: { ...state.shortcuts, [action.actionId]: action.key }
+  })),
+  on(SettingsActions.setShortcuts, (state: SettingsState, action: { shortcuts: KeyboardShortcutsMap }) => ({
+    ...state,
+    shortcuts: { ...action.shortcuts }
+  })),
+  on(SettingsActions.resetShortcuts, (state: SettingsState) => ({
+    ...state,
+    shortcuts: { ...DefaultKeyboardShortcuts }
+  })),
   on(SettingsActions.setTranslationEnabled, (state: SettingsState, action: { enabled: boolean }) => ({...state, translation: { ...state.translation, enabled: action.enabled, mode: (action.enabled ? (state.translation.mode === 'off' ? 'split' : state.translation.mode) : 'off') as TranslationDisplayMode }})),
   on(SettingsActions.setTranslationMode, (state: SettingsState, action: { mode: TranslationDisplayMode }) => ({...state, translation: { ...state.translation, mode: action.mode, enabled: action.mode !== 'off' }})),
 

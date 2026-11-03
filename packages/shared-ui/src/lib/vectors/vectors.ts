@@ -38,6 +38,7 @@ export {
 	heroUser,
 	heroWrenchScrewdriver,
 	heroSparkles,
+	heroCommandLine,
   heroGlobeAlt,
   heroArrowDownTray,
   heroViewColumns,

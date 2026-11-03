@@ -2,6 +2,8 @@ import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
+jest.mock('microsoft-cognitiveservices-speech-sdk', () => ({}));
+
 import { CaptionSegment } from '../../../models/caption-segment.model';
 import { defaultAppState } from '../../../reducers/app.reducer';
 import { selectRecognitionEngine } from '../../../selectors/recognition.selector';
@@ -14,6 +16,7 @@ const stubEngine = (segments: CaptionSegment[]) => {
   const recognizedText = computed(() => recognizedSegments().map((segment) => segment.text));
   return {
     recognizedSegments,
+    clear: jest.fn(),
     setLanguage: jest.fn(),
     getLiveOutput: () => signal(''),
     getRecognizedSegments: () => recognizedSegments,
@@ -42,12 +45,23 @@ describe('RecognitionService', () => {
 
   const useProvider = (provider: 'web' | 'azure') => {
     store.overrideSelector(selectRecognitionEngine, { ...defaultAppState.recognition.engine, provider });
+    store.refreshState();
     service = TestBed.inject(RecognitionService);
   };
 
   it('should be created', () => {
     useProvider('web');
     expect(service).toBeTruthy();
+  });
+
+  it('should delegate to active engine on clearRecognition()', () => {
+    useProvider('web');
+    service.clearRecognition();
+    expect(web.clear).toHaveBeenCalled();
+
+    useProvider('azure');
+    service.clearRecognition();
+    expect(azure.clear).toHaveBeenCalled();
   });
 
   it.each(['web', 'azure'] as const)('returns the %s engine segments', (provider) => {

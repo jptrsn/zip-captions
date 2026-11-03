@@ -1,23 +1,30 @@
-import { ElementRef, Injectable, WritableSignal, signal } from '@angular/core';
+import { ElementRef, Injectable, OnDestroy, WritableSignal, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FullScreenService {
+export class FullScreenService implements OnDestroy {
 
   public isAvailable: boolean;
   private el?: ElementRef<HTMLElement>;
   public isFullscreen: WritableSignal<boolean>;
+  private readonly onFullscreenChange = () => {
+    this.isFullscreen.set(document.fullscreenElement !== null);
+  };
+
   constructor() {
     this.isAvailable = document.fullscreenEnabled;
     this.isFullscreen = signal(document.fullscreenElement !== null);
+    document.addEventListener('fullscreenchange', this.onFullscreenChange);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('fullscreenchange', this.onFullscreenChange);
   }
 
   registerElement(el: ElementRef): void {
     this.el = el;
-    this.el.nativeElement.onfullscreenchange = () => {
-      this.isFullscreen.set(document.fullscreenElement !== null);
-    }
+    this.el.nativeElement.onfullscreenchange = this.onFullscreenChange;
   }
 
   deregisterElement(): void {
@@ -28,11 +35,8 @@ export class FullScreenService {
   }
 
   toggle(): void {
-    if (!this.el) {
-      throw new Error('No element registered for full screen');
-    }
     if (this.isAvailable) {
-      if (this.isFullscreen()) {
+      if (this.isFullscreen() || document.fullscreenElement !== null) {
         this._minimize();
       } else {
         this._maximize();
@@ -41,10 +45,13 @@ export class FullScreenService {
   }
 
   private _maximize(): void {
-    this.el?.nativeElement.requestFullscreen();
+    const target = this.el?.nativeElement || document.documentElement;
+    target.requestFullscreen?.();
   }
 
   private _minimize(): void {
-    document.exitFullscreen();
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+    }
   }
 }
