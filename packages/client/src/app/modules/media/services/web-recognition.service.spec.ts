@@ -84,13 +84,26 @@ describe('WebRecognitionService', () => {
       setup();
       service.connectToStream();
       service.pauseRecognition();
-      recog.start.mockImplementationOnce(() => { throw new Error('InvalidStateError'); });
+      recog.start.mockImplementationOnce(() => { throw new DOMException('Recognition is stopping', 'InvalidStateError'); });
 
       expect(() => service.resumeRecognition()).not.toThrow();
 
       recog.start.mockClear();
       recog.dispatchEvent(new Event('end'));
       expect(recog.start).toHaveBeenCalledTimes(1);
+    });
+
+    it('rethrows a start failure that is not a pending stop, and stays paused', () => {
+      setup();
+      service.connectToStream();
+      service.pauseRecognition();
+      recog.start.mockImplementationOnce(() => { throw new DOMException('Not allowed', 'NotAllowedError'); });
+
+      expect(() => service.resumeRecognition()).toThrow('Not allowed');
+
+      recog.start.mockClear();
+      recog.dispatchEvent(new Event('end'));
+      expect(recog.start).not.toHaveBeenCalled();
     });
 
     it('starts recognition on resume once the pause has ended it', () => {

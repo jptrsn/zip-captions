@@ -93,9 +93,13 @@ export class WebRecognitionService {
 		this.paused = false;
 		try {
 			this.recog.start();
-		} catch {
+		} catch (err: any) {
 			// A quick resume can land while the stop from the pause is still pending, and start() throws then.
-			// The `end` handler restarts recognition because it is no longer paused.
+			// The `end` handler restarts recognition because it is no longer paused. Any other failure is real.
+			if (err?.name !== 'InvalidStateError') {
+				this.paused = true;
+				throw err;
+			}
 		}
 	}
 
