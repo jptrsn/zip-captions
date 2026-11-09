@@ -31,7 +31,7 @@ describe('RecognitionEffects', () => {
   });
 
   describe('resumeRecognition$', () => {
-    it('emits resumeSuccess when the resume goes through, including a quick resume that lands on a pending stop', () => {
+    it('emits resumeSuccess when the service resumes without throwing (the pending-stop case is covered in the service spec)', () => {
       const emitted: Action[] = [];
       effects.resumeRecognition$.subscribe((action) => emitted.push(action));
 
