@@ -64,8 +64,15 @@ export class RecognitionEffects {
   resumeRecognition$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RecognitionActions.resume),
-      map(() => this.recognitionService.resumeRecognition()),
-      map(() => RecognitionActions.resumeSuccess())
+      map(() => {
+        try {
+          this.recognitionService.resumeRecognition();
+          return RecognitionActions.resumeSuccess();
+        } catch (err: any) {
+          // pauseRecognitionOnError$ puts the state back to paused, so the resume button stays available
+          return RecognitionActions.error({ error: err?.message ?? 'resume failed' });
+        }
+      })
     )
   )
 
